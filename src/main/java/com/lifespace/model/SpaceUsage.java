@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.lifespace.constant.SpaceUsageStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,8 +23,11 @@ public class SpaceUsage implements java.io.Serializable{
 	private String spaceUsageId;
 	
 	@NotBlank(message = "空間用途不得空白")
-	@Column(name = "space_usage_name", unique = true)
+	@Column(name = "space_usage_name")  // 配合軟刪除，不需要unique
 	private String spaceUsageName;
+	
+	@Column(name = "space_usage_status")
+	private SpaceUsageStatus spaceUsageStatus = SpaceUsageStatus.AVAILABLE;   // 自ENUM取得預設值「可用」
 	
 	@Column(name = "created_time", insertable = false)
 	private Timestamp createdTime;
@@ -55,6 +60,14 @@ public class SpaceUsage implements java.io.Serializable{
 	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
 	}
+
+	public SpaceUsageStatus getSpaceUsageStatus() {  // 回傳AVAILABLE, DELETED
+		return spaceUsageStatus;
+	}
+
+	public void setSpaceUsageStatus(SpaceUsageStatus spaceUsageStatus) {
+		this.spaceUsageStatus = spaceUsageStatus;
+	}	
 	
 	// One to Many相關Getters & Setters
 	

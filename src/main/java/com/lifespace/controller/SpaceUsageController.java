@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lifespace.constant.SpaceUsageStatus;
 import com.lifespace.exception.ResourceNotFoundException;
 import com.lifespace.model.SpaceUsage;
 import com.lifespace.service.SpaceUsageService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -26,9 +28,9 @@ public class SpaceUsageController {
 	@Autowired
 	private SpaceUsageService spaceUsageService;
 	
-	@GetMapping("/spaceusages")
-	public ResponseEntity<List<SpaceUsage>> getAllSpaceUsages() {
-		List<SpaceUsage> allSpaceUsages = spaceUsageService.getAllSpaceUsages();
+	@GetMapping("/spaceusages")   
+	public ResponseEntity<List<SpaceUsage>> getAllSpaceUsages() {	// 僅取得所有「可用」的資料
+		List<SpaceUsage> allSpaceUsages = spaceUsageService.getAllSpaceUsages(SpaceUsageStatus.AVAILABLE);
 		if (allSpaceUsages.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
@@ -57,8 +59,13 @@ public class SpaceUsageController {
 	    }
 	}
 	
-	@PutMapping("/spaceusages/id/{spaceUsageId}")
-	public ResponseEntity<?> updateSpaceUsage(@PathVariable String spaceUsageId, @RequestBody @Valid SpaceUsage spaceUsage) {
-		return null;
+	@PutMapping("/spaceusages/id/{spaceUsageId}/soft-delete")
+	public ResponseEntity<?> softDeleteById(@PathVariable String spaceUsageId) {
+	    try {
+	        spaceUsageService.softDeleteById(spaceUsageId);
+	        return ResponseEntity.ok("刪除成功（已標記為已刪除）");
+	    } catch (EntityNotFoundException e) {   // 實體找不到
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    }
 	}
 }
