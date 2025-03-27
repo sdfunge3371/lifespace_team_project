@@ -20,7 +20,7 @@ public class EventPhotoEntity implements java.io.Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id")
-	private EventEntity event; 
+	private Event event;
 
 	@Column(name="photo")
 	private String photo;
@@ -60,7 +60,7 @@ public class EventPhotoEntity implements java.io.Serializable {
 
 	
 
-	public EventPhotoEntity(String photoId, EventEntity event, String photo, Timestamp createdTime) {
+	public EventPhotoEntity(String photoId, Event event, String photo, Timestamp createdTime) {
 		super();
 		this.photoId = photoId;
 		this.event = event;
@@ -68,11 +68,11 @@ public class EventPhotoEntity implements java.io.Serializable {
 		this.createdTime = createdTime;
 	}
 
-	public EventEntity getEvent() {
+	public Event getEvent() {
 		return event;
 	}
 
-	public void setEvent(EventEntity event) {
+	public void setEvent(Event event) {
 		this.event = event;
 	}
 
