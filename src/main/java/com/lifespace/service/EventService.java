@@ -31,7 +31,6 @@ public class EventService {
 		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
         Event event = new Event();
-        event.setEventId("E087");
         event.setEventName(eventRequest.getEventName());
         event.setEventDate(eventRequest.getEventDate());
         event.setEventStartTime(eventRequest.getEventStartTime());
@@ -58,8 +57,7 @@ public class EventService {
                     EventPhotoEntity eventPhoto = new EventPhotoEntity();
                     eventPhoto.setEvent(event);
                     eventPhoto.setPhoto(photoPath);
-                    eventPhoto.setCreatedTime(currentTime);
-                    eventPhoto.setPhotoId("P087"); // 生成唯一的 photoId
+                    eventPhoto.setCreatedTime(currentTime);      
                     eventPhotoRepository.save(eventPhoto);
 
                 } catch (Exception e) {

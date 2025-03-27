@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import com.lifespace.entity.Orders;
 
 import jakarta.persistence.*;
@@ -16,6 +19,8 @@ public class Event implements java.io.Serializable {
 	
 	 @Id
 	 @Column(name="event_id")
+	 @GeneratedValue(generator = "event_id")
+	 @GenericGenerator(name = "event_id", strategy = "com.lifespace.util.EventCustomStringIdGenerator")
 	 private String eventId;
 	 
 	 @Column(name="event_name")
@@ -64,7 +69,7 @@ public class Event implements java.io.Serializable {
 	 @OneToMany(mappedBy = "event")
 	 private List<EventPhotoEntity> eventPhotos;
 
-	 @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "event")
+	 @OneToMany(mappedBy = "event")
 	 @OrderBy ("orderId asc")
 	 private Set<Orders> orders = new HashSet<>() ;
 	 

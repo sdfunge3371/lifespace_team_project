@@ -8,18 +8,23 @@ import jakarta.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class EventRequest {
 
 	 	@NotBlank
 	 	private String eventName;
 	 	
 	    @NotNull
+	    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	    private Timestamp eventDate;
 	 
 	    @NotNull
+	    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	    private Timestamp eventStartTime;
 	    
 	    @NotNull
+	    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	    private Timestamp eventEndTime;
  
 	    @NotBlank
