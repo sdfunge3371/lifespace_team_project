@@ -18,7 +18,8 @@ public class SpaceRequest {
     private Integer spaceStatus;
     private String spaceFloor;
 
-    private Set<SpaceEquipment> spaceEquipments;  // ✔ 傳進來的設備資料（非ID，是一整筆）
+    private Set<SpaceEquipmentRequest> spaceEquipments;  // ✔ 傳進來的設備資料（非ID，是一整筆），且傳進來的資料必須是DTO，不能使用Entity
+
     // 備註：照片是用 MultipartFile files 接收，所以不需放在 DTO
 
     private List<String> spaceUsageIds; // ✔ 來自下拉式多選：用途 ID 清單
@@ -119,11 +120,11 @@ public class SpaceRequest {
         this.spaceUsageIds = spaceUsageIds;
     }
 
-    public Set<SpaceEquipment> getSpaceEquipments() {
+    public Set<SpaceEquipmentRequest> getSpaceEquipments() {
         return spaceEquipments;
     }
 
-    public void setSpaceEquipments(Set<SpaceEquipment> spaceEquipments) {
+    public void setSpaceEquipments(Set<SpaceEquipmentRequest> spaceEquipments) {
         this.spaceEquipments = spaceEquipments;
     }
 }
