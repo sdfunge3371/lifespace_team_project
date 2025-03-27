@@ -1,14 +1,14 @@
 package com.lifespace.util;
 
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class EventPhotoCustomStringIdGenerator implements IdentifierGenerator {
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.id.IdentifierGenerator;
+
+public class EventCustomStringIdGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) {
@@ -20,18 +20,18 @@ public class EventPhotoCustomStringIdGenerator implements IdentifierGenerator {
                     .getPhysicalConnection();
 
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT MAX(photo_id) FROM event_photo");
+            ResultSet rs = stmt.executeQuery("SELECT MAX(event_id) FROM event");
 
             if (rs.next()) {
                 String maxId = rs.getString(1);
                 if (maxId != null) {
                     int num = Integer.parseInt(maxId.substring(1));
-                    return "P" + String.format("%03d", num + 1);   // ?改成自己表格的開頭
+                    return "E" + String.format("%03d", num + 1);   // ?改成自己表格的開頭
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "P001"; // default 起始值，?改成自己表格的開頭
+        return "E001"; // default 起始值，?改成自己表格的開頭
     }
 }

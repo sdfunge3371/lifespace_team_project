@@ -2,8 +2,11 @@ package com.lifespace.entity;
 
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,7 +18,9 @@ public class EventPhotoEntity implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@Column(name="photo_id")
+	@Column(name = "photo_id", updatable = false)
+	@GeneratedValue(generator = "photo_id")
+	@GenericGenerator(name = "photo_id", strategy = "com.lifespace.util.EventPhotoCustomStringIdGenerator")
 	private String photoId;
 	
 	@ManyToOne
