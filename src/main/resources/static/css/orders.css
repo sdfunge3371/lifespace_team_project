@@ -1,0 +1,144 @@
+body {
+    background-color: #f5f5f5;
+    width: 100%;
+}
+
+.container-fluid {
+    padding: 15px;
+}
+
+#ordersTable {
+    margin-bottom: 0;
+    table-layout: auto !important;
+    width: 100% !important;
+    background-color: white;
+}
+
+#ordersTable tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* 狀態 badge */
+#ordersTable .badge {
+    background-color: #E0F2F1 !important;
+    color: #20B2AA;
+    font-size: 20px;
+    padding: 4px 8px;
+    font-weight: normal;
+    border-radius: 4px;
+    min-width: 70px;
+    display: inline-block;
+
+}
+
+#ordersTable thead th,
+#ordersTable tr {
+    text-align: center;
+    vertical-align: middle;
+}
+
+#ordersTable td {
+    text-align: center;
+    padding-right: 15px;
+    padding-left: 0px;
+    font-weight: bold;
+}
+/* 操作按鈕樣式 */
+.action-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cancel-button {
+    background-color: #E0F2F1;
+    color: #20B2AA;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.disabled-cancel-button {
+    background-color: #e9ecef;
+    color: #6c757d;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* 通用按鈕樣式（含查看、取消） */
+#ordersTable .btn-outline-secondary,
+#ordersTable .btn-danger {
+    background-color: #E0F2F1;
+    color: #20B2AA;
+    border: none;
+}
+
+#ordersTable .btn {
+    margin: 0 auto;
+    display: inline-block;
+}
+
+/* 寬度分配 */
+#ordersTable th:nth-child(1), #ordersTable td:nth-child(1) { width: 8%; }
+#ordersTable th:nth-child(2), #ordersTable td:nth-child(2) { width: 10%; }
+#ordersTable th:nth-child(3), #ordersTable td:nth-child(3) { width: 10%; }
+#ordersTable th:nth-child(4), #ordersTable td:nth-child(4) { width: 8%; }
+#ordersTable th:nth-child(5), #ordersTable td:nth-child(5) { width: 8%; }
+#ordersTable th:nth-child(6), #ordersTable td:nth-child(6) { width: 8%; }
+#ordersTable th:nth-child(7), #ordersTable td:nth-child(7) { width: 10%; }
+#ordersTable th:nth-child(8), #ordersTable td:nth-child(8) { width: 8%; }
+#ordersTable th:nth-child(9), #ordersTable td:nth-child(9) { width: 8%; }
+#ordersTable th:nth-child(10), #ordersTable td:nth-child(10) { width: 8%; }
+#ordersTable th:nth-child(11), #ordersTable td:nth-child(11) { width: 8%; }
+
+/* 響應式 */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 10px;
+    }
+
+    #ordersTable th, #ordersTable td {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+
+/* DataTables 分頁樣式 */
+.dataTables_wrapper .paginate_button.current,
+.dataTables_wrapper .paginate_button.current:hover {
+    background: white !important;
+    color: #666 !important;
+    border-color: #ddd !important;
+}
+
+.page-item.active .page-link,
+.page-link {
+    background-color: white !important;
+    color: #666 !important;
+    border-color: #ddd !important;
+}
+
+.page-link:hover {
+    background-color: #f8f9fa !important;
+    color: #333 !important;
+    border-color: #ddd !important;
+}
+
+/* 搜尋框 */
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 10px;
+    display: block !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+/* 表格橫向捲軸關閉 */
+.table-responsive {
+    overflow-x: hidden !important;
+}
+

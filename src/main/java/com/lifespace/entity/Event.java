@@ -1,18 +1,17 @@
 package com.lifespace.entity;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import com.lifespace.entity.Orders;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="event")
-public class EventEntity implements java.io.Serializable {
+public class Event implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	 @Id
@@ -64,6 +63,10 @@ public class EventEntity implements java.io.Serializable {
 	 
 	 @OneToMany(mappedBy = "event")
 	 private List<EventPhotoEntity> eventPhotos;
+
+	 @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "event")
+	 @OrderBy ("orderId asc")
+	 private Set<Orders> orders = new HashSet<>() ;
 	 
 	// 新增一個方法來獲取照片 URL 的列表
 	    public List<String> getPhotoUrls() {
@@ -80,14 +83,14 @@ public class EventEntity implements java.io.Serializable {
 		return eventId;
 	}
 
-	public EventEntity() {
+	public Event() {
 		
 	}
 
-	public EventEntity(String eventId, String eventName, Timestamp eventDate, Timestamp eventStartTime,
-			Timestamp eventEndTime, String eventCategory, String spaceId, String memberId, Integer numberOfParticipants,
-			Integer maximumOfParticipants, String eventBriefing, String remarks, String hostSpeaking,
-			Timestamp createdTime) {
+	public Event(String eventId, String eventName, Timestamp eventDate, Timestamp eventStartTime,
+				 Timestamp eventEndTime, String eventCategory, String spaceId, String memberId, Integer numberOfParticipants,
+				 Integer maximumOfParticipants, String eventBriefing, String remarks, String hostSpeaking,
+				 Timestamp createdTime) {
 		super();
 		this.eventId = eventId;
 		this.eventName = eventName;

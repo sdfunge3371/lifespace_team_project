@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>空間訂單管理</title>
+
+
+  <!-- DataTables CSS -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="/css/orders.css" rel="stylesheet">
+
+
+</head>
+<body>
+<div class="container-fluid mt-4">
+  <div class="card">
+    <!-- 標題 -->
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">空間訂單管理</h2>
+      <div class="profile-icon">
+        <i class="bi bi-person-fill"></i>
+      </div>
+    </div>
+
+    <!-- 表格 -->
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="ordersTable" class="table align-middle">
+          <thead class="align-middle">
+          <tr>
+            <th>訂單編號</th>
+            <th>開始時間</th>
+            <th>結束時間</th>
+            <th>分點</th>
+            <th>空間編號</th>
+            <th>付款金額</th>
+            <th>付款日期</th>
+            <th>訂單狀態</th>
+            <th>加購品項</th>
+            <th>揪團活動</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="eventModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">揪團活動</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-6">
+            <div class="text-label">活動編號</div>
+            <div id="modal-event-id"></div>
+          </div>
+          <div class="col-6">
+            <div class="text-label">活動名稱</div>
+            <div id="modal-event-name"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery -->
+<script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables -->
+<script src="/vendors/dataTables/dataTables.min.js"></script>
+<script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#ordersTable').DataTable({
+      ajax: {
+        url: '/orders/getAll',
+        dataSrc: ''
+      },
+      columns: [
+        { data: 'orderId' },
+        { data: 'orderStart', render: formatDate },
+        { data: 'orderEnd', render: formatDate },
+        { data: 'branchId' },
+        { data: 'spaceId' },
+        { data: 'totalPrice' },
+        { data: 'paymentDatetime', render: formatDate },
+        {
+          data: 'orderStatus',
+          render: function(data) {
+            if (data === 1) {
+              return '已付款';
+            } else if (data === 0) {
+              return '已取消';
+            } else if (data === 2) {
+              return '已完成';
+            } else {
+              return '處理中';
+            }
+          }
+        },
+        {
+          data: 'addonItems',
+          render: items => items && items.length > 0 ? '查看' : '無'
+        },
+        {
+          data: 'eventDTO',
+          render: function (event) {
+            if (!event) return '<span>無</span>';
+            return `
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                data-bs-toggle="modal"
+                data-bs-target="#eventModal"
+                data-event-id="${event.eventId}"
+                data-event-name="${event.eventName}">
+                查看
+              </button>
+            `;
+          }
+        },
+        {
+          data: 'orderId',
+          render: orderId => `
+              <button
+                class="btn btn-sm btn-danger cancel-button"
+                data-order-id="${orderId}">
+                取消訂單
+              </button>
+            `
+        }
+      ]
+    });
+
+    function formatDate(isoDate) {
+      if (!isoDate) return '';
+      const d = new Date(isoDate);
+      return d.toLocaleString("zh-TW", { hour12: false });
+    }
+  });
+
+  $('#eventModal').on('show.bs.modal', function (e) {
+    const btn = $(e.relatedTarget);
+    const eventId = btn.data('event-id');
+    const eventName = btn.data('event-name');
+
+    $(this).find('#modal-event-id').text(eventId);
+    $(this).find('#modal-event-name').text(eventName);
+  });
+
+  $(document).on('click', '.cancel-button', function(e) {
+    e.preventDefault();
+
+    const button = $(this); // 取得按鈕元素
+    const orderId = button.data('order-id');
+
+    if (confirm('確定要取消此訂單嗎？')) {
+      // 禁用按鈕，避免重複點擊
+      button.prop('disabled', true);
+
+      $.ajax({
+        url: `/orders/cancel/${orderId}`,
+        type: 'POST',
+        success: function () {
+          alert('已取消訂單');
+          $('#ordersTable').DataTable().ajax.reload(); // 重新載入表格
+        },
+        error: function () {
+          alert('取消失敗，請稍後再試');
+          button.prop('disabled', false); // 失敗時重新啟用按鈕
+        }
+      });
+    }
+  });
+
+</script>
+</body>
+</html>

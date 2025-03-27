@@ -21,7 +21,7 @@ public class EventMemberEntity implements java.io.Serializable {
 	 
 	 @ManyToOne
 	 @JoinColumn(name = "event_id", referencedColumnName = "event_id")
-	 private EventEntity event; 
+	 private Event event;
 
 	 @Column(name="member_id")
 	 private String memberId;
@@ -42,11 +42,11 @@ public class EventMemberEntity implements java.io.Serializable {
 
 	
 
-	public EventEntity getEvent() {
+	public Event getEvent() {
 		return event;
 	}
 
-	public void setEvent(EventEntity event) {
+	public void setEvent(Event event) {
 		this.event = event;
 	}
 
@@ -82,8 +82,8 @@ public class EventMemberEntity implements java.io.Serializable {
 		
 	}
 
-	public EventMemberEntity(String eventMemberId, EventEntity event, String memberId, Integer participateStatus,
-			Timestamp participatedTime) {
+	public EventMemberEntity(String eventMemberId, Event event, String memberId, Integer participateStatus,
+                             Timestamp participatedTime) {
 		this.eventMemberId = eventMemberId;
 		this.event = event;
 		this.memberId = memberId;

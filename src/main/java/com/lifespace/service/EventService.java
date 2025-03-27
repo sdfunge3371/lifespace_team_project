@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.entity.EventEntity;
+import com.lifespace.entity.Event;
 import com.lifespace.entity.EventPhotoEntity;
 import com.lifespace.entity.EventRequest;
 import com.lifespace.repository.EventPhotoRepository;
@@ -30,23 +30,23 @@ public class EventService {
 		
 		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-        EventEntity eventEntity = new EventEntity();
-        eventEntity.setEventId("E087");
-        eventEntity.setEventName(eventRequest.getEventName());
-        eventEntity.setEventDate(eventRequest.getEventDate());
-        eventEntity.setEventStartTime(eventRequest.getEventStartTime());
-        eventEntity.setEventEndTime(eventRequest.getEventEndTime());
-        eventEntity.setEventCategory(eventRequest.getEventCategory());
-        eventEntity.setSpaceId(eventRequest.getSpaceId());
-        eventEntity.setMemberId(eventRequest.getMemberId());
-        eventEntity.setMaximumOfParticipants(eventRequest.getMaximumOfParticipants());
-        eventEntity.setEventBriefing(eventRequest.getEventBriefing());
-        eventEntity.setRemarks(eventRequest.getRemarks());
-        eventEntity.setHostSpeaking(eventRequest.getHostSpeaking());
-        eventEntity.setCreatedTime(currentTime);
-        eventEntity.setNumberOfParticipants(0); // 確保預設為 0
+        Event event = new Event();
+        event.setEventId("E087");
+        event.setEventName(eventRequest.getEventName());
+        event.setEventDate(eventRequest.getEventDate());
+        event.setEventStartTime(eventRequest.getEventStartTime());
+        event.setEventEndTime(eventRequest.getEventEndTime());
+        event.setEventCategory(eventRequest.getEventCategory());
+        event.setSpaceId(eventRequest.getSpaceId());
+        event.setMemberId(eventRequest.getMemberId());
+        event.setMaximumOfParticipants(eventRequest.getMaximumOfParticipants());
+        event.setEventBriefing(eventRequest.getEventBriefing());
+        event.setRemarks(eventRequest.getRemarks());
+        event.setHostSpeaking(eventRequest.getHostSpeaking());
+        event.setCreatedTime(currentTime);
+        event.setNumberOfParticipants(0); // 確保預設為 0
 
-        eventRepository.save(eventEntity);
+        eventRepository.save(event);
 
         // 處理照片上傳
         if (photos != null && !photos.isEmpty()) {
@@ -56,7 +56,7 @@ public class EventService {
                     String photoPath = savePhoto(photo);
 
                     EventPhotoEntity eventPhoto = new EventPhotoEntity();
-                    eventPhoto.setEvent(eventEntity);
+                    eventPhoto.setEvent(event);
                     eventPhoto.setPhoto(photoPath);
                     eventPhoto.setCreatedTime(currentTime);
                     eventPhoto.setPhotoId("P087"); // 生成唯一的 photoId
@@ -71,8 +71,8 @@ public class EventService {
         }
 	}
 
-	public void updateEvent(EventEntity eventEntity) {
-		eventRepository.save(eventEntity);
+	public void updateEvent(Event event) {
+		eventRepository.save(event);
 	}
 
 	public void deleteEvent(String eventno) {
@@ -82,13 +82,13 @@ public class EventService {
 //		    repository.deleteById(empno);
 	}
 
-	public EventEntity getOneEvent(String eventno) {
-		Optional<EventEntity> optional = eventRepository.findById(eventno);
+	public Event getOneEvent(String eventno) {
+		Optional<Event> optional = eventRepository.findById(eventno);
 //		return optional.get();
 		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
 	}
 
-	public List<EventEntity> getAll() {
+	public List<Event> getAll() {
 		return eventRepository.findAll();
 	}
 	
