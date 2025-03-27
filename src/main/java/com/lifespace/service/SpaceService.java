@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.lifespace.dto.SpaceEquipmentRequest;
 import com.lifespace.dto.SpaceRequest;
 import com.lifespace.entity.*;
 import com.lifespace.repository.SpaceUsageRepository;
@@ -36,11 +37,6 @@ public class SpaceService {
 	public Space getSpaceBySpaceName(String spaceName) {  // 透過空間名稱取得單一空間
 		return spaceRepository.findBySpaceName(spaceName).orElse(null);
 	}
-
-//	public Space addSpace(Space space) {  // 新增空間
-//		// 前端就是送完整 Entity 結構，才可以這樣寫
-//		return spaceRepository.save(space);
-//	}
 	
 	// 含有巢狀關聯資料(space equipment, space photos)的新增做法
 	public Space addSpace(SpaceRequest space, List<MultipartFile> files) throws IOException {
@@ -112,61 +108,42 @@ public class SpaceService {
 		s.setSpaceFloor(space.getSpaceFloor());
 
 		// ============= 修改Space Equipments =============
-
-		// 取得舊的空間設備清單
-		Set<SpaceEquipment> currentEquips = s.getSpaceEquipments();
-		
-		// 建立新的空間設備清單
-		Set<SpaceEquipment> newEquips = space.getSpaceEquipments().stream().map(se -> {
+		Set<SpaceEquipment> targetEquipments = s.getSpaceEquipments();
+		targetEquipments.clear();
+		for (SpaceEquipmentRequest se : space.getSpaceEquipments()) {
+			System.out.println(s.getSpaceEquipments());
 			SpaceEquipment equip = new SpaceEquipment();
-			equip.setSpaceEquipId(se.getSpaceEquipId());  // 若有值代表要更新
 			equip.setSpaceEquipName(se.getSpaceEquipName());
 			equip.setSpaceEquipComment(se.getSpaceEquipComment());
-			equip.setSpace(s);  // 建立關聯
-			return equip;
-		}).collect(Collectors.toSet());
-
-		// 清空原有的設備再重建
-		currentEquips.clear();
-		currentEquips.addAll(newEquips);
+			equip.setSpace(s);
+			targetEquipments.add(equip);
+		}
 
 		// ============= 修改Space Photos =============
-
-		// 舊照片處理
-		// [法一] 選擇全部刪除再重新抓照片
-		s.getSpacePhotos().clear();
-
-		// [法二] 移除使用者沒保留的照片
-//		Set<SpacePhoto> updatedPhotos = s.getSpacePhotos().stream()
-//				.filter(photo -> retainedPhotoIds.contains(photo.getSpacePhotoId()))
-//				.collect(Collectors.toSet());
-
-		// 新增新照片
-		Set<SpacePhoto> photos = new LinkedHashSet<>();
-		for (MultipartFile file : files) {
-			SpacePhoto photo = new SpacePhoto();
-			photo.setPhoto(file.getBytes());
-			photo.setSpace(s);
-			photos.add(photo);
+		Set<SpacePhoto> targetPhotos = s.getSpacePhotos();
+		targetPhotos.clear();
+		if (files != null && !files.isEmpty()) {
+			for (MultipartFile file : files) {
+				if (!file.isEmpty()) {
+					SpacePhoto photo = new SpacePhoto();
+					photo.setPhoto(file.getBytes());
+					photo.setSpace(s);
+					targetPhotos.add(photo);
+				}
+			}
 		}
-		// 更新關聯
-		s.setSpacePhotos(photos);
 
-		// ============= 修改Space Usage maps =============
-
-		// 清空舊的關聯
-		s.getSpaceUsageMaps().clear();  // 清空舊的space usage maps
-
-		List<SpaceUsage> us = spaceUsageRepository.findAllById(space.getSpaceUsageIds());
-		Set<SpaceUsageMap> ums = us.stream().map(u -> {
+		// ============= 修改Space Usage Maps =============
+		Set<SpaceUsageMap> targetUsageMaps = s.getSpaceUsageMaps();
+		targetUsageMaps.clear();
+		List<SpaceUsage> usages = spaceUsageRepository.findAllById(space.getSpaceUsageIds());
+		for (SpaceUsage usage : usages) {
 			SpaceUsageMap map = new SpaceUsageMap();
 			map.setSpace(s);
-			map.setSpaceUsage(u);
-			return map;
-		}).collect(Collectors.toSet());
+			map.setSpaceUsage(usage);
+			targetUsageMaps.add(map);
+		}
 
-		s.setSpaceUsageMaps(ums);
-
-		return spaceRepository.save(s);   // CascadeType.ALL 會自動幫你存子表格的項目
+		return spaceRepository.save(s);   // CascadeType.ALL + orphanRemoval = true
 	}
 }

@@ -84,17 +84,17 @@ public class Space implements java.io.Serializable {
 	private Timestamp createdTime;
 	
 	// One to many 關聯物件
-	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)   // 注意：一定要加上cascadeType.ALL，才有連動效果
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)   // 注意：一定要加上cascadeType.ALL，才有連動效果
 	@OrderBy("spaceEquipId asc")
 	@JsonManagedReference   // SpaceEquipment 的 JSON 不會再塞入 space，避免循環
 	private Set<SpaceEquipment> spaceEquipments;  // 利用集合代表含有多筆資料（不要跟ChatGPT一樣用List）
 
-	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("usageMappingId asc")
 	@JsonManagedReference
 	private Set<SpaceUsageMap> spaceUsageMaps;
 
-	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("spacePhotoId asc")
 	@JsonManagedReference
 	private Set<SpacePhoto> spacePhotos;

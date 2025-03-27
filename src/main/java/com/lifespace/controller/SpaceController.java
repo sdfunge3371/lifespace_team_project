@@ -56,7 +56,7 @@ public class SpaceController {
 		return ResponseEntity.ok(space);
 	}
 	
-	@PostMapping("/spaces")
+	@PostMapping("/spaces")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> addSpace(@RequestPart("data") @Valid SpaceRequest space,
 									  @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {   // 之後要改required = true
 	    try {
@@ -71,13 +71,12 @@ public class SpaceController {
 		}
 	}
 	
-	@PutMapping("/spaces/{spaceId}")
+	@PutMapping("/spaces/{spaceId}")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> updateSpace(@PathVariable String spaceId,
 										 @RequestPart("data") @Valid SpaceRequest space,
-										 @RequestPart(value = "files", required = false) List<MultipartFile> files) {  // 之後要改required = true
+										 @RequestPart(value = "photos", required = false) List<MultipartFile> files) {  // 之後要改required = true
 		try {
-//			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : new ArrayList<>(), newPhotos != null ? newPhotos : new ArrayList<>());
-			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : new ArrayList<>());
+			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : List.of());
 	        return ResponseEntity.ok(updated);
 		} catch (DataIntegrityViolationException e) {
 			// 回傳 409 Conflict，並可加入錯誤訊息

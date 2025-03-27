@@ -1,5 +1,6 @@
 package com.lifespace.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,7 +17,8 @@ public class SpacePhoto implements Serializable {
     private Integer spacePhotoId;
 
     @ManyToOne
-    @JoinColumn(name = "space_id", referencedColumnName = "branch_id")
+    @JoinColumn(name = "space_id", referencedColumnName = "space_id")
+    @JsonBackReference
     private Space space;
 
     @Lob
