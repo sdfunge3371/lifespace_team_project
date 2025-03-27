@@ -17,7 +17,7 @@ public class FaqVO {
 	@Id
 	@Column(name = "faq_id")
 	@GeneratedValue(generator = "faq_id")
-//	@GenericGenerator(name = "faq_id", strategy = "com.lifespace.util.FaqCustomStringIdGenerator")
+	@GenericGenerator(name = "faq_id", strategy = "com.lifespace.util.FaqCustomStringIdGenerator")
 	private String faqId;
 	
 	@Column(name = "admin_id")
