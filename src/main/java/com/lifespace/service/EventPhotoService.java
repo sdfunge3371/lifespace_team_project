@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lifespace.model.EventPhotoEntity;
+import com.lifespace.entity.EventPhotoEntity;
 import com.lifespace.repository.EventPhotoRepository;
 
 @Service("eventPhotoService")

@@ -1,6 +1,5 @@
-package com.lifespace.model;
+package com.lifespace.entity;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 

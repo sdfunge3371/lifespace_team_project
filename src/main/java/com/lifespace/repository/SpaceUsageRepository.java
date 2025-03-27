@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.lifespace.constant.SpaceUsageStatus;
-import com.lifespace.model.SpaceUsage;
+import com.lifespace.entity.SpaceUsage;
 
 public interface SpaceUsageRepository extends JpaRepository<SpaceUsage, String>{
 	// JpaRepository 內建：
@@ -19,4 +19,5 @@ public interface SpaceUsageRepository extends JpaRepository<SpaceUsage, String>{
 	
     Optional<SpaceUsage> findBySpaceUsageName(String name);
 
+//    List<SpaceUsage> findAllBySpaceUsageId(List<String> spaceUsageIds);
 }

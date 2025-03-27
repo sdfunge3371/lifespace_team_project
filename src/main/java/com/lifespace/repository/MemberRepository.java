@@ -1,12 +1,11 @@
 package com.lifespace.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.lifespace.model.Member;
+import com.lifespace.entity.Member;
 
 public interface MemberRepository extends CrudRepository<Member,String> {
 	
