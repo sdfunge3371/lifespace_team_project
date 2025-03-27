@@ -1,8 +1,6 @@
-package com.lifespace.model;
+package com.lifespace.entity;
 
 import java.sql.Timestamp;
-
-import com.lifespace.model.EventEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

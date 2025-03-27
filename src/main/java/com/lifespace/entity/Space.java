@@ -1,4 +1,4 @@
-package com.lifespace.model;
+package com.lifespace.entity;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -22,11 +22,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+
 @Entity
 @Table(name = "space")
 public class Space implements java.io.Serializable {
-	
-//	@IdGeneratorType(com.lifespace.util.SpaceCustomStringIdGenerator.class)
+
 	@Id
 	@Column(name = "space_id", updatable = false)
 	@GeneratedValue(generator = "custom-id")
@@ -84,11 +84,20 @@ public class Space implements java.io.Serializable {
 	private Timestamp createdTime;
 	
 	// One to many 關聯物件
-	
 	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)   // 注意：一定要加上cascadeType.ALL，才有連動效果
 	@OrderBy("spaceEquipId asc")
 	@JsonManagedReference   // SpaceEquipment 的 JSON 不會再塞入 space，避免循環
 	private Set<SpaceEquipment> spaceEquipments;  // 利用集合代表含有多筆資料（不要跟ChatGPT一樣用List）
+
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
+	@OrderBy("usageMappingId asc")
+	@JsonManagedReference
+	private Set<SpaceUsageMap> spaceUsageMaps;
+
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
+	@OrderBy("spacePhotoId asc")
+	@JsonManagedReference
+	private Set<SpacePhoto> spacePhotos;
 
 	// Getters & Setters
 	
@@ -215,12 +224,28 @@ public class Space implements java.io.Serializable {
 		this.createdTime = createdTime;
 	}
 
+	// One to many相關的Getters & Setters
 	public Set<SpaceEquipment> getSpaceEquipments() {
 		return spaceEquipments;
 	}
-	
-	// One to many相關的Getters & Setters
+
 	public void setSpaceEquipments(Set<SpaceEquipment> spaceEquipments) {
 		this.spaceEquipments = spaceEquipments;
+	}
+
+	public Set<SpaceUsageMap> getSpaceUsageMaps() {
+		return spaceUsageMaps;
+	}
+
+	public void setSpaceUsageMaps(Set<SpaceUsageMap> spaceUsageMaps) {
+		this.spaceUsageMaps = spaceUsageMaps;
+	}
+
+	public Set<SpacePhoto> getSpacePhotos() {
+		return spacePhotos;
+	}
+
+	public void setSpacePhotos(Set<SpacePhoto> spacePhotos) {
+		this.spacePhotos = spacePhotos;
 	}
 }

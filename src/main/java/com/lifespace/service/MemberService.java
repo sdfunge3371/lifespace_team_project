@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lifespace.model.Member;
+import com.lifespace.entity.Member;
 import com.lifespace.repository.MemberRepository;
 
 @Service

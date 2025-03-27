@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lifespace.exception.ResourceNotFoundException;
-import com.lifespace.model.Space;
-import com.lifespace.model.SpaceEquipment;
+import com.lifespace.entity.SpaceEquipment;
 import com.lifespace.service.SpaceEquipmentService;
 
 import jakarta.validation.Valid;
@@ -24,8 +23,9 @@ public class SpaceEquipmentController {
 	
 	@Autowired
 	private SpaceEquipmentService spaceEquipmentService;
-	
-	@GetMapping("/spaces/space_equips/space/{spaceId}")
+
+	// 僅作測試用
+	@GetMapping("/space-equips/space/{spaceId}")
     public ResponseEntity<List<SpaceEquipment>> getSpaceEquipmentsBySpaceId(@PathVariable String spaceId) {
         List<SpaceEquipment> se = spaceEquipmentService.getSpaceEquipmentsBySpaceId(spaceId);
         
@@ -35,7 +35,7 @@ public class SpaceEquipmentController {
         return ResponseEntity.ok(se);
     }
 	
-	@GetMapping("/spaces/space_equips/id/{spaceEquipId}")
+	@GetMapping("/space-equips/id/{spaceEquipId}")
 	public ResponseEntity<SpaceEquipment> getSpaceEquipmentById(@PathVariable Integer spaceEquipId) {
 		SpaceEquipment se = spaceEquipmentService.getSpaceEquipmentById(spaceEquipId);
 		if (se == null) {

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.lifespace.model.Space;
-import com.lifespace.model.SpaceEquipment;
+import com.lifespace.entity.Space;
+import com.lifespace.entity.SpaceEquipment;
 
 public interface SpaceEquipmentRepository extends JpaRepository<SpaceEquipment, Object>{
     // JpaRepository 內建：

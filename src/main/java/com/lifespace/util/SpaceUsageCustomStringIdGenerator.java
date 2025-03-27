@@ -20,12 +20,12 @@ public class SpaceUsageCustomStringIdGenerator implements IdentifierGenerator {
                     .getPhysicalConnection();
 
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT MAX(space_id) FROM space");
+            ResultSet rs = stmt.executeQuery("SELECT MAX(space_usage_id) FROM space_usage");
             System.out.println("test");
             if (rs.next()) {
                 String maxId = rs.getString(1);
                 if (maxId != null) {
-                    int num = Integer.parseInt(maxId.substring(1));
+                    int num = Integer.parseInt(maxId.substring(2));
                     return "SU" + String.format("%03d", num + 1);
                 }
             }

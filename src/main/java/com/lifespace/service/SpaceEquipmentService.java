@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lifespace.exception.ResourceNotFoundException;
-import com.lifespace.model.Space;
-import com.lifespace.model.SpaceEquipment;
+import com.lifespace.entity.Space;
+import com.lifespace.entity.SpaceEquipment;
 import com.lifespace.repository.SpaceEquipmentRepository;
 import com.lifespace.repository.SpaceRepository;
 
@@ -23,8 +23,7 @@ public class SpaceEquipmentService {
 	
 	@Autowired
 	private SpaceRepository spaceRepository;
-	
-	// 直接在Space表單用，目前應該不會用到
+
 	public List<SpaceEquipment> getSpaceEquipmentsBySpaceId(String spaceId) {  // 透過spaceId取得該空間的所有空間設備
 		Optional<Space> spaceOptional = spaceRepository.findById(spaceId);
 		

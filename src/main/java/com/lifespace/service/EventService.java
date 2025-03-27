@@ -5,15 +5,14 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.model.EventEntity;
-import com.lifespace.model.EventPhotoEntity;
-import com.lifespace.model.EventRequest;
+import com.lifespace.entity.EventEntity;
+import com.lifespace.entity.EventPhotoEntity;
+import com.lifespace.entity.EventRequest;
 import com.lifespace.repository.EventPhotoRepository;
 import com.lifespace.repository.EventRepository;
 

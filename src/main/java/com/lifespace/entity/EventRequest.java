@@ -1,4 +1,4 @@
-package com.lifespace.model;
+package com.lifespace.entity;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -7,8 +7,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
-
-import jakarta.persistence.Column;
 
 public class EventRequest {
 

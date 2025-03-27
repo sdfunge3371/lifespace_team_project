@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.lifespace.constant.SpaceUsageStatus;
 import com.lifespace.exception.ResourceNotFoundException;
-import com.lifespace.model.SpaceUsage;
+import com.lifespace.entity.SpaceUsage;
 import com.lifespace.repository.SpaceUsageRepository;
 
 @Service
