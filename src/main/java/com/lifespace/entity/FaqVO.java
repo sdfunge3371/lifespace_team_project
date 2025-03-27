@@ -1,4 +1,4 @@
-package com.lifespace.model;
+package com.lifespace.entity;
 
 import java.sql.Timestamp;
 
