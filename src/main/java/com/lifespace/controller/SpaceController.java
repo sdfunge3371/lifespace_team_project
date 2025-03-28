@@ -3,12 +3,15 @@ package com.lifespace.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.lifespace.dto.SpaceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,31 +61,40 @@ public class SpaceController {
 	
 	@PostMapping("/spaces")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> addSpace(@RequestPart("data") @Valid SpaceRequest space,
-									  @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {   // 之後要改required = true
+									  @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
 	    try {
 	        Space created = spaceService.addSpace(space, photos);
 	        URI location = URI.create("/spaces/id/" + created.getSpaceId());
 	        return ResponseEntity.created(location).body(created); // 201 Created
 	    } catch (DataIntegrityViolationException e) {
 	        // 回傳 409 Conflict，並可加入錯誤訊息
-	        return ResponseEntity.status(HttpStatus.CONFLICT).body("此空間名稱已經被使用過");
+			Map<String, String> errorBody = new HashMap<>();
+			errorBody.put("message", "此空間名稱已經被使用過");
+			return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(errorBody);  // .contentType(MediaType.APPLICATION_JSON):確保該回傳型別不論為何，都是指定為application/json，
 	    } catch (IOException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("空間照片新增失敗：" + e.getMessage());
+			Map<String, String> errorBody = new HashMap<>();
+			errorBody.put("message", "空間照片新增失敗：" + e.getMessage());
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorBody);
 		}
 	}
 	
 	@PutMapping("/spaces/{spaceId}")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> updateSpace(@PathVariable String spaceId,
 										 @RequestPart("data") @Valid SpaceRequest space,
-										 @RequestPart(value = "photos", required = false) List<MultipartFile> files) {  // 之後要改required = true
+										 @RequestPart(value = "photos", required = false) List<MultipartFile> files) {
 		try {
 			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : List.of());
 	        return ResponseEntity.ok(updated);
 		} catch (DataIntegrityViolationException e) {
 			// 回傳 409 Conflict，並可加入錯誤訊息
-	        return ResponseEntity.status(HttpStatus.CONFLICT).body("此空間名稱已經被使用過");
+			Map<String, String> errorBody = new HashMap<>();
+			errorBody.put("message", "此空間名稱已經被使用過");
+			return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(errorBody);
 		} catch (IOException e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("空間照片新增失敗：" + e.getMessage());
+			Map<String, String> errorBody = new HashMap<>();
+			errorBody.put("message", "空間照片新增失敗：" + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorBody);
 		}
 	}
 	

@@ -84,20 +84,42 @@ public class Space implements java.io.Serializable {
 	private Timestamp createdTime;
 	
 	// One to many 關聯物件
-	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)   // 注意：一定要加上cascadeType.ALL，才有連動效果
+	// 空間設備
+	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)   // 注意：一定要加上cascadeType.ALL，才有連動效果，更新關聯資料時，要加上orphanRemoval = true，才能真的更新，否則還是一樣會新增
 	@OrderBy("spaceEquipId asc")
 	@JsonManagedReference   // SpaceEquipment 的 JSON 不會再塞入 space，避免循環
 	private Set<SpaceEquipment> spaceEquipments;  // 利用集合代表含有多筆資料（不要跟ChatGPT一樣用List）
 
+	// 空間用途對照表
 	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("usageMappingId asc")
 	@JsonManagedReference
 	private Set<SpaceUsageMap> spaceUsageMaps;
 
+	// 空間照片
 	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("spacePhotoId asc")
 	@JsonManagedReference
 	private Set<SpacePhoto> spacePhotos;
+
+	// 空間最愛清單
+//	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
+//	@OrderBy("spacePhotoId asc")
+//	@JsonManagedReference
+//	private Set<FavoriteSpace> favoritespaces;
+
+	// 訂單
+//	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
+//	@OrderBy("orderId asc")
+//	@JsonManagedReference
+//	private Set<Orders> orders;
+
+	// 活動
+//	@OneToMany(mappedBy = "space", cascade = CascadeType.ALL, orphanRemoval = true)
+//	@OrderBy("eventId asc")
+//	@JsonManagedReference
+//	private Set<Event> events;
+
 
 	// Getters & Setters
 	
@@ -248,4 +270,20 @@ public class Space implements java.io.Serializable {
 	public void setSpacePhotos(Set<SpacePhoto> spacePhotos) {
 		this.spacePhotos = spacePhotos;
 	}
+
+//	public Set<Orders> getOrders() {
+//		return orders;
+//	}
+//
+//	public void setOrders(Set<Orders> orders) {
+//		this.orders = orders;
+//	}
+//
+//	public Set<Event> getEvents() {
+//		return events;
+//	}
+//
+//	public void setEvents(Set<Event> events) {
+//		this.events = events;
+//	}
 }
