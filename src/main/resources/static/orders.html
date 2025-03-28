@@ -74,6 +74,15 @@
     </div>
   </div>
 </div>
+<!-- 錯誤訊息 Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <p id="modal-error-message" class="mb-3 fs-5 fw-bold text-dark" ></p>
+      <button type="button" class="btn-primary" data-bs-dismiss="modal">確定</button>
+    </div>
+  </div>
+</div>
 
 <!-- jQuery -->
 <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
@@ -176,13 +185,17 @@
       $.ajax({
         url: `/orders/cancel/${orderId}`,
         type: 'POST',
-        success: function () {
-          alert('已取消訂單');
+        success: function (msg) {
+          alert(msg);
           $('#ordersTable').DataTable().ajax.reload(); // 重新載入表格
         },
-        error: function () {
-          alert('取消失敗，請稍後再試');
-          button.prop('disabled', false); // 失敗時重新啟用按鈕
+        error: function (xhr) {
+          const errorMsg = xhr.responseText || '取消失敗';
+
+          $('#modal-error-message').text(errorMsg);
+          $('#errorModal').modal('show');
+
+          button.prop('disabled', false);
         }
       });
     }

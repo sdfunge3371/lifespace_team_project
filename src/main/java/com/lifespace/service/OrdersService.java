@@ -4,11 +4,16 @@ package com.lifespace.service;
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.entity.Orders;
 import com.lifespace.repository.OrdersRepository;
+import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.lifespace.mapper.OrdersMapper;
 
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,7 +25,19 @@ public class OrdersService {
     private OrdersRepository ordersRepository;
 
     public void updateOrderStatusByOrderId(String orderId) {
-        ordersRepository.updateOrderStatusByOrderId(0, orderId);
+
+        Orders orders = ordersRepository.findById(orderId)
+                       .orElseThrow(() -> new IllegalArgumentException("訂單編號" + orderId + "不存在"));
+        if (orders.getOrderStatus() == 0) {
+            throw new IllegalStateException("訂單編號" + orderId + "已取消, 無法再次取消訂單");
+        }
+
+        if(orders.getOrderStatus() == 2) {
+            throw new IllegalStateException("訂單編號" + orderId + "已完成, 無法取消該訂單");
+        }
+
+        orders.setOrderStatus(0);
+        ordersRepository.save(orders);
     }
 
     public Orders getOneOrder(String orderId) {
@@ -29,16 +46,47 @@ public class OrdersService {
         return optional.orElse(null);
     }
 
-    public List<Orders> getAllOrders() {
-        return ordersRepository.findAll();
-    }
+//  public List<Orders> getAllOrders() {
+//      return ordersRepository.findAll();
+//    }
 
     public List<OrdersDTO> getAllOrdersDTOs() {
 
-        return getAllOrders().stream()
+        return ordersRepository.findAll().stream()
                 .map(OrdersMapper::toOrdersDTO)
                 .collect(Collectors.toList());
     }
 
+    //結束時間到且狀態為已付款訂單 for排程器/啟動spring boot時更新
+    public void expiredOrdersToComplete() {
+        Timestamp now = Timestamp.from(Instant.now());
+        List<Orders> expiredOrdersToComplete = ordersRepository.findByOrderStatusAndOrderEndBefore(1, now);
+
+        if(!expiredOrdersToComplete.isEmpty()){
+            for (Orders orders : expiredOrdersToComplete) {
+                orders.setOrderStatus(2);
+            }
+            ordersRepository.saveAll(expiredOrdersToComplete);
+            System.out.println("已自動更新" + expiredOrdersToComplete.size() + "筆訂單為已完成");
+        } else {
+            System.out.println("無訂單需要更新");
+        }
+    }
+
+
+    //自動更新排程器
+    @Scheduled(fixedRate = 60 * 60 * 1000)
+    @Transactional
+    public void autoCompleteOrdersByScheduled(){
+        expiredOrdersToComplete();
+        System.out.println("排程器自動更新到期訂單");
+    }
+
+    @PostConstruct
+    @Transactional
+    public void autoCompleteOrdersByStartUp(){
+        expiredOrdersToComplete();
+        System.out.println("啟動Spring後, 自動更新未更新到的到期訂單");
+    }
 
 }

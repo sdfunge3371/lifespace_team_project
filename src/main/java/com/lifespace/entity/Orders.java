@@ -2,6 +2,7 @@ package com.lifespace.entity;
 
 import com.lifespace.entity.Event;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -11,6 +12,9 @@ import java.sql.Timestamp;
 public class Orders implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @GeneratedValue(generator = "custom-id")
+    @GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.OrdersCustomStringIdGenerator")
     @Id
     @Column(name = "order_id")
     private String orderId;
