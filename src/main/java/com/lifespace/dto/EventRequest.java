@@ -1,4 +1,4 @@
-package com.lifespace.entity;
+package com.lifespace.dto;
 
 import java.sql.Timestamp;
 import java.util.List;

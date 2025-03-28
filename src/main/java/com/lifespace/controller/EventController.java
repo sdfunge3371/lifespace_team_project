@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lifespace.dto.EventRequest;
 import com.lifespace.entity.Event;
-import com.lifespace.entity.EventRequest;
 import com.lifespace.repository.EventRepository;
 import com.lifespace.service.EventPhotoService;
 import com.lifespace.service.EventService;
