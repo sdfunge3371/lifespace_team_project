@@ -2,6 +2,7 @@ package com.lifespace.controller;
 
 
 import com.lifespace.dto.OrdersDTO;
+import com.lifespace.entity.Orders;
 import com.lifespace.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ public class OrdersController {
     private OrdersService ordersSvc;
 
     public OrdersController(OrdersService ordersSvc) {
-    this.ordersSvc = ordersSvc;
+
+        this.ordersSvc = ordersSvc;
     }
 
 
@@ -30,8 +32,14 @@ public class OrdersController {
 
     @PostMapping("/cancel/{orderId}")
     public ResponseEntity<String> cancelOrder(@PathVariable String orderId) {
-        ordersSvc.updateOrderStatusByOrderId(orderId); // 改變訂單狀態
-        return ResponseEntity.ok("success");
-    }
 
+        try {
+            ordersSvc.updateOrderStatusByOrderId(orderId); // 改變訂單狀態
+            return ResponseEntity.ok("已成功取消訂單" + orderId);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
+
+

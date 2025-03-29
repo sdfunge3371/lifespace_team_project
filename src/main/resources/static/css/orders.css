@@ -142,3 +142,12 @@ body {
     overflow-x: hidden !important;
 }
 
+.btn-primary{
+    background-color: #E0F2F1;
+    color: #20B2AA;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
