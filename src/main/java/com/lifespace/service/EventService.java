@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lifespace.dto.EventRequest;
 import com.lifespace.entity.Event;
-import com.lifespace.entity.EventPhotoEntity;
-import com.lifespace.entity.EventRequest;
+import com.lifespace.entity.EventPhoto;
 import com.lifespace.repository.EventPhotoRepository;
 import com.lifespace.repository.EventRepository;
 
@@ -54,7 +54,7 @@ public class EventService {
                     // 儲存檔案到指定位置，並取得檔案路徑
                     String photoPath = savePhoto(photo);
 
-                    EventPhotoEntity eventPhoto = new EventPhotoEntity();
+                    EventPhoto eventPhoto = new EventPhoto();
                     eventPhoto.setEvent(event);
                     eventPhoto.setPhoto(photoPath);
                     eventPhoto.setCreatedTime(currentTime);      

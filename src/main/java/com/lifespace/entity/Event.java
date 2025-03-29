@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.lifespace.entity.Orders;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -67,7 +66,7 @@ public class Event implements java.io.Serializable {
 	 private List<EventMemberEntity> eventMembers;
 	 
 	 @OneToMany(mappedBy = "event")
-	 private List<EventPhotoEntity> eventPhotos;
+	 private List<EventPhoto> eventPhotos;
 
 	 @OneToMany(mappedBy = "event")
 	 @OrderBy ("orderId asc")
@@ -77,7 +76,7 @@ public class Event implements java.io.Serializable {
 	    public List<String> getPhotoUrls() {
 	        if (eventPhotos != null) {
 	            return eventPhotos.stream()
-	                    .map(EventPhotoEntity::getPhoto) // Assuming getPhoto() returns the URL
+	                    .map(EventPhoto::getPhoto) // Assuming getPhoto() returns the URL
 	                    .collect(Collectors.toList());
 	        }
 	        return null;
