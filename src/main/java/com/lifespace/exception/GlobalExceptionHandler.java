@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,15 +43,15 @@ public class GlobalExceptionHandler {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(errorBody);
 	}
-	
-	@ExceptionHandler(MethodArgumentNotValidException.class)  // 400: 格式錯誤
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)  // 400: 格式錯誤 (來自實體的錯誤處理)
 	public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
 		List<String> errorMessages = ex.getBindingResult().getFieldErrors().stream()
 				.map(e -> e.getDefaultMessage())
 				.collect(Collectors.toList());
 
 		Map<String, Object> errorBody = new HashMap<>();
-		errorBody.put("message", String.join(", ", errorMessages));
+		errorBody.put("message", String.join("\n", errorMessages));
 		errorBody.put("errors", errorMessages);
 
 		return ResponseEntity
@@ -58,7 +59,22 @@ public class GlobalExceptionHandler {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(errorBody);
 	}
-	
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Map<String, Object>> handleConstraintViolationException(ConstraintViolationException ex) {
+		List<String> errorMessages = ex.getConstraintViolations().stream()
+				.map(violation -> violation.getMessage())	// 回傳格式與上面的MethodArgumentViolationException不同
+				.collect(Collectors.toList());
+
+		Map<String, Object> errorBody = new HashMap<>();
+		errorBody.put("message", String.join("\n", errorMessages));
+		errorBody.put("errors", errorMessages);
+
+		return ResponseEntity
+				.status(HttpStatus.BAD_REQUEST)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(errorBody);
+	}
     @ExceptionHandler(ResourceNotFoundException.class)   // 404 (使用自訂例外)
     public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex) {
 		Map<String, String> errorBody = new HashMap<>();

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>空間資料新增 - addSpace.html</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+        }
+
+        body {
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label {
+            width: 150px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .form-control {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            border-color: #6AC0BD;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(106, 192, 189, 0.2);
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .radio-input {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            accent-color: #6AC0BD;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: #6AC0BD;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #475757;
+        }
+
+        #errorMessages {
+            color: #f44336;
+            margin-bottom: 15px;
+        }
+
+        #errorMessages ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        #successMessage {
+            color: green;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+
+        @media screen and (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-group label {
+                margin-bottom: 5px;
+                width: 100%;
+            }
+
+            .form-control {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_Maps_API_KEY&libraries=places&callback=initMap" async
+        defer></script> -->
+
+</head>
+
+<body>
+<div class="container">
+    <!-- 錯誤表列 -->
+    <div id="errorMessages"></div>
+
+    <!-- 成功表列 -->
+    <div id="successMessage"></div>
+
+    <h1>資料新增:</h1>
+
+    <!-- 資料新增表單 -->
+    <form id="spaceForm" name="form1">
+
+        <!-- 我還在等嘉祿... -->
+        <div class="form-group">
+            <label for="branchId">所屬分店:</label>
+            <select id="branchId" name="branchId" class="form-control" size="1">
+                <option value="">讀取中...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="spaceName">空間名稱:</label>
+            <input type="text" id="spaceName" name="spaceName" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="spacePhotos">空間照片:</label>
+            <input type="file" id="spacePhotos" name="spacePhotos" class="form-control" multiple accept="image/*">
+        </div>
+
+        <div class="form-group">
+            <label for="spacePeople">空間人數:</label>
+            <input type="number" id="spacePeople" name="spacePeople" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="spaceSize">空間大小 (坪):</label>
+            <input type="number" id="spaceSize" name="spaceSize" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="spaceHourlyFee">時租費率 (NT$):</label>
+            <input type="number" id="spaceHourlyFee" name="spaceHourlyFee" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="spaceDailyFee">日租費率 (NT$):</label> <input type="number" id="spaceDailyFee"
+                                                                      name="spaceDailyFee" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="spaceDesc">空間介紹:</label>
+            <textarea id="spaceDesc" name="spaceDesc" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="spaceAlert">重要公告:</label>
+            <textarea id="spaceAlert" name="spaceAlert" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>空間狀態:</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="spaceStatus" value="0" class="radio-input" checked>
+                    稍後上架
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="spaceStatus" value="1" class="radio-input">
+                    直接上架
+                </label>
+            </div>
+        </div>
+
+        <!-- <div class="form-group">
+            <label for="spaceAddress">空間地址:</label>
+            <input type="text" id="spaceAddress" name="spaceAddress" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="latitude">緯度:</label>
+            <input type="number" id="latitude" name="latitude" class="form-control" step="0.000001" value=""
+                readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="longitude">經度:</label>
+            <input type="number" id="longitude" name="longitude" class="form-control" step="0.000001" value=""
+                readonly>
+        </div> -->
+
+        <div class="form-group">
+            <label for="spaceFloor">空間所在樓層:</label>
+            <input type="text" id="spaceFloor" name="spaceFloor" class="form-control" value="">
+        </div>
+
+        <div style="text-align: center;">
+            <button type="button" id="submitBtn" class="submit-btn">完成</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Global variable for Autocomplete instance
+    // let autocomplete;
+
+    // Function to initialize Google Maps Autocomplete
+    // function initMap() {
+    //     const addressInput = document.getElementById('spaceAddress');
+    //     const latitudeInput = document.getElementById('latitude');
+    //     const longitudeInput = document.getElementById('longitude');
+
+    //     autocomplete = new google.maps.places.Autocomplete(addressInput, {
+    //         componentRestrictions: { country: 'tw' } // Restrict to Taiwan
+    //     });
+
+    //     autocomplete.addListener('place_changed', function () {
+    //         const place = autocomplete.getPlace();
+
+    //         if (!place.geometry || !place.geometry.location) {
+    //             console.error('沒有找到此地址的地理資訊');
+    //             latitudeInput.value = ''; // Clear fields if no geometry
+    //             longitudeInput.value = '';
+    //             return;
+    //         }
+
+    //         const lat = place.geometry.location.lat();
+    //         const lng = place.geometry.location.lng();
+
+    //         latitudeInput.value = lat.toFixed(6);
+    //         longitudeInput.value = lng.toFixed(6);
+
+    //         // Optionally update the address input to the formatted address
+    //         // addressInput.value = place.formatted_address;
+
+    //         console.log('已成功獲取經緯度:', lat, lng);
+    //     });
+    //     console.log("Google Maps Autocomplete Initialized.");
+    // }
+    // ======== Configuration ========
+    const APP_CONTEXT_PATH = "http://localhost:8080";
+    const ADD_SPACE_URL = `${APP_CONTEXT_PATH}/spaces`;             // 需照抄Controller中@XXXMapping的連結
+    const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/branches`;    // 我還在等嘉祿的Controller
+
+    // ======== 顯示錯誤訊息 ========
+    function displayErrors(errors) {
+        const errorDiv = document.getElementById('errorMessages');
+        errorDiv.innerHTML = ''; // 清除之前的錯誤
+        const successDiv = document.getElementById('successMessage');
+        if (successDiv) successDiv.innerHTML = ''; // Clear success message
+
+        // 在表單最上方新增錯誤訊息
+        if (errors && Array.isArray(errors) && errors.length > 0) { // // 如果errors是Json
+            const list = document.createElement('ul');
+            errors.forEach(msg => {
+                // 檢查msg是object還是string
+                const text = (typeof msg === 'object' && msg.defaultMessage) ? msg.defaultMessage : msg;
+                const item = document.createElement('li');
+                item.textContent = text;
+                list.appendChild(item);
+            });
+            errorDiv.appendChild(list);
+        } else if (errors) { // 如果errors是String
+            errorDiv.textContent = errors;
+        }
+    }
+
+    // 顯示提交成功的訊息
+    function displaySuccess(message) {
+        const successDiv = document.getElementById('successMessage');
+        if (successDiv) {
+            successDiv.textContent = message;
+            const errorDiv = document.getElementById('errorMessages');
+            if (errorDiv) errorDiv.innerHTML = '';
+        }
+    }
+
+    // === 主Function ===
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // -------DOM Elements-------
+        const branchSelect = document.getElementById('branchId');
+        const form = document.getElementById('spaceForm');
+        const submitButton = document.getElementById('submitBtn');
+        const errorDiv = document.getElementById('errorMessages');
+        const successDiv = document.getElementById('successMessage');
+
+        // --- 1. GET: 抓所有分店 (我還在等嘉祿)，利用branch_name顯示 ---
+        // Replace '/api/branches' with your actual endpoint
+        fetch(GET_ALL_BRANCHES_URL) // Use the constant
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`無法取得分店列表，HTTP 狀態: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(branches => {
+                branchSelect.innerHTML = ''; // 把"讀取中..."移除
+                if (branches && branches.length > 0) {
+                    // Add a default prompt option
+                    const promptOption = document.createElement('option');
+                    promptOption.value = ""; // No value so it fails validation if not changed
+                    promptOption.textContent = "-- 請選擇分店 --";
+                    promptOption.disabled = true; // Cannot select this
+                    promptOption.selected = true; // Selected by default
+                    branchSelect.appendChild(promptOption);
+
+                    branches.forEach(branch => {
+                        const option = document.createElement('option');
+                        option.value = branch.branchId; // Use branchId from your Branch object
+                        option.textContent = branch.branchName; // Use branchName from your Branch object
+                        branchSelect.appendChild(option);
+                    });
+                } else {
+                    branchSelect.innerHTML = '<option value="">沒有可用的分店</option>';
+                }
+            })
+            .catch(error => {
+                console.error('抓取分店時發生錯誤:', error);
+                if (branchSelect) branchSelect.innerHTML = '<option value="">無法載入分店</option>';
+                displayErrors([error.message || '無法載入分店列表，請稍後再試。']);
+            });
+
+        // --- 2. POST: 新增空間 ---
+        submitButton.addEventListener('click', function () {    // 點擊「完成」按鈕時要做的事
+            // 移除成功、錯誤訊息
+            errorDiv.innerHTML = '';
+            successDiv.innerHTML = '';  //  這行可以不用
+
+            const formData = new FormData(form); // formData可以用來處理HTML表單
+
+            // const requiredFields = ['branchId', 'spaceName', 'spacePeople', 'spaceSize', 'spaceHourlyFee', 'spaceDailyFee', 'spaceFloor'];  // 必填欄位
+            // let isValid = true;
+            let errors = [];    // 蒐集錯誤資訊
+
+            // 格式錯誤處理（後端處理過前端應該就不用了）
+            // // 檢查formData中的必填欄位
+            // requiredFields.forEach(fieldName => {
+            //     const field = form.elements[fieldName];
+            //     if (!formData.get(fieldName) || formData.get(fieldName).trim() === '') {
+            //         isValid = false;
+            //         // Find the label associated with the field for a better error message
+            //         const label = field.previousElementSibling?.tagName === 'LABEL' ? field.previousElementSibling.textContent : fieldName;
+            //         errors.push(`${label.replace(':', '')} 為必填欄位。`);
+            //     }
+            // });
+
+            // // Add more specific validation if needed (e.g., number ranges)
+            // const spacePeople = parseInt(formData.get('spacePeople'), 10);
+            // if (isNaN(spacePeople) || spacePeople <= 0) {
+            //     isValid = false;
+            //     errors.push('空間人數必須是正整數。');
+            // }
+            // // ... add similar checks for size, fees ...
+
+            // if (!isValid) {
+            //     displayErrors(errors);
+            //     return; // Stop submission if client-side validation fails
+            // }
+
+            // 檢查空間照片
+            const photoInput = document.getElementById('spacePhotos');
+            if (!photoInput || photoInput.files.length === 0) {
+                // Make photos optional or required based on your needs
+                errors.push('請至少選擇一張空間照片。');
+            } else {
+                // Example: Limit number of photos (e.g., max 5)
+                if (photoInput.files.length > 5) {
+                    errors.push('最多只能上傳 5 張照片。');
+                }
+                // Example: Check file types (redundant with 'accept' but safer)
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                for (let file of photoInput.files) {
+                    if (!allowedTypes.includes(file.type)) {
+                        errors.push(`不支援的檔案格式: ${file.name} (${file.type})`);
+                    }
+                    // Example: Check file size (e.g., max 5MB per file)
+                    if (file.size > 5 * 1024 * 1024) {
+                        errors.push(`檔案太大: ${file.name} (最大 5MB)`);
+                    }
+                }
+            }
+
+            if (errors.length > 0) {
+                displayErrors(errors);
+                return; // 如果有錯誤訊息就不要交資料了
+            }
+
+            // 傳送資料時，將按鈕disabled，以免重複上傳
+            submitButton.disabled = true;
+            submitButton.textContent = '傳送中...';
+
+            // 提交request body
+            fetch(ADD_SPACE_URL, {
+                method: 'POST',
+                body: formData      // 如果request body是multipart/form-data，這邊就不用指定content-type，而且也不用JSON stringify formData
+            })
+                .then(response => {
+                    // Check if response is ok (status in the range 200-299)
+                    if (!response.ok) {
+                        return response.json().then(errorData => {  // 回傳JSON
+                            const backendErrors = errorData.errors || errorData.message || `伺服器錯誤: ${response.status}`;    // 依序先抓JSON中的errors, message，如果都沒有，就代表是500
+                            throw backendErrors;    // 拋出例外給外層的catch
+                        }).catch(() => {
+                            // 回傳的JSON格式有誤，拋出例外給外層的catch
+                            throw [`伺服器發生錯誤: ${response.status} ${response.statusText}`];
+                        });
+                    }
+                    return response.json(); // 回傳JSON，成功就是剛剛新增的JSON，失敗就是回傳錯誤訊息的JSON回傳格式範例：{ success: true, message: "..." }
+                })
+                .then(data => {
+                    // Handle successful response from backend
+                    console.log("Success Response:", data); // Log success data
+                    // 下面那一行可以把他砍了
+                    displaySuccess(data.message || '空間新增成功！');
+                    form.reset(); // 務必要清空清空表單
+
+                    // 重新導向：2秒後跳轉到listAllSpaces.html
+                    setTimeout(() => {
+                        // TODO: Update with the correct URL for your space list page
+                        window.location.href = 'listAllSpaces.html';
+                    }, 2000);
+                })
+                .catch(errorOrErrors => {
+                    console.error('提交時發生錯誤:', errorOrErrors);
+                    // 在表單上方顯示錯誤訊息 (先檢查Errors的型別(Array, String?))
+                    displayErrors(Array.isArray(errorOrErrors) ? errorOrErrors : [errorOrErrors.message || '提交表單時發生未知錯誤。']);
+                })
+                .finally(() => {
+                    // 提交完成後，要將按鈕回復
+                    submitButton.disabled = false;
+                    submitButton.textContent = '完成';
+                });
+        });
+
+    }); // End DOMContentLoaded
+</script>
+
+</body>
+
+</html>
