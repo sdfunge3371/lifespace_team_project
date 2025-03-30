@@ -2,7 +2,6 @@ package com.lifespace.controller;
 
 
 import com.lifespace.dto.OrdersDTO;
-import com.lifespace.entity.Orders;
 import com.lifespace.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

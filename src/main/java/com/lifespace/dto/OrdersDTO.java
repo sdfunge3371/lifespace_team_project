@@ -1,6 +1,8 @@
 package com.lifespace.dto;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrdersDTO {
 
@@ -13,9 +15,18 @@ public class OrdersDTO {
     private Timestamp paymentDatetime;
     private Integer orderStatus;
     private EventDTO eventDTO;
+    private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
     public OrdersDTO(){
 
+    }
+
+    public List<RentalItemDetailsDTO> getRentalItemDetailsDTOList() {
+        return rentalItemDetailsDTOList;
+    }
+
+    public void setRentalItemDetailsDTOList(List<RentalItemDetailsDTO> rentalItemDetailsDTOList) {
+        this.rentalItemDetailsDTOList = rentalItemDetailsDTOList;
     }
 
     public String getOrderId() {
@@ -90,4 +101,5 @@ public class OrdersDTO {
     public void setBranchId(String branchId) {
         this.branchId = branchId;
     }
+
 }
