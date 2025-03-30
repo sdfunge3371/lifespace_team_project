@@ -34,8 +34,8 @@ public class SpaceService {
 		return spaceRepository.findById(spaceId).orElse(null);
 	}
 
-	public Space getSpaceBySpaceName(String spaceName) {  // 透過空間名稱取得單一空間
-		return spaceRepository.findBySpaceName(spaceName).orElse(null);
+	public List<Space> getSpacesByNameContainingIgnoreCase(String keyword) {  // 透過空間名稱取得單一空間
+		return spaceRepository.findBySpaceNameContainingIgnoreCase(keyword);
 	}
 	
 	// 含有巢狀關聯資料(space equipment, space photos)的新增做法

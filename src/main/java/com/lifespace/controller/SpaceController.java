@@ -50,13 +50,15 @@ public class SpaceController {
 	}
 	
 	@GetMapping("/spaces/name")
-	public ResponseEntity<Space> getSpaceBySpaceName(@RequestParam String spaceName) {  // 用@RequestParam以讓Postman處理空白字元
-		Space space = spaceService.getSpaceBySpaceName(spaceName);
-		
-		if (space == null) {   // 若這個spaceName沒有資料
-			throw new ResourceNotFoundException("找不到空間名稱為「 " + spaceName + " 」的空間");
+	public ResponseEntity<List<Space>> getSpacesByNameContainingIgnoreCase(@RequestParam String keyword) {  // 用@RequestParam以讓Postman處理空白字元
+		List<Space> spaces = spaceService.getSpacesByNameContainingIgnoreCase(keyword);
+
+		if (spaces.isEmpty()) {
+			throw new ResourceNotFoundException("找不到包含「" + keyword + "」的空間");
 		}
-		return ResponseEntity.ok(space);
+
+		return ResponseEntity.ok(spaces);
+
 	}
 	
 	@PostMapping("/spaces")  // 需使用multipart/form-data + JSON + 檔案格式提交
