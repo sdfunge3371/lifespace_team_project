@@ -43,7 +43,36 @@ public class Member implements java.io.Serializable {
 	@Column(name = "birthday")
 	private LocalDate birthday;
 	
-	//-----------------------------------------------------
+	//FK(有需要再解開註解用)----------------------
+	
+	//留言按讚紀錄表(會員跟留言之間的中介表)
+//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
+//	private List<CommentLike > commentLike;
+	
+	//留言檢舉紀錄表(會員跟留言之間的中介表)
+//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
+//	private List<CommentReport > commentReport;
+	
+	//活動參與會員
+//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
+//	private List<EventMemberEntity> eventMemberEntity;
+	
+	//活動
+//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
+//	private List<Event> event;
+	
+	//訂單
+//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
+//	private List<Order> order;
+	
+	//空間最愛清單
+//  @OneToOne
+//  @JoinColumn(name = "favorite_space")  // FK
+//  private FavoriteSpace favoriteSpace;
+	
+	
+	
+	//getter、setter---------------------------
 	
 	public String getMemberId() {
 		return memberId;
