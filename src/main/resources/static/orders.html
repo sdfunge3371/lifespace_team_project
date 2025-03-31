@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" xmlns:max-width="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,75 +14,98 @@
 
 </head>
 <body>
-<div class="container-fluid mt-4">
-  <div class="card">
-    <!-- 標題 -->
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h2 class="mb-0">空間訂單管理</h2>
-      <div class="profile-icon">
-        <i class="bi bi-person-fill"></i>
+  <div class="container-fluid mt-4">
+    <div class="card">
+      <!-- 標題 -->
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">空間訂單管理</h2>
+        <div class="profile-icon">
+          <i class="bi bi-person-fill"></i>
+        </div>
       </div>
-    </div>
 
-    <!-- 表格 -->
-    <div class="card-body">
-      <div class="table-responsive">
-        <table id="ordersTable" class="table align-middle">
-          <thead class="align-middle">
-          <tr>
-            <th>訂單編號</th>
-            <th>開始時間</th>
-            <th>結束時間</th>
-            <th>分點</th>
-            <th>空間編號</th>
-            <th>付款金額</th>
-            <th>付款日期</th>
-            <th>訂單狀態</th>
-            <th>加購品項</th>
-            <th>揪團活動</th>
-            <th>操作</th>
-          </tr>
-          </thead>
-          <tbody>
-
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="eventModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">揪團活動</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-6">
-            <div class="text-label">活動編號</div>
-            <div id="modal-event-id"></div>
-          </div>
-          <div class="col-6">
-            <div class="text-label">活動名稱</div>
-            <div id="modal-event-name"></div>
-          </div>
+      <!-- 表格 -->
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="ordersTable" class="table align-middle">
+            <thead class="align-middle">
+            <tr>
+              <th>訂單編號</th>
+              <th>開始時間</th>
+              <th>結束時間</th>
+              <th>分點</th>
+              <th>空間編號</th>
+              <th>付款金額</th>
+              <th>付款日期</th>
+              <th>訂單狀態</th>
+              <th>加購品項</th>
+              <th>揪團活動</th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+             <!--動態生成 DataTable 內容-->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-</div>
-<!-- 錯誤訊息 Modal -->
-<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content text-center p-4">
-      <p id="modal-error-message" class="mb-3 fs-5 fw-bold text-dark" ></p>
-      <button type="button" class="btn-primary" data-bs-dismiss="modal">確定</button>
+<!--  揪團活動 Modal -->
+  <div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">揪團活動</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="row fw-bold">
+            <div class="col-6">
+              <div class="text-label">活動編號</div>
+              <div class="mt-2" id="modal-event-id"></div>
+            </div>
+            <div class="col-6">
+              <div class="text-label">活動名稱</div>
+              <div class="mt-2" id="modal-event-name"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer mt-3">
+          <button type="button" class="btn event-ok-btn mt-3" data-bs-dismiss="modal">確定</button>
+        </div>
+      </div>
+    </div>
+   </div>
+  </div>
+  <!-- 租借品項 Modal -->
+  <div class="modal fade" id="rentalItemModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">租借品項</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modal-rental-items">
+          <!--動態生成 DataTable 內容-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn rental-items-ok-btn" data-bs-dismiss="modal">確定</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- 錯誤訊息 Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <p id="modal-error-message" class="mb-3 fs-5 fw-bold text-dark"></p>
+        <button type="button" class="error-btn-ok d-block mx-auto" style data-bs-dismiss="modal">確定</button>
+      </div>
+    </div>
+  </div>
 
 <!-- jQuery -->
 <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
@@ -124,14 +147,31 @@
           }
         },
         {
-          data: 'addonItems',
-          render: items => items && items.length > 0 ? '查看' : '無'
+          data: 'rentalItemDetailsDTOList',
+          render: function (rentalItems) {
+            if (!rentalItems || rentalItems.length === 0) {
+              return '<span>無</span>';
+            } else {
+              return `
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-bs-toggle="modal"
+                data-bs-target="#rentalItemModal"
+                data-rental-items='${JSON.stringify(rentalItems)}'>
+                查看
+              </button>
+            `;
+            }
+          }
         },
         {
           data: 'eventDTO',
           render: function (event) {
-            if (!event) return '<span>無</span>';
-            return `
+            if (!event) {
+              return '<span>無</span>';
+            }else {
+              return `
               <button
                 class="btn btn-sm btn-outline-secondary"
                 data-bs-toggle="modal"
@@ -141,6 +181,7 @@
                 查看
               </button>
             `;
+            }
           }
         },
         {
@@ -163,6 +204,7 @@
     }
   });
 
+  // 揪團活動
   $('#eventModal').on('show.bs.modal', function (e) {
     const btn = $(e.relatedTarget);
     const eventId = btn.data('event-id');
@@ -172,11 +214,58 @@
     $(this).find('#modal-event-name').text(eventName);
   });
 
+ // 租借品項
+  $('#rentalItemModal').on('show.bs.modal', function (e) {
+    const btn = $(e.relatedTarget);
+    const items = JSON.parse(btn.attr('data-rental-items'));
+
+
+    if (!items || items.length === 0) {
+      $('#modal-rental-items').html('<p class="text-muted">無</p>');
+      return;
+    }
+
+    let total = 0;
+    const header = `
+    <div class="row fw-bold mb-2">
+      <div class="col-3">品項</div>
+      <div class="col-3 text-center">數量</div>
+      <div class="col-3 text-end">單價</div>
+      <div class="col-3 text-end">小計</div>
+    </div>
+    <hr>
+  `;
+
+    const rows = items.map(({ rentalItemName, rentalItemQuantity, rentalItemPrice, rentalTotalPrice }) => {
+      total += rentalTotalPrice;
+
+      return `
+        <div class="row fw-bold mb-1">
+          <div class="col-3">${rentalItemName}</div>
+          <div class="col-3 text-center">${rentalItemQuantity}</div>
+          <div class="col-3 text-end">$${rentalItemPrice}</div>
+          <div class="col-3 text-end">$${rentalTotalPrice}</div>
+        </div>
+        `;
+    }).join('');
+
+    const footer = `
+    <hr>
+    <div class="row fw-bold">
+<!--      <div class="col-6 text-end">總金額：</div>-->
+      <div class="col-12 text-end">總金額：$${total}</div>
+    </div>
+    `;
+
+    $('#modal-rental-items').html(header + rows + footer);
+  });
+
+
   $(document).on('click', '.cancel-button', function(e) {
     e.preventDefault();
 
     const button = $(this); // 取得按鈕元素
-    const orderId = button.data('order-id');
+    const orderId = button.data('orderId');
 
     if (confirm('確定要取消此訂單嗎？')) {
       // 禁用按鈕，避免重複點擊
