@@ -3,19 +3,24 @@ package com.lifespace.service;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.lifespace.dto.EventRequest;
+import com.lifespace.dto.EventResponse;
 import com.lifespace.entity.Event;
 import com.lifespace.entity.EventPhoto;
 import com.lifespace.repository.EventPhotoRepository;
 import com.lifespace.repository.EventRepository;
-
 
 @Service("eventService")
 public class EventService {
@@ -46,9 +51,10 @@ public class EventService {
         event.setNumberOfParticipants(0); // 確保預設為 0
 
         eventRepository.save(event);
-
+        System.out.println(photos.size());
         // 處理照片上傳
         if (photos != null && !photos.isEmpty()) {
+        	System.out.println(photos.size());
             for (MultipartFile photo : photos) {
                 try {
                     // 儲存檔案到指定位置，並取得檔案路徑
@@ -90,6 +96,31 @@ public class EventService {
 		return eventRepository.findAll();
 	}
 	
+	 // 添加搜尋方法
+    public Page<EventResponse> searchEvents( String eventName,
+            Timestamp startTime,
+            Timestamp endTime,
+            String category,
+            Pageable pageable) {
+        // 進行搜尋
+        Page<Event> eventPage = eventRepository.findEventsByConditions(
+        		eventName,
+        		startTime,
+        		endTime,
+        		category,
+                pageable
+        );
+        
+        // 將 Event 轉換為 EventResponse
+        List<EventResponse> responseList = eventPage.getContent().stream()
+                .map((content) -> convertToEventResponse(content))
+                .collect(Collectors.toList());
+        
+        // 創建新的 Page<EventResponse>
+        return new PageImpl<>(responseList, pageable, eventPage.getTotalElements());
+    }
+	 
+	
 	// 儲存照片並返回檔案路徑
 //	private String savePhoto(MultipartFile photo) throws Exception {
 //	    String fileName = photo.getOriginalFilename();
@@ -124,4 +155,29 @@ public class EventService {
 	    photo.transferTo(new File(filePath));
 	    return "/event-images/" + fileName; // 返回可訪問的 URL
 	}
+	
+	// 將 Event 實體轉換為 EventResponse DTO
+    private EventResponse convertToEventResponse(Event event) {
+        EventResponse response = new EventResponse();
+        response.setEventId(event.getEventId());
+        response.setEventName(event.getEventName());
+        response.setEventDate(event.getEventDate());
+        response.setEventStartTime(event.getEventStartTime());
+        response.setEventEndTime(event.getEventEndTime());
+        response.setEventCategory(event.getEventCategory());
+        response.setSpaceId(event.getSpaceId());
+        response.setMemberId(event.getMemberId());
+        response.setNumberOfParticipants(event.getNumberOfParticipants());
+        response.setMaximumOfParticipants(event.getMaximumOfParticipants());
+        response.setEventBriefing(event.getEventBriefing());
+        response.setRemarks(event.getRemarks());
+        response.setHostSpeaking(event.getHostSpeaking());
+        response.setCreatedTime(event.getCreatedTime());
+        
+        // 取得並設置活動照片
+        List<String> photoUrls = event.getPhotoUrls();
+        response.setPhotoUrls(photoUrls != null ? photoUrls : new ArrayList<>());
+        
+        return response;
+    }
 }
