@@ -79,11 +79,52 @@
             accent-color: #6AC0BD;
         }
 
+        /* Styles for Image Preview */
+        #imagePreviewContainer .preview-item {
+            position: relative; /* Needed for absolute positioning of the delete button */
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        #imagePreviewContainer .preview-image {
+            display: block;
+            max-width: 100px; /* Adjust size as needed */
+            max-height: 100px; /* Adjust size as needed */
+            width: auto;
+            height: auto;
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+        }
+
+        #imagePreviewContainer .delete-btn {
+            position: absolute;
+            top: -5px; /* Position slightly outside the top-right */
+            right: -5px;
+            background-color: rgba(255, 0, 0, 0.7); /* Semi-transparent red */
+            color: white;
+            border: none;
+            border-radius: 50%; /* Make it circular */
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 18px; /* Center the 'X' vertically */
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        #imagePreviewContainer .delete-btn:hover {
+            background-color: rgba(255, 0, 0, 1); /* Solid red on hover */
+        }
+
         textarea.form-control {
             min-height: 100px;
             resize: vertical;
         }
 
+        /*提交按鈕設定*/
         .submit-btn {
             background-color: #6AC0BD;
             color: white;
@@ -100,6 +141,7 @@
             background-color: #475757;
         }
 
+        /*錯誤訊息*/
         #errorMessages {
             color: #f44336;
             margin-bottom: 15px;
@@ -169,6 +211,11 @@
             <label for="spacePhotos">空間照片:</label>
             <input type="file" id="spacePhotos" name="spacePhotos" class="form-control" multiple accept="image/*">
         </div>
+        <div class="form-group">
+            <label></label>
+            <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            </div>
+        </div>
 
         <div class="form-group">
             <label for="spacePeople">空間人數:</label>
@@ -186,8 +233,15 @@
         </div>
 
         <div class="form-group">
-            <label for="spaceDailyFee">日租費率 (NT$):</label> <input type="number" id="spaceDailyFee"
-                                                                      name="spaceDailyFee" class="form-control" value="">
+            <label for="spaceDailyFee">日租費率 (NT$):</label>
+            <input type="number" id="spaceDailyFee" name="spaceDailyFee" class="form-control" value="">
+        </div>
+
+        <div class="form-group">
+            <label for="spaceUsageId">空間用途:</label>
+            <select id="spaceUsageId" name="spaceUsageId" class="form-control" size="1">
+                <option value="">讀取中...</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -214,23 +268,6 @@
             </div>
         </div>
 
-        <!-- <div class="form-group">
-            <label for="spaceAddress">空間地址:</label>
-            <input type="text" id="spaceAddress" name="spaceAddress" class="form-control" value="">
-        </div>
-
-        <div class="form-group">
-            <label for="latitude">緯度:</label>
-            <input type="number" id="latitude" name="latitude" class="form-control" step="0.000001" value=""
-                readonly>
-        </div>
-
-        <div class="form-group">
-            <label for="longitude">經度:</label>
-            <input type="number" id="longitude" name="longitude" class="form-control" step="0.000001" value=""
-                readonly>
-        </div> -->
-
         <div class="form-group">
             <label for="spaceFloor">空間所在樓層:</label>
             <input type="text" id="spaceFloor" name="spaceFloor" class="form-control" value="">
@@ -243,46 +280,18 @@
 </div>
 
 <script>
-    // Global variable for Autocomplete instance
-    // let autocomplete;
-
-    // Function to initialize Google Maps Autocomplete
-    // function initMap() {
-    //     const addressInput = document.getElementById('spaceAddress');
-    //     const latitudeInput = document.getElementById('latitude');
-    //     const longitudeInput = document.getElementById('longitude');
-
-    //     autocomplete = new google.maps.places.Autocomplete(addressInput, {
-    //         componentRestrictions: { country: 'tw' } // Restrict to Taiwan
-    //     });
-
-    //     autocomplete.addListener('place_changed', function () {
-    //         const place = autocomplete.getPlace();
-
-    //         if (!place.geometry || !place.geometry.location) {
-    //             console.error('沒有找到此地址的地理資訊');
-    //             latitudeInput.value = ''; // Clear fields if no geometry
-    //             longitudeInput.value = '';
-    //             return;
-    //         }
-
-    //         const lat = place.geometry.location.lat();
-    //         const lng = place.geometry.location.lng();
-
-    //         latitudeInput.value = lat.toFixed(6);
-    //         longitudeInput.value = lng.toFixed(6);
-
-    //         // Optionally update the address input to the formatted address
-    //         // addressInput.value = place.formatted_address;
-
-    //         console.log('已成功獲取經緯度:', lat, lng);
-    //     });
-    //     console.log("Google Maps Autocomplete Initialized.");
-    // }
     // ======== Configuration ========
     const APP_CONTEXT_PATH = "http://localhost:8080";
     const ADD_SPACE_URL = `${APP_CONTEXT_PATH}/spaces`;             // 需照抄Controller中@XXXMapping的連結
-    const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/branches`;    // 我還在等嘉祿的Controller
+    const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/listAllBranch`;   // 嘉祿用thymeleaf
+    const GET_ALL_SPACES_USAGES_URL = `${APP_CONTEXT_PATH}/space-usages`;
+
+
+    const branchSelect = document.getElementById('branchId');
+    const form = document.getElementById('spaceForm');
+    const submitButton = document.getElementById('submitBtn');
+    const errorDiv = document.getElementById('errorMessages');
+    const successDiv = document.getElementById('successMessage');
 
     // ======== 顯示錯誤訊息 ========
     function displayErrors(errors) {
@@ -307,7 +316,7 @@
         }
     }
 
-    // 顯示提交成功的訊息
+    // 顯示提交成功的訊息 (以後應該不會用到)
     function displaySuccess(message) {
         const successDiv = document.getElementById('successMessage');
         if (successDiv) {
@@ -317,165 +326,299 @@
         }
     }
 
-    // === 主Function ===
-    document.addEventListener('DOMContentLoaded', function () {
+    // 預覽空間照片
+    // 利用DataTransfer物件管理上傳的檔案
+    function setupImagePreview() {
+        const spacePhotosInput = document.getElementById('spacePhotos');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const fileStore = new DataTransfer();
 
-        // -------DOM Elements-------
-        const branchSelect = document.getElementById('branchId');
-        const form = document.getElementById('spaceForm');
-        const submitButton = document.getElementById('submitBtn');
-        const errorDiv = document.getElementById('errorMessages');
-        const successDiv = document.getElementById('successMessage');
+        spacePhotosInput.addEventListener('change', handleFileSelect);
 
-        // --- 1. GET: 抓所有分店 (我還在等嘉祿)，利用branch_name顯示 ---
-        // Replace '/api/branches' with your actual endpoint
-        fetch(GET_ALL_BRANCHES_URL) // Use the constant
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`無法取得分店列表，HTTP 狀態: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(branches => {
-                branchSelect.innerHTML = ''; // 把"讀取中..."移除
-                if (branches && branches.length > 0) {
-                    // Add a default prompt option
-                    const promptOption = document.createElement('option');
-                    promptOption.value = ""; // No value so it fails validation if not changed
-                    promptOption.textContent = "-- 請選擇分店 --";
-                    promptOption.disabled = true; // Cannot select this
-                    promptOption.selected = true; // Selected by default
-                    branchSelect.appendChild(promptOption);
+        function handleFileSelect(event) {
+            const files = event.target.files; // 抓出剛剛選擇的檔案
 
-                    branches.forEach(branch => {
-                        const option = document.createElement('option');
-                        option.value = branch.branchId; // Use branchId from your Branch object
-                        option.textContent = branch.branchName; // Use branchName from your Branch object
-                        branchSelect.appendChild(option);
-                    });
+            // 新增檔案到DataTransfer物件裡
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    fileStore.items.add(file);
                 } else {
-                    branchSelect.innerHTML = '<option value="">沒有可用的分店</option>';
+                    console.warn(`${file.name} 檔案規格不符，無法上傳`);
                 }
-            })
-            .catch(error => {
-                console.error('抓取分店時發生錯誤:', error);
-                if (branchSelect) branchSelect.innerHTML = '<option value="">無法載入分店</option>';
-                displayErrors([error.message || '無法載入分店列表，請稍後再試。']);
+            }
+
+            // Update the input's files with the content of the store
+            // This is crucial for form submission if not using AJAX
+            // and keeps the input visually consistent with what we manage
+            spacePhotosInput.files = fileStore.files;
+
+            renderPreviews();
+        }
+
+        // 照片預覽渲染
+        function renderPreviews() {
+            previewContainer.innerHTML = ''; // 清除預覽照片
+
+            // 將檔案放進暫Data Transfer中
+            Array.from(fileStore.files).forEach((file, index) => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const previewItem = document.createElement('div');
+                    previewItem.classList.add('preview-item');
+
+                    const img = document.createElement('img');
+                    img.classList.add('preview-image');
+                    img.src = e.target.result; // Set image source to the data URL
+                    img.alt = file.name;
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.innerHTML = '&times;'; // Use '×' symbol for delete
+                    deleteBtn.type = 'button'; // Prevent form submission
+                    deleteBtn.title = `移除 ${file.name}`; // Tooltip
+
+                    // Add event listener to handle deletion
+                    deleteBtn.addEventListener('click', () => {
+                        removeFile(index);
+                    });
+
+                    previewItem.appendChild(img);
+                    previewItem.appendChild(deleteBtn);
+                    previewContainer.appendChild(previewItem);
+                }
+
+                // 展示預覽照片
+                reader.readAsDataURL(file);
             });
+        }
 
-        // --- 2. POST: 新增空間 ---
-        submitButton.addEventListener('click', function () {    // 點擊「完成」按鈕時要做的事
-            // 移除成功、錯誤訊息
-            errorDiv.innerHTML = '';
-            successDiv.innerHTML = '';  //  這行可以不用
+        // 移除預覽照片
+        function removeFile(index) {
+            // Remove the file from the store based on its index
+            fileStore.items.remove(index);
 
-            const formData = new FormData(form); // formData可以用來處理HTML表單
+            // Update the input's files property
+            spacePhotosInput.files = fileStore.files;
 
-            // const requiredFields = ['branchId', 'spaceName', 'spacePeople', 'spaceSize', 'spaceHourlyFee', 'spaceDailyFee', 'spaceFloor'];  // 必填欄位
-            // let isValid = true;
-            let errors = [];    // 蒐集錯誤資訊
+            // Re-render the previews
+            renderPreviews();
+        }
+    }
 
-            // 格式錯誤處理（後端處理過前端應該就不用了）
-            // // 檢查formData中的必填欄位
-            // requiredFields.forEach(fieldName => {
-            //     const field = form.elements[fieldName];
-            //     if (!formData.get(fieldName) || formData.get(fieldName).trim() === '') {
-            //         isValid = false;
-            //         // Find the label associated with the field for a better error message
-            //         const label = field.previousElementSibling?.tagName === 'LABEL' ? field.previousElementSibling.textContent : fieldName;
-            //         errors.push(`${label.replace(':', '')} 為必填欄位。`);
-            //     }
-            // });
 
-            // // Add more specific validation if needed (e.g., number ranges)
-            // const spacePeople = parseInt(formData.get('spacePeople'), 10);
-            // if (isNaN(spacePeople) || spacePeople <= 0) {
-            //     isValid = false;
-            //     errors.push('空間人數必須是正整數。');
-            // }
-            // // ... add similar checks for size, fees ...
 
-            // if (!isValid) {
-            //     displayErrors(errors);
-            //     return; // Stop submission if client-side validation fails
-            // }
+    // ========== AJAX CRUD ==========
+    // --- 1. POST: 新增空間 ---
+    submitButton.addEventListener('click', function () {    // 點擊「完成」按鈕時要做的事
+        // 移除成功、錯誤訊息
+        errorDiv.innerHTML = '';
+        successDiv.innerHTML = '';  //  這行可以不用
 
-            // 檢查空間照片
-            const photoInput = document.getElementById('spacePhotos');
-            if (!photoInput || photoInput.files.length === 0) {
-                // Make photos optional or required based on your needs
-                errors.push('請至少選擇一張空間照片。');
-            } else {
-                // Example: Limit number of photos (e.g., max 5)
-                if (photoInput.files.length > 5) {
-                    errors.push('最多只能上傳 5 張照片。');
+        const formData = new FormData(form); // formData可以用來處理HTML表單
+
+        let errors = [];    // 蒐集錯誤資訊
+
+        // 格式錯誤處理（後端處理過前端應該就不用了）
+        // // 檢查formData中的必填欄位
+        // requiredFields.forEach(fieldName => {
+        //     const field = form.elements[fieldName];
+        //     if (!formData.get(fieldName) || formData.get(fieldName).trim() === '') {
+        //         isValid = false;
+        //         // Find the label associated with the field for a better error message
+        //         const label = field.previousElementSibling?.tagName === 'LABEL' ? field.previousElementSibling.textContent : fieldName;
+        //         errors.push(`${label.replace(':', '')} 為必填欄位。`);
+        //     }
+        // });
+
+        // // Add more specific validation if needed (e.g., number ranges)
+        // const spacePeople = parseInt(formData.get('spacePeople'), 10);
+        // if (isNaN(spacePeople) || spacePeople <= 0) {
+        //     isValid = false;
+        //     errors.push('空間人數必須是正整數。');
+        // }
+        // // ... add similar checks for size, fees ...
+
+        // if (!isValid) {
+        //     displayErrors(errors);
+        //     return; // Stop submission if client-side validation fails
+        // }
+
+        // 檢查空間照片
+        const photoInput = document.getElementById('spacePhotos');
+        if (!photoInput || photoInput.files.length === 0) {
+            // Make photos optional or required based on your needs
+            errors.push('請至少選擇一張空間照片。');
+        }
+
+        if (errors.length > 0) {
+            displayErrors(errors);
+            return; // 如果有錯誤訊息就不要交資料了
+        }
+
+        // 傳送資料時，將按鈕disabled，以免重複上傳
+        submitButton.disabled = true;
+        submitButton.textContent = '傳送中...';
+
+        // 提交request body
+        fetch(ADD_SPACE_URL, {
+            method: 'POST',
+            body: formData      // 如果request body是multipart/form-data，這邊就不用指定content-type，而且也不用JSON stringify formData
+        })
+            .then(response => {
+                // Check if response is ok (status in the range 200-299)
+                if (!response.ok) {
+                    return response.json().then(errorData => {  // 回傳JSON
+                        const backendErrors = errorData.errors || errorData.message || `伺服器錯誤: ${response.status}`;    // 依序先抓JSON中的errors, message，如果都沒有，就代表是500
+                        throw backendErrors;    // 拋出例外給外層的catch
+                    }).catch(() => {
+                        // 回傳的JSON格式有誤，拋出例外給外層的catch
+                        throw [`伺服器發生錯誤: ${response.status} ${response.statusText}`];
+                    });
                 }
-                // Example: Check file types (redundant with 'accept' but safer)
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                for (let file of photoInput.files) {
-                    if (!allowedTypes.includes(file.type)) {
-                        errors.push(`不支援的檔案格式: ${file.name} (${file.type})`);
-                    }
-                    // Example: Check file size (e.g., max 5MB per file)
-                    if (file.size > 5 * 1024 * 1024) {
-                        errors.push(`檔案太大: ${file.name} (最大 5MB)`);
-                    }
-                }
-            }
-
-            if (errors.length > 0) {
-                displayErrors(errors);
-                return; // 如果有錯誤訊息就不要交資料了
-            }
-
-            // 傳送資料時，將按鈕disabled，以免重複上傳
-            submitButton.disabled = true;
-            submitButton.textContent = '傳送中...';
-
-            // 提交request body
-            fetch(ADD_SPACE_URL, {
-                method: 'POST',
-                body: formData      // 如果request body是multipart/form-data，這邊就不用指定content-type，而且也不用JSON stringify formData
+                return response.json(); // 回傳JSON，成功就是剛剛新增的JSON，失敗就是回傳錯誤訊息的JSON回傳格式範例：{ success: true, message: "..." }
             })
-                .then(response => {
-                    // Check if response is ok (status in the range 200-299)
-                    if (!response.ok) {
-                        return response.json().then(errorData => {  // 回傳JSON
-                            const backendErrors = errorData.errors || errorData.message || `伺服器錯誤: ${response.status}`;    // 依序先抓JSON中的errors, message，如果都沒有，就代表是500
-                            throw backendErrors;    // 拋出例外給外層的catch
-                        }).catch(() => {
-                            // 回傳的JSON格式有誤，拋出例外給外層的catch
-                            throw [`伺服器發生錯誤: ${response.status} ${response.statusText}`];
-                        });
-                    }
-                    return response.json(); // 回傳JSON，成功就是剛剛新增的JSON，失敗就是回傳錯誤訊息的JSON回傳格式範例：{ success: true, message: "..." }
-                })
-                .then(data => {
-                    // Handle successful response from backend
-                    console.log("Success Response:", data); // Log success data
-                    // 下面那一行可以把他砍了
-                    displaySuccess(data.message || '空間新增成功！');
-                    form.reset(); // 務必要清空清空表單
+            .then(data => {
+                // Handle successful response from backend
+                console.log("Success Response:", data); // Log success data
+                // 下面那一行可以把他砍了
+                displaySuccess(data.message || '空間新增成功！');
+                form.reset(); // 務必要清空清空表單
 
-                    // 重新導向：2秒後跳轉到listAllSpaces.html
-                    setTimeout(() => {
-                        // TODO: Update with the correct URL for your space list page
-                        window.location.href = 'listAllSpaces.html';
-                    }, 2000);
-                })
-                .catch(errorOrErrors => {
-                    console.error('提交時發生錯誤:', errorOrErrors);
-                    // 在表單上方顯示錯誤訊息 (先檢查Errors的型別(Array, String?))
-                    displayErrors(Array.isArray(errorOrErrors) ? errorOrErrors : [errorOrErrors.message || '提交表單時發生未知錯誤。']);
-                })
-                .finally(() => {
-                    // 提交完成後，要將按鈕回復
-                    submitButton.disabled = false;
-                    submitButton.textContent = '完成';
+                // 重新導向：2秒後跳轉到listAllSpaces.html
+                setTimeout(() => {
+                    // TODO: Update with the correct URL for your space list page
+                    window.location.href = 'listAllSpaces.html';
+                }, 2000);
+            })
+            .catch(errorOrErrors => {
+                console.error('提交時發生錯誤:', errorOrErrors);
+                // 在表單上方顯示錯誤訊息 (先檢查Errors的型別(Array, String?))
+                displayErrors(Array.isArray(errorOrErrors) ? errorOrErrors : [errorOrErrors.message || '提交表單時發生未知錯誤。']);
+            })
+            .finally(() => {
+                // 提交完成後，要將按鈕回復
+                submitButton.disabled = false;
+                submitButton.textContent = '完成';
+            });
+    });
+
+    // --- 2. GET: 取得分店列表 ---
+    async function fetchBranches() {
+        const selectElement = document.getElementById('branchId');
+        const loadingOptionText = '讀取中...';
+        const defaultOptionText = '請選擇分點';
+        const noDataOptionText = '沒有可用的分點';
+
+        // 載入時寫讀取中
+        selectElement.innerHTML = `<option value="">${loadingOptionText}</option>`;
+        selectElement.disabled = true; // 把空間用途label disabled
+
+        try {
+            const response = await fetch('/getAllBranches'); // 抓Controller裡的網址抓過來，需利用相對網址，請自行到branch overloading方法
+            // const response = await fetch(GET_ALL_SPACES_USAGES_URL);
+
+            if (!response.ok) {
+                // 處理404或500
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // 解析取得所有空間用途回傳JSON
+            // [{ branchId: 'B001', branchName: '南京復興', ... }, ...]
+            const branches = await response.json();
+
+            // 把loading刪除
+            selectElement.innerHTML = '';
+
+            // Add a default, non-selectable option first
+            const defaultOption = document.createElement('option');
+            defaultOption.value = ""; // 「請選擇分點」option的value值為空值
+            defaultOption.textContent = defaultOptionText;   // 請選擇分點
+            defaultOption.disabled = true; // 將預設option作為placeholder
+            defaultOption.selected = true;
+            selectElement.appendChild(defaultOption);
+
+            // 將資料丟進下拉式清單
+            if (branches && branches.length > 0) {
+                branches.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.branchId;  // 將value值設為「分點編號」
+                    option.textContent = branch.branchName;  // 將value值設為「分點名稱」
+                    selectElement.appendChild(option);
                 });
-        });
+                selectElement.disabled = false; // 如果有選項，則enable下拉式清單
+            } else {   // 沒有用途資料時（改成只顯示「新增用途」）
+                defaultOption.textContent = noDataOptionText; // Update default option text
+                selectElement.disabled = true; // Keep it disabled if no choices
+            }
 
-    }); // End DOMContentLoaded
+        } catch (error) {
+            console.error('Error fetching branches:', error);
+        }
+    }
+
+
+    // --- 3. GET: 取得空間用途列表 ---
+    async function fetchSpaceUsages() {
+        const selectElement = document.getElementById('spaceUsageId');
+        const loadingOptionText = '讀取中...';
+        const defaultOptionText = '請選擇空間用途';
+        const noDataOptionText = '沒有可用的空間用途';
+
+        // 載入時寫讀取中
+        selectElement.innerHTML = `<option value="">${loadingOptionText}</option>`;
+        selectElement.disabled = true; // 把空間用途label disabled
+
+        try {
+            const response = await fetch('/space-usages'); // 抓Controller裡的網址抓過來，需利用相對網址
+
+            if (!response.ok) {
+                // 處理404或500
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // 解析取得所有空間用途回傳JSON
+            // [{ spaceUsageId: 'SU001', spaceUsageName: '會議', ... }, ...]
+            const spaceUsages = await response.json();
+
+            // 把loading刪除
+            selectElement.innerHTML = '';
+
+            // Add a default, non-selectable option first
+            const defaultOption = document.createElement('option');
+            defaultOption.value = ""; // 「請選擇空間用途」option的value值為空值
+            defaultOption.textContent = defaultOptionText;   // 請選擇空間用途
+            defaultOption.disabled = true; // 將預設option作為placeholder
+            defaultOption.selected = true;
+            selectElement.appendChild(defaultOption);
+
+            // 將資料丟進下拉式清單
+            if (spaceUsages && spaceUsages.length > 0) {
+                spaceUsages.forEach(usage => {
+                    const option = document.createElement('option');
+                    option.value = usage.spaceUsageId;  // 將value值設為「空間用途編號」
+                    option.textContent = usage.spaceUsageName;  // 將value值設為「空間用途名稱」
+                    selectElement.appendChild(option);
+                });
+                selectElement.disabled = false; // 如果有選項，則enable下拉式清單
+            } else {   // 沒有用途資料時（改成只顯示「新增用途」）
+                defaultOption.textContent = noDataOptionText; // Update default option text
+                selectElement.disabled = true; // Keep it disabled if no choices
+            }
+
+        } catch (error) {
+            console.error('Error fetching space usages:', error);
+        }
+    }
+
+    // ======== Initialization (載入網頁時要做的事情) ========
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchBranches(); // 抓分店
+
+        fetchSpaceUsages(); // 抓空間用途
+
+        setupImagePreview();  // 設定預覽照片功能
+    });
 </script>
 
 </body>
