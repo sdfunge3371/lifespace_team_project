@@ -20,12 +20,12 @@ public class CommentReportCustomStringIdGenerator implements IdentifierGenerator
                     .getPhysicalConnection();
 
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT MAX(xxx_id) FROM xxx");
+            ResultSet rs = stmt.executeQuery("SELECT MAX(report_id) FROM comment_report");
 
             if (rs.next()) {
                 String maxId = rs.getString(1);
                 if (maxId != null) {
-                    int num = Integer.parseInt(maxId.substring(1));
+                    int num = Integer.parseInt(maxId.substring(2));
                     return "CR" + String.format("%03d", num + 1);   // ?改成自己表格的開頭
                 }
             }

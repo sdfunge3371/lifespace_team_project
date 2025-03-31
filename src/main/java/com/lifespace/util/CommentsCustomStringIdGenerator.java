@@ -20,7 +20,7 @@ public class CommentsCustomStringIdGenerator implements IdentifierGenerator{
 	                    .getPhysicalConnection();
 
 	            Statement stmt = connection.createStatement();
-	            ResultSet rs = stmt.executeQuery("SELECT MAX(xxx_id) FROM xxx");
+	            ResultSet rs = stmt.executeQuery("SELECT MAX(comment_id) FROM comments");
 
 	            if (rs.next()) {
 	                String maxId = rs.getString(1);
