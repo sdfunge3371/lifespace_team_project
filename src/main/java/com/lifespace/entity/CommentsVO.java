@@ -23,7 +23,7 @@ public class CommentsVO implements java.io.Serializable{
 	@Id
 	@Column(name = "comment_id", updatable = false)
 	@GeneratedValue(generator = "custom-id")
-	@GenericGenerator(name = "custom-id", strategy = "com.comments.model.CommentsCustomStringIdGenerator")
+	@GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.CommentsCustomStringIdGenerator")
 	private String commentId;
 	
 	@ManyToOne

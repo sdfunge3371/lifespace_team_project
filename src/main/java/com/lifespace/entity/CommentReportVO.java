@@ -25,7 +25,7 @@ public class CommentReportVO implements java.io.Serializable{
 	@Id
 	@Column(name = "report_id", updatable = false)
 	@GeneratedValue(generator = "custom-id")
-	@GenericGenerator(name = "custom-id", strategy = "com.commentreport.model.CommentReportCustomStringIdGenerator")
+	@GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.CommentReportCustomStringIdGenerator")
 	private String reportId;
 	
 	@ManyToOne
