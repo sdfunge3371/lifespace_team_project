@@ -1,3 +1,4 @@
+// (自動存入經緯度的備用code)
 // Global variable for Autocomplete instance
 // let autocomplete;
 

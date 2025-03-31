@@ -4,13 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.lifespace.entity.BranchVO;
 import com.lifespace.service.BranchService;
@@ -35,7 +33,7 @@ public class BranchController {
     }
     
     /**
-     * 顯示所有分店資料
+     * 顯示所有分店資料 for Thymeleaf
      */
     @GetMapping("/listAllBranch")
     public String listAllBranch(ModelMap model) {
@@ -43,7 +41,20 @@ public class BranchController {
         model.addAttribute("branchListData", list);
         return "back-end/branch/listAllBranch";
     }
-    
+    /**
+     * 顯示所有分店資料 for Ajax
+     */
+    @GetMapping("/getAllBranches")
+    @ResponseBody
+    public ResponseEntity<List<BranchVO>> listAllBranch() {
+        List<BranchVO> list = branchSvc.getAll();
+        if (list.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(list);
+    }
+
+
     /**
      * 顯示新增表單
      */

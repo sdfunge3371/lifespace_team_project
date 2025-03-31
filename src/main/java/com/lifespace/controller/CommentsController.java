@@ -31,7 +31,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/lifespace/comments")
 public class CommentsController {
 
 	@Autowired
@@ -65,7 +64,7 @@ public class CommentsController {
 	
 	@GetMapping("/comments")
 	public List<CommentsVO> read() {
-		List <CommentsVO> commentsVO = commentsSvc.getAll();
+		List<CommentsVO> commentsVO = commentsSvc.getAll();
 		return commentsVO;
 	}
 	

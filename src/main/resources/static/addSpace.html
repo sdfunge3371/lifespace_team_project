@@ -239,7 +239,7 @@
 
         <div class="form-group">
             <label for="spaceUsageId">空間用途:</label>
-            <select id="spaceUsageId" name="spaceUsageId" class="form-control" size="1">
+            <select id="spaceUsageId" name="spaceUsageId" class="form-control" multiple size="5">
                 <option value="">讀取中...</option>
             </select>
         </div>
@@ -282,10 +282,10 @@
 <script>
     // ======== Configuration ========
     const APP_CONTEXT_PATH = "http://localhost:8080";
-    const ADD_SPACE_URL = `${APP_CONTEXT_PATH}/spaces`;             // 需照抄Controller中@XXXMapping的連結
-    const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/listAllBranch`;   // 嘉祿用thymeleaf
-    const GET_ALL_SPACES_USAGES_URL = `${APP_CONTEXT_PATH}/space-usages`;
+    const ADD_SPACE_URL = `${APP_CONTEXT_PATH}/spaces`;
 
+    const GET_ALL_BRANCHES_URL = "branch/getAllBranches";   // relative
+    const GET_ALL_SPACES_USAGES_URL = "/space-usages";   // relative
 
     const branchSelect = document.getElementById('branchId');
     const form = document.getElementById('spaceForm');
@@ -293,10 +293,14 @@
     const errorDiv = document.getElementById('errorMessages');
     const successDiv = document.getElementById('successMessage');
 
+    let spaceUsageSelectElement;
+
     // ======== 顯示錯誤訊息 ========
     function displayErrors(errors) {
         const errorDiv = document.getElementById('errorMessages');
         errorDiv.innerHTML = ''; // 清除之前的錯誤
+
+
         const successDiv = document.getElementById('successMessage');
         if (successDiv) successDiv.innerHTML = ''; // Clear success message
 
@@ -333,10 +337,12 @@
         const previewContainer = document.getElementById('imagePreviewContainer');
         const fileStore = new DataTransfer();
 
+        if (!spacePhotosInput || !previewContainer) return;   // 如果沒有照片可預覽，則不執行以下的程式
+
         spacePhotosInput.addEventListener('change', handleFileSelect);
 
-        function handleFileSelect(event) {
-            const files = event.target.files; // 抓出剛剛選擇的檔案
+        function handleFileSelect(e) {
+            const files = e.target.files; // 抓出剛剛選擇的檔案
 
             // 新增檔案到DataTransfer物件裡
             for (const file of files) {
@@ -346,45 +352,45 @@
                     console.warn(`${file.name} 檔案規格不符，無法上傳`);
                 }
             }
-
-            // Update the input's files with the content of the store
-            // This is crucial for form submission if not using AJAX
-            // and keeps the input visually consistent with what we manage
-            spacePhotosInput.files = fileStore.files;
-
-            renderPreviews();
+            spacePhotosInput.files = fileStore.files;   // 將DataTransfer的檔案送進file input欄位（input這是要傳給資料庫的）
+            renderPreviews();   // 執行照片預覽功能
         }
 
-        // 照片預覽渲染
+        // 照片預覽
         function renderPreviews() {
             previewContainer.innerHTML = ''; // 清除預覽照片
 
-            // 將檔案放進暫Data Transfer中
+            // 讀取Data Transfer裡的照片
             Array.from(fileStore.files).forEach((file, index) => {
-                const reader = new FileReader();
+                const reader = new FileReader();    // 利用File Reader讀取照片
 
                 reader.onload = function (e) {
-                    const previewItem = document.createElement('div');
+                    const previewItem = document.createElement('div');  // 建立一個顯示照片的div
                     previewItem.classList.add('preview-item');
 
-                    const img = document.createElement('img');
-                    img.classList.add('preview-image');
-                    img.src = e.target.result; // Set image source to the data URL
+                    const img = document.createElement('img');  // 建立img元素
+                    img.classList.add('preview-image');  // CSS
+                    console.log(e.target);
+                    img.src = e.target.result; // 將img src設為剛剛存入的照片來源
                     img.alt = file.name;
 
+                    // 在整個div的右上角新增刪除按鈕
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.classList.add('delete-btn');
-                    deleteBtn.innerHTML = '&times;'; // Use '×' symbol for delete
-                    deleteBtn.type = 'button'; // Prevent form submission
-                    deleteBtn.title = `移除 ${file.name}`; // Tooltip
+                    deleteBtn.classList.add('delete-btn');  // CSS
+                    deleteBtn.innerHTML = '&times;'; // '×' symbol
+                    deleteBtn.type = 'button'; // 注意：button的default type值為"submit"，為了預防按到刪除按鈕時表單直接被送出，需改成type="button"
+                    deleteBtn.title = `移除 ${file.name}`; // title: hover在X上時顯示文字
 
-                    // Add event listener to handle deletion
+                    // 點擊叉叉執行移除
                     deleteBtn.addEventListener('click', () => {
                         removeFile(index);
                     });
 
+                    // 將圖片及叉叉按鈕加進div中
                     previewItem.appendChild(img);
                     previewItem.appendChild(deleteBtn);
+
+                    // div加進預覽照片container中
                     previewContainer.appendChild(previewItem);
                 }
 
@@ -453,7 +459,7 @@
 
         if (errors.length > 0) {
             displayErrors(errors);
-            return; // 如果有錯誤訊息就不要交資料了
+            return; // 如果有錯誤訊息就不執行接下來的程式
         }
 
         // 傳送資料時，將按鈕disabled，以免重複上傳
@@ -466,7 +472,6 @@
             body: formData      // 如果request body是multipart/form-data，這邊就不用指定content-type，而且也不用JSON stringify formData
         })
             .then(response => {
-                // Check if response is ok (status in the range 200-299)
                 if (!response.ok) {
                     return response.json().then(errorData => {  // 回傳JSON
                         const backendErrors = errorData.errors || errorData.message || `伺服器錯誤: ${response.status}`;    // 依序先抓JSON中的errors, message，如果都沒有，就代表是500
@@ -487,14 +492,11 @@
 
                 // 重新導向：2秒後跳轉到listAllSpaces.html
                 setTimeout(() => {
-                    // TODO: Update with the correct URL for your space list page
                     window.location.href = 'listAllSpaces.html';
                 }, 2000);
             })
             .catch(errorOrErrors => {
                 console.error('提交時發生錯誤:', errorOrErrors);
-                // 在表單上方顯示錯誤訊息 (先檢查Errors的型別(Array, String?))
-                displayErrors(Array.isArray(errorOrErrors) ? errorOrErrors : [errorOrErrors.message || '提交表單時發生未知錯誤。']);
             })
             .finally(() => {
                 // 提交完成後，要將按鈕回復
@@ -508,15 +510,13 @@
         const selectElement = document.getElementById('branchId');
         const loadingOptionText = '讀取中...';
         const defaultOptionText = '請選擇分點';
-        const noDataOptionText = '沒有可用的分點';
 
         // 載入時寫讀取中
         selectElement.innerHTML = `<option value="">${loadingOptionText}</option>`;
         selectElement.disabled = true; // 把空間用途label disabled
 
         try {
-            const response = await fetch('/getAllBranches'); // 抓Controller裡的網址抓過來，需利用相對網址，請自行到branch overloading方法
-            // const response = await fetch(GET_ALL_SPACES_USAGES_URL);
+            const response = await fetch(GET_ALL_BRANCHES_URL); // 抓Controller裡的網址抓過來，需利用相對網址，請自行到branch overloading方法
 
             if (!response.ok) {
                 // 處理404或500
@@ -530,7 +530,7 @@
             // 把loading刪除
             selectElement.innerHTML = '';
 
-            // Add a default, non-selectable option first
+            // 將下拉式清單顯示為「請選擇分點」
             const defaultOption = document.createElement('option');
             defaultOption.value = ""; // 「請選擇分點」option的value值為空值
             defaultOption.textContent = defaultOptionText;   // 請選擇分點
@@ -547,9 +547,6 @@
                     selectElement.appendChild(option);
                 });
                 selectElement.disabled = false; // 如果有選項，則enable下拉式清單
-            } else {   // 沒有用途資料時（改成只顯示「新增用途」）
-                defaultOption.textContent = noDataOptionText; // Update default option text
-                selectElement.disabled = true; // Keep it disabled if no choices
             }
 
         } catch (error) {
@@ -560,50 +557,43 @@
 
     // --- 3. GET: 取得空間用途列表 ---
     async function fetchSpaceUsages() {
-        const selectElement = document.getElementById('spaceUsageId');
-        const loadingOptionText = '讀取中...';
-        const defaultOptionText = '請選擇空間用途';
-        const noDataOptionText = '沒有可用的空間用途';
+        const spaceUsageSelectElement = document.getElementById('spaceUsageId');  // 抓空間用途下拉式清單元素
 
-        // 載入時寫讀取中
-        selectElement.innerHTML = `<option value="">${loadingOptionText}</option>`;
-        selectElement.disabled = true; // 把空間用途label disabled
+        // 抓不到下拉式清單時錯誤處理
+        if (!spaceUsageSelectElement) {
+            console.error("Element with ID 'spaceUsageId' not found.");
+            return;
+        }
+
+        const loadingOptionText = '讀取中...';
+
+        spaceUsageSelectElement.innerHTML = `<option disabled>${loadingOptionText}</option>`;   // 「讀取中...」選項，並設為disabled
+        spaceUsageSelectElement.disabled = true;
 
         try {
-            const response = await fetch('/space-usages'); // 抓Controller裡的網址抓過來，需利用相對網址
+            const response = await fetch(GET_ALL_SPACES_USAGES_URL); // 從後端抓資料
 
             if (!response.ok) {
-                // 處理404或500
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // 解析取得所有空間用途回傳JSON
-            // [{ spaceUsageId: 'SU001', spaceUsageName: '會議', ... }, ...]
-            const spaceUsages = await response.json();
+            const spaceUsagesData = await response.json(); // 解析JSON
 
-            // 把loading刪除
-            selectElement.innerHTML = '';
+            // 將「讀取中...」移除
+            spaceUsageSelectElement.innerHTML = '';
 
-            // Add a default, non-selectable option first
-            const defaultOption = document.createElement('option');
-            defaultOption.value = ""; // 「請選擇空間用途」option的value值為空值
-            defaultOption.textContent = defaultOptionText;   // 請選擇空間用途
-            defaultOption.disabled = true; // 將預設option作為placeholder
-            defaultOption.selected = true;
-            selectElement.appendChild(defaultOption);
-
-            // 將資料丟進下拉式清單
-            if (spaceUsages && spaceUsages.length > 0) {
-                spaceUsages.forEach(usage => {
-                    const option = document.createElement('option');
-                    option.value = usage.spaceUsageId;  // 將value值設為「空間用途編號」
-                    option.textContent = usage.spaceUsageName;  // 將value值設為「空間用途名稱」
-                    selectElement.appendChild(option);
+            if (spaceUsagesData && spaceUsagesData.length > 0) {
+                // 抓資料
+                spaceUsagesData.forEach(usage => {
+                    if (usage.spaceUsageStatus !== "DELETED") {     // 檢查狀態，必須為AVAILABLE才會顯示
+                        const option = document.createElement('option');
+                        option.value = usage.spaceUsageId;
+                        option.textContent = usage.spaceUsageName;
+                        spaceUsageSelectElement.appendChild(option);
+                    }
                 });
-                selectElement.disabled = false; // 如果有選項，則enable下拉式清單
-            } else {   // 沒有用途資料時（改成只顯示「新增用途」）
-                defaultOption.textContent = noDataOptionText; // Update default option text
-                selectElement.disabled = true; // Keep it disabled if no choices
+                // 載入完成後，enable那些選項
+                spaceUsageSelectElement.disabled = false;
             }
 
         } catch (error) {
