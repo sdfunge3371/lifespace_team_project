@@ -79,14 +79,14 @@ public class OrdersService {
     @Transactional
     public void autoCompleteOrdersByScheduled(){
         expiredOrdersToComplete();
-        System.out.println("排程器自動更新到期訂單");
+//        System.out.println("排程器自動更新到期訂單");
     }
 
     @PostConstruct
     @Transactional
     public void autoCompleteOrdersByStartUp(){
         expiredOrdersToComplete();
-        System.out.println("啟動Spring後, 自動更新未更新到的到期訂單");
+//        System.out.println("啟動Spring後, 自動更新未更新到的到期訂單");
     }
 
 }

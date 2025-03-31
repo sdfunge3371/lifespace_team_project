@@ -46,8 +46,8 @@ public class Orders implements Serializable {
     @Column(name = "comment_time")
     private Timestamp commentTime;
 
-    @Column(name = "comment_contect")
-    private String commentContect;
+    @Column(name = "comment_content")
+    private String commentContent;
 
     @Column(name = "satisfaction")
     private Integer satisfaction;
@@ -67,6 +67,9 @@ public class Orders implements Serializable {
 
     @OneToMany(mappedBy = "orders")
     private List<RentalItemDetails> rentalItemDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "orders")
+    private List<SpaceCommentPhoto> spaceCommentPhotos = new ArrayList<>();
 
     public Orders() {
 
@@ -184,12 +187,12 @@ public class Orders implements Serializable {
         this.rentalItemDetails = rentalItemDetails;
     }
 
-    public String getCommentContect() {
-        return commentContect;
+    public String getCommentContent() {
+        return commentContent;
     }
 
-    public void setCommentContect(String commentContect) {
-        this.commentContect = commentContect;
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
     }
 
     public Integer getSatisfaction() {

@@ -68,7 +68,7 @@ body {
 
 /* 通用按鈕樣式（含查看、取消） */
 #ordersTable .btn-outline-secondary,
-#ordersTable .btn-danger {
+#ordersTable .btn-danger{
     background-color: #E0F2F1;
     color: #20B2AA;
     border: none;
@@ -142,12 +142,15 @@ body {
     overflow-x: hidden !important;
 }
 
-.btn-primary{
+.error-btn-ok,
+.event-ok-btn,
+.rental-items-ok-btn{
     background-color: #E0F2F1;
     color: #20B2AA;
     border: none;
     border-radius: 4px;
-    padding: 6px 12px;
+    padding: 6px ;
     font-size: 14px;
 }
+
 
