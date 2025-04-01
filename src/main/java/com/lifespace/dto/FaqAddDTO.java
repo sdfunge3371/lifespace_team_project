@@ -1,13 +1,11 @@
 package com.lifespace.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 
-public class AddFaqDTO {
+
+
+public class FaqAddDTO {
 	@NotBlank(message = "請登入後台")
 	private String adminId;
 

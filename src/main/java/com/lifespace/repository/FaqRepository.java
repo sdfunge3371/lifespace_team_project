@@ -2,6 +2,8 @@
 
 package com.lifespace.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +14,6 @@ import com.lifespace.entity.FaqVO;
 @Repository
 public interface FaqRepository extends JpaRepository<FaqVO, String> {
     
-//    String findTopByOrderByFaqIdDesc();
+	// 根據 faqStatus 查詢 FAQ（例如：1 表示上架）
+    List<FaqVO> findByFaqStatus(Integer faqStatus);
 }
