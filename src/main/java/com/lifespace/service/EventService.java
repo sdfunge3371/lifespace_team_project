@@ -19,15 +19,31 @@ import com.lifespace.dto.EventRequest;
 import com.lifespace.dto.EventResponse;
 import com.lifespace.entity.Event;
 import com.lifespace.entity.EventPhoto;
+import com.lifespace.repository.BranchRepository;
+import com.lifespace.repository.EventMemberRepository;
 import com.lifespace.repository.EventPhotoRepository;
 import com.lifespace.repository.EventRepository;
+import com.lifespace.repository.MemberRepository;
+import com.lifespace.repository.SpaceRepository;
 
 @Service("eventService")
 public class EventService {
 
 	@Autowired
 	EventRepository eventRepository;
-
+	
+	@Autowired
+	EventMemberRepository eventMemberRepository;
+	
+	@Autowired
+	MemberRepository memberRepository;
+	
+	@Autowired
+	SpaceRepository spaceRepository;
+	
+	@Autowired
+	BranchRepository branchRepository;
+	
 	@Autowired
     EventPhotoRepository eventPhotoRepository; // 注入 EventPhotoRepository
 	
@@ -86,24 +102,27 @@ public class EventService {
 //		    repository.deleteById(empno);
 	}
 
-	public Event getOneEvent(String eventno) {
+	public EventResponse getOneEvent(String eventno) {
 		Optional<Event> optional = eventRepository.findById(eventno);
 //		return optional.get();
-		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
+		// 將 Event 轉換為 EventResponse
+        EventResponse searchedEvent = convertToEventResponse(optional.orElse(null));
+
+		return searchedEvent;  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
 	}
 
 	public List<Event> getAll() {
 		return eventRepository.findAll();
 	}
 	
-	 // 添加搜尋方法
+	// 添加搜尋方法
     public Page<EventResponse> searchEvents( String eventName,
             Timestamp startTime,
             Timestamp endTime,
             String category,
             Pageable pageable) {
         // 進行搜尋
-        Page<Event> eventPage = eventRepository.findEventsByConditions(
+        Page<EventResponse> eventPage = eventRepository.findEventsByConditions(
         		eventName,
         		startTime,
         		endTime,
@@ -112,9 +131,7 @@ public class EventService {
         );
         
         // 將 Event 轉換為 EventResponse
-        List<EventResponse> responseList = eventPage.getContent().stream()
-                .map((content) -> convertToEventResponse(content))
-                .collect(Collectors.toList());
+        List<EventResponse> responseList = eventPage.getContent();
         
         // 創建新的 Page<EventResponse>
         return new PageImpl<>(responseList, pageable, eventPage.getTotalElements());
@@ -165,8 +182,12 @@ public class EventService {
         response.setEventStartTime(event.getEventStartTime());
         response.setEventEndTime(event.getEventEndTime());
         response.setEventCategory(event.getEventCategory());
-        response.setSpaceId(event.getSpaceId());
-        response.setMemberId(event.getMemberId());
+        response.setSpaceAddress(branchRepository.findById(spaceRepository.findById(event.getSpaceId())
+        										.get()
+        										.getBranchId())
+        										.get()
+        										.getBranchAddr());
+        response.setOrganizer(memberRepository.findById(event.getMemberId()).get().getMemberName());
         response.setNumberOfParticipants(event.getNumberOfParticipants());
         response.setMaximumOfParticipants(event.getMaximumOfParticipants());
         response.setEventBriefing(event.getEventBriefing());

@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="event_member")
-public class EventMemberEntity implements java.io.Serializable {
+public class EventMember implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	
@@ -78,12 +78,9 @@ public class EventMemberEntity implements java.io.Serializable {
 		return serialVersionUID;
 	}
 
-	public EventMemberEntity() {
-		
-	}
-
-	public EventMemberEntity(String eventMemberId, Event event, String memberId, Integer participateStatus,
-                             Timestamp participatedTime) {
+	public EventMember(String eventMemberId, Event event, String memberId, Integer participateStatus,
+			Timestamp participatedTime) {
+		super();
 		this.eventMemberId = eventMemberId;
 		this.event = event;
 		this.memberId = memberId;
@@ -91,8 +88,8 @@ public class EventMemberEntity implements java.io.Serializable {
 		this.participatedTime = participatedTime;
 	}
 
-	
-	 
-	
+	public EventMember() {
+		
+	}
 	
 }

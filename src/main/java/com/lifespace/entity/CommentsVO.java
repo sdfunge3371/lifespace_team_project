@@ -28,7 +28,7 @@ public class CommentsVO implements java.io.Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "event_member_id", referencedColumnName = "event_member_id")
-	private EventMemberEntity eventMemberEntity;
+	private EventMember eventMemberEntity;
 	
 //	@Column(name = "event_member_id")
 //	@NotEmpty(message="活動參與會員: 請勿空白")
@@ -57,11 +57,11 @@ public class CommentsVO implements java.io.Serializable{
 		this.commentId = commentId;
 	}
 	
-	public EventMemberEntity getEventMemberEntity() {
+	public EventMember getEventMemberEntity() {
 		return eventMemberEntity;
 	}
 
-	public void setEventMemberEntity(EventMemberEntity eventMemberEntity) {
+	public void setEventMemberEntity(EventMember eventMemberEntity) {
 		this.eventMemberEntity = eventMemberEntity;
 	}
 	

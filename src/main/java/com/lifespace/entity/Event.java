@@ -63,7 +63,7 @@ public class Event implements java.io.Serializable {
 
 	 //OneToMany關聯，一個Event有多個EventMember
 	 @OneToMany(mappedBy = "event")
-	 private List<EventMemberEntity> eventMembers;
+	 private List<EventMember> eventMembers;
 	 
 	 @OneToMany(mappedBy = "event")
 	 private List<EventPhoto> eventPhotos;
