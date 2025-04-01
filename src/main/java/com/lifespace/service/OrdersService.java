@@ -2,16 +2,23 @@ package com.lifespace.service;
 
 
 import com.lifespace.dto.OrdersDTO;
+import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.entity.Orders;
+import com.lifespace.entity.SpaceCommentPhoto;
 import com.lifespace.repository.OrdersRepository;
+import com.lifespace.repository.SpaceCommentPhotoRepository;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.lifespace.mapper.OrdersMapper;
 
-
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -24,6 +31,9 @@ public class OrdersService {
     @Autowired
     private OrdersRepository ordersRepository;
 
+    @Autowired
+    private SpaceCommentPhotoRepository spaceCommentPhotoRepository;
+    
     public void updateOrderStatusByOrderId(String orderId) {
 
         Orders orders = ordersRepository.findById(orderId)
@@ -98,8 +108,61 @@ public class OrdersService {
 //        System.out.println("啟動Spring後, 自動更新未更新到的到期訂單");
     }
 
+    
+  //訂單完成後，新增空間評論
+    public void addSpaceComments(SpaceCommentRequest commentRequest,
+    		List<MultipartFile> photos) {
+    	
+    	String orderId = commentRequest.getOrderId();
+    	Orders orders = ordersRepository.findById(orderId)
+                 .orElseThrow(() -> new IllegalArgumentException("訂單編號: " + orderId + "不存在"));
+    	
+    	Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    	
+    	orders.setCommentContent(commentRequest.getComments());
+    	orders.setCommentTime(currentTime);
+    	orders.setSatisfaction(commentRequest.getRating());
+    	ordersRepository.save(orders);
+    
+        // 處理照片上傳
+        if (photos != null && !photos.isEmpty()) {
+        	System.out.println(photos.size());
+            for (MultipartFile photo : photos) {
+                try {
+                    // 儲存檔案到指定位置，並取得檔案路徑
+                    String photoPath = savePhoto(photo);
+
+                    SpaceCommentPhoto spaceCommentPhoto = new SpaceCommentPhoto();
+                    spaceCommentPhoto.setOrders(orders);
+                    spaceCommentPhoto.setCreatedTime(currentTime);
+                    spaceCommentPhoto.setSpacePhoto(photoPath);   
+                    spaceCommentPhotoRepository.save(spaceCommentPhoto);
+
+                } catch (Exception e) {
+                    // 處理檔案儲存失敗的例外
+                    e.printStackTrace();
+                    // 可以選擇拋出例外或記錄錯誤
+                }
+            }
+        }
+    }
 
 
+    private String savePhoto(MultipartFile photo) throws Exception {
+	    String fileName = photo.getOriginalFilename();
+	    String uploadDir = "D://tiba_project//space_comment_images"; // 替換為您的實際儲存目錄
 
+	    // 確保目錄存在
+	    File dir = new File(uploadDir);
+	    if (!dir.exists()) {
+	        if (!dir.mkdirs()) {
+	            throw new IOException("無法建立目錄: " + uploadDir);
+	        }
+	    }
+
+	    String filePath = uploadDir + "/" + fileName;
+	    photo.transferTo(new File(filePath));
+	    return "/space-comment-images/" + fileName; // 返回可訪問的 URL
+	}
 
 }

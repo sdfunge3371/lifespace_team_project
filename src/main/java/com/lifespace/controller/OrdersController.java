@@ -2,10 +2,12 @@ package com.lifespace.controller;
 
 
 import com.lifespace.dto.OrdersDTO;
+import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -56,6 +58,16 @@ public class OrdersController {
 
         return ordersSvc.getAllOrdersByMemberId(memberId);
     }
+    
+    @PostMapping("/addComment")
+    public String addSpaceComments(
+            @RequestPart("eventRequest") SpaceCommentRequest commentRequest,
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
+
+    	ordersSvc.addSpaceComments(commentRequest, photos);
+        return "執行 insert sapce comment jpa 方法";
+    }
+    
 }
 
 
