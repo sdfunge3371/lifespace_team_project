@@ -46,13 +46,22 @@ public class OrdersService {
         return optional.orElse(null);
     }
 
-//  public List<Orders> getAllOrders() {
-//      return ordersRepository.findAll();
-//    }
+      public List<Orders> getAllOrders() {
+          return ordersRepository.findAll();
+        }
 
     public List<OrdersDTO> getAllOrdersDTOs() {
 
-        return ordersRepository.findAll().stream()
+        return ordersRepository.findAll()
+                .stream()
+                .map(OrdersMapper::toOrdersDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrdersDTO> getAllOrdersByMemberId(String memberId) {
+        List<Orders> ordersList = ordersRepository.findByMember_MemberIdAndMember_AccountStatus(memberId, 1);
+        return  ordersList
+                .stream()
                 .map(OrdersMapper::toOrdersDTO)
                 .collect(Collectors.toList());
     }
@@ -88,5 +97,9 @@ public class OrdersService {
         expiredOrdersToComplete();
 //        System.out.println("啟動Spring後, 自動更新未更新到的到期訂單");
     }
+
+
+
+
 
 }

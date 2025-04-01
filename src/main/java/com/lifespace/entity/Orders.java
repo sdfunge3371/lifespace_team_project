@@ -24,12 +24,12 @@ public class Orders implements Serializable {
     @Column(name = "space_id")
     private String spaceId;
 
-    @Column(name = "member_id")
-    private String memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private  Member member;
 
     @Column(name = "branch_id")
     private String branchId;
-
 
     @Column(name = "total_price")
     private Integer totalPrice;
@@ -61,14 +61,14 @@ public class Orders implements Serializable {
     @Column(name = "created_time")
     private Timestamp createdTime;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "event_id", nullable = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RentalItemDetails> rentalItemDetails = new ArrayList<>();
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
     private List<SpaceCommentPhoto> spaceCommentPhotos = new ArrayList<>();
 
     public Orders() {
@@ -91,13 +91,6 @@ public class Orders implements Serializable {
         this.spaceId = spaceId;
     }
 
-    public String getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
-    }
 
     public String getBranchId() {
         return branchId;
@@ -201,5 +194,21 @@ public class Orders implements Serializable {
 
     public void setSatisfaction(Integer satisfaction) {
         this.satisfaction = satisfaction;
+    }
+
+    public Member getMemberId() {
+        return member;
+    }
+
+    public void setMemberId(Member memberId) {
+        this.member = member;
+    }
+
+    public List<SpaceCommentPhoto> getSpaceCommentPhotos() {
+        return spaceCommentPhotos;
+    }
+
+    public void setSpaceCommentPhotos(List<SpaceCommentPhoto> spaceCommentPhotos) {
+        this.spaceCommentPhotos = spaceCommentPhotos;
     }
 }

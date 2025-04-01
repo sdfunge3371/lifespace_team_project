@@ -2,12 +2,11 @@ package com.lifespace.entity;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "member")
@@ -62,8 +61,9 @@ public class Member implements java.io.Serializable {
 //	private List<Event> event;
 	
 	//訂單
-//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
-//	private List<Order> order;
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Orders> ordersList;
 	
 	//空間最愛清單
 //  @OneToOne
@@ -146,7 +146,11 @@ public class Member implements java.io.Serializable {
 		this.birthday = birthday2;
 	}
 
+	public List<Orders> getOrdersList() {
+		return ordersList;
+	}
 
-	
-
+	public void setOrdersList(List<Orders> ordersList) {
+		this.ordersList = ordersList;
+	}
 }

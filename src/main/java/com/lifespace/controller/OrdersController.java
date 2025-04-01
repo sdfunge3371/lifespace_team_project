@@ -30,7 +30,7 @@ public class OrdersController {
     }
 
     @PostMapping("/cancel/{orderId}")
-    public ResponseEntity<String> cancelOrder(@PathVariable String orderId) {
+    public ResponseEntity<String> cancelOrders(@PathVariable String orderId) {
 
         try {
             ordersSvc.updateOrderStatusByOrderId(orderId); // 改變訂單狀態
@@ -38,6 +38,23 @@ public class OrdersController {
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    //會員查詢訂單session
+//     @GetMapping("/member/orders")
+//    public List<OrdersDTO> getOrdersByLonginMember(HttpSession session) {
+//        Member member = (Member) session.getAttribute("member");
+//        if(member == null) {
+//            throw new IllegalStateException("請登入會員");
+//        }
+//        return ordersSvc.getAllOrdersDTOsByMemberId(member.getMemberId());
+//    }
+
+    //會員查詢訂單測試
+    @GetMapping("/member/{memberId}")
+    public List<OrdersDTO> getOrdersByMemberId(@PathVariable String memberId) {
+
+        return ordersSvc.getAllOrdersByMemberId(memberId);
     }
 }
 
