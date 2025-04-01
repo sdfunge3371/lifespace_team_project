@@ -22,6 +22,9 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     @EntityGraph(attributePaths = {"rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
     List<Orders> findAll();
+
+    @EntityGraph(attributePaths = {"rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
+    List<Orders> findByMember_MemberIdAndMember_AccountStatus(String memberId, Integer accountStatus);
 }
 
 

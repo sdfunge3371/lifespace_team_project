@@ -1,6 +1,7 @@
 package com.lifespace.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 import jakarta.persistence.GeneratedValue;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "rental_item")
@@ -42,10 +44,6 @@ public class RentalItem implements java.io.Serializable {
     @Min(value = 0, message = "可租借數量: 不能小於{value}")
     private Integer availableRentalQuantity;
 
-    @Column(name = "pause_rental_quantity")
-    @NotNull(message = "暫停租借數量: 請勿空白")
-    @Min(value = 0, message = "暫停租借數量: 不能小於{value}")
-    private Integer pauseRentalQuantity;
 
     @Column(name = "branch_id")
     @Pattern(regexp = "^B\\d{3}$", message = "分店流水號格式不正確")
@@ -54,6 +52,9 @@ public class RentalItem implements java.io.Serializable {
     @Column(name = "created_time", insertable = false, updatable = false)
     private Timestamp createdTime;
 
+    @OneToMany(mappedBy = "rentalItem", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<RentalItemDetails> rentalItemDetails;
 
     public RentalItem() {
     }
@@ -99,13 +100,6 @@ public class RentalItem implements java.io.Serializable {
         this.availableRentalQuantity = availableRentalQuantity;
     }
 
-    public Integer getPauseRentalQuantity() {
-        return pauseRentalQuantity;
-    }
-
-    public void setPauseRentalQuantity(Integer pauseRentalQuantity) {
-        this.pauseRentalQuantity = pauseRentalQuantity;
-    }
 
     public String getBranchId() {
         return branchId;
@@ -121,6 +115,14 @@ public class RentalItem implements java.io.Serializable {
 
     public void setCreatedTime(Timestamp createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public List<RentalItemDetails> getRentalItemDetails() {
+        return rentalItemDetails;
+    }
+
+    public void setRentalItemDetails(List<RentalItemDetails> rentalItemDetails) {
+        this.rentalItemDetails = rentalItemDetails;
     }
 }
 
