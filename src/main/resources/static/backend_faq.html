@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeSpace 後台管理系統-常見問題</title>
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+	rel="stylesheet">
+<link
+	href="${pageContext.request.contextPath}/resources/vendor/datatable/datatable.css"
+	rel="stylesheet">
+<link
+	href="./css/faq_back.css"
+	rel="stylesheet">
+
+
+
+</head>
+<body>
+	<!-- Sidebar -->
+	<div class="sidebar col-lg-2 col-md-3">
+		<div class="sidebar-header">
+			<img src="./img/LifeSpace3.png" alt="LifeSpace Logo"
+				class="sidebar-logo">
+			<h2 class="sidebar-title">後台中心</h2>
+		</div>
+
+		<ul class="nav flex-column mt-3">
+			<li class="nav-item"><a href="#" class="nav-link"> <i
+					class="fas fa-home"></i> <span>消息管理</span> <i
+					class="fas fa-chevron-right arrow"></i>
+			</a></li>
+			<li class="nav-item"><a href="#" class="nav-link"> <i
+					class="fas fa-user"></i> <span>帳號管理</span> <i
+					class="fas fa-chevron-right arrow"></i>
+			</a></li>
+			<li class="nav-item"><a href="#" class="nav-link"> <i
+					class="fas fa-map-marker-alt"></i> <span>空間訂單管理</span> <i
+					class="fas fa-chevron-right arrow"></i>
+			</a></li>
+			<li class="nav-item"><a href="#" class="nav-link"> <i
+					class="fas fa-box"></i> <span>商品管理</span> <i
+					class="fas fa-chevron-right arrow"></i>
+			</a></li>
+			<li class="nav-item"><a href="#" class="nav-link"> <i
+					class="fas fa-star"></i> <span>評論管理</span> <i
+					class="fas fa-chevron-right arrow"></i>
+			</a></li>
+			<li class="nav-item"><a href="#" class="nav-link active"> <i
+					class="fas fa-headset"></i> <span>客服管理</span> <i
+					class="fas fa-chevron-down arrow"></i>
+			</a>
+				<div class="submenu show">
+					<a href="#" class="submenu-item active"> <i
+						class="fas fa-circle"></i> <span>常見問題</span>
+					</a> <a href="#" class="submenu-item"> <i class="fas fa-circle"></i>
+						<span>聊天室訊息管理</span>
+					</a>
+				</div></li>
+			<li class="nav-item"><a href="#" class="nav-link"> <i
+					class="fas fa-chart-bar"></i> <span>儀錶板</span> <i
+					class="fas fa-chevron-right arrow"></i>
+			</a></li>
+		</ul>
+	</div>
+
+	<!-- Main Content -->
+	
+	<div class="main-content">
+		<div class="header">
+			<h1 class="page-title">常見問題</h1>
+			<div class="user-profile">
+				<img src="../picture/profile-user.png" alt="User Profile" width="40"
+					height="40">
+			</div>
+		</div>
+
+		<div class="search-container">
+			<div class="input-group search-input">
+				<input type="text" class="form-control" placeholder="搜尋問題...">
+				<a
+					href="${pageContext.request.contextPath}/backend/faq/faq_select_page.jsp"
+					class="btn btn-primary">搜尋</a>
+			</div>
+			<button id="btn-add-faq" class="btn btn-success mb-3">新增常見問題</button>
+		</div>
+
+		<!-- Hashtag 按鈕區域 -->
+          <div class="hashtag-container">
+            <button class="hashtag-button">全部</button>
+            <button class="hashtag-button">使用規範</button>
+            <button class="hashtag-button">租賃相關</button>
+            <button class="hashtag-button">付款方式</button>
+            <button class="hashtag-button">其他</button>
+        </div>
+
+
+		<table id="faqTable" class="display">
+			<thead>
+				<tr>
+					<th>常見問題編號</th>
+					<th>管理者編號</th>
+					<th>常見問題</th>
+					<th>回答</th>
+					<th>建檔時間</th>
+					<th>問題狀態</th>
+					<th>修改</th>
+					<th>狀態操作</th>
+				</tr>
+			</thead>
+			<tbody id="faqBody">
+				<!-- 用 jQuery 動態產生列表內容 -->
+			</tbody>
+		</table>
+		<br>
+	
+	<!-- 新增 FAQ Modal -->
+<div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="addFaqModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form id="addFaqForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addFaqModalLabel">新增常見問題</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">常見問題</label>
+            <textarea class="form-control" id="add-faqAsk"></textarea>
+            <!-- 顯示錯誤訊息 -->
+            <span class="text-danger small" id="add-faqAsk-error"></span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">回答內容</label>
+            <textarea class="form-control" id="add-faqAnswer"></textarea>
+            <!-- 顯示錯誤訊息 -->
+            <span class="text-danger small" id="add-faqAnswer-error"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">確定新增</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- 編輯 FAQ Modal -->
+<div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form id="editFaqForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editFaqModalLabel">編輯常見問題</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="edit-faqId">
+          <div class="mb-3">
+            <label class="form-label">常見問題</label>
+            <textarea class="form-control" id="edit-faqAsk"></textarea>
+          <!-- 顯示錯誤訊息 -->
+            <span class="text-danger small" id="edit-faqAsk-error"></span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">回答內容</label>
+            <textarea class="form-control" id="edit-faqAnswer"></textarea>
+          <!-- 顯示錯誤訊息 -->
+            <span class="text-danger small" id="edit-faqAnswer-error"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">確定修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+		<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+		<script src="./js/faq_back.js"></script>
+	</div>
+</body>
+</html>

@@ -3,7 +3,7 @@ package com.lifespace.dto;
 import jakarta.validation.constraints.NotBlank;
 
 
-public class UpdateFaqDTO {
+public class FaqUpdateDTO {
 	@NotBlank(message = "查無資料")
 	private String faqId;
 
@@ -36,8 +36,5 @@ public class UpdateFaqDTO {
 	public void setFaqAnswer(String faqAnswer) {
 		this.faqAnswer = faqAnswer;
 	}
-	
 
-
-	
 }

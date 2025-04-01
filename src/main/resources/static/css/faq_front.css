@@ -1,0 +1,98 @@
+/* 讓所有元素的 box-sizing 設定為 border-box，避免 padding 影響大小 */
+* {
+  box-sizing: border-box;
+}
+
+/* 當折疊按鈕展開時，設定背景顏色與文字顏色 */
+.accordion-button:not(.collapsed) {
+  background-color: #f8f3f3 !important;
+  color: black !important;
+}
+
+/* 設定折疊按鈕的默認樣式 */
+.accordion-button {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* 移除折疊項目的邊框，並添加陰影提升視覺層次 */
+.accordion-item {
+  border: none !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 10px !important;
+  background-color: white !important;
+}
+
+/* 移除折疊按鈕點擊時的外框，讓 UI 更乾淨 */
+.accordion-button:focus {
+  box-shadow: none !important;
+  outline: none;
+}
+
+
+.faq-container {
+
+  padding-right: 10px;
+}
+
+
+
+/* 讓標題保持靜態，不影響滾動 */
+.sticky-header {
+ 
+  padding-top: 20px;
+}
+
+/* 設定聊天圖示按鈕的樣式 */
+.chat-icon {
+  position: fixed; /* 固定在螢幕右下角 */
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #F7D777;
+  border-radius: 50%; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* 按下按鈕時，縮小並改變背景顏色 */
+.chat-icon:active {
+  transform: scale(0.9);
+  background-color: white;
+}
+
+/* 設定聊天圖示內圖片的大小 */
+.chat-icon img {
+  width: 35px;
+  height: 35px;
+}
+
+/* Hashtag 按鈕樣式 */
+.hashtag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px; /*與分隔線的距離*/
+      margin-bottom: 20px; /*與FAQ距離*/
+}
+.hashtag-button {
+      background: #d1ecf1;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+}
+.hashtag-button:hover {
+      background: #abdde5;
+}
+
+.hashtag-button.active {
+  background: #5aaeb5 !important; /* 當按鈕被點擊後，變為深色 */
+  color: white; /* 文字變白，確保可讀性 */
+}
