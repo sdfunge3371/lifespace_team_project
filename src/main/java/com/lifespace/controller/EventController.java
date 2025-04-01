@@ -71,9 +71,9 @@ public class EventController {
     }
     
     @GetMapping("/getOne")
-    public Event getOneEvent(@RequestParam String eventId) {
+    public EventResponse getOneEvent(@RequestParam String eventId) {
     	System.out.println("被要求檔案");
-    	Event event = eventSvc.getOneEvent(eventId);
+    	EventResponse event = eventSvc.getOneEvent(eventId);
         
         event.getPhotoUrls(); // 確保 photoUrls 被填充
         
