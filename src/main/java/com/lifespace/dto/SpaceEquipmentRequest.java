@@ -3,7 +3,6 @@ package com.lifespace.dto;
 public class SpaceEquipmentRequest {
     private Integer spaceEquipId;
     private String spaceEquipName;
-    private String spaceEquipComment;
 
 
     public Integer getSpaceEquipId() {
@@ -20,13 +19,5 @@ public class SpaceEquipmentRequest {
 
     public void setSpaceEquipName(String spaceEquipName) {
         this.spaceEquipName = spaceEquipName;
-    }
-
-    public String getSpaceEquipComment() {
-        return spaceEquipComment;
-    }
-
-    public void setSpaceEquipComment(String spaceEquipComment) {
-        this.spaceEquipComment = spaceEquipComment;
     }
 }

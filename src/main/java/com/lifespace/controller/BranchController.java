@@ -79,7 +79,7 @@ public class BranchController {
         branchSvc.addBranch(
             branchVO.getBranchName(), 
             branchVO.getBranchAddr(), 
-            branchVO.getSpaceQty(), 
+//            branchVO.getSpaceQty(),
             branchVO.getLatitude(), 
             branchVO.getLongitude(), 
             branchVO.getBranchStatus()
@@ -161,7 +161,7 @@ public class BranchController {
             branchVO.getBranchId(),
             branchVO.getBranchName(), 
             branchVO.getBranchAddr(), 
-            branchVO.getSpaceQty(), 
+//            branchVO.getSpaceQty(),
             branchVO.getLatitude(), 
             branchVO.getLongitude(), 
             branchVO.getBranchStatus()

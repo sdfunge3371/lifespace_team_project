@@ -57,7 +57,6 @@ public class SpaceService {
 		Set<SpaceEquipment> equips = space.getSpaceEquipments().stream().map(se -> {
 			SpaceEquipment equip = new SpaceEquipment();
 			equip.setSpaceEquipName(se.getSpaceEquipName());
-			equip.setSpaceEquipComment(se.getSpaceEquipComment());
 			equip.setSpace(s);  // 建立關聯，沒寫會報錯
 			return equip;
 		}).collect(Collectors.toSet());
@@ -114,7 +113,6 @@ public class SpaceService {
 			System.out.println(s.getSpaceEquipments());
 			SpaceEquipment equip = new SpaceEquipment();
 			equip.setSpaceEquipName(se.getSpaceEquipName());
-			equip.setSpaceEquipComment(se.getSpaceEquipComment());
 			equip.setSpace(s);
 			targetEquipments.add(equip);
 		}
