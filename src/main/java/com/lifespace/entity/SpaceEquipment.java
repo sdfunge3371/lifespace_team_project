@@ -36,9 +36,6 @@ public class SpaceEquipment implements java.io.Serializable {
 	@Column(name = "space_equip_name")   // 不能設unique
 	private String spaceEquipName;
 	
-	@Column(name = "space_equip_comment")
-	private String spaceEquipComment;
-	
 	@Column(name = "created_time", insertable = false)
 	@CreationTimestamp
 	private Timestamp createdTime;
@@ -61,12 +58,6 @@ public class SpaceEquipment implements java.io.Serializable {
 	}
 	public void setSpaceEquipName(String spaceEquipName) {
 		this.spaceEquipName = spaceEquipName;
-	}
-	public String getSpaceEquipComment() {
-		return spaceEquipComment;
-	}
-	public void setSpaceEquipComment(String spaceEquipComment) {
-		this.spaceEquipComment = spaceEquipComment;
 	}
 	public Timestamp getCreatedTime() {
 		return createdTime;

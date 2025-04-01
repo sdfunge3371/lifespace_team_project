@@ -28,13 +28,13 @@ public class BranchService {
      */
     @Transactional
     public BranchVO addBranch(String branchName, String branchAddr, 
-                              Integer spaceQty, Double latitude, 
+                              Double latitude,
                               Double longitude, Integer branchStatus) {
         
         BranchVO branchVO = new BranchVO();
         branchVO.setBranchName(branchName);
         branchVO.setBranchAddr(branchAddr);
-        branchVO.setSpaceQty(spaceQty);
+//        branchVO.setSpaceQty(spaceQty);
         branchVO.setLatitude(latitude);
         branchVO.setLongitude(longitude);
         branchVO.setBranchStatus(branchStatus);
@@ -51,7 +51,7 @@ public class BranchService {
      */
     @Transactional
     public BranchVO updateBranch(String branchId, String branchName, 
-                                 String branchAddr, Integer spaceQty, 
+                                 String branchAddr,
                                  Double latitude, Double longitude, 
                                  Integer branchStatus) {
         
@@ -59,7 +59,7 @@ public class BranchService {
         branchVO.setBranchId(branchId);
         branchVO.setBranchName(branchName);
         branchVO.setBranchAddr(branchAddr);
-        branchVO.setSpaceQty(spaceQty);
+//        branchVO.setSpaceQty(spaceQty);
         branchVO.setLatitude(latitude);
         branchVO.setLongitude(longitude);
         branchVO.setBranchStatus(branchStatus);

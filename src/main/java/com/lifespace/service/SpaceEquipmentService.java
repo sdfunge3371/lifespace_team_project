@@ -55,8 +55,6 @@ public class SpaceEquipmentService {
 		
 		// ?????
 		se.setSpaceEquipName(spaceEquipment.getSpaceEquipName());
-		se.setSpaceEquipComment(spaceEquipment.getSpaceEquipComment());
-		
 		return spaceEquipmentRepository.save(se);
 	}
 }

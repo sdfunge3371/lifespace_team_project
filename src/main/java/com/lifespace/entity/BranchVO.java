@@ -29,9 +29,9 @@ public class BranchVO implements java.io.Serializable {
     @NotEmpty(message = "分店地址: 請勿空白")
     private String branchAddr;
     
-    @Column(name = "space_qty")
-    @NotNull(message = "空間數量: 請勿空白")
-    private Integer spaceQty;
+//    @Column(name = "space_qty")
+//    @NotNull(message = "空間數量: 請勿空白")
+//    private Integer spaceQty;
     
     @Column(name = "latitude")
     @NotNull(message = "緯度: 請勿空白")
@@ -64,8 +64,8 @@ public class BranchVO implements java.io.Serializable {
     public String getBranchAddr() { return branchAddr; }
     public void setBranchAddr(String branchAddr) { this.branchAddr = branchAddr; }
     
-    public Integer getSpaceQty() { return spaceQty; }
-    public void setSpaceQty(Integer spaceQty) { this.spaceQty = spaceQty; }
+//    public Integer getSpaceQty() { return spaceQty; }
+//    public void setSpaceQty(Integer spaceQty) { this.spaceQty = spaceQty; }
     
     public Double getLatitude() { return latitude; }
     public void setLatitude(Double latitude) { this.latitude = latitude; }
