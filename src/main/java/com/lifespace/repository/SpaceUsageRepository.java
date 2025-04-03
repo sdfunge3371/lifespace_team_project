@@ -19,5 +19,4 @@ public interface SpaceUsageRepository extends JpaRepository<SpaceUsage, String>{
 	
     Optional<SpaceUsage> findBySpaceUsageName(String name);
 
-//    List<SpaceUsage> findAllBySpaceUsageId(List<String> spaceUsageIds);
 }

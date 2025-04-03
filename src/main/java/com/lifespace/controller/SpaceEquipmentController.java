@@ -46,10 +46,10 @@ public class SpaceEquipmentController {
 	}
 	
 	// 直接在Space表單用，目前應該不會用到
-	@PostMapping("/spaces/space_equips")
+	@PostMapping("/spaces/space-equips")
 	public ResponseEntity<SpaceEquipment> addSpaceEquipment(@RequestBody @Valid SpaceEquipment spaceEquipment) {
 		SpaceEquipment created = spaceEquipmentService.addSpaceEquipment(spaceEquipment);
-		URI location = URI.create("/spaces/space_equips/id/" + created.getSpaceEquipId());
+		URI location = URI.create("/space-equips/id/" + created.getSpaceEquipId());
         return ResponseEntity.created(location).body(created); // 201 Created
 	}
 	

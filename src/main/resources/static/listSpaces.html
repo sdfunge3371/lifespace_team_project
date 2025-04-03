@@ -510,7 +510,8 @@
             }
             else {
                 let photos = space.spacePhotos.map(p => `data:image/jpeg;base64,${p.photo}`);
-                photoData = `<span class="photo-link" data-photos='${JSON.stringify(photos)}' style="text-decoration: underline; color: blue; cursor: pointer;">${photoCount} 張照片</span>`;
+                let escapedPhotosJson = JSON.stringify(photos).replace(/'/g, '&#39;').replace(/"/g, '&quot;');   // 檢查有沒有跳脫字元
+                photoData = `<span class="photo-link" data-photos='${escapedPhotosJson}' style="text-decoration: underline; color: blue; cursor: pointer;">${photoCount} 張照片</span>`;
             }
 
             // 在Table row裡塞進以下HTML
@@ -532,11 +533,9 @@
                         <td>${photoData}</td>
                         <td>${escapeHtml(space.createdTime)}</td>
                         <td>
-                            <form method="post" action="${SPACE_ACTION_URL}">
-                                <input class="btn btn-edit" type="submit" value="修改">
-                                <input type="hidden" name="spaceId" value="${escapeHtml(space.spaceId)}">
-                                <input type="hidden" name="action" value="getOne_For_Update">
-                            </form>
+                            <button type="button" class="btn btn-edit edit-space-btn" data-space-id="${escapeHtml(space.spaceId)}">
+                                修改
+                            </button>
                         </td>
                     `;
             // escapeHtml(): 處理跳脫字元
@@ -582,6 +581,7 @@
                     }
                     // 因為有檔案相關欄位，所以回傳JSON前要先檢查content-type是否正確
                     const contentType = response.headers.get("content-type");
+
                     if (contentType && contentType.indexOf("application/json") !== -1) {
                         return response.json(); // 解析回應的JSON資料
                     } else {
@@ -685,8 +685,11 @@
         let currentPhotoIndex = 0;
         let currentPhotos = [];
 
+        // 在表格做事件間聽
         tableBody.addEventListener('click', function (e) {
             const target = e.target;
+
+            // 點擊「n 張照片時」...
             if (target.classList.contains('photo-link')) {
                 const photos = JSON.parse(target.getAttribute('data-photos'));
                 if (!photos || photos.length === 0) return;
@@ -697,6 +700,15 @@
                 updateCarousel(); // 顯示第一張
 
                 document.getElementById('photoModal').style.display = 'block';
+            }
+
+            // 點擊「修改」按鈕時，跳轉到updateSpace.html
+            else if (target.classList.contains('edit-space-btn') || target.closest('.edit-space-btn')) {
+                const button = target.closest('.edit-space-btn');       // 找到你剛剛按的「修改」按鈕
+                const spaceId = button.getAttribute('data-space-id');   // 有在data-space-id綁定空間編號，以利於在修改表單中顯示目前的資料狀況
+
+                const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
+                window.location.href = targetUrl;
             }
         });
 

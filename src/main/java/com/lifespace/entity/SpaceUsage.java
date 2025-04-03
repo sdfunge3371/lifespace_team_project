@@ -3,6 +3,7 @@ package com.lifespace.entity;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,7 +38,7 @@ public class SpaceUsage implements java.io.Serializable {
     // 空間用途對照表
     @OneToMany(mappedBy = "spaceUsage", cascade = CascadeType.ALL)
     @OrderBy("usageMappingId asc")
-    @JsonManagedReference
+    @JsonIgnore
     private Set<SpaceUsageMap> spaceUsageMaps;
 
     // Getters & Setters

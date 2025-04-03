@@ -64,6 +64,11 @@ public class SpaceService {
 
 		// ============= 新增Space Photos =============
  		Set<SpacePhoto> photos = new LinkedHashSet<>();
+
+	 	if (files == null || files.isEmpty()) {
+			 throw new IllegalArgumentException("請至少上傳一張照片");
+		}
+
 		for (MultipartFile file : files) {
 			SpacePhoto photo = new SpacePhoto();
 			photo.setPhoto(file.getBytes());
@@ -73,6 +78,8 @@ public class SpaceService {
 		s.setSpacePhotos(photos);
 
 		// ============= 新增Space Usage maps =============
+
+		System.out.println("SpaceUsageIds: " + space.getSpaceUsageIds());
 		List<SpaceUsage> usages = spaceUsageRepository.findAllById(space.getSpaceUsageIds());
 
 		// 3. 建立對應的 SpaceUsageMap
@@ -112,7 +119,7 @@ public class SpaceService {
 		for (SpaceEquipmentRequest se : space.getSpaceEquipments()) {
 			System.out.println(s.getSpaceEquipments());
 			SpaceEquipment equip = new SpaceEquipment();
-			equip.setSpaceEquipName(se.getSpaceEquipName());
+		equip.setSpaceEquipName(se.getSpaceEquipName());
 			equip.setSpace(s);
 			targetEquipments.add(equip);
 		}

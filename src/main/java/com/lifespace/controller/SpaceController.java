@@ -76,8 +76,11 @@ public class SpaceController {
 	    } catch (IOException e) {
 			Map<String, String> errorBody = new HashMap<>();
 			errorBody.put("message", "空間照片新增失敗：" + e.getMessage());
-
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorBody);
+		} catch (IllegalArgumentException e) {
+			Map<String, String> errorBody = new HashMap<>();
+			errorBody.put("message", e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorBody);
 		}
 	}
 	

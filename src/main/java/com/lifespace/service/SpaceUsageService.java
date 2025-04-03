@@ -25,10 +25,6 @@ public class SpaceUsageService {
 		return spaceUsageRepository.findById(spaceUsageId).orElse(null);
 	}
 	
-	public SpaceUsage getSpaceUsageBySpaceName(String spaceName) {
-		return spaceUsageRepository.findBySpaceUsageName(spaceName).orElse(null);
-	}
-	
 	public SpaceUsage addSpaceUsage(SpaceUsage spaceUsage) {
 		return spaceUsageRepository.save(spaceUsage);
 	}
