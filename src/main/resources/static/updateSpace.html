@@ -294,14 +294,16 @@
     <!-- 錯誤表列 -->
     <div id="errorMessages"></div>
 
-    <h1>修改空間:</h1>
+    <h1>新增空間:</h1>
 
-    <!-- 資料新增表單 -->
-    <form id="spaceForm" name="form1">
+    <!-- 資料修改表單  (onsubmit="return false"; 防止表單預設提交之行為) -->
+    <form id="spaceForm" name="form1" onsubmit="return false;">
+
         <div class="form-group">
             <label for="spaceId">空間編號:</label>
             <input type="text" id="spaceId" name="spaceId" class="form-control" value="" disabled>
         </div>
+
         <div class="form-group">
             <label for="branchId">所屬分店:</label>
             <select id="branchId" name="branchId" class="form-control" size="1">
@@ -353,9 +355,14 @@
                     <option value="">讀取中...</option>
                 </select>
 
-                <button type="button" id="addUsageBtn" class="btn-add-equipment" style="margin-top: 10px;">
-                    + 新增空間用途
-                </button>
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button type="button" id="addUsageBtn" class="btn-add-equipment" style="margin-top: 10px;">
+                        + 新增空間用途
+                    </button>
+                    <button type="button" id="deleteUsageBtn" class="btn-add-equipment" style="background-color: #f44336; color: white; margin-top:10px; display: none;">
+                        - 移除空間用途
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -433,20 +440,24 @@
     // ======== Configuration ========
     // 絕對路徑 (fetch)
     const APP_CONTEXT_PATH = "http://localhost:8080";
-    const UPDATE_SPACE_URL_ = `${APP_CONTEXT_PATH}/spaces`;   // PUT
-    const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 後面加空間編號(S001, S002, etc.)
+    const UPDATE_SPACE_URL_BASE = `${APP_CONTEXT_PATH}/spaces`;
+    const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 透過單一空間的資料，輸入進表單的每一個輸入欄中
+    const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/branch/getAllBranches`;
+    const GET_ALL_SPACES_USAGES_URL = `${APP_CONTEXT_PATH}/space-usages`;
+    const SOFT_DELETE_SPACE_USAGES_URL_BASE = `${APP_CONTEXT_PATH}/space-usages/id`;
 
-    // 相對路徑 (async)
-    const GET_ALL_BRANCHES_URL = "branch/getAllBranches";
-    const GET_ALL_SPACES_USAGES_URL = "/space-usages";
+
+
+    // ======== DOM 物件 ========
 
     const form = document.getElementById('spaceForm');
     const submitButton = document.getElementById('submitBtn');
     const errorDiv = document.getElementById('errorMessages');
 
-    let currentSpaceId = null;   // 存目前正在編輯的空間編號
+    // ======== 全域變數配置 ========
+    let currentSpaceId = null;  // 目前正在修改的空間編號
+    let photosToDelete = new Set();  // 用來存要刪掉照片的ID
 
-    // ======== DOM 物件 ========
     // 空間設備
     let addedEquipment = [];   // 暫存陣列 (需為JSON格式)： [{ name: '設備1'}, { name: '設備2'}, { name: '設備3'}, ...]
     let equipmentModal;
@@ -465,14 +476,20 @@
     let usageNameInput;
     let usageModalErrorDiv;
     let spaceUsageSelectElement;
+    let deleteUsageBtn;
+
+    let previewContainer;
+    let spacePhotosInput;
+    let fileStore = new DataTransfer();
 
     // ======== 顯示錯誤訊息 ========
+
+    // 在表單最上方顯示錯誤訊息
     function displayErrors(errors) {
-        const errorDiv = document.getElementById('errorMessages');
         errorDiv.innerHTML = ''; // 清除之前的錯誤
 
         // 在表單最上方新增錯誤訊息
-        if (errors && Array.isArray(errors) && errors.length > 0) { // 如果errors是Json
+        if (errors && Array.isArray(errors) && errors.length > 0) { // // 如果errors是Json
             const list = document.createElement('ul');
             errors.forEach(msg => {
                 // 檢查msg是object還是string
@@ -487,12 +504,33 @@
         }
     }
 
+    // 清除錯誤
+    function clearErrors() {
+        errorDiv.innerHTML = '';
+        errorDiv.style.display = 'none';
+    }
+
+    // ========= 載入目前該空間的資料 =========
+
+    function getSpaceIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);     // window.location.search: 抓網址列的Query String
+        return params.get('spaceId');   // 取得spaceId的值
+    }
+
+    // 自動將剛剛透過fetch API取得單一空間的資料，輸入到修改表單裡
+    function populateForm(space) {
+
+    }
+
+
+
+
     // 預覽空間照片
     // 利用DataTransfer物件管理上傳的檔案
     function setupImagePreview() {
-        const spacePhotosInput = document.getElementById('spacePhotos');
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const fileStore = new DataTransfer();
+        spacePhotosInput = document.getElementById('spacePhotos');
+        previewContainer = document.getElementById('imagePreviewContainer');
+        fileStore = new DataTransfer();
 
         if (!spacePhotosInput || !previewContainer) return;   // 如果沒有照片可預覽，則不執行以下的程式
 
@@ -664,15 +702,6 @@
     // 將剛剛輸入的新的用途加到多選清單（自AJAX POST處理完成後觸發）
     function addUsageOptionToSelect(usage) {
 
-        // Check if option already exists (though backend should prevent duplicates)
-        // const existingOption = spaceUsageSelectElement.querySelector(`option[value="${usage.spaceUsageId}"]`);
-        // if (existingOption) {
-        //     console.warn("Usage option already exists in select:", usage.spaceUsageId);
-        //     // Optionally select it if needed
-        //     // existingOption.selected = true;
-        //     return;
-        // }
-
         // 建立option物件
         const option = document.createElement('option');
         option.value = usage.spaceUsageId;   // value設為ID
@@ -685,9 +714,8 @@
         }
     }
 
-
     // ========== AJAX CRUD ==========
-    // --- 1. PUT: 修改空間 ---
+    // --- 1. POST: 新增空間 ---
     submitButton.addEventListener('click', function () {    // 點擊「完成」按鈕時要做的事
         // 移除成功、錯誤訊息
         errorDiv.innerHTML = '';
@@ -725,22 +753,16 @@
             body: formData      // 如果request body是multipart/form-data，這邊就不用指定content-type，而且也不用JSON stringify formData
         })
             .then(response => {
-                for (let [key, value] of formData.entries()) {
-                    console.log(key, value);
-                }
                 if (!response.ok) {
                     return response.json().then(errorData => {  // 回傳JSON
                         const backendErrors = errorData.errors || errorData.message || `伺服器錯誤: ${response.status}`;    // 依序先抓JSON中的errors, message，如果都沒有，就代表是500
-                        console.log(backendErrors);
                         throw backendErrors;    // 拋出例外給外層的catch
                     }).catch((backendErrors) => {
-                        console.log("error");
                         // 回傳的JSON格式有誤，拋出例外給外層的catch
                         displayErrors(backendErrors);
                         throw [`伺服器發生錯誤: ${response.status} ${response.statusText}`];
                     });
                 }
-                console.log("ok");
                 return response.json(); // 回傳JSON，成功就是剛剛新增的JSON，失敗就是回傳錯誤訊息的JSON回傳格式範例：{ success: true, message: "..." }
             })
             .then(data => {
@@ -818,34 +840,38 @@
         }
 
         const loadingOptionText = '讀取中...';
-
         spaceUsageSelectElement.innerHTML = `<option disabled>${loadingOptionText}</option>`;   // 「讀取中...」選項，並設為disabled
         spaceUsageSelectElement.disabled = true;
+        deleteUsageBtn.style.display = 'none';   // 多選清單還沒讀取完不能移除
 
         try {
             const response = await fetch(GET_ALL_SPACES_USAGES_URL); // 從後端抓資料
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
 
             const spaceUsagesData = await response.json(); // 解析JSON
 
             // 將「讀取中...」移除
             spaceUsageSelectElement.innerHTML = '';
 
+            let availableCount = 0; // 數有幾個空間用途為"AVAILABLE"
             if (spaceUsagesData && spaceUsagesData.length > 0) {
-                // 抓資料
                 spaceUsagesData.forEach(usage => {
-                    if (usage.spaceUsageStatus !== "DELETED") {     // 檢查狀態，必須為AVAILABLE才會顯示
+                    if (usage.spaceUsageStatus !== "DELETED") {
                         const option = document.createElement('option');
                         option.value = usage.spaceUsageId;
                         option.textContent = usage.spaceUsageName;
                         spaceUsageSelectElement.appendChild(option);
+                        availableCount++; // Increment count
                     }
                 });
-                // 載入完成後，enable那些選項
+            }
+
+            // 只有多選清單有項目的時候，才會顯示移除按鈕
+            if (availableCount > 0) {
                 spaceUsageSelectElement.disabled = false;
+                deleteUsageBtn.style.display = 'inline-block'; // Show delete btn if options exist
+            } else {
+                spaceUsageSelectElement.disabled = true;
+                deleteUsageBtn.style.display = 'none'; // Keep delete btn hidden
             }
 
         } catch (error) {
@@ -858,16 +884,34 @@
 
         const name = usageNameInput.value.trim();  // 取得input欄位的值
 
+        // 檢查輸入欄位是否為空
         if (!name) {
             if (usageModalErrorDiv) alert('請輸入用途名稱！');
             usageNameInput.focus();
             return;
         }
 
+        // 檢查欄位是否重複
+        let isDuplicate = false;
+        const availableOptions = spaceUsageSelectElement.options;
+
+        for (const option of availableOptions) {
+            const optionText = option.textContent.trim();  // 取得選項文字
+            if (name === optionText) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        if (isDuplicate) {
+            alert('此用途名稱已存在於列表中！'); // 維持原本的提示方式
+            usageNameInput.focus();
+            return;   // 找到重複就不繼續執行了
+        }
+
         // for @RequestBody SpaceUsage (後端會自動建立ID, status, created_time)
         const usageData = {
             spaceUsageName: name
-
         };
 
         // 提交時disable button
@@ -917,6 +961,71 @@
         }
     }
 
+    // --------- 5. PUT: 對「空間用途」進行軟刪除 ---------
+
+    async function handleDeleteSpaceUsage() {
+        const selectedOptions = Array.from(spaceUsageSelectElement.selectedOptions);    // selecteddOptions: 抓出在<select>物件中你選到的東西，組成陣列
+
+        // 按下「移除空間用途」後，就會刪除那些你剛剛在多選清單中選的用途
+        if (selectedOptions.length === 0) {
+            alert("請先從列表中選取要刪除的空間用途。");
+            return;
+        }
+
+        // 確認對話框
+        const confirmDelete = confirm(`確定要刪除選取的 ${selectedOptions.length} 個空間用途嗎？\n(注意：此操作會將用途標記為已刪除，但不會影響已使用此用途的現有空間記錄)`);
+
+        if (!confirmDelete) {   // 否：不執行
+            return;
+        }
+
+        // 開始處裡軟刪除，此時把移除按鈕disabled
+        deleteUsageBtn.disabled = true;
+
+        for (const option of selectedOptions) {
+            const usageId = option.value;   // value存ID
+            const usageName = option.textContent;   // 內容存名稱
+            const deleteUrl = `${SOFT_DELETE_SPACE_USAGES_URL_BASE}/${encodeURIComponent(usageId)}/soft-delete`; // 組成 PUT URL
+
+            const response = await fetch(deleteUrl, {   // 開始丟給後端處理，此時，狀態已經成DELETED了
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            option.remove();
+        }
+
+        // 處裡軟刪除完成，此時把移除按鈕enabled
+        deleteUsageBtn.disabled = false;
+
+        // 若多選清單為空，則隱藏刪除按鈕
+        if (spaceUsageSelectElement.options.length === 0) {
+            deleteUsageBtn.style.display = 'none';
+        }
+
+    }
+
+    // --------- 6. 取得單一空間資料 ---------
+
+    async function fetchSpaceDetails(spaceId) {
+        const url = `${GET_SPACE_BY_ID_URL_BASE}/${encodeURIComponent(spaceId)}`;
+        console.log("Fetching space details from:", url);
+
+        try {
+            const response = await fetch(url);  // 取得單一空間的資料
+            const spaceData = await response.json();
+            console.log("Fetched space data:", spaceData);
+            populateForm(spaceData);    // 自動輸入到修改表單中
+            clearErrors();
+
+        } catch (error) {
+            console.error('Error fetching space details:', error);
+            submitButton.disabled = true;
+        }
+    }
+
     // ======== Initialization (載入網頁時要做的事情) ========
     document.addEventListener('DOMContentLoaded', function () {
         // 空間設備
@@ -942,21 +1051,23 @@
                 equipmentModal.close();
             }
         });
-        // 空間用途
 
+        // 空間用途
         usageModal = document.getElementById('usageModal');
         addUsageBtn = document.getElementById('addUsageBtn');
         closeUsageModalBtn = document.getElementById('closeUsageModalBtn');
         confirmAddUsageBtn = document.getElementById('confirmAddUsageBtn');
         usageNameInput = document.getElementById('usageNameInput');
         usageModalErrorDiv = document.getElementById('usageModalError');
-
         spaceUsageSelectElement = document.getElementById('spaceUsageId');
+        deleteUsageBtn = document.getElementById('deleteUsageBtn');
 
         addUsageBtn.addEventListener('click', openUsageModal);
         closeUsageModalBtn.addEventListener('click', () => { usageModal.close();});
         confirmAddUsageBtn.addEventListener('click', addUsageItem);  // 完成後，呼叫Ajax
+        deleteUsageBtn.addEventListener('click', handleDeleteSpaceUsage);
 
+        // 點擊modal外的任何地方也可以關閉modal
         usageModal.addEventListener('click', (event) => {
             if (event.target === usageModal) {
                 usageModal.close();
@@ -971,6 +1082,9 @@
         renderAddedEquipment();
         updateEquipmentHiddenInput();
     });
+
+
+
 </script>
 </body>
 </html>
