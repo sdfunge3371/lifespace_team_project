@@ -9,8 +9,6 @@ public class EventResponse {
 	 private String eventId;
 	 
 	 private String eventName;
-
-	 private Timestamp eventDate;
 	 
 	 private Timestamp eventStartTime;
 	 
@@ -18,11 +16,13 @@ public class EventResponse {
 	 
 	 private String eventCategory;
 	 
+	 private String eventStatus;
+	 
 	 private String spaceAddress;
 	 
 	 private String organizer;
 	 
-	 private Integer numberOfParticipants = 0;
+	 private Integer numberOfParticipants;
 	 
 	 private Integer maximumOfParticipants;
 	 
@@ -52,14 +52,6 @@ public class EventResponse {
 		this.eventName = eventName;
 	}
 
-	public Timestamp getEventDate() {
-		return eventDate;
-	}
-
-	public void setEventDate(Timestamp eventDate) {
-		this.eventDate = eventDate;
-	}
-
 	public Timestamp getEventStartTime() {
 		return eventStartTime;
 	}
@@ -84,6 +76,13 @@ public class EventResponse {
 		this.eventCategory = eventCategory;
 	}
 
+	public String getEventStatus() {
+		return eventStatus;
+	}
+
+	public void setEventStatus(String eventStatus) {
+		this.eventStatus = eventStatus;
+	}
 
 	public String getSpaceAddress() {
 		return spaceAddress;
@@ -165,30 +164,26 @@ public class EventResponse {
     public EventResponse(
         String eventId, 
         String eventName, 
-        Timestamp eventDate, 
         Timestamp eventStartTime,
         Timestamp eventEndTime, 
-        String eventCategory, 
-        String spaceId,  // 這裡要與查詢結果的列名對應
-        String memberId, // 這裡要與查詢結果的列名對應
+        String eventCategory,
+        String eventStatus,
         Integer numberOfParticipants, 
         Integer maximumOfParticipants, 
         String eventBriefing, 
         String remarks,
         String hostSpeaking, 
         Timestamp createdTime,
-        String organizer,          // 從查詢結果中的 member_name 映射
-        String spaceAddress,       // 從查詢結果中的 branch_addr 映射
+        String spaceAddress,         
+        String organizer,       
         String photoUrls           // 從查詢結果中的 GROUP_CONCAT(ep.photo) 映射
     ) {
         this.eventId = eventId;
         this.eventName = eventName;
-        this.eventDate = eventDate;
         this.eventStartTime = eventStartTime;
         this.eventEndTime = eventEndTime;
         this.eventCategory = eventCategory;
-        this.spaceId = spaceId;
-        this.memberId = memberId;
+        this.eventStatus = eventStatus;
         this.numberOfParticipants = numberOfParticipants;
         this.maximumOfParticipants = maximumOfParticipants;
         this.eventBriefing = eventBriefing;
@@ -202,27 +197,6 @@ public class EventResponse {
         if (photoUrls != null) {
             this.photoUrls = Arrays.asList(photoUrls.split(","));
         }
-    }
-
-    // 新增兩個屬性以匹配查詢中的額外字段
-    private String spaceId;
-    private String memberId;
-
-    // 為這兩個新屬性添加 getter 和 setter
-    public String getSpaceId() {
-        return spaceId;
-    }
-
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
-    }
-
-    public String getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
     }
 	
 }
