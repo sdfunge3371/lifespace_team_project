@@ -116,6 +116,11 @@ public class SpaceService {
 		// ============= 修改Space Equipments =============
 		Set<SpaceEquipment> targetEquipments = s.getSpaceEquipments();
 		targetEquipments.clear();
+
+		if (files == null || files.isEmpty()) {
+			throw new IllegalArgumentException("請至少上傳一張照片");
+		}
+
 		for (SpaceEquipmentRequest se : space.getSpaceEquipments()) {
 			System.out.println(s.getSpaceEquipments());
 			SpaceEquipment equip = new SpaceEquipment();

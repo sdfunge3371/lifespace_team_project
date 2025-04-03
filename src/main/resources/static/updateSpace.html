@@ -80,7 +80,7 @@
         }
 
         /* Styles for Image Preview */
-        #imagePreviewContainer .preview-item {
+        .imagePreviewContainer .preview-item {
             position: relative; /* Needed for absolute positioning of the delete button */
             border: 1px solid #ddd;
             padding: 5px;
@@ -88,7 +88,7 @@
             background-color: #f9f9f9;
         }
 
-        #imagePreviewContainer .preview-image {
+        .imagePreviewContainer .preview-image {
             display: block;
             max-width: 100px; /* Adjust size as needed */
             max-height: 100px; /* Adjust size as needed */
@@ -97,7 +97,7 @@
             object-fit: cover; /* Ensures the image covers the area without distortion */
         }
 
-        #imagePreviewContainer .delete-btn {
+        .imagePreviewContainer .delete-btn {
             position: absolute;
             top: -5px; /* Position slightly outside the top-right */
             right: -5px;
@@ -115,7 +115,7 @@
             transition: background-color 0.2s;
         }
 
-        #imagePreviewContainer .delete-btn:hover {
+        .imagePreviewContainer .delete-btn:hover {
             background-color: rgba(255, 0, 0, 1); /* Solid red on hover */
         }
 
@@ -294,7 +294,7 @@
     <!-- 錯誤表列 -->
     <div id="errorMessages"></div>
 
-    <h1>新增空間:</h1>
+    <h1>修改空間:</h1>
 
     <!-- 資料修改表單  (onsubmit="return false"; 防止表單預設提交之行為) -->
     <form id="spaceForm" name="form1" onsubmit="return false;">
@@ -320,9 +320,14 @@
             <label for="spacePhotos">空間照片:</label>
             <input type="file" id="spacePhotos" name="spacePhotos" class="form-control" multiple accept="image/*">
         </div>
+
         <div class="form-group">
             <label></label>
-            <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <div class="imagePreview" style="display: inline-block; flex-wrap: wrap; gap: 10px;">
+                <!-- 預覽舊照片 -->
+                <div id="existingPhotos" class="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                <!-- 預覽新照片 -->
+                <div id="newPhotos" class="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
             </div>
         </div>
 
@@ -392,10 +397,13 @@
             <textarea id="spaceAlert" name="spaceAlert" class="form-control"></textarea>
         </div>
 
+        <input type="hidden" id="spaceStatus" name="spaceStatus" class="form-control" value="">
+
         <div class="form-group">
             <label for="spaceFloor">空間所在樓層:</label>
             <input type="text" id="spaceFloor" name="spaceFloor" class="form-control" value="">
         </div>
+
 
         <div style="text-align: center;">
             <button type="button" id="submitBtn" class="submit-btn">完成</button>
@@ -456,7 +464,7 @@
 
     // ======== 全域變數配置 ========
     let currentSpaceId = null;  // 目前正在修改的空間編號
-    let photosToDelete = new Set();  // 用來存要刪掉照片的ID
+    // let photosToDelete = new Set();  // 用來存要刪掉照片的ID
 
     // 空間設備
     let addedEquipment = [];   // 暫存陣列 (需為JSON格式)： [{ name: '設備1'}, { name: '設備2'}, { name: '設備3'}, ...]
@@ -482,6 +490,8 @@
     let spacePhotosInput;
     let fileStore = new DataTransfer();
 
+    const imagePreviewFunctions = setupImagePreview();
+
     // ======== 顯示錯誤訊息 ========
 
     // 在表單最上方顯示錯誤訊息
@@ -504,12 +514,6 @@
         }
     }
 
-    // 清除錯誤
-    function clearErrors() {
-        errorDiv.innerHTML = '';
-        errorDiv.style.display = 'none';
-    }
-
     // ========= 載入目前該空間的資料 =========
 
     function getSpaceIdFromUrl() {
@@ -520,8 +524,53 @@
     // 自動將剛剛透過fetch API取得單一空間的資料，輸入到修改表單裡
     function populateForm(space) {
 
-    }
+        console.log(space.spaceStatus);
 
+        // 填入基本欄位
+        document.getElementById('spaceId').value = space.spaceId || '';     // ||: 若前面的是falsy值，才會用後面的值（注意：falsy值包含0，所以數字欄需要用??）
+        document.getElementById('spaceName').value = space.spaceName || '';
+        document.getElementById('spacePeople').value = space.spacePeople ?? ''; // ??: 若前面的是null或undefined，才會用後面的值
+        document.getElementById('spaceSize').value = space.spaceSize ?? '';
+        document.getElementById('spaceHourlyFee').value = space.spaceHourlyFee ?? '';
+        document.getElementById('spaceDailyFee').value = space.spaceDailyFee ?? '';
+        document.getElementById('spaceDesc').value = space.spaceDesc || '';
+        document.getElementById('spaceStatus').value = space.spaceStatus ?? '';
+        document.getElementById('spaceAlert').value = space.spaceAlert || '';
+        document.getElementById('spaceFloor').value = space.spaceFloor || '';
+
+        console.log(document.getElementById('spaceStatus').value);
+
+        // 填入分點（下拉式清單）
+        const branchSelect = document.getElementById('branchId');
+        setTimeout(() => {  // setTimeout == 0: setTimeout裡面的程式最後再執行（互賓老師講過）
+            const optionExists = branchSelect.querySelector(`option[value="${space.branchId}"]`);
+            if (optionExists) {
+                branchSelect.value = space.branchId;    // 下拉式清單預設顯示目前的分店選項
+            } else {    // 當分點被刪了，顯示此提醒訊息
+                console.warn(`Branch ID ${space.branchId} not found in dropdown.`);
+            }
+        }, 0);
+
+        // 填入空間用途（多選清單）
+        if (Array.isArray(space.spaceUsageMaps)) {  // 確認有空間用途資料後才執行
+            setTimeout(() => {
+                const selectedUsageIds = new Set(
+                    space.spaceUsageMaps.map(map => map.spaceUsage?.spaceUsageId)
+                );  // 將剛剛取得單一資料的spaceUsageMaps中，對到的所有空間用途ID，存到這個Set裡，e.g. {SU001, SU003, ...}
+                Array.from(spaceUsageSelectElement.options).forEach(option => {
+                    option.selected = selectedUsageIds.has(option.value);   // 自動選擇之前選到的空間用途
+                });
+            }, 0);
+        }
+
+        // 填入空間設備
+        addedEquipment = (space.spaceEquipments || []).map(eq => ({ spaceEquipName: eq.spaceEquipName }));  // 直接抓現有的空間設備產生標籤即可
+        renderAddedEquipment();
+        updateEquipmentHiddenInput();
+
+        // 填入空間照片
+        imagePreviewFunctions.displayExistingPhotos(space.spacePhotos || []); // 抓空間照片JSON
+    }
 
 
 
@@ -530,14 +579,51 @@
     function setupImagePreview() {
         spacePhotosInput = document.getElementById('spacePhotos');
         previewContainer = document.getElementById('imagePreviewContainer');
-        fileStore = new DataTransfer();
 
-        if (!spacePhotosInput || !previewContainer) return;   // 如果沒有照片可預覽，則不執行以下的程式
 
         spacePhotosInput.addEventListener('change', handleFileSelect);
 
+        // 處理「原有照片」預覽
+        function displayExistingPhotos(spacePhotos) {
+            const existingContainer = document.getElementById('existingPhotos');
+            existingContainer.innerHTML = ''; // 清空預覽區
+
+            // 渲染目前已存在的照片
+            for (const photo of spacePhotos) {
+                const previewItem = document.createElement('div');  // 建立一個顯示照片的div
+                previewItem.classList.add('preview-item');
+
+                const img = document.createElement('img');  // 建立img元素
+                img.classList.add('preview-image');  // CSS
+                img.src = `data:image/jpeg;base64,${photo.photo}`;  // 可根據實際 MIME type 改為 image/jpeg
+                img.alt = `space-photo-${photo.spacePhotoId}`;
+
+                // 在整個div的右上角新增刪除按鈕
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-btn');  // CSS
+                deleteBtn.innerHTML = '&times;'; // '×' symbol
+                deleteBtn.type = 'button'; // 注意：button的default type值為"submit"，為了預防按到刪除按鈕時表單直接被送出，需改成type="button"
+
+                // 點擊叉叉執行移除
+                deleteBtn.addEventListener('click', () => {
+                    previewItem.remove();
+                });
+
+                // 將圖片及叉叉按鈕加進div中
+                previewItem.appendChild(img);
+                previewItem.appendChild(deleteBtn);
+
+                // div加進預覽照片container中
+                existingContainer.appendChild(previewItem);
+            }
+        }
+
+        // 將選擇的檔案送進file input欄位
         function handleFileSelect(e) {
+
             const files = e.target.files; // 抓出剛剛選擇的檔案
+
+            console.log(files);
 
             // 新增檔案到DataTransfer物件裡
             for (const file of files) {
@@ -551,9 +637,10 @@
             renderPreviews();   // 執行照片預覽功能
         }
 
-        // 照片預覽
+        // 處理「新照片」預覽
         function renderPreviews() {
-            previewContainer.innerHTML = ''; // 清除預覽照片
+            const newPhotosContainer = document.getElementById('newPhotos');
+            newPhotosContainer.innerHTML = ''; // 清除預覽照片
 
             // 讀取Data Transfer裡的照片
             Array.from(fileStore.files).forEach((file, index) => {
@@ -565,7 +652,6 @@
 
                     const img = document.createElement('img');  // 建立img元素
                     img.classList.add('preview-image');  // CSS
-                    console.log(e.target);
                     img.src = e.target.result; // 將img src設為剛剛存入的照片來源
                     img.alt = file.name;
 
@@ -574,7 +660,6 @@
                     deleteBtn.classList.add('delete-btn');  // CSS
                     deleteBtn.innerHTML = '&times;'; // '×' symbol
                     deleteBtn.type = 'button'; // 注意：button的default type值為"submit"，為了預防按到刪除按鈕時表單直接被送出，需改成type="button"
-                    deleteBtn.title = `移除 ${file.name}`; // title: hover在X上時顯示文字
 
                     // 點擊叉叉執行移除
                     deleteBtn.addEventListener('click', () => {
@@ -586,7 +671,7 @@
                     previewItem.appendChild(deleteBtn);
 
                     // div加進預覽照片container中
-                    previewContainer.appendChild(previewItem);
+                    newPhotosContainer.appendChild(previewItem);
                 }
 
                 // 展示預覽照片
@@ -596,15 +681,20 @@
 
         // 移除預覽照片
         function removeFile(index) {
-            // Remove the file from the store based on its index
+            // 移除預覽照片
             fileStore.items.remove(index);
 
             // Update the input's files property
             spacePhotosInput.files = fileStore.files;
 
-            // Re-render the previews
+            // 重新渲染預覽照片
             renderPreviews();
         }
+
+        // 讓外部也能使用 displayExistingPhotos
+        return {
+            displayExistingPhotos
+        };
     }
 
     // ========== 處理「空間設備」==========
@@ -715,7 +805,7 @@
     }
 
     // ========== AJAX CRUD ==========
-    // --- 1. POST: 新增空間 ---
+    // --- 1. PUT: 更新空間 ---
     submitButton.addEventListener('click', function () {    // 點擊「完成」按鈕時要做的事
         // 移除成功、錯誤訊息
         errorDiv.innerHTML = '';
@@ -731,10 +821,12 @@
             spaceUsageIds: Array.from(form.spaceUsageIds.selectedOptions).map(opt => opt.value),
             spaceEquipments: JSON.parse(form.spaceEquipments.value),
             spaceDesc: form.spaceDesc.value,
-            spaceAlert: form.spaceAlert.value,
             spaceStatus: form.spaceStatus.value,
+            spaceAlert: form.spaceAlert.value,
             spaceFloor: form.spaceFloor.value
         };
+
+        console.log(spaceData);
 
         formData.append("data", new Blob([JSON.stringify(spaceData)], { type: "application/json" }));
 
@@ -744,12 +836,14 @@
         }
 
         // 傳送資料時，將按鈕disabled，以免重複上傳
+        console.log(JSON.stringify(formData));
         submitButton.disabled = true;
         submitButton.textContent = '傳送中...';
 
+        const updateUrl = `${UPDATE_SPACE_URL_BASE}/${encodeURIComponent(currentSpaceId)}`;
         // 提交request body
-        fetch(ADD_SPACE_URL, {
-            method: 'POST',
+        fetch(updateUrl, {
+            method: 'PUT',
             body: formData      // 如果request body是multipart/form-data，這邊就不用指定content-type，而且也不用JSON stringify formData
         })
             .then(response => {
@@ -759,6 +853,7 @@
                         throw backendErrors;    // 拋出例外給外層的catch
                     }).catch((backendErrors) => {
                         // 回傳的JSON格式有誤，拋出例外給外層的catch
+                        console.log(backendErrors);
                         displayErrors(backendErrors);
                         throw [`伺服器發生錯誤: ${response.status} ${response.statusText}`];
                     });
@@ -987,7 +1082,7 @@
             const usageName = option.textContent;   // 內容存名稱
             const deleteUrl = `${SOFT_DELETE_SPACE_USAGES_URL_BASE}/${encodeURIComponent(usageId)}/soft-delete`; // 組成 PUT URL
 
-            const response = await fetch(deleteUrl, {   // 開始丟給後端處理，此時，狀態已經成DELETED了
+            const response = await fetch(deleteUrl, {   // 開始丟給後端處理，此時，狀態已經改成DELETED了
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1007,7 +1102,7 @@
 
     }
 
-    // --------- 6. 取得單一空間資料 ---------
+    // --------- 6. GET: 取得單一空間資料 ---------
 
     async function fetchSpaceDetails(spaceId) {
         const url = `${GET_SPACE_BY_ID_URL_BASE}/${encodeURIComponent(spaceId)}`;
@@ -1018,7 +1113,6 @@
             const spaceData = await response.json();
             console.log("Fetched space data:", spaceData);
             populateForm(spaceData);    // 自動輸入到修改表單中
-            clearErrors();
 
         } catch (error) {
             console.error('Error fetching space details:', error);
@@ -1027,7 +1121,7 @@
     }
 
     // ======== Initialization (載入網頁時要做的事情) ========
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async () => {
         // 空間設備
         equipmentModal = document.getElementById('equipmentModal');
         addEquipmentBtn = document.getElementById('addEquipmentBtn');
@@ -1036,6 +1130,7 @@
         equipmentNameInput = document.getElementById('equipmentNameInput');
         equipmentDisplayArea = document.getElementById('equipmentDisplayArea');
         equipmentDataInput = document.getElementById('equipmentDataInput');
+
         // 點擊「新增空間設備」時
         addEquipmentBtn.addEventListener('click', openEquipmentModal);
         // 點擊叉叉時
@@ -1075,14 +1170,20 @@
         });
 
         // 初始化
-        fetchBranches();
-        fetchSpaceUsages();
-        setupImagePreview();
+        currentSpaceId = getSpaceIdFromUrl();
 
-        renderAddedEquipment();
-        updateEquipmentHiddenInput();
+        await Promise.all([
+            fetchBranches(),
+            fetchSpaceUsages()
+        ]);
+
+        await fetchSpaceDetails(currentSpaceId);   // Ajax 6: 取得單一空間資料，並將資料自動輸入到表單中
+        // setupImagePreview();
+
+        // 在populateForm執行即可
+        // renderAddedEquipment();
+        // updateEquipmentHiddenInput();
     });
-
 
 
 </script>
