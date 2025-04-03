@@ -5,6 +5,10 @@ import java.sql.Timestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.lifespace.constant.CommentReportManageType;
+import com.lifespace.constant.CommentReportReportReason;
+import com.lifespace.constant.CommentReportStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,7 +60,7 @@ public class CommentReportVO implements java.io.Serializable{
 //	private String commentId;
 	
 	@Column(name = "manage_type")
-	private Integer manageType;
+	private CommentReportManageType manageType;
 	
 	@Column(name = "close_time", insertable = false)
 	@UpdateTimestamp
@@ -68,11 +72,11 @@ public class CommentReportVO implements java.io.Serializable{
 	
 	@Column(name = "report_reason")
 	@NotEmpty(message="檢舉原因: 請勿空白")
-	private String reportReason;
+	private CommentReportReportReason reportReason;
 	
 	@Column(name = "status")
 	@NotNull(message="案件處理狀態: 請勿空白")
-	private Integer status;
+	private CommentReportStatus status;
 	
 //	private Timestamp createdTime;
 	
@@ -119,11 +123,11 @@ public class CommentReportVO implements java.io.Serializable{
 //		this.commentId = commentId;
 //	}
 	
-	public Integer getManageType() {
+	public CommentReportManageType getManageType() {
 		return manageType;
 	}
 	
-	public void setManageType(Integer manageType) {
+	public void setManageType(CommentReportManageType manageType) {
 		this.manageType = manageType;
 	}
 	
@@ -143,19 +147,19 @@ public class CommentReportVO implements java.io.Serializable{
 		this.reportMessage = reportMessage;
 	}
 	
-	public String getReportReason() {
+	public CommentReportReportReason getReportReason() {
 		return reportReason;
 	}
 	
-	public void setReportReason(String reportReason) {
+	public void setReportReason(CommentReportReportReason reportReason) {
 		this.reportReason = reportReason;
 	}
 	
-	public Integer getStatus() {
+	public CommentReportStatus getStatus() {
 		return status;
 	}
 	
-	public void setStatus(Integer status) {
+	public void setStatus(CommentReportStatus status) {
 		this.status = status;
 	}
 	

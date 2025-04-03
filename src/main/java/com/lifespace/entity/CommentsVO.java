@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.lifespace.constant.CommentsCommentHide;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,7 +38,7 @@ public class CommentsVO implements java.io.Serializable{
 //	private String eventMemberId;
 	
 	@Column(name = "comment_hide")
-	private Integer commentHide;
+	private CommentsCommentHide commentHide;
 	
 	@Column(name = "comment_message")
 	@NotEmpty(message="留言內容: 請勿空白")
@@ -73,11 +75,11 @@ public class CommentsVO implements java.io.Serializable{
 //		this.eventMemberId = eventMemberId;
 //	}
 	
-	public Integer getCommentHide() {
+	public CommentsCommentHide getCommentHide() {
 		return commentHide;
 	}
 
-	public void setCommentHide(Integer commentHide) {
+	public void setCommentHide(CommentsCommentHide commentHide) {
 		this.commentHide = commentHide;
 	}
 	
