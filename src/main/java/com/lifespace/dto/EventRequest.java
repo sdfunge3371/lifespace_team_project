@@ -9,16 +9,13 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lifespace.constant.EventStatus;
 
 public class EventRequest {
 
 	 	@NotBlank
 	 	private String eventName;
 	 	
-	    @NotNull
-	    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
-	    private Timestamp eventDate;
-	 
 	    @NotNull
 	    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
 	    private Timestamp eventStartTime;
@@ -30,12 +27,9 @@ public class EventRequest {
 	    @NotBlank
 	    private String eventCategory;
 	    
-	    @NotBlank
-	    private String spaceId;
-	    
-	    @NotBlank
-	    private String memberId;
-	    
+	    @NotNull
+	    private EventStatus eventStatus = EventStatus.SCHEDULED;
+	    	    
 	    @NotNull
 	    private Integer maximumOfParticipants;
 	    
@@ -53,14 +47,6 @@ public class EventRequest {
 
 		public void setEventName(String eventName) {
 			this.eventName = eventName;
-		}
-
-		public Timestamp getEventDate() {
-			return eventDate;
-		}
-
-		public void setEventDate(Timestamp eventDate) {
-			this.eventDate = eventDate;
 		}
 
 		public Timestamp getEventStartTime() {
@@ -87,20 +73,12 @@ public class EventRequest {
 			this.eventCategory = eventCategory;
 		}
 
-		public String getSpaceId() {
-			return spaceId;
+		public EventStatus getEventStatus() {
+			return eventStatus;
 		}
 
-		public void setSpaceId(String spaceId) {
-			this.spaceId = spaceId;
-		}
-
-		public String getMemberId() {
-			return memberId;
-		}
-
-		public void setMemberId(String memberId) {
-			this.memberId = memberId;
+		public void setEventStatus(EventStatus eventStatus) {
+			this.eventStatus = eventStatus;
 		}
 
 		public Integer getMaximumOfParticipants() {

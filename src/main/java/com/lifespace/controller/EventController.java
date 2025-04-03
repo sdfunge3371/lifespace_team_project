@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,10 +55,22 @@ public class EventController {
         return "執行 insert event jpa 方法";
     }
     
-    @PostMapping("/update")
-    public String update(@RequestBody Event eventRequest) {
-    	eventSvc.updateEvent(eventRequest);
-        return "執行update event jpa方法";
+	@PutMapping("/updateStatus")
+    public String updateStatus(@RequestParam(required = true) String eventId, @RequestParam(required = true) String status) {
+    	eventSvc.updateEventStatus(eventId, status);
+        return "執行update event status jpa方法";
+    }
+    
+    @PutMapping("/addMemToEvent")
+    public String addToEvent(@RequestParam(required = true) String eventId, @RequestParam(required = true) String memberId) {
+    	eventSvc.addMemberToEvent(memberId, eventId);
+        return "執行add event member jpa方法";
+    }
+    
+    @PutMapping("/removeMemFromEvent")
+    public String removeFromEvent(@RequestParam(required = true) String eventId, @RequestParam(required = true) String memberId) {
+    	eventSvc.removeMemberFromEvent(memberId, eventId);
+        return "執行remove event member jpa方法";
     }
     
     @GetMapping("/getAll")

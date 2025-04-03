@@ -8,8 +8,17 @@ import java.util.stream.Collectors;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.lifespace.entity.Orders;
-import jakarta.persistence.*;
+import com.lifespace.constant.EventStatus;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name="event")
@@ -25,9 +34,6 @@ public class Event implements java.io.Serializable {
 	 @Column(name="event_name")
 	 private String eventName;
 
-	 @Column(name="event_date")
-	 private Timestamp eventDate;
-	 
 	 @Column(name="event_start_time")
 	 private Timestamp eventStartTime;
 	 
@@ -36,12 +42,10 @@ public class Event implements java.io.Serializable {
 	 
 	 @Column(name="event_category")
 	 private String eventCategory;
-	 
-	 @Column(name="space_id")
-	 private String spaceId;
-	 
-	 @Column(name = "member_id")
-	 private String memberId;
+	  
+	 @Enumerated(EnumType.STRING)
+	 @Column(name="event_status")
+	 private EventStatus eventStatus = EventStatus.SCHEDULED;
 	 
 	 @Column(name="number_of_participants")
 	 private Integer numberOfParticipants = 0;
@@ -87,31 +91,6 @@ public class Event implements java.io.Serializable {
 		return eventId;
 	}
 
-	public Event() {
-		
-	}
-
-	public Event(String eventId, String eventName, Timestamp eventDate, Timestamp eventStartTime,
-				 Timestamp eventEndTime, String eventCategory, String spaceId, String memberId, Integer numberOfParticipants,
-				 Integer maximumOfParticipants, String eventBriefing, String remarks, String hostSpeaking,
-				 Timestamp createdTime) {
-		super();
-		this.eventId = eventId;
-		this.eventName = eventName;
-		this.eventDate = eventDate;
-		this.eventStartTime = eventStartTime;
-		this.eventEndTime = eventEndTime;
-		this.eventCategory = eventCategory;
-		this.spaceId = spaceId;
-		this.memberId = memberId;
-		this.numberOfParticipants = numberOfParticipants;
-		this.maximumOfParticipants = maximumOfParticipants;
-		this.eventBriefing = eventBriefing;
-		this.remarks = remarks;
-		this.hostSpeaking = hostSpeaking;
-		this.createdTime = createdTime;
-	}
-
 	public void setEventId(String eventId) {
 		this.eventId = eventId;
 	}
@@ -122,14 +101,6 @@ public class Event implements java.io.Serializable {
 
 	public void setEventName(String eventName) {
 		this.eventName = eventName;
-	}
-
-	public Timestamp getEventDate() {
-		return eventDate;
-	}
-
-	public void setEventDate(Timestamp eventDate) {
-		this.eventDate = eventDate;
 	}
 
 	public Timestamp getEventStartTime() {
@@ -154,22 +125,6 @@ public class Event implements java.io.Serializable {
 
 	public void setEventCategory(String eventCategory) {
 		this.eventCategory = eventCategory;
-	}
-
-	public String getSpaceId() {
-		return spaceId;
-	}
-
-	public void setSpaceId(String spaceId) {
-		this.spaceId = spaceId;
-	}
-
-	public String getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
 	}
 
 	public Integer getNumberOfParticipants() {
@@ -218,6 +173,16 @@ public class Event implements java.io.Serializable {
 
 	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
+	}
+
+
+	public EventStatus getEventStatus() {
+		return eventStatus;
+	}
+
+
+	public void setEventStatus(EventStatus eventStatus) {
+		this.eventStatus = eventStatus;
 	}
 		
 	    

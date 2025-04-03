@@ -17,35 +17,35 @@ public interface EventRepository extends JpaRepository<Event,String>{
 
 	
 	@Query(value = "SELECT " +
-		    "e.event_id, e.event_name, e.event_date, e.event_start_time, e.event_end_time, " +
-		    "e.event_category, e.space_id, e.member_id, e.number_of_participants, " +
+		    "e.event_id, e.event_name, e.event_start_time, e.event_end_time, " +
+		    "e.event_category, e.event_status, e.number_of_participants, " +
 		    "e.maximum_of_participants, e.event_briefing, e.remarks, e.host_speaking, " +
-		    "e.created_time, mem.member_name, br.branch_addr, GROUP_CONCAT(ep.photo) AS photo_urls " +
+		    "e.created_time, br.branch_addr AS space_address, mem.member_name AS organizer, GROUP_CONCAT(ep.photo) AS photo_urls " +
 		    "FROM event e "+
 		    "LEFT JOIN event_photo ep ON e.event_id = ep.event_id " +
-		    "LEFT JOIN member mem ON e.member_id = mem.member_id " +
-		    "LEFT JOIN space sp ON e.space_id = sp.space_id " +
-		    "LEFT JOIN branch br ON sp.branch_id = br.branch_id " +
+		    "LEFT JOIN orders ord ON e.event_id = ord.event_id " +
+		    "LEFT JOIN member mem ON ord.member_id = mem.member_id " +
+		    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
 		    "WHERE (:eventName IS NULL OR e.event_name LIKE CONCAT('%', :eventName, '%')) " +
 		    "AND (:startTime IS NULL OR e.event_start_time >= :startTime) " +
 		    "AND (:endTime IS NULL OR e.event_end_time <= :endTime) " +
 		    "AND (:category IS NULL OR e.event_category = :category) "+
-		    "GROUP BY e.event_id ",
+		    "GROUP BY e.event_id, br.branch_addr, mem.member_name",
 		    countQuery = "SELECT " +
-				    "e.event_id, e.event_name, e.event_date, e.event_start_time, e.event_end_time, " +
-				    "e.event_category, e.space_id, e.member_id, e.number_of_participants, " +
+				    "e.event_id, e.event_name, e.event_start_time, e.event_end_time, " +
+				    "e.event_category, e.event_status, e.number_of_participants, " +
 				    "e.maximum_of_participants, e.event_briefing, e.remarks, e.host_speaking, " +
-				    "e.created_time, mem.member_name, br.branch_addr, GROUP_CONCAT(ep.photo) AS photo_urls " +
+				    "e.created_time, br.branch_addr AS space_address, mem.member_name AS organizer, GROUP_CONCAT(ep.photo) AS photo_urls " +
 				    "FROM event e "+
 				    "LEFT JOIN event_photo ep ON e.event_id = ep.event_id " +
-				    "LEFT JOIN member mem ON e.member_id = mem.member_id " +
-				    "LEFT JOIN space sp ON e.space_id = sp.space_id " +
-				    "LEFT JOIN branch br ON sp.branch_id = br.branch_id " +
+				    "LEFT JOIN orders ord ON e.event_id = ord.event_id " +
+				    "LEFT JOIN member mem ON ord.member_id = mem.member_id " +
+				    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
 				    "WHERE (:eventName IS NULL OR e.event_name LIKE CONCAT('%', :eventName, '%')) " +
 				    "AND (:startTime IS NULL OR e.event_start_time >= :startTime) " +
 				    "AND (:endTime IS NULL OR e.event_end_time <= :endTime) " +
 				    "AND (:category IS NULL OR e.event_category = :category) "+
-				    "GROUP BY e.event_id ",
+				    "GROUP BY e.event_id, br.branch_addr, ord.member_id",
 		    nativeQuery = true)
 	    Page<EventResponse> findEventsByConditions(
 	            @Param("eventName") String eventName,
@@ -55,7 +55,36 @@ public interface EventRepository extends JpaRepository<Event,String>{
 	            Pageable pageable);
 	 
 	 
-	 	List<Event> findByMemberId(String userId);
+//	 	List<Event> findByMemberId(String userId);
+	 	
+	 	
+	 	@Query(value = "SELECT " +
+			    "e.event_id, e.event_name, e.event_start_time, e.event_end_time, " +
+			    "e.event_category, e.event_status, e.number_of_participants, " +
+			    "e.maximum_of_participants, e.event_briefing, e.remarks, e.host_speaking, " +
+			    "e.created_time, br.branch_addr AS space_address, mem.member_name AS organizer, GROUP_CONCAT(ep.photo) AS photo_urls " +
+			    "FROM event e "+
+			    "LEFT JOIN event_photo ep ON e.event_id = ep.event_id " +
+			    "LEFT JOIN orders ord ON e.event_id = ord.event_id " +
+			    "LEFT JOIN member mem ON ord.member_id = mem.member_id " +
+			    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
+			    "WHERE ( e.event_id = :eventId )" +
+			    "GROUP BY e.event_id, br.branch_addr, mem.member_name",nativeQuery = true)
+	 	EventResponse getOneEvent(@Param("eventId") String eventId);
+
+	 
+//	 	@Query(value = "SELECT " +
+//	 			"e.event_id, e.event_name, e.event_start_time, e.event_end_time, " +
+//			    "e.event_category, e.event_status, e.number_of_participants, " +
+//			    "e.maximum_of_participants, e.event_briefing, e.remarks, e.host_speaking, " +
+//			    "e.created_time, br.branch_addr AS space_address, mem.member_name AS organizer, GROUP_CONCAT(ep.photo) AS photo_urls " +
+//			    "FROM event e "+
+//			    "LEFT JOIN event_photo ep ON e.event_id = ep.event_id " +
+//			    "LEFT JOIN orders ord ON e.event_id = ord.event_id " +
+//			    "LEFT JOIN member mem ON ord.member_id = mem.member_id " +
+//			    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
+//			    "GROUP BY e.event_id, br.branch_addr, mem.member_name",nativeQuery = true)
+//	 	List<EventResponse> getAllEvents();
 
 	 
 }

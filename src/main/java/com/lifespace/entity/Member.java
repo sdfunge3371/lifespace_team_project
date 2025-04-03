@@ -53,8 +53,8 @@ public class Member implements java.io.Serializable {
 //	private List<CommentReport > commentReport;
 	
 	//活動參與會員
-//	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
-//	private List<EventMemberEntity> eventMemberEntity;
+	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)
+	private List<EventMember> eventMember;
 	
 	//活動
 //	@OneToMany(mappedBy = "member" ,cascade = CascadeType.ALL)

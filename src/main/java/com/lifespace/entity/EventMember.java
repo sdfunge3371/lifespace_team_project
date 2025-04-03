@@ -2,8 +2,15 @@ package com.lifespace.entity;
 
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import com.lifespace.constant.EventMemberStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,20 +24,24 @@ public class EventMember implements java.io.Serializable {
 	
 	 @Id
 	 @Column(name="event_member_id")
+	 @GeneratedValue(generator = "event_member_id")
+	 @GenericGenerator(name = "event_member_id", strategy = "com.lifespace.util.EventMemberCustomStringIdGenerator")
 	 private String eventMemberId;
 	 
 	 @ManyToOne
 	 @JoinColumn(name = "event_id", referencedColumnName = "event_id")
 	 private Event event;
 
-	 @Column(name="member_id")
-	 private String memberId;
+	 @ManyToOne
+	 @JoinColumn(name="member_id", referencedColumnName = "member_id")
+	 private Member member;
 	 
+	 @Enumerated(EnumType.STRING)
 	 @Column(name="participate_status")
-	 private Integer participateStatus;
+	 private EventMemberStatus participateStatus = EventMemberStatus.ATTENT;
 	 
-	 @Column(name="participated_time")
-	 private Timestamp participatedTime;
+	 @Column(name="created_time")
+	 private Timestamp createdTime;
 
 	public String getEventMemberId() {
 		return eventMemberId;
@@ -50,46 +61,28 @@ public class EventMember implements java.io.Serializable {
 		this.event = event;
 	}
 
-	public String getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
-	}
-
-	public Integer getParticipateStatus() {
+	public EventMemberStatus getParticipateStatus() {
 		return participateStatus;
 	}
 
-	public void setParticipateStatus(Integer participateStatus) {
+	public void setParticipateStatus(EventMemberStatus participateStatus) {
 		this.participateStatus = participateStatus;
 	}
 
-	public Timestamp getParticipatedTime() {
-		return participatedTime;
+	public Timestamp getCreatedTime() {
+		return createdTime;
 	}
 
-	public void setParticipatedTime(Timestamp participatedTime) {
-		this.participatedTime = participatedTime;
+	public void setCreatedTime(Timestamp createdTime) {
+		this.createdTime = createdTime;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Member getMember() {
+		return member;
 	}
 
-	public EventMember(String eventMemberId, Event event, String memberId, Integer participateStatus,
-			Timestamp participatedTime) {
-		super();
-		this.eventMemberId = eventMemberId;
-		this.event = event;
-		this.memberId = memberId;
-		this.participateStatus = participateStatus;
-		this.participatedTime = participatedTime;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
-	public EventMember() {
-		
-	}
-	
 }
