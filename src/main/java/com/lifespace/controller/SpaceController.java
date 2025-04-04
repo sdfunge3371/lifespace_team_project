@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lifespace.dto.SpaceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -87,9 +89,15 @@ public class SpaceController {
 	@PutMapping("/spaces/{spaceId}")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> updateSpace(@PathVariable String spaceId,
 										 @RequestPart("data") @Valid SpaceRequest space,
-										 @RequestPart(value = "photos", required = false) List<MultipartFile> files) {
+										 @RequestPart(value = "photos", required = false) List<MultipartFile> files,	// 記錄更新後的照片有哪些
+										 @RequestPart(value = "keptPhotoIds", required = false) String keptPhotoIdsJson) 	// 記錄更新前現有的照片有哪些(透過存ID: [1, 2, 4, 6, ...])
+		{
 		try {
-			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : List.of());
+			List<Integer> keptPhotoIds = new ObjectMapper().readValue(keptPhotoIdsJson, new TypeReference<>() {});
+			// ObjectMapper: 將JSON轉為Java Object
+			// readValue: 將JSON解析為指定的Java型別
+			// TypeReference: 根據你宣告的型別改成精確的型別: List<Integer> (原本是List<Object>)
+			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : List.of(), keptPhotoIds);
 	        return ResponseEntity.ok(updated);
 		} catch (DataIntegrityViolationException e) {
 			// 回傳 409 Conflict，並可加入錯誤訊息
@@ -102,6 +110,14 @@ public class SpaceController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorBody);
 		}
 	}
-	
-	// More methods...
+
+	// 上、下架更新狀態
+	@PutMapping("/spaces/status/{spaceId}")
+	public ResponseEntity<Space> toggleStatus(@PathVariable String spaceId, @RequestBody Map<String, String> body) {
+		Space spaceUpdated = spaceService.toggleStatus(spaceId, body);
+		return ResponseEntity.ok(spaceUpdated);
+	}
+
+	// 透過上、下架進行篩選
+
 }

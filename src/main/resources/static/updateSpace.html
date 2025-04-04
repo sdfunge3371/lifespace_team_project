@@ -468,6 +468,7 @@
 
     // 空間設備
     let addedEquipment = [];   // 暫存陣列 (需為JSON格式)： [{ name: '設備1'}, { name: '設備2'}, { name: '設備3'}, ...]
+    let keptPhotoIds = [];  // 用來記錄哪些現有的照片沒有被刪除
     let equipmentModal;
     let addEquipmentBtn;
     let closeEquipmentModalBtn;
@@ -580,13 +581,15 @@
         spacePhotosInput = document.getElementById('spacePhotos');
         previewContainer = document.getElementById('imagePreviewContainer');
 
-
         spacePhotosInput.addEventListener('change', handleFileSelect);
 
         // 處理「原有照片」預覽
         function displayExistingPhotos(spacePhotos) {
             const existingContainer = document.getElementById('existingPhotos');
+
+            // 初始化
             existingContainer.innerHTML = ''; // 清空預覽區
+            keptPhotoIds = [];   // 將前一次更新記錄的現有照片清空
 
             // 渲染目前已存在的照片
             for (const photo of spacePhotos) {
@@ -604,10 +607,14 @@
                 deleteBtn.innerHTML = '&times;'; // '×' symbol
                 deleteBtn.type = 'button'; // 注意：button的default type值為"submit"，為了預防按到刪除按鈕時表單直接被送出，需改成type="button"
 
+                keptPhotoIds.push(photo.spacePhotoId);  // 先不要 push，一直到使用者沒有刪除(觸發上面的event listener)時，才 push
+
                 // 點擊叉叉執行移除
                 deleteBtn.addEventListener('click', () => {
                     previewItem.remove();
+                    keptPhotoIds = keptPhotoIds.filter(id => id !== photo.spacePhotoId);
                 });
+
 
                 // 將圖片及叉叉按鈕加進div中
                 previewItem.appendChild(img);
@@ -811,6 +818,8 @@
         errorDiv.innerHTML = '';
 
         const formData = new FormData();
+
+        // 將輸入欄裡的所有欄位輸入到formData裡面，準備到後端處理
         const spaceData = {
             branchId: form.branchId.value,
             spaceName: form.spaceName.value,
@@ -826,8 +835,10 @@
             spaceFloor: form.spaceFloor.value
         };
 
-        console.log(spaceData);
+        // 送出表單時，將「現有」照片加入formData
+        formData.append("keptPhotoIds", new Blob([JSON.stringify(keptPhotoIds)], { type: "application/json" }));
 
+        // 送出表單時，將修改過後的所有照片加入formData
         formData.append("data", new Blob([JSON.stringify(spaceData)], { type: "application/json" }));
 
         const photoInput = document.getElementById("spacePhotos");
@@ -836,7 +847,6 @@
         }
 
         // 傳送資料時，將按鈕disabled，以免重複上傳
-        console.log(JSON.stringify(formData));
         submitButton.disabled = true;
         submitButton.textContent = '傳送中...';
 
