@@ -267,6 +267,15 @@
                 <button id="addSpaceBtn" type="submit" class="add-btn">
                     <i class="fas fa-plus"></i> 新增資料
                 </button>
+
+                <!--篩選上下架-->
+                <select id="statusFilter" class="form-control search-input" style="width: auto;">
+                    <option value="all">所有空間</option>
+                    <option value="1">上架中</option>
+                    <option value="0">未上架</option>
+                </select>
+
+                <!--顯示全部（可刪）-->
                 <button id="showAllBtn" style="display: none;">顯示全部</button>
             </div>
             <div class="search-container">
@@ -303,7 +312,7 @@
                     <th>空間照片</th>
                     <th>最後更新時間</th>
                     <th>修改</th>
-                    <!-- <th>上/下架</th> -->
+                    <th>上/下架</th>
                 </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -336,8 +345,7 @@
         const GET_ALL_SPACES_URL = `${APP_CONTEXT_PATH}/spaces`;   // 需照抄Controller中@XXXMapping的連結
         const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 後面加空間編號(S001, S002, etc.)
         const GET_SPACE_BY_NAME_URL_BASE = `${APP_CONTEXT_PATH}/spaces/name`;   // 後面加空間名稱參數
-
-        const SPACE_ACTION_URL = "/#"; // URL for edit/delete forms (這個要改)
+        const TOGGLE_SPACE_STATUS_URL = `${APP_CONTEXT_PATH}/spaces/status`;  // e.g. /spaces/status/S001)
 
         // === DOM Elements ===
         const tableBody = document.getElementById('tableBody');
@@ -351,10 +359,11 @@
         const rowsPerPage = 10;   // 每頁10筆
         let currentPage = 1;   // 一開始在第1頁
         let allSpacesData = []; // 用來存所有的空間資料
+        let filteredSpacesData = []; // 被篩選後的結果（可用於上下架、人數、費率篩選等）
 
         // === Functions ===
         function updatePagination() {
-            const totalRows = allSpacesData.length;  // 總資料筆數
+            const totalRows = filteredSpacesData.length;  // 總資料筆數
             const totalPages = Math.ceil(totalRows / rowsPerPage);   // 總頁數
             paginationContainer.innerHTML = '';
             paginationContainer.style.display = totalPages > 1 ? 'flex' : 'none'; // Hide if only one page or less
@@ -461,11 +470,11 @@
 
             // 透過分頁邏輯，計算出那一頁要顯示哪些資料
             const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, allSpacesData.length);  // 處理最後一頁的顯示方式
-            const spacesToDisplay = allSpacesData.slice(startIndex, endIndex);
+            const endIndex = Math.min(startIndex + rowsPerPage, filteredSpacesData.length);  // 處理最後一頁的顯示方式
+            const spacesToDisplay = filteredSpacesData.slice(startIndex, endIndex);
 
             // 在資料改變後，調整顯示方式
-            if (spacesToDisplay.length === 0 && allSpacesData.length > 0) {     // 搜尋結果沒有資料，且當前頁數不在第1頁時，重設到第1頁
+            if (spacesToDisplay.length === 0 && filteredSpacesData.length > 0) {     // 搜尋結果沒有資料，且當前頁數不在第1頁時，重設到第1頁
                 currentPage = 1;
                 displayPagedData();
                 return;
@@ -537,6 +546,11 @@
                                 修改
                             </button>
                         </td>
+                        <td>
+                            <button type="button" class="btn toggle-status-btn" data-space-id="${escapeHtml(space.spaceId)}" data-current-status="${escapeHtml(space.spaceStatus)}">
+                                ${space.spaceStatus === 1 ? '下架' : '上架'}
+                            </button>
+                        </td>
                     `;
             // escapeHtml(): 處理跳脫字元
             // truncateText(): 利用...處理過長的資料，20就是只顯示前20個字
@@ -562,155 +576,6 @@
             text = String(text);
             return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
         }
-
-        // ============= AJAX CRUD =============
-
-        // === GET: 搜尋所有空間 ===
-        function fetchSpaces() {
-            tableBody.innerHTML = '<tr><td colspan="12" style="text-align:center;">載入中...</td></tr>'; // Show loading state
-
-            // 載入過程要做的事...
-            errorDisplay.textContent = ''; // 把之前的錯誤訊息刪除
-            paginationContainer.style.display = 'none';
-            showAllBtn.style.display = 'none';
-
-            fetch(GET_ALL_SPACES_URL)   // 回傳一個promise物件
-                .then(response => {  // 處理promise物件，提取JSON
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    // 因為有檔案相關欄位，所以回傳JSON前要先檢查content-type是否正確
-                    const contentType = response.headers.get("content-type");
-
-                    if (contentType && contentType.indexOf("application/json") !== -1) {
-                        return response.json(); // 解析回應的JSON資料
-                    } else {
-                        throw new Error(`Expected JSON but received ${contentType}`);
-                    }
-                })
-                .then(data => {   // 處理JSON資料
-                    if (!Array.isArray(data)) {     // 回傳的JSON格式必須為Array (Array裡面的每一個Object都是一組空間資料)
-                        throw new Error("Received data is not an array");
-                    }
-                    allSpacesData = data; // 儲存所有資料
-                    currentPage = 1; // 取得請求後，記得把頁數回到第1頁
-                    displayPagedData(); // 顯示第一頁資料
-                })
-                .catch(error => {
-                        console.error('Error fetching spaces:', error);
-                        errorDisplay.textContent = `無法載入空間資料：${error.message}。請稍後再試。`;
-                        tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color: red;">載入失敗</td></tr>`;
-                    }
-                );
-        }
-
-        // === GET: 透過ID或空間名稱搜尋單一空間 ===
-        searchForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const searchType = document.getElementById('searchType').value;
-
-
-            const keyword = searchInput.value.trim();   // 抓輸入欄的值
-
-            if (!keyword) {     // 未輸入資料時
-                alert("輸入欄不得空白！");
-                return;
-            }
-
-            // 先清空畫面與錯誤
-            tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center;">搜尋中...</td></tr>`;
-            errorDisplay.textContent = '';
-            paginationContainer.style.display = 'none';
-
-            // 取得URL
-            let searchUrl;
-            if (searchType === 'id') {
-                searchUrl = `${GET_SPACE_BY_ID_URL_BASE}/${encodeURIComponent(keyword)}`;    // (http://localhost:8080/spaces/id/S001)
-            } else if (searchType === 'name') {
-                searchUrl = `${GET_SPACE_BY_NAME_URL_BASE}?keyword=${encodeURIComponent(keyword)}`;    // (http://localhost:8080/spaces/name?keyword=Cozy)
-            }
-
-            fetch(searchUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        // 解析ResourceNotFoundException回傳的JSON
-                        return response.json().catch(() => null).then(errorData => { // 解析json，如果無法解析就直接忽略
-                            if (errorData && errorData.message) {
-                                throw new Error(errorData.message);  // 從後端的錯誤訊息拿來這邊顯示
-                            }
-                        });
-                    }
-                    return response.json();
-
-                    // 檢查content-type
-                    // const contentType = response.headers.get("content-type");
-                    // if (contentType && contentType.includes("application/json")) {
-                    //     return response.json();
-                    // } else {
-                    //     throw new Error(`回應格式錯誤: 預期 JSON 但收到 ${contentType}`);
-                    // }
-                })
-                .then(data => {
-                    if (Array.isArray(data)) {
-                        allSpacesData = data;
-                        currentPage = 1;
-                        displayPagedData();  // 顯示多筆（模糊查詢）
-                    } else {
-                        displaySingleSpace(data); // 顯示單筆（精準查詢）
-                    }
-                })
-                .catch(error => {
-                    console.error(`Error fetching space ID ${keyword}:`, error);
-                    errorDisplay.textContent = `搜尋失敗：${error.message}`;
-                    tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color: red;">搜尋失敗</td></tr>`;
-                    showAllBtn.style.display = 'inline-block'; // 報錯時也可以顯示全部
-                });
-        })
-
-        // === GET: 透過空間名稱搜尋空間 ===
-
-        // 點擊「新增資料」按鈕時...
-        document.getElementById('addSpaceBtn').addEventListener('click', function () {
-            window.location.href = 'addSpace.html'; // 前端路由跳轉
-        });
-
-        // 點擊「顯示全部」按鈕時...
-        showAllBtn.addEventListener('click', () => {
-            searchInput.value = ''; // Clear search input
-            fetchSpaces(); // Fetch and display all spaces
-        });
-
-        // 點擊 "n 張照片" 連結時，讀取 data-photos 屬性，並以 modal 顯示
-        // Carousel 狀態變數
-        let currentPhotoIndex = 0;
-        let currentPhotos = [];
-
-        // 在表格做事件間聽
-        tableBody.addEventListener('click', function (e) {
-            const target = e.target;
-
-            // 點擊「n 張照片時」...
-            if (target.classList.contains('photo-link')) {
-                const photos = JSON.parse(target.getAttribute('data-photos'));
-                if (!photos || photos.length === 0) return;
-
-                currentPhotos = photos;
-                currentPhotoIndex = 0;
-
-                updateCarousel(); // 顯示第一張
-
-                document.getElementById('photoModal').style.display = 'block';
-            }
-
-            // 點擊「修改」按鈕時，跳轉到updateSpace.html
-            else if (target.classList.contains('edit-space-btn') || target.closest('.edit-space-btn')) {
-                const button = target.closest('.edit-space-btn');       // 找到你剛剛按的「修改」按鈕
-                const spaceId = button.getAttribute('data-space-id');   // 有在data-space-id綁定空間編號，以利於在修改表單中顯示目前的資料狀況
-
-                const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
-                window.location.href = targetUrl;
-            }
-        });
 
         // 處理照片輪播
         function updateCarousel() {
@@ -747,6 +612,198 @@
             const modal = document.getElementById('photoModal');
             if (event.target === modal) {
                 modal.style.display = 'none';
+            }
+        });
+
+        // 篩選上架中、下架中之空間
+        document.getElementById('statusFilter').addEventListener('change', function () {
+            const selectedStatus = this.value;  // 抓下拉式選單中選到的value
+
+            if (selectedStatus === 'all') {
+                filteredSpacesData = [...allSpacesData]; // 顯示全部
+            } else {
+                filteredSpacesData = allSpacesData.filter(space => String(space.spaceStatus) === selectedStatus);   // 0: 未上架, 1: 已上架
+            }
+
+            currentPage = 1;
+            displayPagedData();
+        });
+
+        // ============= AJAX CRUD =============
+
+        // === 1. GET: 搜尋所有空間 ===
+        function fetchSpaces() {
+            tableBody.innerHTML = '<tr><td colspan="12" style="text-align:center;">載入中...</td></tr>'; // Show loading state
+
+            // 載入過程要做的事...
+            errorDisplay.textContent = ''; // 把之前的錯誤訊息刪除
+            paginationContainer.style.display = 'none';
+            showAllBtn.style.display = 'none';
+
+            fetch(GET_ALL_SPACES_URL)   // 回傳一個promise物件
+                .then(response => {  // 處理promise物件，提取JSON
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    // 因為有檔案相關欄位，所以回傳JSON前要先檢查content-type是否正確
+                    const contentType = response.headers.get("content-type");
+
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        return response.json(); // 解析回應的JSON資料
+                    } else {
+                        throw new Error(`Expected JSON but received ${contentType}`);
+                    }
+                })
+                .then(data => {   // 處理JSON資料
+                    if (!Array.isArray(data)) {     // 回傳的JSON格式必須為Array (Array裡面的每一個Object都是一組空間資料)
+                        throw new Error("Received data is not an array");
+                    }
+                    allSpacesData = data; // 儲存所有資料
+                    filteredSpacesData = [...data]; // 一進網頁因為沒有篩選，所以一樣顯示全部
+                    currentPage = 1; // 取得請求後，記得把頁數回到第1頁
+                    displayPagedData(); // 顯示第一頁資料
+                })
+                .catch(error => {
+                        console.error('Error fetching spaces:', error);
+                        errorDisplay.textContent = `無法載入空間資料：${error.message}。請稍後再試。`;
+                        tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color: red;">載入失敗</td></tr>`;
+                    }
+                );
+        }
+
+        // === 2. GET: 透過ID或空間名稱搜尋單一空間 ===
+        searchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const searchType = document.getElementById('searchType').value;
+
+
+            const keyword = searchInput.value.trim();   // 抓輸入欄的值
+
+            if (!keyword) {     // 未輸入資料時
+                alert("輸入欄不得空白！");
+                return;
+            }
+
+            // 先清空畫面與錯誤
+            tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center;">搜尋中...</td></tr>`;
+            errorDisplay.textContent = '';
+            paginationContainer.style.display = 'none';
+
+            // 取得URL
+            let searchUrl;
+            if (searchType === 'id') {  // 根據空間ID
+                searchUrl = `${GET_SPACE_BY_ID_URL_BASE}/${encodeURIComponent(keyword)}`;    // (http://localhost:8080/spaces/id/S001)
+            } else if (searchType === 'name') { // 根據空間名稱
+                searchUrl = `${GET_SPACE_BY_NAME_URL_BASE}?keyword=${encodeURIComponent(keyword)}`;    // (http://localhost:8080/spaces/name?keyword=Cozy)
+            }
+
+            fetch(searchUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        // 解析ResourceNotFoundException回傳的JSON
+                        return response.json().catch(() => null).then(errorData => { // 解析json，如果無法解析就直接忽略
+                            if (errorData && errorData.message) {
+                                throw new Error(errorData.message);  // 從後端的錯誤訊息拿來這邊顯示
+                            }
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        allSpacesData = data;
+                        currentPage = 1;
+                        displayPagedData();  // 顯示多筆（模糊查詢）
+                    } else {
+                        displaySingleSpace(data); // 顯示單筆（精準查詢）
+                    }
+                })
+                .catch(error => {
+                    console.error(`Error fetching space ID ${keyword}:`, error);
+                    errorDisplay.textContent = `搜尋失敗：${error.message}`;
+                    tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color: red;">搜尋失敗</td></tr>`;
+                    showAllBtn.style.display = 'inline-block'; // 報錯時也可以顯示全部
+                });
+        })
+
+        // 點擊「新增資料」按鈕時...
+        document.getElementById('addSpaceBtn').addEventListener('click', function () {
+            window.location.href = 'addSpace.html'; // 前端路由跳轉
+        });
+
+        // 點擊「顯示全部」按鈕時...
+        showAllBtn.addEventListener('click', () => {
+            searchInput.value = ''; // Clear search input
+            fetchSpaces(); // Fetch and display all spaces
+        });
+
+        // 點擊 "n 張照片" 連結時，讀取 data-photos 屬性，並以 modal 顯示
+        // Carousel 狀態變數
+        let currentPhotoIndex = 0;
+        let currentPhotos = [];
+
+        // 在表格做事件間聽
+        tableBody.addEventListener('click', function (e) {
+            const target = e.target;
+
+            // 點擊「n 張照片時」，顯示照片輪播預覽
+            if (target.classList.contains('photo-link')) {
+                const photos = JSON.parse(target.getAttribute('data-photos'));
+                if (!photos || photos.length === 0) return;
+
+                currentPhotos = photos;
+                currentPhotoIndex = 0;
+
+                updateCarousel(); // 顯示第一張
+
+                document.getElementById('photoModal').style.display = 'block';
+            }
+
+            // 點擊「修改」按鈕時，跳轉到updateSpace.html
+            else if (target.classList.contains('edit-space-btn') || target.closest('.edit-space-btn')) {
+                const button = target.closest('.edit-space-btn');       // 找到你剛剛按的「修改」按鈕
+                const spaceId = button.getAttribute('data-space-id');   // 有在data-space-id綁定空間編號，以利於在修改表單中顯示目前的資料狀況
+
+                const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
+                window.location.href = targetUrl;
+            }
+
+            // === 4. PUT: 空間上/下架、調整狀態 ===
+            else if (target.classList.contains('toggle-status-btn') || target.closest('.toggle-status-btn')) {
+                const button = target.closest('.toggle-status-btn');    // 找到你剛剛按的「上/下架」按鈕
+                const spaceId = button.getAttribute('data-space-id');
+                const currentStatus = button.getAttribute('data-current-status');   // 取得目前的狀態，用來在HTML上顯示正確的狀態
+                console.log(currentStatus);
+                const newStatus = currentStatus === "1" ? "0" : "1";  // 先將目前的狀態存到newStatus變數裡
+                let confirmStatus = confirm(`確定要${currentStatus == "1" ? "下架" : "上架"}此空間？`);
+
+                if (confirmStatus) {
+                    fetch(`${TOGGLE_SPACE_STATUS_URL}/${spaceId}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({status: newStatus})     // Request Body只傳空間狀態丟給後端處理
+                    })
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(updatedSpace => {
+                            button.textContent = newStatus === "1" ? '下架' : '上架';   // 更新按鈕文字
+                            button.setAttribute('data-current-status', newStatus);  // 設定attribute，以在表格欄位中顯示正確的文字
+
+                            const statusCell = button.closest('tr').querySelector('td:nth-child(11)');
+                            statusCell.textContent = newStatus === "1" ? '上架中' : '未上架';   // 欄位更新狀態
+
+                            // 同步更新 allSpacesData 的狀態
+                            const index = allSpacesData.findIndex(s => s.spaceId === spaceId);  // 迭代找出目前的空間編號
+                            if (index !== -1) { // 若有找到
+                                allSpacesData[index].spaceStatus = parseInt(newStatus);
+                                allSpacesData[index].spaceStatusText = newStatus === "1" ? "上架中" : "未上架";
+                            }
+                        })
+                        .catch(error => {
+                            console.error('狀態更新錯誤:', error);
+                        });
+                }
             }
         });
 

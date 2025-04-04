@@ -220,15 +220,15 @@ public class Space implements java.io.Serializable {
 		this.spaceStatus = spaceStatus;
 	}
 	
-//	public void setSpaceStatusText(String spaceStatusText) {
-//		if ("未上架".equals(spaceStatusText)) {
-//			this.spaceStatus = 0;
-//		} else if ("上架中".equals(spaceStatusText)) {
-//			this.spaceStatus = 1;
-//		} else {
-//			this.spaceStatus = -1;
-//		}
-//	}
+	public void setSpaceStatusText(String spaceStatusText) {
+		if ("未上架".equals(spaceStatusText)) {
+			this.spaceStatus = 0;
+		} else if ("上架中".equals(spaceStatusText)) {
+			this.spaceStatus = 1;
+		} else {
+			this.spaceStatus = -1;
+		}
+	}
 
 	public String getSpaceFloor() {
 		return spaceFloor;
