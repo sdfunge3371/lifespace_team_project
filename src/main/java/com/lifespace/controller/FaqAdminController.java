@@ -18,10 +18,10 @@ import com.lifespace.dto.FaqUpdateDTO;
 import com.lifespace.service.FaqService;
 
 import jakarta.validation.Valid;
-//會回傳 JSON，不會找 View
+//會回傳 JSON
 @RestController
-@RequestMapping("/faq")
-public class FaqController {
+@RequestMapping("/admin/faq")
+public class FaqAdminController {
 
 	@Autowired
 	FaqService faqSvc;
@@ -31,12 +31,6 @@ public class FaqController {
 	public List<FaqDTO> getAll() {
 		//呼叫 Service 從DB撈資料、轉DTO
 		return faqSvc.getAll();
-	}
-	
-	// 前台取得FAQ(設定狀態1:已上架)
-	@GetMapping("frontQuery")
-	public List<FaqDTO> getAllFaqs() {
-		return faqSvc.getAllFaqs(1);
 	}
 	
 	// 下架
