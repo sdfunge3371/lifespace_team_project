@@ -1,0 +1,320 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 搜尋欄 */
+.search-bar {
+    background-color: #e6ffcc;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-bar input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.filter-options {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter-option {
+    padding: 8px 15px;
+    background-color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 5px;
+}
+
+/* 地圖容器 */
+.map-container {
+    height: 300px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+/* 過濾器選項 */
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 4px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #4CAF50;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.filter-button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* 篩選面板 */
+.filter-panel {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.price-range, .distance-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.range {
+    flex-grow: 1;
+    height: 4px;
+    background: #ddd;
+    outline: none;
+    -webkit-appearance: none;
+    border-radius: 2px;
+}
+
+.range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.reset-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #999;
+}
+
+.reset-button:hover {
+    color: #333;
+}
+
+.people-options, .usage-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 空間網格 */
+.spaces-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.space-card {
+    background-color: #ffecec;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.space-image {
+    height: 200px;
+    background-color: #ddd;
+    display: flex;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.space-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.space-info {
+    padding: 15px;
+    position: relative;
+}
+
+.space-title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.space-location {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between; /* 左右排列 */
+
+}
+
+.location-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.space-price {
+    font-weight: bold;
+    color: #000;
+}
+
+.space-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #ccc;
+    font-size: 20px;
+}
+
+.favorite-btn.active {
+    color: #ff6b6b;
+}
+
+.people-count {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ffc107;
+}
+
+/* 響應式設計 */
+@media (max-width: 900px) {
+    .spaces-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .spaces-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-options {
+        flex-wrap: wrap;
+    }
+
+    .filter-option {
+        flex-basis: 45%;
+        margin-bottom: 10px;
+    }
+}
