@@ -3,7 +3,7 @@ $(document).ready(function () {
 	//向後端發出 AJAX 請求
     $.ajax({	
 		//呼叫後端Controller的@GetMapping("query")
-        url: '/faq/query',
+        url: '/admin/faq/query',
         method: 'GET',
         dataType: 'json',
 		//當後端回傳成功（HTTP 200），就會執行faqList函式
@@ -49,6 +49,7 @@ $(document).ready(function () {
                         previous: "上一頁",
                         next: "下一頁",
                         last: "最後一頁"
+					
                     },
                     aria: {
                         sortAscending: ": 升冪排列",
@@ -67,7 +68,7 @@ $(document).ready(function () {
 	    const faqId = row.data('faq-id');
 
 	    $.ajax({
-	        url: '/faq/deprecated',
+	        url: '/admin/faq/deprecated',
 	        method: 'POST',
 			data: { faqId: faqId },
 	        success: function () {
@@ -103,7 +104,7 @@ $(document).ready(function () {
 	            adminId: adminId
 	        };
 
-	        fetch('/faq/insertvalid', {
+	        fetch('/admin/faq/insertvalid', {
 	            method: 'POST',
 	            headers: { 'Content-Type': 'application/json' },
 	            body: JSON.stringify(faqDto)
@@ -158,7 +159,7 @@ $(document).ready(function () {
 	            faqAnswer: $('#edit-faqAnswer').val().trim()
 	        };
 
-	        fetch('/faq/updatevalid', {
+	        fetch('/admin/faq/updatevalid', {
 	            method: 'POST',
 	            headers: { 'Content-Type': 'application/json' },
 	            body: JSON.stringify(faqDto)
