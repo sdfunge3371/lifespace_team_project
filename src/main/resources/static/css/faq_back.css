@@ -1,102 +1,7 @@
-:root {
-	--sidebar-bg: #e6f7f8;
-	--sidebar-color: #333;
-	--primary-color: #70b6c1;
-	--hover-color: #5a9da7;
-	--light-gray: #f8f9fa;
-}
-
 body {
 	font-family: 'Noto Sans TC', sans-serif;
-	background-color: 'white';
+	background-color: white !important;
 }
-
-/* Sidebar styles */
-.sidebar {
-	background-color: var(--sidebar-bg);
-	color: var(--sidebar-color);
-	height: 100vh;
-	position: fixed;
-	padding: 20px 0;
-	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-	overflow-y: auto;
-	z-index: 9;
-}
-
-.sidebar-header {
-	padding: 0 20px 20px;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-logo {
-	max-width: 140px;
-	margin-bottom: 5px;
-}
-
-.sidebar-title {
-	font-size: 18px;
-	margin-bottom: 0;
-	text-align: center;
-}
-
-.nav-item {
-	position: relative;
-}
-
-.nav-link {
-	color: var(--sidebar-color);
-	padding: 12px 20px;
-	display: flex;
-	align-items: center;
-	transition: all 0.3s;
-}
-
-.nav-link:hover, .nav-link.active {
-	background-color: rgba(112, 182, 193, 0.2);
-}
-
-.nav-link i {
-	width: 24px;
-	margin-right: 10px;
-	text-align: center;
-}
-
-.nav-link .arrow {
-	margin-left: auto;
-}
-
-.submenu {
-	padding-left: 34px;
-	display: none;
-}
-
-.submenu.show {
-	display: block;
-}
-
-.submenu-item {
-	padding: 8px 15px;
-	display: flex;
-	align-items: center;
-	color: var(--sidebar-color);
-	text-decoration: none;
-	transition: all 0.3s;
-}
-
-.submenu-item:hover, .submenu-item.active {
-	background-color: rgba(112, 182, 193, 0.2);
-}
-
-.submenu-item i {
-	margin-right: 10px;
-	font-size: 6px;
-	width: 8px;
-}
-
-
-
-
-
 
 /* Main content styles */
 .main-content {
@@ -109,16 +14,6 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 40px;
-}
-
-.user-profile {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #333;
-    overflow: hidden;
-    cursor: pointer;
-    margin-right: 20px;
 }
 
 .search-container {
@@ -194,11 +89,10 @@ th {
 #faqTable  {
     width: 200% !important;
     border-collapse: collapse;
-
     
-} 
 
 
+}
 #faqTable td {
 	text-align: center;
     vertical-align: middle;
@@ -246,11 +140,11 @@ th {
 }
 .large-textarea {
   height: 200px;
-  resize: none;
+/*   resize: none; */
 }
 
 /* 響應式調整 */
-@media (max-width: 1400px !important) {
+@media (max-width: 1400px ) {
     .main-content {
         margin-left: 0;
     }
