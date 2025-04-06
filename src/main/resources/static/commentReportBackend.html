@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeSpace 後台管理系統 - 留言管理</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link href="/css/comment_report_backend.css" rel="stylesheet">
+
+</head>
+<body>
+
+<button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+    <i class="fas fa-bars"></i>
+</button>
+<div class="container-fluid">
+    <div class="row">
+        <!-- 側邊欄 -->
+        <div class="col-lg-2 sidebar">
+            <div class="sidebar-header">
+                <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+                <h2 class="sidebar-title">後台中心</h2>
+            </div>
+            <ul class="nav flex-column mt-3">
+                <!-- 消息管理 -->
+                <li class="nav-item">
+                    <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+                        <i class="fas fa-home"></i> 消息管理
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </a>
+                    <ul class="collapse submenu" id="newsSubmenu">
+                        <li><a href="#" class="submenu-item">最新消息</a></li>
+                    </ul>
+                </li>
+
+                <!-- 帳號管理 -->
+                <li class="nav-item">
+                    <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+                        <i class="fas fa-user"></i> 帳號管理
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </a>
+                    <ul class="collapse submenu" id="accountSubmenu">
+                        <li><a href="#" class="submenu-item">會員帳號</a></li>
+                        <li><a href="#" class="submenu-item">管理員帳號</a></li>
+                    </ul>
+                </li>
+
+                <!-- 空間訂單管理 -->
+                <li class="nav-item">
+                    <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i> 空間訂單管理
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </a>
+                    <ul class="collapse submenu" id="ordersSubmenu">
+                        <li><a href="#" class="submenu-item">訂單</a></li>
+                    </ul>
+                </li>
+
+                <!-- 商品管理 -->
+                <li class="nav-item">
+                    <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
+                        <i class="fas fa-box"></i> 商品管理
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </a>
+                    <ul class="collapse submenu" id="productSubmenu">
+                        <li><a href="#" class="submenu-item">空間管理</a></li>
+                        <li><a href="#" class="submenu-item">租借品項</a></li>
+                        <li><a href="#" class="submenu-item">分點</a></li>
+                    </ul>
+                </li>
+
+                <!-- 活動留言評論管理 -->
+                <li class="nav-item">
+                    <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link active">
+                        <i class="fas fa-star"></i> 活動留言評論管理
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </a>
+                    <ul class="collapse submenu show" id="commentSubmenu">
+                        <li><a href="#" class="submenu-item">活動留言板</a></li>
+                        <li><a href="#" class="submenu-item">檢舉留言</a></li>
+                    </ul>
+                </li>
+
+                <!-- 常見問題管理 -->
+                <li class="nav-item">
+                    <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+                        <i class="fas fa-headset"></i> 常見問題管理
+                        <i class="fas fa-chevron-down ms-auto"></i>
+                    </a>
+                    <ul class="collapse submenu" id="faqSubmenu">
+                        <li><a href="#" class="submenu-item">常見問題</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- 側邊欄 -->
+
+        <!-- 自己的表格內容 -->
+        <div class="col-lg-10 col-md-9 ms-auto px-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">檢舉留言管理</h2>
+                    <div class="profile-icon"><i class="bi bi-person-fill"></i></div>
+                </div>
+                <div class="card-body">
+                    <!-- 篩選條件 -->
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <select id="filterBoardType" class="form-select">
+                                <option value="">選擇檢舉原因</option>
+                                <option value="仇恨言論">仇恨言論</option>
+                                <option value="不實資訊">不實資訊</option>
+                                <option value="垃圾訊息">垃圾訊息</option>
+                                <option value="推銷/廣告">推銷/廣告</option>
+                                <option value="騷擾內容">騷擾內容</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="filterRegion" class="form-select">
+                                <option value="">選擇檢舉案件處理狀態</option>
+                                <option value="尚未處理">尚未處理</option>
+                                <option value="尚未處理">已處理</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                          <thead>
+                            <tr>
+                              <th>檢舉編號</th>
+                              <th>留言編號</th>
+                              <th>會員編號</th>
+                              <th>檢舉原因</th>
+                              <th>處理狀態</th>
+                              <th>管理方式</th>
+                              <th>結案時間</th>
+                            </tr>
+                          </thead>
+                          <tbody id="report-table-body"></tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jQuery -->
+<script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+<!-- DataTables -->
+<script src="/vendors/dataTables/dataTables.min.js"></script>
+<script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // 取得所有檢舉留言資料
+        function fetchReports() {
+            $.ajax({
+                url: "/commentReports", // 請確認你的後端 API 路徑是否為這個
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    renderReportTable(data);
+                },
+                error: function () {
+                    alert("無法取得檢舉留言資料");
+                }
+            });
+        }
+    
+        // 渲染表格
+        function renderReportTable(data) {
+            let tableBody = $("#report-table-body");
+            tableBody.empty();
+    
+            data.forEach(report => {
+                let row = `
+                    <tr>
+                        <td>${report.reportId}</td>
+                        <td>${report.commentId}</td>
+                        <td>${report.memberId}</td>
+                        <td>${report.reason}</td>
+                        <td>${report.status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success handle-report" data-id="${report.reportId}">標記為已處理</button>
+                            <button class="btn btn-sm btn-danger delete-report" data-id="${report.reportId}">刪除</button>
+                        </td>
+                        <td>${report.closedAt || "-"}</td>
+                    </tr>
+                `;
+                tableBody.append(row);
+            });
+        }
+    
+        // 處理檢舉
+        $(document).on("click", ".handle-report", function () {
+            const reportId = $(this).data("id");
+            $.ajax({
+                url: `/commentReports/${reportId}/resolve`, // 依照後端 API 修改
+                type: "PUT",
+                success: function () {
+                    fetchReports();
+                },
+                error: function () {
+                    alert("無法更新狀態");
+                }
+            });
+        });
+    
+        // 刪除檢舉
+        $(document).on("click", ".delete-report", function () {
+            const reportId = $(this).data("id");
+            if (confirm("確定要刪除此檢舉？")) {
+                $.ajax({
+                    url: `/commentReports/${reportId}`,
+                    type: "DELETE",
+                    success: function () {
+                        fetchReports();
+                    },
+                    error: function () {
+                        alert("刪除失敗");
+                    }
+                });
+            }
+        });
+    
+        // 篩選條件（原因與處理狀態）
+        $("#filterBoardType, #filterRegion").on("change", function () {
+            const selectedReason = $("#filterBoardType").val();
+            const selectedStatus = $("#filterRegion").val();
+    
+            $.ajax({
+                url: "/commentReports/filter", // 請根據後端提供的篩選 API 設定
+                type: "GET",
+                data: {
+                    reason: selectedReason,
+                    status: selectedStatus
+                },
+                success: function (data) {
+                    renderReportTable(data);
+                },
+                error: function () {
+                    alert("無法取得篩選結果");
+                }
+            });
+        });
+    
+        // 初始化載入資料
+        fetchReports();
+    });
+</script>
+
+
+</body>
+</html>
