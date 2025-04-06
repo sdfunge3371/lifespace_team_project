@@ -5,6 +5,7 @@ public class EventDTO {
     private String eventId;
     private String eventName;
 
+
     public EventDTO(){
 
     }

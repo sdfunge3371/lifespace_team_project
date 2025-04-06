@@ -15,6 +15,7 @@ public class OrdersDTO {
     private Integer totalPrice;
     private Timestamp paymentDatetime;
     private Integer orderStatus;
+    private String branchAddr;
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
@@ -111,4 +112,11 @@ public class OrdersDTO {
         this.branchId = branchId;
     }
 
+    public String getBranchAddr() {
+        return branchAddr;
+    }
+
+    public void setBranchAddr(String branchAddr) {
+        this.branchAddr = branchAddr;
+    }
 }
