@@ -1,14 +1,14 @@
 package com.lifespace.controller;
 
-import java.time.Duration;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.lifespace.MailService;
 import com.lifespace.dto.MemberDTO;
+import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
 import com.lifespace.repository.MemberRepository;
 import com.lifespace.service.MemberService;
@@ -41,8 +42,8 @@ public class MemberController {
 	private MemberRepository memberRepository;
 	@Autowired
 	private MailService mailService;
-	@Autowired
-	private StringRedisTemplate redisTemplate;
+//	@Autowired
+//	private StringRedisTemplate redisTemplate;
 	
 	//-------------------------會員登入-----------------------------
 	@PostMapping("/member/login")
@@ -105,29 +106,66 @@ public class MemberController {
 	}
 	
 	
+	//------------------------------會員忘記密碼-先"檢查"郵件是否存在---------------------------
+	@GetMapping("/member/check-email")
+	public ResponseEntity<String> checkEmail(@RequestParam String email) {
+	    Optional<Member> member = memberRepository.findByEmail(email);
+	    if (member.isPresent()) {
+	        return ResponseEntity.ok("帳號存在");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("該 Email 尚未註冊");
+	    }
+	}
+
+	
+	
+	
 	//------------------------------會員忘記密碼-"發送"驗證亂碼---------------------------
-	@PostMapping("/forgot-password")
+	
+    // 建立一個簡單的記憶體 Map 來暫存驗證碼（key: email, value: code）
+    private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
+
+    public MemberController(MailService mailService) {
+        this.mailService = mailService;
+    }
+	
+	@PostMapping("/member/forgot-password")
 	public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-	    String code = generateBase64Token();
+	    String code = generateRandomCode();
+	    
+	   // 用redis的方法 
+	   // redisTemplate.opsForValue().set("RESET_CODE_" + email, code, Duration.ofMinutes(10)); //亂碼壽命十分鐘
 
-	    redisTemplate.opsForValue().set("RESET_CODE_" + email, code, Duration.ofMinutes(10));
-
+	    // 將驗證碼存在後端 Map（不使用 Redis）
+        verificationCodes.put(email, code);
+	    
 	    mailService.sendVerificationCode(email, code);
+	    //System.out.println("寄送驗證碼到：" + toEmail + "，驗證碼為：" + code);
 
 	    return ResponseEntity.ok("驗證碼已發送");
 	}
 
-	//Base64的產生器
-	private String generateBase64Token() {
-		return null;
+	//亂碼產生器
+	private String generateRandomCode() {
+		String chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 避免0O1l
+	    SecureRandom random = new SecureRandom();
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < 6; i++) {
+	        sb.append(chars.charAt(random.nextInt(chars.length())));
+	    }
+	    return sb.toString();
 	}
 
 
 
 	//------------------------------會員忘記密碼-"核對"驗證亂碼---------------------------
-	@PostMapping("/verify-code")
+	@PostMapping("/member/verify-code")
 	public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String inputCode) {
-	    String storedCode = redisTemplate.opsForValue().get("RESET_CODE_" + email);
+		// 用map
+		String storedCode = verificationCodes.get(email);
+		
+		// 用redis
+		//String storedCode = redisTemplate.opsForValue().get("RESET_CODE_" + email);
 
 	    if (storedCode != null && storedCode.equals(inputCode)) {
 	        return ResponseEntity.ok("驗證成功，可進入重設密碼頁面");
@@ -213,7 +251,7 @@ public class MemberController {
 	
 
 	// ------------------------查詢-------------------------------------------
-	// 全部查詢功能
+	// 全部查詢功能(一進入頁面就可以看到所有人的資料)
 	@GetMapping("/member")
 	public List<Member> getAllMembers() {
 		return memberService.findAllMem();
@@ -233,43 +271,51 @@ public class MemberController {
 	}
 
 	// 為了讓每個路徑都更清楚的指定是什麼欄位的值，所以再路徑上加上分類
-	// 單一查詢ID功能
-	@GetMapping("/member/id/{memberId}")
-	public Member readId(@PathVariable String memberId) {
-		Member member = memberService.findByIdMem(memberId).orElse(null);
-		return member;
-	}
-
-	// 單一查詢Name功能
-	@GetMapping("/member/name/{memberName}")
-	public Member readName(@PathVariable String memberName) {
-		Member member = memberService.findByNameMem(memberName).orElse(null);
-		return member;
-	}
-
-	// 單一查詢Phone功能
-	@GetMapping("/member/phone/{memberPhone}")
-	public Member readPhone(@PathVariable String memberPhone) {
-		Member member = memberService.findByPhoneMem(memberPhone).orElse(null);
-		return member;
-	}
-
-	// 單一查詢Email功能
-	@GetMapping("/member/email/{memberEmail}")
-	public Member readEmail(@PathVariable String memberEmail) {
-		Member member = memberService.findByEmailMem(memberEmail).orElse(null);
-		return member;
+	@PostMapping("/member/search")
+	public List<Member> search(@RequestBody MemberRequestDTO dto) {
+	    return memberService.searchMembers(dto);
 	}
 	
-	//多樣查詢
-	@GetMapping("/member/search")
-	public List<Member> searchMembers(
-	    @RequestParam(required = false) Integer accountStatus,
-	    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
-	    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate registrationTime
-	) {
-	    return memberService.searchMembers(accountStatus, birthday, registrationTime);
-	}
+	
+	
+	
+//	// 單一查詢ID功能
+//	@GetMapping("/member/id/{memberId}")
+//	public Member readId(@PathVariable String memberId) {
+//		Member member = memberService.findByIdMem(memberId).orElse(null);
+//		return member;
+//	}
+//
+//	// 單一查詢Name功能
+//	@GetMapping("/member/name/{memberName}")
+//	public Member readName(@PathVariable String memberName) {
+//		Member member = memberService.findByNameMem(memberName).orElse(null);
+//		return member;
+//	}
+//
+//	// 單一查詢Phone功能
+//	@GetMapping("/member/phone/{memberPhone}")
+//	public Member readPhone(@PathVariable String memberPhone) {
+//		Member member = memberService.findByPhoneMem(memberPhone).orElse(null);
+//		return member;
+//	}
+//
+//	// 單一查詢Email功能
+//	@GetMapping("/member/email/{memberEmail}")
+//	public Member readEmail(@PathVariable String memberEmail) {
+//		Member member = memberService.findByEmailMem(memberEmail).orElse(null);
+//		return member;
+//	}
+//	
+//	//多樣查詢
+//	@GetMapping("/member/search")
+//	public List<Member> searchMembers(
+//	    @RequestParam(required = false) Integer accountStatus,
+//	    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
+//	    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate registrationTime
+//	) {
+//	    return memberService.searchMembers(accountStatus, birthday, registrationTime);
+//	}
 
 	
 	

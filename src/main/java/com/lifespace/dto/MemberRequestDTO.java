@@ -1,8 +1,9 @@
 package com.lifespace.dto;
+
 import java.time.LocalDate;
 
 //DTO可以回傳乾淨的內容，以及避免一些重要資訊外流，例如"密碼"
-public class MemberDTO {
+public class MemberRequestDTO {
 	
     private String memberId;
     private String memberName;
@@ -11,7 +12,6 @@ public class MemberDTO {
     private Integer accountStatus;
     private LocalDate birthday;
     private LocalDate registrationTime;
-	private String imageUrl; //圖片網址
     
     
 	public String getMemberId() {
@@ -56,12 +56,7 @@ public class MemberDTO {
 	public void setRegistrationTime(LocalDate registrationTime) {
 		this.registrationTime = registrationTime;
 	}
-	public String getImageUrl() {
-		return imageUrl;
-	}
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
+    
     
 
 }
