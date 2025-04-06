@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lifespace.entity.CommentLikeVO;
+import com.lifespace.entity.CommentLike;
 import com.lifespace.repository.CommentLikeRepository;
 
 @Service("commentLikeService")
@@ -17,13 +17,13 @@ public class CommentLikeService {
 	@Autowired
 	CommentLikeRepository commentLikeRepository;
 		
-	public void addCommentLike(CommentLikeVO commentLikeVO) {
-		commentLikeRepository.save(commentLikeVO);
+	public void addCommentLike(CommentLike commentLike) {
+		commentLikeRepository.save(commentLike);
 	}
 
-	public void updateCommentLike(CommentLikeVO commentLikeVO) {
-		commentLikeVO.setLikeId(commentLikeVO.getLikeId()); 
-		commentLikeRepository.save(commentLikeVO);
+	public void updateCommentLike(CommentLike commentLike) {
+		commentLike.setLikeId(commentLike.getLikeId()); 
+		commentLikeRepository.save(commentLike);
 	}
 
 	public void deleteCommentLike(Integer likeId) {
@@ -32,14 +32,14 @@ public class CommentLikeService {
 //		    commentLikeRepository.deleteById(likeId);
 	}
 
-	public CommentLikeVO getOneCommentLike(Integer likeId) {
-		Optional<CommentLikeVO> optional = commentLikeRepository.findById(likeId);
+	public CommentLike getOneCommentLike(Integer likeId) {
+		Optional<CommentLike> optional = commentLikeRepository.findById(likeId);
 //		return optional.get();
 		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
 	}
 
-	public List<CommentLikeVO> getAll() {
-//		List<CommentLikeVO> list = repository.findAll();
+	public List<CommentLike> getAll() {
+//		List<CommentLike> list = repository.findAll();
 //		return list;
 		return commentLikeRepository.findAll(); //上面兩行簡寫為此行。
 	}

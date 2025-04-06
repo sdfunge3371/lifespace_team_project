@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lifespace.entity.CommentLikeVO;
+import com.lifespace.entity.CommentLike;
 
 
-public interface CommentLikeRepository extends JpaRepository<CommentLikeVO, Integer>{
+public interface CommentLikeRepository extends JpaRepository<CommentLike, Integer>{
 
 	@Transactional
 	@Modifying
@@ -18,6 +18,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLikeVO, Inte
 	void deleteByLikeId(Integer likeId);
 
 //	//● (自訂)條件查詢
-//	@Query(value = "from CommentLikeVO where like_id=?1 and member_id ?2 and comment_id=?3 and created_time=?4 order by created_time")
-//	List<CommentLikeVO> findByOthers(int likeId , String memberId , String commentId, java.sql.Date createdTime);
+//	@Query(value = "from CommentLike where like_id=?1 and member_id ?2 and comment_id=?3 and created_time=?4 order by created_time")
+//	List<CommentLike> findByOthers(int likeId , String memberId , String commentId, java.sql.Date createdTime);
 }

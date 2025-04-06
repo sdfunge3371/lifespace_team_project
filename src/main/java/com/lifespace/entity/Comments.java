@@ -8,6 +8,7 @@ import com.lifespace.constant.CommentsCommentHide;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +20,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "comments")
-public class CommentsVO implements java.io.Serializable{
+public class Comments implements java.io.Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -28,9 +29,9 @@ public class CommentsVO implements java.io.Serializable{
 	@GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.CommentsCustomStringIdGenerator")
 	private String commentId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER) // 預設是 EAGER，也可以明確寫
 	@JoinColumn(name = "event_member_id", referencedColumnName = "event_member_id")
-	private EventMember eventMemberEntity;
+	private EventMember eventMember;
 	
 //	@Column(name = "event_member_id")
 //	@NotEmpty(message="活動參與會員: 請勿空白")
@@ -41,14 +42,14 @@ public class CommentsVO implements java.io.Serializable{
 	private CommentsCommentHide commentHide;
 	
 	@Column(name = "comment_message")
-	@NotEmpty(message="留言內容: 請勿空白")
+//	@NotEmpty(message="留言內容: 請勿空白")
 	private String commentMessage;
 	
 	@Column(name = "comment_time", insertable = false)
 	@UpdateTimestamp
 	private Timestamp commentTime;
 	
-	public CommentsVO() {
+	public Comments() {
 	}
 	
 	public String getCommentId() {
@@ -59,12 +60,12 @@ public class CommentsVO implements java.io.Serializable{
 		this.commentId = commentId;
 	}
 	
-	public EventMember getEventMemberEntity() {
-		return eventMemberEntity;
+	public EventMember getEventMember() {
+		return eventMember;
 	}
 
-	public void setEventMemberEntity(EventMember eventMemberEntity) {
-		this.eventMemberEntity = eventMemberEntity;
+	public void setEventMember(EventMember eventMember) {
+		this.eventMember = eventMember;
 	}
 	
 //	public String getEventMemberId() {
