@@ -95,16 +95,17 @@ table.dataTable button{
 
 /* 寬度分配 */
 #ordersTable th:nth-child(1), #ordersTable td:nth-child(1) { width: 9%; }
-#ordersTable th:nth-child(2), #ordersTable td:nth-child(2) { width: 9%; }
+#ordersTable th:nth-child(2), #ordersTable td:nth-child(2) { width: 6.5%; }
 #ordersTable th:nth-child(3), #ordersTable td:nth-child(3) { width: 9%; }
-#ordersTable th:nth-child(4), #ordersTable td:nth-child(4) { width: 7%; }
-#ordersTable th:nth-child(5), #ordersTable td:nth-child(5) { width: 9%; }
-#ordersTable th:nth-child(6), #ordersTable td:nth-child(6) { width: 9%; }
+#ordersTable th:nth-child(4), #ordersTable td:nth-child(4) { width: 9%; }
+#ordersTable th:nth-child(5), #ordersTable td:nth-child(5) { width: 6.5%; }
+#ordersTable th:nth-child(6), #ordersTable td:nth-child(6) { width: 6.5%; }
 #ordersTable th:nth-child(7), #ordersTable td:nth-child(7) { width: 9%; }
 #ordersTable th:nth-child(8), #ordersTable td:nth-child(8) { width: 9%; }
-#ordersTable th:nth-child(9), #ordersTable td:nth-child(9) { width: 10%; }
-#ordersTable th:nth-child(10), #ordersTable td:nth-child(10) { width: 10%; }
-#ordersTable th:nth-child(11), #ordersTable td:nth-child(11) { width: 8%; }
+#ordersTable th:nth-child(9), #ordersTable td:nth-child(9) { width: 9%; }
+#ordersTable th:nth-child(10), #ordersTable td:nth-child(10) { width: 9%; }
+#ordersTable th:nth-child(11), #ordersTable td:nth-child(11) { width: 9%; }
+#ordersTable th:nth-child(12), #ordersTable td:nth-child(12) { width: 12%; }
 
 /* 響應式 */
 @media (max-width: 768px) {
@@ -143,15 +144,16 @@ table.dataTable button{
 }
 
 /* 搜尋框 */
-.dataTables_wrapper .dataTables_filter {
-    margin-bottom: 10px;
-    display: block !important;
-}
+/*.dataTables_wrapper .dataTables_filter {*/
+/*    margin-bottom: 10px;*/
+/*    display: block !important;*/
+/*}*/
 
-.dataTables_wrapper .dataTables_filter input {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px 12px;
+.dataTables_filter input:focus,
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
 }
 
 /* 表格橫向捲軸關閉 */
@@ -171,110 +173,4 @@ table.dataTable button{
     font-weight: bold;
 }
 
-/* Sidebar styles */
-:root {
-    --sidebar-bg: #e6f7f8;
-    --sidebar-color: #333;
-    --primary-color: #70b6c1;
-    --hover-color: #5a9da7;
-    --light-gray: #f8f9fa;
-}
 
-
-.sidebar {
-    background-color: var(--sidebar-bg);
-    color: var(--sidebar-color);
-    height: 100vh;
-    position: fixed;
-    padding: 20px 0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    top: 0;               /* 關鍵：貼齊頂部 */
-    left: 0;
-    z-index: 1030;        /* 確保不被其他元素遮住 */
-}
-
-.sidebar-header {
-    padding: 0 20px 20px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-logo {
-    max-width: 140px;
-    margin-bottom: 5px;
-}
-
-.sidebar-title {
-    font-size: 18px;
-    text-align: center;
-}
-
-.nav-link {
-    color: var(--sidebar-color);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    /*transition: all 0.3s;*/
-    font-size: 15px;
-    font-weight: bold;
-}
-
-.nav-link:hover, .nav-link.active {
-    background-color: rgba(112, 182, 193, 0.2);
-}
-
-.nav-link i {
-    width: 24px;
-    margin-right: 10px;
-    text-align: center;
-}
-
-.submenu {
-    padding-left: 34px;
-    display: none;
-    list-style: none;
-}
-
-.submenu.show {
-    display: block;
-}
-
-.submenu-item {
-    font-size: 13px;       /* 字體大小可以依你需求調整 */
-    font-weight: bold;     /* 粗體 */
-    padding: 6px 20px;
-    display: flex;
-    align-items: center;
-    color: var(--sidebar-color);
-    text-decoration: none;
-    transition: all 0.3s;
-    font-size: 13px;
-    padding: 10px 20px;
-    background-color: #fafafa;
-    border-left: 3px solid #ccc;
-}
-
-.submenu-item:hover, .submenu-item.active {
-    background-color: rgba(112, 182, 193, 0.2);
-}
-
-.submenu-item i {
-    margin-right: 10px;
-    font-size: 6px;
-    width: 8px;
-}
-
-
-@media (max-width: 768px) {
-    .sidebar {
-        position: fixed;
-        z-index: 1000;
-        height: 100vh;
-        overflow-y: auto;
-        transition: left 0.3s;
-    }
-
-    main {
-        margin-left: 0;
-    }
-}

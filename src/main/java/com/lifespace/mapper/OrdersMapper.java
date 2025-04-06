@@ -19,6 +19,7 @@ public class OrdersMapper {
         OrdersDTO dto = new OrdersDTO();
 
         dto.setOrderId(orders.getOrderId());
+        dto.setMemberId(orders.getMember().getMemberId());
         dto.setSpaceId(orders.getSpaceId());
         dto.setBranchId(orders.getBranchId());
         dto.setTotalPrice(orders.getTotalPrice());

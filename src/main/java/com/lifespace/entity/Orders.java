@@ -196,11 +196,11 @@ public class Orders implements Serializable {
         this.satisfaction = satisfaction;
     }
 
-    public Member getMemberId() {
+    public Member getMember() {
         return member;
     }
 
-    public void setMemberId(Member memberId) {
+    public void setMember(Member member) {
         this.member = member;
     }
 

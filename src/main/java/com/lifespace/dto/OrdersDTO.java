@@ -7,6 +7,7 @@ import java.util.List;
 public class OrdersDTO {
 
     private String orderId;
+    private String MemberId;
     private String spaceId;
     private String branchId;
     private Timestamp orderStart;
@@ -35,6 +36,14 @@ public class OrdersDTO {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public String getMemberId() {
+        return MemberId;
+    }
+
+    public void setMemberId(String memberId) {
+        MemberId = memberId;
     }
 
     public Timestamp getOrderStart() {
