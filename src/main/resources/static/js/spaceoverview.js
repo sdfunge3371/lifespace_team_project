@@ -17,6 +17,7 @@ let map;
 let markers = [];
 let activeCardId = null;
 let spaces = [];
+let usages = [];
 
 // 初始化，網頁載入完成時要做的事
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,7 +33,59 @@ document.addEventListener('DOMContentLoaded', () => {
     minDistanceDisplay = document.getElementById('min-distance');
     maxDistanceDisplay = document.getElementById('max-distance');
 
+    // 初始化價格滑桿
+    noUiSlider.create(priceRange, {
+        start: [150, 2000],
+        connect: true,
+        step: 50,
+        range: {
+            min: 150,
+            max: 2000
+        },
+        format: {
+            to: value => Math.round(value),
+            from: value => parseInt(value)
+        }
+    });
+
+    priceRange.noUiSlider.on('update', (values) => {
+        filters.minPrice = values[0];
+        filters.maxPrice = values[1];
+        minPriceDisplay.textContent = `$${filters.minPrice}`;
+        maxPriceDisplay.textContent = `$${filters.maxPrice}`;
+        applyFilters();
+    });
+
+    // 初始化距離滑桿
+    noUiSlider.create(distanceRange, {
+        start: [100, 10000],
+        connect: true,
+        step: 100,
+        range: {
+            min: 100,
+            max: 10000
+        },
+        format: {
+            to: value => Math.round(value),
+            from: value => parseInt(value)
+        }
+    });
+
+    distanceRange.noUiSlider.on('update', (values) => {
+        filters.minDistance = values[0];
+        filters.maxDistance = values[1];
+        minDistanceDisplay.textContent = filters.minDistance >= 1000
+            ? `${(filters.minDistance / 1000).toFixed(1)}km`
+            : `${filters.minDistance}m`;
+        maxDistanceDisplay.textContent = filters.maxDistance >= 1000
+            ? `${(filters.maxDistance / 1000).toFixed(1)}km`
+            : `${filters.maxDistance}m`;
+        applyFilters();
+    });
+
+
     fetchSpaces();
+    fetchSpaceUsages();
     initializeMap();
     setupEventListeners();
 });
@@ -119,44 +172,58 @@ function renderSpaces(spacesToRender) {
 }
 
 function getFirstPhoto(photo) {
-    console.log(photo);
-
     if (photo.length === 0) {
         return "default.jpg";
     }
     return "data:image/jpeg;base64," + photo[0];
 }
 
+function fetchSpaceUsages() {
+    fetch("/space-usages")
+        .then(response => response.json())
+        .then(data => {
+            usages = data.map(space => space.spaceUsageName);
+            renderUsages(usages);
+        })
+}
 
-// ======== 篩選相關 ========
-function applyFilters() {
-    const filteredSpaces = spaces.filter(space => {
-        if (space.price > filters.maxPrice) return false;
 
-        if (filters.peopleCount.length > 0) {
-            let passes = false;
-            for (const range of filters.peopleCount) {
-                if ((range === '2' && space.capacity <= 2) ||
-                    (range === '2-6' && space.capacity > 2 && space.capacity <= 6) ||
-                    (range === '7-9' && space.capacity >= 7 && space.capacity <= 9) ||
-                    (range === '10-19' && space.capacity >= 10 && space.capacity <= 19) ||
-                    (range === '20' && space.capacity >= 20)) {
-                    passes = true;
-                    break;
-                }
-            }
-            if (!passes) return false;
-        }
+function renderUsages(usages) {
+    const usageOptions = document.querySelector(".usage-options");
+    usageOptions.innerHTML = '';
 
-        if (filters.usage.length > 0) {
-            if (!filters.usage.some(u => space.usage.includes(u))) return false;
-        }
+    usages.forEach(usage => {
+        // 建立 label 元素
+        const label = document.createElement("label");
+        label.classList.add("checkbox-container");
+        label.textContent = usage;
 
-        return true;
+        // 建立 input 元素
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.name = "usage";
+        input.value = usage;
+
+        // 建立 span 元素（樣式勾選用）
+        const span = document.createElement("span");
+        span.classList.add("checkmark");
+
+        // 把 input 和 span 加到 label 裡
+        label.appendChild(input);
+        label.appendChild(span);
+
+        // 把 label 加到 usageOptions 容器裡
+        usageOptions.appendChild(label);
+    })
+
+    // 用途篩選
+    document.querySelectorAll('input[name="usage"]').forEach(checkbox => {
+        console.log("usages");
+        checkbox.addEventListener('change', () => {
+            filters.usage = Array.from(document.querySelectorAll('input[name="usage"]:checked')).map(input => input.value);
+            applyFilters();
+        });
     });
-
-    renderSpaces(filteredSpaces);
-    updateMapMarkers(filteredSpaces);
 }
 
 // ============= 地圖相關 =============
@@ -213,7 +280,7 @@ function setupEventListeners() {
         }
     });
 
-    // === 篩選條件相關 ===
+    // ======= 篩選條件相關 =======
     // 篩選條件
     filterButton.addEventListener('click', () => {
         filterPanel.classList.toggle('hidden');
@@ -237,16 +304,9 @@ function setupEventListeners() {
 
     // 人數勾選
     document.querySelectorAll('input[name="people"]').forEach(checkbox => {
+        console.log("people");
         checkbox.addEventListener('change', () => {
             filters.peopleCount = Array.from(document.querySelectorAll('input[name="people"]:checked')).map(input => input.value);
-            applyFilters();
-        });
-    });
-
-    // 用途篩選
-    document.querySelectorAll('input[name="usage"]').forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            filters.usage = Array.from(document.querySelectorAll('input[name="usage"]:checked')).map(input => input.value);
             applyFilters();
         });
     });
@@ -256,18 +316,49 @@ function setupEventListeners() {
         button.addEventListener('click', event => {
             const parentClass = event.currentTarget.parentElement.className;
             if (parentClass.includes('price-range')) {
-                priceRange.value = 2000;
-                filters.maxPrice = 2000;
-                maxPriceDisplay.textContent = `$${filters.maxPrice}`;
+                priceRange.noUiSlider.set([150, 2000]);
             } else if (parentClass.includes('distance-range')) {
-                distanceRange.value = 10000;
-                filters.maxDistance = 10000;
-                maxDistanceDisplay.textContent = '10km';
+                distanceRange.noUiSlider.set([100, 10000]);
             }
             applyFilters();
         });
     });
+
     // === 篩選條件相關 END ===
+}
+
+// ========== 執行篩選 ==========
+function applyFilters() {
+    const filteredSpaces = spaces.filter(space => {
+        if (space.price < filters.minPrice || space.price > filters.maxPrice) return false;
+
+        // if (space.distance < filters.minDistance || space.distance > filters.maxDistance) return false;
+
+        if (filters.peopleCount.length > 0) {
+            let passes = false;
+            for (const range of filters.peopleCount) {
+                if ((range === '2' && space.capacity <= 2) ||
+                    (range === '2-6' && space.capacity > 2 && space.capacity <= 6) ||
+                    (range === '7-9' && space.capacity >= 7 && space.capacity <= 9) ||
+                    (range === '10-19' && space.capacity >= 10 && space.capacity <= 19) ||
+                    (range === '20' && space.capacity >= 20)) {
+                    passes = true;
+                    break;
+                }
+            }
+            if (!passes) return false;
+        }
+
+        if (filters.usage.length > 0) {
+            console.log(space.usage);
+            if (!filters.usage.some(u => space.usage.includes(u))) return false;
+        }
+
+        return true;
+    });
+
+    renderSpaces(filteredSpaces);
+    updateMapMarkers(filteredSpaces);
 }
 
 

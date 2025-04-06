@@ -159,29 +159,37 @@
     color: #333;
 }
 
+/* 修改價格範圍和距離範圍容器 */
 .price-range, .distance-range {
     display: flex;
     align-items: center;
-    gap: 10px;
+    margin-bottom: 20px; /* 增加底部間距防止重疊 */
+    flex-wrap: wrap; /* 在小屏幕上允許換行 */
 }
 
-.range {
-    flex-grow: 1;
-    height: 4px;
-    background: #ddd;
-    outline: none;
-    -webkit-appearance: none;
-    border-radius: 2px;
+/* 修改範圍指示器和按鈕 */
+.price-range span,
+.distance-range span {
+    white-space: nowrap;
+    font-size: 14px;
+    min-width: 60px; /* 確保數值顯示有足夠空間 */
 }
 
-.range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #4CAF50;
+/* 修改滑桿容器 */
+#price-range,
+#distance-range {
+    flex: 1;
+    max-width: calc(100% - 150px); /* 限制滑桿寬度，預留兩側文字和按鈕空間 */
+    margin: 0 10px;
+}
+
+/* 修改重置按鈕 */
+.reset-button {
+    background: none;
+    border: none;
     cursor: pointer;
+    color: #999;
+    padding: 0 8px;
 }
 
 .reset-button {
@@ -297,6 +305,48 @@
     color: #ffc107;
 }
 
+/*篩選滑桿部分*/
+
+/* 基本容器 */
+.noUi-target {
+    margin: 0 10px;
+    height: 8px;
+    background: #ddd;
+    border-radius: 4px;
+}
+
+/* 拖曳滑塊 */
+.noUi-target {
+    height: 8px;
+    background: #ddd;
+    border-radius: 4px;
+    border: none;
+    box-shadow: none;
+}
+
+.noUi-handle {
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border: none !important;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0,0,0,0.3);
+    top: -7px !important; /* 修正讓滑塊在軌道中垂直居中 */
+    right: -10px !important; /* 修正水平位置 */
+}
+
+/* 移除 noUiSlider 滑塊上的預設線條 */
+.noUi-handle:before,
+.noUi-handle:after {
+    display: none;
+}
+
+/* 連接區塊顏色 */
+.noUi-connect {
+    background: #4CAF50;
+}
+
 /* 響應式設計 */
 @media (max-width: 900px) {
     .spaces-grid {
@@ -316,5 +366,35 @@
     .filter-option {
         flex-basis: 45%;
         margin-bottom: 10px;
+    }
+}
+
+/* 響應式設計優化 */
+@media (max-width: 768px) {
+    #price-range,
+    #distance-range {
+        max-width: calc(100% - 140px);
+    }
+
+    .price-range, .distance-range {
+        margin-bottom: 25px; /* 在小屏幕上增加更多間距 */
+    }
+}
+
+@media (max-width: 480px) {
+    .price-range, .distance-range {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #price-range,
+    #distance-range {
+        max-width: 100%;
+        margin: 15px 0;
+    }
+
+    .price-range span,
+    .distance-range span {
+        margin-bottom: 5px;
     }
 }
