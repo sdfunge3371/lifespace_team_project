@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空間評論查詢</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+
+    <style>
+    
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .search-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-control {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        button.reset {
+            background-color: #7f8c8d;
+        }
+
+        button.reset:hover {
+            background-color: #6c7a7d;
+        }
+
+        .result-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--light-gray);
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .pagination button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .pagination button:hover:not(.active) {
+            background-color: var(--light-gray);
+        }
+
+        .pagination button:disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: var(--accent-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .satisfaction {
+            display: flex;
+        }
+
+        .star {
+            color: gold;
+            margin-right: 2px;
+        }
+
+        .photos {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .photo-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .form-control {
+                min-width: 100%;
+            }
+
+            th,
+            td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+    
+    <!-- 側邊欄 -->
+      <div class="col-lg-2 sidebar">
+        <div class="sidebar-header">
+          <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+          <h2 class="sidebar-title">後台中心</h2>
+        </div>
+        <ul class="nav flex-column mt-3">
+          <!-- 消息管理 -->
+          <li class="nav-item">
+            <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-home"></i> 消息管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="newsSubmenu">
+              <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+            </ul>
+          </li>
+
+          <!-- 帳號管理 -->
+          <li class="nav-item">
+            <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-user"></i> 帳號管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="accountSubmenu">
+              <li><a href="#" class="submenu-item">會員帳號</a></li>
+              <li><a href="#" class="submenu-item">管理員帳號</a></li>
+            </ul>
+          </li>
+
+          <!-- 空間訂單管理 -->
+          <li class="nav-item">
+            <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-map-marker-alt"></i> 空間訂單管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="ordersSubmenu">
+              <li><a href="#" class="submenu-item">訂單</a></li>
+            </ul>
+          </li>
+
+          <!-- 商品管理 -->
+          <li class="nav-item">
+            <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-box"></i> 商品管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="productSubmenu">
+              <li><a href="#" class="submenu-item">空間管理</a></li>
+              <li><a href="#" class="submenu-item">租借品項</a></li>
+              <li><a href="#" class="submenu-item">分點</a></li>
+            </ul>
+          </li>
+
+          <!-- 活動留言評論管理 -->
+          <li class="nav-item">
+            <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-star"></i> 活動留言評論管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="commentSubmenu">
+              <li><a href="#" class="submenu-item">活動留言板</a></li>
+              <li><a href="#" class="submenu-item">檢舉留言</a></li>
+            </ul>
+          </li>
+
+          <!-- 常見問題管理 -->
+          <li class="nav-item">
+            <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-headset"></i> 常見問題管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="faqSubmenu">
+              <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- 側邊欄結束 -->
+        
+         <!--<header>
+            <h1>空間評論查詢系統</h1>
+          
+        </header>-->
+
+        <section class="search-panel">
+        <h1>空間評論查詢系統</h1>
+            <h2>搜尋條件</h2>
+            <div class="form-group">
+                <div class="form-control">
+                    <label for="spaceId">空間ID</label>
+                    <input type="text" id="spaceId" placeholder="請輸入空間ID">
+                </div>
+
+                <div class="form-control">
+                    <label for="spaceName">空間名稱</label>
+                    <input type="text" id="spaceName" placeholder="請輸入空間名稱">
+                </div>
+
+                <div class="form-control">
+                    <label for="branchId">分店ID</label>
+                    <input type="text" id="branchId" placeholder="請輸入分店ID">
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="searchBtn">搜尋</button>
+                <button id="resetBtn" class="reset">重置</button>
+            </div>
+        </section>
+
+        <section class="result-panel">
+            <h2>評論列表</h2>
+            <div id="resultsContainer">
+                <div class="loading">正在載入資料，請稍候...</div>
+            </div>
+
+            <div class="pagination" id="pagination"></div>
+        </section>
+    </div>
+
+    <div id="photoModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+  	<!-- jQuery -->
+	<script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
+	<!-- Bootstrap JS -->
+	<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 元素參考
+            const searchBtn = document.getElementById('searchBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const paginationContainer = document.getElementById('pagination');
+            const spaceIdInput = document.getElementById('spaceId');
+            const spaceNameInput = document.getElementById('spaceName');
+            const branchIdInput = document.getElementById('branchId');
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalImg');
+            const modalClose = document.querySelector('.close');
+
+            // 分頁狀態
+            let currentPage = 0;
+            let pageSize = 5;
+            let totalPages = 0;
+
+            // 初始載入
+            fetchComments();
+
+            // 搜尋按鈕點擊事件
+            searchBtn.addEventListener('click', function () {
+                currentPage = 0;
+                fetchComments();
+            });
+
+            // 重置按鈕點擊事件
+            resetBtn.addEventListener('click', function () {
+                spaceIdInput.value = '';
+                spaceNameInput.value = '';
+                branchIdInput.value = '';
+                currentPage = 0;
+                fetchComments();
+            });
+
+            // 關閉圖片模態框
+            modalClose.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // 點擊模態框背景關閉
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // 獲取評論資料
+            function fetchComments() {
+                showLoading();
+
+                const spaceId = spaceIdInput.value.trim();
+                const spaceName = spaceNameInput.value.trim();
+                const branchId = branchIdInput.value.trim();
+
+                // 構建API URL
+                let url = `http://localhost:8080/spaces/comments?page=${currentPage}&size=${pageSize}`;
+                if (spaceId) url += `&spaceId=${encodeURIComponent(spaceId)}`;
+                if (spaceName) url += `&spaceName=${encodeURIComponent(spaceName)}`;
+                if (branchId) url += `&branchId=${encodeURIComponent(branchId)}`;
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('網路錯誤，請稍後再試');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        displayResults(data);
+                    })
+                    .catch(error => {
+                        showError(error.message);
+                    });
+            }
+
+            // 顯示載入中
+            function showLoading() {
+                resultsContainer.innerHTML = '<div class="loading">正在載入資料，請稍候...</div>';
+                paginationContainer.innerHTML = '';
+            }
+
+            // 顯示錯誤訊息
+            function showError(message) {
+                resultsContainer.innerHTML = `<div class="no-results">錯誤：${message}</div>`;
+                paginationContainer.innerHTML = '';
+            }
+
+            // 顯示查詢結果
+            function displayResults(data) {
+                if (!data || !data.content || data.content.length === 0) {
+                    resultsContainer.innerHTML = '<div class="no-results">沒有找到符合條件的評論</div>';
+                    paginationContainer.innerHTML = '';
+                    return;
+                }
+
+                // 更新分頁資訊
+                totalPages = data.totalPages;
+
+                // 構建表格
+                let tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>空間名稱</th>
+                                <th>空間ID</th>
+                                <th>分店ID</th>
+                                <th>評論內容</th>
+                                <th>滿意度</th>
+                                <th>評論時間</th>
+                                <th>照片</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.content.forEach(comment => {
+                    // 格式化日期
+                    const commentDate = new Date(comment.commentTime);
+                    const formattedDate = `${commentDate.getFullYear()}-${padZero(commentDate.getMonth() + 1)}-${padZero(commentDate.getDate())} ${padZero(commentDate.getHours())}:${padZero(commentDate.getMinutes())}`;
+
+                    // 產生星星評分
+                    const satisfaction = comment.satisfaction || 0;
+                    let starsHtml = '';
+                    for (let i = 0; i < 5; i++) {
+                        if (i < satisfaction) {
+                            starsHtml += '<span class="star">★</span>';
+                        } else {
+                            starsHtml += '<span class="star" style="color: #ccc;">★</span>';
+                        }
+                    }
+
+                    // 處理照片
+                    let photosHtml = '';
+                    if (comment.photosUrls && comment.photosUrls.length > 0) {
+                        photosHtml = '<div class="photos">';
+                        comment.photosUrls.forEach(photoUrl => {
+                            if (photoUrl && photoUrl.trim() !== '') {
+                                photosHtml += `<img src="${photoUrl}" class="photo-thumbnail" onclick="openModal('${photoUrl}')">`;
+                            }
+                        });
+                        photosHtml += '</div>';
+                    } else {
+                        photosHtml = '無照片';
+                    }
+
+                    tableHtml += `
+                        <tr>
+                            <td>${comment.spaceName || '-'}</td>
+                            <td>${comment.spaceId || '-'}</td>
+                            <td>${comment.branchId || '-'}</td>
+                            <td>${comment.commentContent || '-'}</td>
+                            <td><div class="satisfaction">${starsHtml} (${satisfaction})</div></td>
+                            <td>${formattedDate}</td>
+                            <td>${photosHtml}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                        </tbody>
+                    </table>
+                `;
+
+                resultsContainer.innerHTML = tableHtml;
+
+                // 建立分頁按鈕
+                createPagination();
+
+                // 綁定照片點擊事件
+                document.querySelectorAll('.photo-thumbnail').forEach(img => {
+                    img.addEventListener('click', function () {
+                        openModal(this.src);
+                    });
+                });
+            }
+
+            // 建立分頁按鈕
+            function createPagination() {
+                let paginationHtml = '';
+
+                // 前一頁按鈕
+                paginationHtml += `<button ${currentPage === 0 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">上一頁</button>`;
+
+                // 頁碼按鈕 (顯示最多5個頁碼)
+                const startPage = Math.max(0, Math.min(currentPage - 2, totalPages - 5));
+                const endPage = Math.min(startPage + 4, totalPages - 1);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationHtml += `<button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i + 1}</button>`;
+                }
+
+                // 下一頁按鈕
+                paginationHtml += `<button ${currentPage >= totalPages - 1 ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">下一頁</button>`;
+
+                paginationContainer.innerHTML = paginationHtml;
+            }
+
+            // 切換頁碼
+            window.changePage = function (page) {
+                if (page < 0 || page >= totalPages) return;
+                currentPage = page;
+                fetchComments();
+            };
+
+            // 打開圖片模態框
+            window.openModal = function (imgSrc) {
+                modal.style.display = 'block';
+                modalImg.src = imgSrc;
+            };
+
+            // 補零函數（格式化日期用）
+            function padZero(num) {
+                return num < 10 ? '0' + num : num;
+            }
+        });
+    </script>
+</body>
+
+</html>
