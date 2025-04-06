@@ -33,7 +33,20 @@ main.main {
     max-width: 960px;
 }
 
+/* ================= 空間照片顯示 ================= */
 .space-photo {
+    border-radius: 10px; !important;
+}
+
+.carousel-inner {
+    height: 700px; /* ✅ 固定 Carousel 的高度，可依需要調整 */
+    overflow: hidden;
+}
+
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover; /* ✅ 確保圖片填滿且不變形 */
 }
 
 /* ================= 重要公告 ================= */

@@ -250,10 +250,9 @@ tr:hover {
 }
 
 .main-container {
-    margin-left: 250px; /* 根據.sidebar實際寬度調整 */
+    margin-left: 17%; /* 根據.sidebar實際寬度調整 */
     padding: 10px 20px;
 }
-
 
 .toggle-status-btn {
     background-color: #475757;
