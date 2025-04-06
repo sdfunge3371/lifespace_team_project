@@ -16,6 +16,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
@@ -40,8 +42,9 @@ public class Event implements java.io.Serializable {
 	 @Column(name="event_end_time")
 	 private Timestamp eventEndTime;
 	 
-	 @Column(name="event_category")
-	 private String eventCategory;
+	 @ManyToOne
+	 @JoinColumn(name = "event_category_id", referencedColumnName = "event_category_id")
+	 private EventCategory eventCategory;
 	  
 	 @Enumerated(EnumType.STRING)
 	 @Column(name="event_status")
@@ -119,11 +122,11 @@ public class Event implements java.io.Serializable {
 		this.eventEndTime = eventEndTime;
 	}
 
-	public String getEventCategory() {
+	public EventCategory getEventCategory() {
 		return eventCategory;
 	}
 
-	public void setEventCategory(String eventCategory) {
+	public void setEventCategory(EventCategory eventCategory) {
 		this.eventCategory = eventCategory;
 	}
 
