@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +27,7 @@ import com.lifespace.entity.Member;
 import com.lifespace.entity.Orders;
 import com.lifespace.exception.ResourceNotFoundException;
 import com.lifespace.repository.BranchRepository;
+import com.lifespace.repository.EventCategoryRepository;
 import com.lifespace.repository.EventMemberRepository;
 import com.lifespace.repository.EventPhotoRepository;
 import com.lifespace.repository.EventRepository;
@@ -59,17 +59,21 @@ public class EventService {
 	@Autowired
 	OrdersRepository ordersRepository;
 	
+	@Autowired
+	EventCategoryRepository eventCategoryRepository;
+	
 	//新增活動
 	//@Transactional
 	public void addEvent(EventRequest eventRequest, List<MultipartFile> photos) {
 		
 		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-
+		
 		Event event = new Event();
         event.setEventName(eventRequest.getEventName());
         event.setEventStartTime(eventRequest.getEventStartTime());
         event.setEventEndTime(eventRequest.getEventEndTime());
-        event.setEventCategory(eventRequest.getEventCategory());
+        event.setEventCategory(eventCategoryRepository.findById(
+        		eventRequest.getEventCategory()).get());
         event.setEventStatus(eventRequest.getEventStatus());
         event.setMaximumOfParticipants(eventRequest.getMaximumOfParticipants());
         event.setEventBriefing(eventRequest.getEventBriefing());

@@ -14,7 +14,7 @@ public class EventResponse {
 	 
 	 private Timestamp eventEndTime;
 	 
-	 private String eventCategory;
+	 private String eventCategoryName;
 	 
 	 private String eventStatus;
 	 
@@ -68,12 +68,12 @@ public class EventResponse {
 		this.eventEndTime = eventEndTime;
 	}
 
-	public String getEventCategory() {
-		return eventCategory;
+	public String getEventCategoryName() {
+		return eventCategoryName;
 	}
 
-	public void setEventCategory(String eventCategory) {
-		this.eventCategory = eventCategory;
+	public void setEventCategoryName(String eventCategoryName) {
+		this.eventCategoryName = eventCategoryName;
 	}
 
 	public String getEventStatus() {
@@ -166,7 +166,7 @@ public class EventResponse {
         String eventName, 
         Timestamp eventStartTime,
         Timestamp eventEndTime, 
-        String eventCategory,
+        String eventCategoryName,
         String eventStatus,
         Integer numberOfParticipants, 
         Integer maximumOfParticipants, 
@@ -182,7 +182,7 @@ public class EventResponse {
         this.eventName = eventName;
         this.eventStartTime = eventStartTime;
         this.eventEndTime = eventEndTime;
-        this.eventCategory = eventCategory;
+        this.eventCategoryName = eventCategoryName;
         this.eventStatus = eventStatus;
         this.numberOfParticipants = numberOfParticipants;
         this.maximumOfParticipants = maximumOfParticipants;
