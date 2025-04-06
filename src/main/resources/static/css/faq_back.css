@@ -144,7 +144,7 @@ th {
 }
 
 /* 響應式調整 */
-@media (max-width: 1400px ) {
+@media (max-width: 768px ) {
     .main-content {
         margin-left: 0;
     }
