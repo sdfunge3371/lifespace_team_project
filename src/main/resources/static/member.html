@@ -5,97 +5,196 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>會員管理系統</title>
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="../css/sidebar.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 	<link href="../css/member.css" rel="stylesheet" >
-
+	<style>
+	.main-content{
+	    margin-left: 240px; /* 假設你的 sidebar 寬度是 240px */
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #f8f9fa;
+        min-height: 100vh; /* 確保內容撐滿整個畫面高度 */
+	}
+	</style>
 </head>
 
 <body>
+<button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+    <i class="fas fa-bars"></i>
+</button>
+      <!-- 側邊欄 -->
+      <div class="col-lg-2 sidebar">
+        <div class="sidebar-header">
+          <img src="../img/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+          <h2 class="sidebar-title">後台中心</h2>
+        </div>
+        <ul class="nav flex-column mt-3">
+          <!-- 消息管理 -->
+          <li class="nav-item">
+            <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-home"></i> 消息管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="newsSubmenu">
+              <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+            </ul>
+          </li>
 
-	<div class="container">
+          <!-- 帳號管理 -->
+          <li class="nav-item">
+            <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-user"></i> 帳號管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="accountSubmenu">
+              <li><a href="#" class="submenu-item">會員帳號</a></li>
+              <li><a href="#" class="submenu-item">管理員帳號</a></li>
+            </ul>
+          </li>
+
+          <!-- 空間訂單管理 -->
+          <li class="nav-item">
+            <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-map-marker-alt"></i> 空間訂單管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="ordersSubmenu">
+              <li><a href="#" class="submenu-item">訂單</a></li>
+            </ul>
+          </li>
+
+          <!-- 商品管理 -->
+          <li class="nav-item">
+            <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-box"></i> 商品管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="productSubmenu">
+              <li><a href="#" class="submenu-item">空間管理</a></li>
+              <li><a href="#" class="submenu-item">租借品項</a></li>
+              <li><a href="#" class="submenu-item">分點</a></li>
+            </ul>
+          </li>
+
+          <!-- 活動留言評論管理 -->
+          <li class="nav-item">
+            <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-star"></i> 活動留言評論管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="commentSubmenu">
+              <li><a href="#" class="submenu-item">活動留言板</a></li>
+              <li><a href="#" class="submenu-item">檢舉留言</a></li>
+            </ul>
+          </li>
+
+          <!-- 常見問題管理 -->
+          <li class="nav-item">
+            <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-headset"></i> 常見問題管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="faqSubmenu">
+              <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- 側邊欄結束 -->
+
+<!-- 自己的表格內容 ------------------------------------------------------->
+<div class="main-content">
 		<h2>會員管理系統</h2>
 		<div class="add-member">
 			<button onclick="location.href='./memberadd.html'">新增會員</button>
 		</div>
 
-		<!------------------------------- 單一搜尋  -------------------------------->
-		<!-- 收合按鈕 -->
-		<button id="toggleSearchBtn">🔍 顯示單一搜尋</button>
+		<!---- 搜尋  --->
+		<button id="toggleSearchBtn">🔍 搜尋</button>
 		<div class="search-container" id="searchContainer" style="display: none;">
-			<h3>單一搜尋</h3>
+			
 			<!-- 第一行：會員流水號、姓名 -->
 			<div class="search-row">
 				<div class="search-group">
-					<label for="memberId">流水號</label>
+				    <div class="search-group-title">
+				       <label for="memberId">會員編號</label>
+					   <span onclick="document.getElementById('memberId').value=''" style="cursor:pointer">❌</span>
+				    </div>
 					<input type="text" name="memberId" id="memberId" placeholder="M001" />
-					<div class="search-btn">
-						<button type="button" id="searchIdBtn">查尋流水號</button>
-					</div>
 				</div>
 				<div class="search-group">
-					<label for="memberName">姓名</label>
-					<input type="text" name="memberName" id="memberName" placeholder="姓名" />
-					<div class="search-btn">
-						<button type="button" id="searchNameBtn">查尋姓名</button>
-					</div>
+				    <div class="search-group-title">
+				        <label for="memberName">姓名</label>
+				        <span onclick="document.getElementById('memberName').value=''" style="cursor:pointer">❌</span>
+				    </div>	
+					<input type="text" name="memberName" id="memberName" placeholder="輸入姓名" />
 				</div>
-
 			</div>
 
 			<!-- 第二行：電話、信箱名稱 -->
 			<div class="search-row">
 				<div class="search-group">
-					<label for="phone">電話</label>
-					<input type="text" name="phone" id="phone" placeholder="手機號碼" />
-					<div class="search-btn">
-						<button type="button" id="searchPhoneBtn">查尋電話</button>
+				    <div class="search-group-title">
+					    <label for="phone">電話</label>
+					    <span onclick="document.getElementById('phone').value=''" style="cursor:pointer">❌</span>
 					</div>
+					<input type="text" name="phone" id="phone" placeholder="手機號碼" />
 				</div>
 				<div class="search-group">
-					<label for="email">信箱名稱</label>
-					<input type="text" id="email" name="email" placeholder="請輸入名稱" onblur="appendGmail()" />
-					<div class="search-btn">
-						<button type="button" id="searchEmailBtn">查尋信箱</button>
+				    <div class="search-group-title">
+					    <label for="email">信箱名稱</label>
+					    <span onclick="document.getElementById('email').value=''" style="cursor:pointer">❌</span>
 					</div>
+					<input type="text" id="email" name="email" placeholder="請輸入名稱" onblur="appendGmail()" />
 				</div>
 			</div>
-		</div>
-
-
-		<!------------------------------- 多樣搜尋 ----------------------------->
-		<!-- 收合按鈕 -->
-		<button id="toggleSearchManyBtn">🔍 顯示多樣搜尋</button>
-		<div class="search-many-container" id="searchManyContainer" style="display: none;">
-			<h3>多樣搜尋</h3>
+			
 			<!-- 第三行：狀態、註冊日期、生日 -->
 			<div class="search-row">
 				<div class="search-group">
-					<label for="accountStatus">帳號狀態：</label> <select name="accountStatus" id="accountStatus">
+				    <div class="search-group-title">
+					    <label for="accountStatus">帳號狀態：</label> 
+					    <span onclick="document.getElementById('accountStatus').value=''" style="cursor:pointer">❌</span>
+					</div>
+					<select name="accountStatus" id="accountStatus">
 						<option value="">請選擇</option>
 						<option value="0">0</option>
 						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
 					</select>
-					<span onclick="document.getElementById('accountStatus').value=''" style="cursor:pointer">❌</span>
 				</div>
 				<div class="search-group">
-					<label for="registrationTime">註冊日期：</label> <input type="date" name="registrationTime"
-						id="registrationTime" />
-						<span onclick="document.getElementById('registrationTime').value=''" style="cursor:pointer">❌</span>
+				    <div class="search-group-title">
+					    <label for="registrationTime">註冊日期：</label> 
+					    <span onclick="document.getElementById('registrationTime').value=''" style="cursor:pointer">❌</span>
+					</div>
+					<input type="date" name="registrationTime" id="registrationTime" />
+						
 				</div>
 				<div class="search-group">
-					<label for="birthday">生日：</label> <input type="date" name="birthday" id="birthday" />
-					<span onclick="document.getElementById('birthday').value=''" style="cursor:pointer">❌</span>
+				    <div class="search-group-title">
+					    <label for="birthday">生日：</label> 
+					    <span onclick="document.getElementById('birthday').value=''" style="cursor:pointer">❌</span>
+					</div>
+					<input type="date" name="birthday" id="birthday" />
 				</div>
 			</div>
-			<!-- 搜尋按鈕 -->
-			<div class="search-many-btn">
-				<button type="button" id="searchManyBtn">查尋</button>
+			
+			<div class="btn">
+			   <!-- 搜尋按鈕 -->
+			   <div class="search-btn">
+				  <button type="button" id="searchBtn">查尋</button>
+			   </div>
+		       <!-- 回首頁 -->
+			   <div class="search-btn">
+				   <button type="button" id="resetBtn">重整</button>
+		   	   </div>
 			</div>
 
+			
 		</div>
-
-
 
 		<!--------------------------------- 會員資料表 ----------------------------->
 		<table id="memberTable">
@@ -106,7 +205,6 @@
 					<th>信箱</th>
 					<th>電話</th>
 					<th>帳號狀態</th>
-					<th>密碼</th>
 					<th>生日</th>
 					<th>註冊時間</th>
 					<th>照片</th>
@@ -118,11 +216,20 @@
 			<tbody id="memberBody"></tbody>
 		</table>
 
+</div>    
 
+<!-- JQuery JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-	</div>
+<!-- member JS -->
+<script src="../js/member.js"></script>
 
-	<script src="../js/member.js"></script>
+<!-- sidebar2 JS -->
+<script src="../js/sidebar2.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="..vendors//bootstrap/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
