@@ -1,111 +1,111 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LifeSpace 後台管理系統-常見問題</title>
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="./css/sidebar.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeSpace 後台管理系統-常見問題</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="./css/sidebar.css" rel="stylesheet">
 
-<style>
- body {
-    overflow-x: hidden;
-  }
-  
-  .main-content {
-    margin-left: 220px;
-    padding: 30px 40px;
-    position: relative;
-  }
-  
-  /* 管理員資訊樣式 */
-  .admin-info {
-    position: absolute;
-    top: 20px;
-    right: 40px;
-    display: flex;
-    align-items: center;
-  }
-  
-  /* 歡迎區域 */
-  .welcome-banner {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 40px;
-    margin: 60px auto 20px auto;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    max-width: 900px;
-  }
-  
-  .welcome-title {
-    font-size: 2.5rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .welcome-subtitle {
-    font-size: 1.8rem;
-    color: #70b6c1;
-    margin-bottom: 30px;
-    font-style: italic;
-  }
-  
-  .welcome-description {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #666;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  
-  /* 底部透明輪播圖樣式 */
-  .image-carousel-container {
-    margin: 50px auto 30px auto;
-    max-width: 1000px;
-    padding: 0 15px;
-  }
-  
-  .transparent-image-container {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    margin: 0 10px;
-  }
-  
-  .transparent-image-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.75);
-  }
-  
-  .transparent-image-container img {
-    object-fit: cover;
-    height: 200px;
-    width: 100%;
-    opacity: 0.85;
-  }
-  
-  .carousel-item {
-    transition: transform 0.8s ease-in-out;
-  }
-  
-  /* 多圖並排樣式 */
-  .multi-image-row {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .image-card {
-    flex: 0 0 31%;
-    max-width: 31%;
-  }
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            margin-left: 220px;
+            padding: 30px 40px;
+            position: relative;
+        }
+
+        /* 管理員資訊樣式 */
+        .admin-info {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 歡迎區域 */
+        .welcome-banner {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 40px;
+            margin: 60px auto 20px auto;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 900px;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.8rem;
+            color: #70b6c1;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .welcome-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* 底部透明輪播圖樣式 */
+        .image-carousel-container {
+            margin: 50px auto 30px auto;
+            max-width: 1000px;
+            padding: 0 15px;
+        }
+
+        .transparent-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 0 10px;
+        }
+
+        .transparent-image-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.75);
+        }
+
+        .transparent-image-container img {
+            object-fit: cover;
+            height: 200px;
+            width: 100%;
+            opacity: 0.85;
+        }
+
+        .carousel-item {
+            transition: transform 0.8s ease-in-out;
+        }
+
+        /* 多圖並排樣式 */
+        .multi-image-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .image-card {
+            flex: 0 0 31%;
+            max-width: 31%;
+        }
 
   
   
@@ -131,43 +131,43 @@
 
 </head>
 <body>
-  <div class="container-fluid p-0">
+<div class="container-fluid p-0">
     <div class="row g-0">
-      <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
-        <i class="fas fa-bars"></i>
-      </button>
-</div>
-      <!-- 側邊欄 -->
-      <div class="col-lg-2 sidebar">
+        <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <!-- 側邊欄 -->
+    <div class="col-lg-2 sidebar">
         <div class="sidebar-header">
          <a href="/backend_index.html">
          <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
-         </a> 
+         </a>
           <h2 class="sidebar-title">後台中心</h2>
         </div>
         <ul class="nav flex-column mt-3">
-          <!-- 消息管理 -->
-          <li class="nav-item">
-            <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
-              <i class="fas fa-home"></i> 消息管理
-              <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <ul class="collapse submenu" id="newsSubmenu">
-              <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
-            </ul>
-          </li>
+            <!-- 消息管理 -->
+            <li class="nav-item">
+                <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-home"></i> 消息管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="newsSubmenu">
+                    <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+                </ul>
+            </li>
 
-          <!-- 帳號管理 -->
-          <li class="nav-item">
-            <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
-              <i class="fas fa-user"></i> 帳號管理
-              <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <ul class="collapse submenu" id="accountSubmenu">
-              <li><a href="#" class="submenu-item">會員帳號</a></li>
-              <li><a href="#" class="submenu-item">管理員帳號</a></li>
-            </ul>
-          </li>
+            <!-- 帳號管理 -->
+            <li class="nav-item">
+                <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-user"></i> 帳號管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="accountSubmenu">
+                    <li><a href="#" class="submenu-item">會員帳號</a></li>
+                    <li><a href="#" class="submenu-item">管理員帳號</a></li>
+                </ul>
+            </li>
 
           <!-- 空間訂單管理 -->
           <li class="nav-item">
@@ -193,122 +193,122 @@
             </ul>
           </li>
 
-          <!-- 活動留言評論管理 -->
-          <li class="nav-item">
-            <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
-              <i class="fas fa-star"></i> 活動留言評論管理
-              <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <ul class="collapse submenu" id="commentSubmenu">
-              <li><a href="#" class="submenu-item">活動留言板</a></li>
-              <li><a href="#" class="submenu-item">檢舉留言</a></li>
-            </ul>
-          </li>
+            <!-- 活動留言評論管理 -->
+            <li class="nav-item">
+                <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-star"></i> 活動留言評論管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="commentSubmenu">
+                    <li><a href="#" class="submenu-item">活動留言板</a></li>
+                    <li><a href="#" class="submenu-item">檢舉留言</a></li>
+                </ul>
+            </li>
 
-          <!-- 常見問題管理 -->
-          <li class="nav-item">
-            <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
-              <i class="fas fa-headset"></i> 常見問題管理
-              <i class="fas fa-chevron-down ms-auto"></i>
-            </a>
-            <ul class="collapse submenu" id="faqSubmenu">
-              <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
-            </ul>
-          </li>
+            <!-- 常見問題管理 -->
+            <li class="nav-item">
+                <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-headset"></i> 常見問題管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="faqSubmenu">
+                    <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+                </ul>
+            </li>
         </ul>
-      </div>
-      <!-- 側邊欄結束 -->
+    </div>
+    <!-- 側邊欄結束 -->
 
-      <!-- 主要內容區 -->
-      <div class="col-lg-10 main-content">
+    <!-- 主要內容區 -->
+    <div class="col-lg-10 main-content">
         <!-- 右上角 管理員資訊 -->
         <div class="admin-info">
-          <img src="/images/laugth.jpg" alt="Admin Avatar" class="rounded-circle" width="40" height="40">
-          <span class="ms-2 fw-semibold">Hi，歡迎 <span style="color:#007bff">管理員mia</span> 👋</span>
+            <img src="/images/laugth.jpg" alt="Admin Avatar" class="rounded-circle" width="40" height="40">
+            <span class="ms-2 fw-semibold">Hi，歡迎 <span style="color:#007bff">管理員mia</span> 👋</span>
         </div>
 
         <!-- 歡迎橫幅 -->
         <div class="welcome-banner">
-          <h1 class="welcome-title">歡迎回來</h1>
-          <h2 class="welcome-subtitle">LifeSpace 空間不止於形式，更是感受</h2>
-          <p class="welcome-description">
-            這裡是 LifeSpace 後台管理系統。透過左側選單，您可以快速訪問不同的管理功能。<br>祝您有個愉快的工作日！
-          </p>
+            <h1 class="welcome-title">歡迎回來</h1>
+            <h2 class="welcome-subtitle">LifeSpace 空間不止於形式，更是感受</h2>
+            <p class="welcome-description">
+                這裡是 LifeSpace 後台管理系統。透過左側選單，您可以快速訪問不同的管理功能。<br>祝您有個愉快的工作日！
+            </p>
         </div>
 
         <!-- 底部透明輪播圖 -->
         <div class="image-carousel-container">
-          <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-              <!-- 第一組圖片 -->
-              <div class="carousel-item active">
-                <div class="multi-image-row">
-                  <div class="image-card">
-                    <div class="transparent-image-container">
-                      <img src="/images/img.bootstrap/house1.jpg" class="d-block w-100" alt="空間1">
+            <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- 第一組圖片 -->
+                    <div class="carousel-item active">
+                        <div class="multi-image-row">
+                            <div class="image-card">
+                                <div class="transparent-image-container">
+                                    <img src="/images/img.bootstrap/house1.jpg" class="d-block w-100" alt="空間1">
+                                </div>
+                            </div>
+                            <div class="image-card">
+                                <div class="transparent-image-container">
+                                    <img src="/images/img.bootstrap/house2.jpg" class="d-block w-100" alt="空間2">
+                                </div>
+                            </div>
+                            <div class="image-card">
+                                <div class="transparent-image-container">
+                                    <img src="/images/img.bootstrap/house3.jpg" class="d-block w-100" alt="空間3">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="image-card">
-                    <div class="transparent-image-container">
-                      <img src="/images/img.bootstrap/house2.jpg" class="d-block w-100" alt="空間2">
+
+                    <!-- 第二組圖片 -->
+                    <div class="carousel-item">
+                        <div class="multi-image-row">
+                            <div class="image-card">
+                                <div class="transparent-image-container">
+                                    <img src="/images/img.bootstrap/house4.jpg" class="d-block w-100" alt="空間4">
+                                </div>
+                            </div>
+                            <div class="image-card">
+                                <div class="transparent-image-container">
+                                    <img src="/images/img.bootstrap/house5.jpg" class="d-block w-100" alt="空間5">
+                                </div>
+                            </div>
+                            <div class="image-card">
+                                <div class="transparent-image-container">
+                                    <img src="/images/img.bootstrap/house6.jpg" class="d-block w-100" alt="空間6">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="image-card">
-                    <div class="transparent-image-container">
-                      <img src="/images/img.bootstrap/house3.jpg" class="d-block w-100" alt="空間3">
-                    </div>
-                  </div>
                 </div>
-              </div>
-              
-              <!-- 第二組圖片 -->
-              <div class="carousel-item">
-                <div class="multi-image-row">
-                  <div class="image-card">
-                    <div class="transparent-image-container">
-                      <img src="/images/img.bootstrap/house4.jpg" class="d-block w-100" alt="空間4">
-                    </div>
-                  </div>
-                  <div class="image-card">
-                    <div class="transparent-image-container">
-                      <img src="/images/img.bootstrap/house5.jpg" class="d-block w-100" alt="空間5">
-                    </div>
-                  </div>
-                  <div class="image-card">
-                    <div class="transparent-image-container">
-                      <img src="/images/img.bootstrap/house6.jpg" class="d-block w-100" alt="空間6">
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-      <!-- 主要內容區結束 -->
     </div>
+    <!-- 主要內容區結束 -->
+</div>
 
 
   <!-- jQuery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  
+
   <!-- Bootstrap JS -->
   <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
-  
-  
+
+
   <!-- Sidebar JS -->
   <script src="/js/sidebar2.js"></script>
-  
+
   <script>
 
-  
-      // 初始化輪播
-      var carousel = new bootstrap.Carousel(document.getElementById('imageCarousel'), {
+
+    // 初始化輪播
+    var carousel = new bootstrap.Carousel(document.getElementById('imageCarousel'), {
         interval: 2000,  // 2秒自動輪播一次
         wrap: true,      // 循環播放
         touch: true      // 支援觸控滑動
-      });
-  
-  </script>
+    });
+
+</script>
 </body>
 </html>

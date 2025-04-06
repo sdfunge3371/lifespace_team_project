@@ -5,6 +5,9 @@ window.addEventListener('DOMContentLoaded', () => {
     tabs.forEach((tab, index) => {
         tab.style.display = index === 0 ? 'block' : 'none';
     });
+
+    // 開始抓資料
+    fetchSpace();
 });
 
 // ========== 處理頁籤 ==========
@@ -314,7 +317,7 @@ function toggleTimeSelect(type) {
     // 若該容器還未生成清單（注意：因為註解或空白也可能導致 hasChildNodes() 為 true，可改用 children 判斷是否已經有元素子節點）
     if (container.children.length === 0) {
         if (type === 'start') {
-            generateTimeOptions(containerId, buttonId, inputId);
+            generateStartTimeOptions(containerId, buttonId, inputId);
         } else if (type === 'end') {
             // 傳入 selectedStartTime 作為下限，只顯示大於它的時間選項
             generateTimeOptions(containerId, buttonId, inputId, selectedStartTime);
@@ -338,6 +341,43 @@ function toggleTimeSelect(type) {
  */
 
 let selectedStartTime = null;
+
+function generateStartTimeOptions(containerId, buttonId, inputId, minTime) {
+    const container = document.getElementById(containerId);
+    let html = '<ul class="time-list">';
+    // 若有設定最小時間，轉換成分鐘數
+    let minTimeMinutes = 0;
+    if (minTime) {
+        const parts = minTime.split(':');
+        minTimeMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+
+    // 顯示出8:00~22:00的開始時間選擇清單
+    for (let hour = 8; hour <= 21; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+
+            // // 若提供最小時間，僅顯示大於該時間的選項
+            // let currentTimeMinutes = hour * 60 + minute;
+            // if (minTime && currentTimeMinutes <= minTimeMinutes) {
+            //     continue;
+            // }
+
+            // 補 0 成兩位數字
+            const hh = hour.toString().padStart(2, '0');
+            const mm = minute.toString().padStart(2, '0');
+            const timeStr = `${hh}:${mm}`;
+
+            // 點擊 li 時，呼叫 selectTime()，將時間帶入
+            html += `
+                <li onclick="selectTime('${containerId}', '${buttonId}', '${inputId}', '${timeStr}')">
+                    ${timeStr}
+                </li>`;
+        }
+    }
+
+    html += '</ul>';
+    container.innerHTML = html;
+}
 
 function generateTimeOptions(containerId, buttonId, inputId, minTime) {
     const container = document.getElementById(containerId);
@@ -493,4 +533,142 @@ function updateTotal() {
     
     document.getElementById('spaceCost').textContent = '$ ' + spaceCost;
     document.getElementById('totalCost').textContent = '$ ' + total;
+}
+
+
+// =========== AJAX部分 ===========
+
+function fetchSpace() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const spaceId = urlParams.get('spaceId');
+
+
+    fetch(`/spaces/id/${spaceId}`)
+        .then(response => response.json())
+        .then(space => {
+            console.log(space);   // 檢查回傳的json是否正確
+            insertPhotos(space.spacePhotos);
+            insertAlert(space.spaceAlert);
+            insertInfo(space.spacePeople, "台北市中正區XXX路OO號", space.spaceFloor, space.spaceSize, space.spaceDesc);     // 地址到時候改成branchAddress
+            insertEquipments(space.spaceEquipments);
+            insertComments();
+            insertTransportation();
+            insertAsideInfo(space.spaceName, space.spaceHourlyFee, space.spaceDailyFee);
+            insertRentalItems();
+        })
+        .catch(error => console.log(error));
+}
+
+function insertPhotos(photos) {
+    const indicatorsContainer = document.querySelector('.carousel-indicators');
+    const innerContainer = document.querySelector('.carousel-inner');
+
+    indicatorsContainer.innerHTML = '';
+    innerContainer.innerHTML = '';
+
+    photos.forEach((photoObj, index) => {
+        const imgSrc = `data:image/jpeg;base64,${photoObj.photo}`;
+
+        // indicators
+        const indicator = document.createElement('button');
+        indicator.type = 'button';
+        indicator.setAttribute('data-bs-target', '#carouselExampleIndicators');
+        indicator.setAttribute('data-bs-slide-to', index);
+        indicator.setAttribute('aria-label', `Slide ${index + 1}`);
+        if (index === 0) {
+            indicator.classList.add('active');
+            indicator.setAttribute('aria-current', 'true');
+        }
+        indicatorsContainer.appendChild(indicator);
+
+        // carousel item
+        const item = document.createElement('div');
+        item.className = `carousel-item${index === 0 ? ' active' : ''}`;
+        item.innerHTML = `<img src="${imgSrc}" class="d-block w-100" alt="空間圖片${index + 1}">`;
+        innerContainer.appendChild(item);
+    });
+}
+
+function insertAlert(msg) {
+    const alertDetail = document.querySelector('.alert-detail');
+    const alertContainer = document.querySelector('.space-alert');
+
+    alertDetail.innerHTML = '';
+    if (!msg || msg.trim() === "") {
+        alertContainer.style.display = "none";
+    } else {
+        alertContainer.style.display = "block";
+        alertDetail.innerHTML = msg;
+    }
+}
+
+function insertInfo(people, address, floor, size, desc) {
+    document.querySelector('.space-people').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg> 
+                                    可容納人數：${people} 人`;
+    document.querySelector('.space-address').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg> ${address}${floor}${floor.trim() ? "樓" : ""}`;
+    document.querySelector('.space-size').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                    </svg> 
+                                    空間大小：${size} 坪`;
+    document.querySelector('.space-description').innerHTML = desc;
+}
+
+function insertEquipments(equips) {
+    const spaceEquips = document.querySelector('.space-equips');
+
+    spaceEquips.innerHTML = '';
+
+    if (!equips || equips.length === 0) {
+        spaceEquips.innerHTML = '<p class="text-muted">此空間尚未提供任何設備</p>';
+        return;
+    }
+
+    // 空間設備導入
+    equips.forEach(equip => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 mb-2';
+        col.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle me-2 text-primary"></i>
+                <span>${equip.spaceEquipName}</span>
+            </div>
+        `;
+        spaceEquips.appendChild(col);
+    })
+
+    // 公共設備導入
+
+
+}
+
+function insertComments() {
+
+}
+
+function insertTransportation() {
+
+}
+
+function insertAsideInfo(name, hourly, daily) {
+    document.querySelector('.header-title').textContent = name;
+    document.querySelector('.main-hourly-price').innerHTML = `$<span id="hourly-price">${hourly}</span>/hr`;
+    document.querySelector('.main-daily-price').innerHTML = `$<span id="daily-price">${daily}</span>/d`;
+
+}
+
+function insertRentalItems() {
+
 }
