@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.MailService;
+import com.lifespace.service.MailService;
 import com.lifespace.dto.MemberDTO;
 import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
