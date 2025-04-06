@@ -7,7 +7,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+    <link href="/css/sidebar.css" rel="stylesheet">
     <link href="/css/orders_backend.css" rel="stylesheet">
     <style>
     </style>
@@ -32,7 +32,7 @@
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
                     <ul class="collapse submenu" id="newsSubmenu">
-                        <li><a href="#" class="submenu-item">最新消息</a></li>
+                        <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
                     </ul>
                 </li>
 
@@ -50,11 +50,11 @@
 
                 <!-- 空間訂單管理 -->
                 <li class="nav-item">
-                    <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link active">
+                    <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
                         <i class="fas fa-map-marker-alt"></i> 空間訂單管理
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
-                    <ul class="collapse submenu show" id="ordersSubmenu">
+                    <ul class="collapse submenu" id="ordersSubmenu">
                         <li><a href="#" class="submenu-item">訂單</a></li>
                     </ul>
                 </li>
@@ -75,7 +75,7 @@
                 <!-- 活動留言評論管理 -->
                 <li class="nav-item">
                     <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
-                        <i class="fas fa-star"></i> 活動留言管理
+                        <i class="fas fa-star"></i> 活動留言評論管理
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
                     <ul class="collapse submenu" id="commentSubmenu">
@@ -96,10 +96,12 @@
                 </li>
             </ul>
         </div>
+    </div>
+
         <!-- 側邊欄 -->
 
         <!-- 自己的表格內容 -->
-        <div class="col-lg-10 col-md-9 ms-auto px-4">
+        <div class="col-lg-10 col-md-9 ms-auto px-0">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">空間訂單管理</h2>
@@ -111,12 +113,13 @@
                             <thead>
                             <tr>
                                 <th>訂單編號</th>
+                                <th>會員</th>
                                 <th>開始時間</th>
                                 <th>結束時間</th>
                                 <th>分點</th>
-                                <th>空間編號</th>
+                                <th>空間</th>
                                 <th>付款金額</th>
-                                <th>付款日期</th>
+                                <th>付款時間</th>
                                 <th>訂單狀態</th>
                                 <th>加購品項</th>
                                 <th>揪團活動</th>
@@ -196,14 +199,17 @@
 <!-- DataTables -->
 <script src="/vendors/dataTables/dataTables.min.js"></script>
 <script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
-
+<script src="/js/sidebar2.js"></script>
 <script>
     $(document).ready(function () {
         $('#ordersTable').DataTable({
 
             language: {
+                search: '搜尋：<i class="fas fa-question-circle search-help-icon ms-1" style="color: #70b6c1; cursor: pointer;"></i>',
                 lengthMenu: "每頁顯示 _MENU_ 筆資料",
-                info: "顯示第 _START_ 到第 _END_ 筆資料，共 _TOTAL_ 筆"
+                info: "顯示第 _START_ 到第 _END_ 筆資料，共 _TOTAL_ 筆",
+                infoFiltered: "（從 _MAX_ 筆資料中篩選）",
+                zeroRecords: "查無資料"
             },
 
             ajax: {
@@ -213,6 +219,7 @@
 
             columns: [
                 {data: 'orderId'},
+                {data: 'memberId'},
                 {data: 'orderStart', render: formatDate},
                 {data: 'orderEnd', render: formatDate},
                 {data: 'branchId'},
@@ -377,6 +384,11 @@
         }
     });
 
+    $(document).on('click', '.search-help-icon', function () {
+        alert("你可以搜尋：\n- 訂單編號（如: OR001）\n- 會員編號（如: M001）\n- 分點編號（如: E001）");
+    });
+
 </script>
+
 </body>
 </html>
