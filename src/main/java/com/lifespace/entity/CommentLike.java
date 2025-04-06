@@ -17,7 +17,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "comment_like")
-public class CommentLikeVO implements java.io.Serializable{
+public class CommentLike implements java.io.Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -36,7 +36,7 @@ public class CommentLikeVO implements java.io.Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "comment_id", referencedColumnName = "comment_id")
-	private CommentsVO commentsVO;
+	private Comments comments;
 	
 //	@Column(name = "comment_id")
 //	@NotEmpty(message="留言編號: 請勿空白")
@@ -47,7 +47,7 @@ public class CommentLikeVO implements java.io.Serializable{
 	@UpdateTimestamp
 	private Timestamp createdTime;
 		
-	public CommentLikeVO() {
+	public CommentLike() {
 	}	
 	
 	public Integer getLikeId() {
@@ -74,12 +74,12 @@ public class CommentLikeVO implements java.io.Serializable{
 //		this.memberId = memberId;
 //	}
 	
-	public CommentsVO getCommentsVO() {
-		return commentsVO;
+	public Comments getComments() {
+		return comments;
 	}
 
-	public void setCommentsVO(CommentsVO commentsVO) {
-		this.commentsVO = commentsVO;
+	public void setComments(Comments comments) {
+		this.comments = comments;
 	}
 	
 //	public String getCommentId() {

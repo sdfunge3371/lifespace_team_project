@@ -18,48 +18,47 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.entity.CommentReportVO;
+import com.lifespace.entity.CommentReport;
 import com.lifespace.service.CommentReportService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/lifespace/commentlikes")
 public class CommentReportController {
 
 	@Autowired
-	CommentReportService commentReportSvc;
+	CommentReportService commentReportService;
 		
-	@PostMapping("/commentlikes")
-	public String insert(@RequestBody CommentReportVO commentReportVO) {
-		commentReportSvc.addCommentReport(commentReportVO);
+	@PostMapping("/commentreports")
+	public String insert(@RequestBody CommentReport commentReport) {
+		commentReportService.addCommentReport(commentReport);
 		return "執行資料庫的 Create 操作";
 	}
 	
-	@PutMapping("/commentlikes/{likeId}")
+	@PutMapping("/commentreports/{reportId}")
 	public String update(@PathVariable String reportId,
-						 @RequestBody CommentReportVO commentReportVO) {
-		commentReportVO.setReportId(reportId); //這樣就可以設定commentReportVO裡面的id的值
-		commentReportSvc.updateCommentReport(commentReportVO);
+						 @RequestBody CommentReport commentReport) {
+		commentReport.setReportId(reportId); //這樣就可以設定commentReport裡面的id的值
+		commentReportService.updateCommentReport(commentReport);
 		return "執行資料庫的 Update 操作";
 	}
 	
-	@DeleteMapping("/commentlikes/{likeId}")
+	@DeleteMapping("/commentreports/{reportId}")
 	public String delete(@PathVariable String reportId) {
-		commentReportSvc.deleteCommentReport(reportId);
+		commentReportService.deleteCommentReport(reportId);
 		return "執行資料庫的 Delete 操作";
 	}
 	
-	@GetMapping("/commentlikes/{likeId}")
-	public CommentReportVO read(@PathVariable String reportId) {
-		CommentReportVO commentReportVO = commentReportSvc.getOneCommentReport(reportId);
-		return commentReportVO;
+	@GetMapping("/commentreports/{reportId}")
+	public CommentReport read(@PathVariable String reportId) {
+		CommentReport commentReport = commentReportService.getOneCommentReport(reportId);
+		return commentReport;
 	}
 	
-	@GetMapping("/commentlikes")
-	public List<CommentReportVO> read() {
-		List <CommentReportVO> commentReportVO = commentReportSvc.getAll();
-		return commentReportVO;
+	@GetMapping("/commentreports")
+	public List<CommentReport> read() {
+		List <CommentReport> commentReport = commentReportService.getAll();
+		return commentReport;
 	}
 	
 }

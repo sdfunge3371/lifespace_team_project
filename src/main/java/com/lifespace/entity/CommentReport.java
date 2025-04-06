@@ -23,7 +23,7 @@ import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "comment_report")
-public class CommentReportVO implements java.io.Serializable{
+public class CommentReport implements java.io.Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -52,7 +52,7 @@ public class CommentReportVO implements java.io.Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "comment_id", referencedColumnName = "comment_id")
-	private CommentsVO commentsVO;
+	private Comments comments;
 	
 //	@Column(name = "comment_id")
 //	@NotEmpty(message="留言編號: 請勿空白")
@@ -80,7 +80,7 @@ public class CommentReportVO implements java.io.Serializable{
 	
 //	private Timestamp createdTime;
 	
-	public CommentReportVO() {
+	public CommentReport() {
 	}
 	
 	public String getReportId() {

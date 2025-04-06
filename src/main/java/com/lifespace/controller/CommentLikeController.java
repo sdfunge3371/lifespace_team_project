@@ -24,49 +24,48 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.entity.CommentLikeVO;
+import com.lifespace.entity.CommentLike;
 import com.lifespace.service.CommentLikeService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/lifespace/commentlike")
 public class CommentLikeController {
 
 	@Autowired
-	CommentLikeService commentLikeSvc;
+	CommentLikeService commentLikeService;
 		
 	@PostMapping("/commentlikes")
-	public String insert(@RequestBody CommentLikeVO commentLikeVO) {
-		commentLikeSvc.addCommentLike(commentLikeVO);
+	public String insert(@RequestBody CommentLike commentLike) {
+		commentLikeService.addCommentLike(commentLike);
 		return "執行資料庫的 Create 操作";
 	}
 	
 	@PutMapping("/commentlikes/{likeId}")
 	public String update(@PathVariable Integer likeId,
-						 @RequestBody CommentLikeVO commentLikeVO) {
-		commentLikeVO.setLikeId(likeId); //這樣就可以設定commentsVO裡面的id的值
-		commentLikeSvc.updateCommentLike(commentLikeVO);
+						 @RequestBody CommentLike commentLike) {
+		commentLike.setLikeId(likeId); //這樣就可以設定commentsVO裡面的id的值
+		commentLikeService.updateCommentLike(commentLike);
 		return "執行資料庫的 Update 操作";
 	}
 	
 	@DeleteMapping("/commentlikes/{likeId}")
 	public String delete(@PathVariable Integer likeId) {
-		commentLikeSvc.deleteCommentLike(likeId);
+		commentLikeService.deleteCommentLike(likeId);
 		return "執行資料庫的 Delete 操作";
 	}
 	
 	@GetMapping("/commentlikes/{likeId}")
-	public CommentLikeVO read(@PathVariable Integer likeId) {
-		CommentLikeVO commentLikeVO = commentLikeSvc.getOneCommentLike(likeId);
-		return commentLikeVO;
+	public CommentLike read(@PathVariable Integer likeId) {
+		CommentLike commentLike = commentLikeService.getOneCommentLike(likeId);
+		return commentLike;
 	}
 	
 	@GetMapping("/commentlikes")
-	public List<CommentLikeVO> read() {
-		List <CommentLikeVO> commentLikeVO = commentLikeSvc.getAll();
-		return commentLikeVO;
+	public List<CommentLike> read() {
+		List <CommentLike> commentLike = commentLikeService.getAll();
+		return commentLike;
 	}
 	
 }

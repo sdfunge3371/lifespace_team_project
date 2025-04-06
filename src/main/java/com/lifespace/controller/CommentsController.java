@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.entity.CommentsVO;
+import com.lifespace.entity.Comments;
 import com.lifespace.service.CommentsService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,38 +34,38 @@ import jakarta.validation.Valid;
 public class CommentsController {
 
 	@Autowired
-	CommentsService commentsSvc;
+	CommentsService commentsService;
 	
 	@PostMapping("/comments")
-	public String insert(@RequestBody CommentsVO commentsVO) {
-		commentsSvc.addComments(commentsVO);
+	public String insert(@RequestBody Comments comments) {
+		commentsService.addComments(comments);
 		return "執行資料庫的 Create 操作";
 	}
 	
 	@PutMapping("/comments/{commentId}")
 	public String update(@PathVariable String commentId,
-						 @RequestBody CommentsVO commentsVO) {
-		commentsVO.setCommentId(commentId); //這樣就可以設定commentsVO裡面的id的值
-		commentsSvc.updateComments(commentsVO);
+						 @RequestBody Comments comments) {
+		comments.setCommentId(commentId); //這樣就可以設定commentsVO裡面的id的值
+		commentsService.updateComments(comments);
 		return "執行資料庫的 Update 操作";
 	}
 	
 	@DeleteMapping("/comments/{commentId}")
 	public String delete(@PathVariable String commentId) {
-		commentsSvc.deleteComments(commentId);
+		commentsService.deleteComments(commentId);
 		return "執行資料庫的 Delete 操作";
 	}
 	
 	@GetMapping("/comments/{commentId}")
-	public CommentsVO read(@PathVariable String commentId) {
-		CommentsVO commentsVO = commentsSvc.getOneComments(commentId);
-		return commentsVO;
+	public Comments read(@PathVariable String commentId) {
+		Comments comments = commentsService.getOneComments(commentId);
+		return comments;
 	}
 	
 	@GetMapping("/comments")
-	public List<CommentsVO> read() {
-		List<CommentsVO> commentsVO = commentsSvc.getAll();
-		return commentsVO;
+	public List<Comments> read() {
+		List<Comments> comments = commentsService.getAll();
+		return comments;
 	}
 	
 }
