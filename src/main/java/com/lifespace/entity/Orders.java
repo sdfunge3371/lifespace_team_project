@@ -28,6 +28,10 @@ public class Orders implements Serializable {
     @JoinColumn(name = "member_id")
     private  Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", insertable = false, updatable = false)
+    private BranchVO branchVO;
+
     @Column(name = "branch_id")
     private String branchId;
 
@@ -92,12 +96,12 @@ public class Orders implements Serializable {
     }
 
 
-    public String getBranchId() {
-        return branchId;
+    public BranchVO getBranchVO() {
+        return branchVO;
     }
 
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
+    public void setBranchVO(BranchVO branchVO) {
+        this.branchVO = branchVO;
     }
 
     public Integer getTotalPrice() {
@@ -210,5 +214,13 @@ public class Orders implements Serializable {
 
     public void setSpaceCommentPhotos(List<SpaceCommentPhoto> spaceCommentPhotos) {
         this.spaceCommentPhotos = spaceCommentPhotos;
+    }
+
+    public String getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
     }
 }

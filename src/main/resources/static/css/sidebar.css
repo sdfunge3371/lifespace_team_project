@@ -7,9 +7,6 @@
     --light-gray: #f8f9fa;
 }
 
-body {
-    background-color: #f5f5f5;
-}
 
 .sidebar {
     background-color: var(--sidebar-bg);
@@ -27,16 +24,20 @@ body {
 .sidebar-header {
     padding: 0 20px 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
 }
 
 .sidebar-logo {
     max-width: 140px;
     margin-bottom: 5px;
+    max-width: 100%
 }
 
 .sidebar-title {
     font-size: 18px;
     text-align: center;
+    font-weight: bold;
+    max-width: 100%
 }
 
 
@@ -46,7 +47,7 @@ body {
     padding: 12px 20px;
     display: flex;
     align-items: center;
-    transition: all 0.3s;
+    /*transition: all 0.3s;*/
     font-size: 15px;
     font-weight: bold;
 }
@@ -76,10 +77,10 @@ body {
     transform: rotate(0deg);
 }
 
-/* 子選單樣式 */
 .submenu {
     padding-left: 34px;
     display: none;
+    list-style: none;
 }
 
 .submenu.show {
@@ -87,50 +88,29 @@ body {
 }
 
 .submenu-item {
-    position: relative;
-    padding: 8px 15px 8px 30px;
+    font-size: 13px;       /* 字體大小可以依你需求調整 */
+    font-weight: bold;     /* 粗體 */
+    padding: 6px 20px;
     display: flex;
     align-items: center;
     color: var(--sidebar-color);
     text-decoration: none;
     transition: all 0.3s;
-    font-size: 14px;
+    font-size: 13px;
+    padding: 10px 20px;
+    background-color: #fafafa;
+    border-left: 3px solid #ccc;
 }
 
 .submenu-item:hover, .submenu-item.active {
     background-color: rgba(112, 182, 193, 0.2);
 }
 
-.submenu-item.active {
-    color: #007bff !important;
-    font-weight: 600;
-}
-
-/* 子選單前的圓點 */
-.submenu-item::before {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #333;
-    display: block;
-}
-
-.submenu-item.active::before {
-    background-color: #007bff;
-}
-
-.submenu li {
-    list-style-type: none; /* 移除列表標記 */
-}
-
-/* 確保箭頭位置正確 */
-.nav-link .ms-auto {
-    margin-left: auto !important;
+.submenu-item i {
+    margin-right: 10px;
+    font-size: 6px;
+    width: 8px;
+    list-style: none;
 }
 
 

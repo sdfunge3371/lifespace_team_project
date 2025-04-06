@@ -36,6 +36,10 @@ public class OrdersMapper {
             dto.setRentalItemDetailsDTOList(toRentalItemDetailsDTOList(new ArrayList<>(orders.getRentalItemDetails()))
             );
         }
+
+        if (orders.getBranchVO() != null) {
+            dto.setBranchAddr(orders.getBranchVO().getBranchAddr());
+        }
         return dto;
     }
 
@@ -60,6 +64,8 @@ public class OrdersMapper {
 
 
     }
+
+
 
 
 }
