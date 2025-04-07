@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.lifespace.dto.NewsCategoryDTO;
 import com.lifespace.dto.NewsDTO;
-import com.lifespace.entity.NewsCategoryVO;
+import com.lifespace.entity.NewsCategory;
 import com.lifespace.repository.NewsCategoryRepository;
 
 @Service
@@ -26,8 +26,8 @@ public class NewsCategoryService {
 		// 建立要回傳給前端的DTO List
 		List<NewsCategoryDTO> listDto = new ArrayList<>();
 		// 查詢資料庫中所有News資料（VO）
-		List<NewsCategoryVO> listVo = categoryRepository.findAll();
-		for (NewsCategoryVO catvo : listVo) {
+		List<NewsCategory> listVo = categoryRepository.findAll();
+		for (NewsCategory catvo : listVo) {
 			// 把每一筆VO轉換成DTO，加進list
 			listDto.add(voToNewsCategoryDTO(catvo));
 		}
@@ -37,10 +37,10 @@ public class NewsCategoryService {
 	// 點選"分類"下拉式清單做分類消息篩選
 	public NewsCategoryDTO findByCategoryId(String newsCategoryId) {
 		NewsCategoryDTO dto = new NewsCategoryDTO();
-		Optional<NewsCategoryVO> votmp = categoryRepository.findById(newsCategoryId);
+		Optional<NewsCategory> votmp = categoryRepository.findById(newsCategoryId);
 		if(votmp.isPresent()) {
 			// Optional物件轉成VO
-			NewsCategoryVO vo = votmp.get();
+			NewsCategory vo = votmp.get();
 			dto = voToNewsCategoryDTO(vo);
 		}else {
 			// 如果沒有接到值，拿全部欄位
@@ -66,15 +66,15 @@ public class NewsCategoryService {
 	}
 	
 	// 將DTO 轉換成 VO 存入資料庫
-	private NewsCategoryVO dtoToNewsCategoryVO(NewsCategoryDTO dto) {
-    		NewsCategoryVO categoryVO = new NewsCategoryVO();
+	private NewsCategory dtoToNewsCategoryVO(NewsCategoryDTO dto) {
+    		NewsCategory categoryVO = new NewsCategory();
     		categoryVO.setNewsCategoryId(dto.getNewsCategoryId());
     		categoryVO.setCategoryName(dto.getCategoryName());
     		categoryVO.setCreatedTime(dto.getCreatedTime());
     		return categoryVO;
 	}
     		// 資料回傳前端VO轉換成DTO
-	private NewsCategoryDTO voToNewsCategoryDTO(NewsCategoryVO vo) {
+	private NewsCategoryDTO voToNewsCategoryDTO(NewsCategory vo) {
 		NewsCategoryDTO categoryDto = new NewsCategoryDTO();
 		categoryDto.setNewsCategoryId(vo.getNewsCategoryId());
 		categoryDto.setCategoryName(vo.getCategoryName());

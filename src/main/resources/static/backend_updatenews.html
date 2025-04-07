@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<title>修改最新消息</title>
+<meta content="" title="keywords">
+<meta content="" title="description">
+<meta title="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="img/favicon.ico" rel="icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+	rel="stylesheet">
+<link href="lib/animate/animate.min.css" rel="stylesheet">
+<link href="lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<link href="./css/style.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+
+		<!-- Navigation -->
+		<div class="container-fluid nav-bar bg-transparent">
+			<nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+				<a href="index.html"
+					class="navbar-brand d-flex align-items-center text-center">
+					<div class="icon p-2 me-2">
+						<img class="img-fluid" src="img/LifeSpace.png" alt="Icon"
+							style="width: 30px; height: 30px;">
+					</div> <img class="img-fluid" src="img/LifeSpace2.png" alt="Icon"
+					style="width: 200px; height: 60px;">
+				</a>
+				<button type="button" class="navbar-toggler"
+					data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+					<div class="navbar-nav ms-auto">
+						<a href="index.html" class="nav-item nav-link active">Home</a> <a
+							href="#" class="nav-item nav-link">瀏覽空間</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-bs-toggle="dropdown">客服中心</a>
+							<div class="dropdown-menu rounded-0 m-0">
+								<a href="#" class="dropdown-item">常見問題</a> <a href="#"
+									class="dropdown-item">線上客服</a>
+							</div>
+						</div>
+						<a href="#" class="nav-item nav-link">我的最愛</a>
+						<div class="nav-item dropdown">
+							<a href="#" class="nav-link dropdown-toggle"
+								data-bs-toggle="dropdown"> <i class="bi bi-person-circle">會員資料</i>
+							</a>
+							<div class="dropdown-menu rounded-0 m-0">
+								<a href="#" class="dropdown-item">我的帳號</a> <a href="#"
+									class="dropdown-item">訂單</a> <a href="#" class="dropdown-item">我參與的活動</a>
+								<a href="#" class="dropdown-item">優惠券管理</a> <a href="#"
+									class="dropdown-item">我的最愛</a> <a href="#"
+									class="dropdown-item">常見問題</a> <a href="property-agent.html"
+									class="dropdown-item">登出</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+
+		<!-- Form Section -->
+		<div class="container-xxl bg-white p-0">
+		<section class="py-5">
+			<div class="container">
+				<div class="row gx-5">
+					<div class="container mt-5">
+						<h2>修改最新消息</h2>
+						<form id="updateNewsForm" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="newsId" value=""> 
+							<div class="mb-3">
+								<label for="newsTitle" class="form-label">消息標題</label> <input
+									type="text" class="form-control" id="newsTitle"
+									name="newsTitle">
+								<div id="update-newsTitle-error" class="text-danger small"></div>
+							</div>
+
+							<div class="mb-3">
+								<label for="newsContent" class="form-label">消息內容</label>
+								<textarea class="form-control" id="newsContent"
+									name="newsContent" rows="5"></textarea>
+									<div id="update-newsContent-error" class="text-danger small"></div>
+							</div>
+
+							<div class="mb-3">
+								<label for="newsCategoryId" class="form-label">消息種類</label> <select
+									class="form-select" id="newsCategoryId" name="newsCategoryId">
+									<option value="">請選擇消息種類</option>
+									<!-- 這裡放消息種類選項 -->
+								</select>
+								<div id="update-newsCategoryId-error" class="text-danger small"></div>
+							</div>
+
+							<div class="mb-3">
+								<label for="newsStartDate" class="form-label">消息起始日</label> <input
+									type="datetime-local" class="form-control" id="newsStartDate"
+									name="newsStartDate">
+								<div id="update-newsStartDate-error" class="text-danger small"></div>
+							</div>
+							<div class="mb-3">
+								<label for="newsEndDate" class="form-label">消息結束日</label> <input
+									type="datetime-local" class="form-control" id="newsEndDate"
+									name="newsEndDate">
+								<div id="update-newsEndDate-error" class="text-danger small"></div>
+							</div>
+
+							<div class="mb-3">
+								<label for="newsStatusId" class="form-label">消息狀態</label> 
+								<select
+									class="form-select" id="newsStatusId" name="newsStatusId">
+									<option value="">所有消息狀態</option>
+									<!-- 這裡放消息狀態選項 -->
+								</select>
+								<div id="update-newsStatusId-error" class="text-danger small"></div>
+							</div>
+							<div class="mb-3">
+							  <label for="newsImg" class="form-label">選擇圖片：</label>
+							  <input type="file" name="newsImg" id="newsImg" class="form-control">
+							  <img id="previewImg" src="#" alt="預覽圖片" style="max-width: 200px; display: none; margin-top: 10px;">
+							</div>
+
+								<button type="submit" class="btn btn-primary">確認修改</button>
+								
+								<button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+		<!-- Footer -->
+		<!-- ...保留原本 footer HTML 結構... -->
+
+		<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i
+			class="bi bi-arrow-up"></i></a>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="lib/wow/wow.min.js"></script>
+	<script src="lib/easing/easing.min.js"></script>
+	<script src="lib/waypoints/waypoints.min.js"></script>
+	<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+<!-- 	<script src="js/main.js"></script> -->
+	<script src="js/updatenews_back.js"></script>
+
+</body>
+</html>

@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity	//要加上@Entity才能成為JPA的一個Entity類別
 @Table(name = "faq")
-public class FaqVO {
+public class Faq {
 	
 	@Id
 	@Column(name = "faq_id")
@@ -37,11 +37,11 @@ public class FaqVO {
 	
 
 
-	public FaqVO() {
+	public Faq() {
 		super();
 		
 	}
-	public FaqVO(String faqId, String adminId, String faqAsk, String faqAnswer, Integer faqStatus, Timestamp createTime) {
+	public Faq(String faqId, String adminId, String faqAsk, String faqAnswer, Integer faqStatus, Timestamp createTime) {
 		super();
 		this.faqId = faqId;
 		this.adminId = adminId;

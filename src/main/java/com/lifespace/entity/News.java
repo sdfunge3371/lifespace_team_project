@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity	//要加上@Entity才能成為JPA的一個Entity類別
 @Table(name = "news")
-public class NewsVO {
+public class News {
 
 	@Id
 	@Column(name = "news_id")
@@ -30,12 +30,12 @@ public class NewsVO {
 	@ManyToOne
 	@JoinColumn(name = "news_category_id_fk",referencedColumnName = "news_category_id")
 	@JsonBackReference  //避免雙向關聯導致無限遞迴（會略過該欄位的輸出）
-	private NewsCategoryVO newsCategory;
+	private NewsCategory newsCategory;
 
 	@ManyToOne
 	@JoinColumn(name = "news_status_id_fk",referencedColumnName = "news_status_id")
 	@JsonBackReference 
-	private NewsStatusVO newsStatus;
+	private NewsStatus newsStatus;
 
 	@Column(name = "admin_id_fk")
 	private String adminId;
@@ -69,10 +69,10 @@ public class NewsVO {
 		this.newsTitle = newsTitle;
 	}
 
-	public NewsCategoryVO getNewsCategory() {
+	public NewsCategory getNewsCategory() {
 		return newsCategory;
 	}
-	public void setNewsCategory(NewsCategoryVO newsCategory) {
+	public void setNewsCategory(NewsCategory newsCategory) {
 		this.newsCategory = newsCategory;
 	}
 	public String getNewsContent() {
@@ -105,10 +105,10 @@ public class NewsVO {
 	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
 	}
-	public NewsStatusVO getNewsStatus() {
+	public NewsStatus getNewsStatus() {
 		return newsStatus;
 	}
-	public void setNewsStatus(NewsStatusVO newsStatus) {
+	public void setNewsStatus(NewsStatus newsStatus) {
 		this.newsStatus = newsStatus;
 	}
 	public byte[] getNewsImg() {
