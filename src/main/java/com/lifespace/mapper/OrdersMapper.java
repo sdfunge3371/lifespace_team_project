@@ -40,28 +40,31 @@ public class OrdersMapper {
         if (orders.getBranchVO() != null) {
             dto.setBranchAddr(orders.getBranchVO().getBranchAddr());
         }
+
         return dto;
     }
 
     public static EventDTO toEventDTO(Event event) {
 
-        return new EventDTO(event.getEventId(), event.getEventName());
+        EventDTO eventDTO = new EventDTO(event.getEventId(), event.getEventName());
+
+        if (event.getEventCategory() != null) {
+            eventDTO.setEventCategoryName(event.getEventCategory().getEventCategoryName());
+        }
+
+        return eventDTO;
     }
 
     public static List<RentalItemDetailsDTO> toRentalItemDetailsDTOList(List<RentalItemDetails> rentalItemDetails) {
 
-        return rentalItemDetails
-                .stream()
-                .map(rentalItemDetail -> {
-                    RentalItem rentalItem = rentalItemDetail.getRentalItem();
-                    return new RentalItemDetailsDTO(
-                            rentalItem.getRentalItemName(),
-                            rentalItem.getRentalItemPrice(),
-                            rentalItemDetail.getRentalItemQuantity()
-                    );
-                }).collect(Collectors.toList());
-
-
+        return rentalItemDetails.stream().map(rentalItemDetail -> {
+                RentalItem rentalItem = rentalItemDetail.getRentalItem();
+                return new RentalItemDetailsDTO(
+                        rentalItem.getRentalItemName(),
+                        rentalItem.getRentalItemPrice(),
+                        rentalItemDetail.getRentalItemQuantity()
+                );
+        }).collect(Collectors.toList());
 
     }
 

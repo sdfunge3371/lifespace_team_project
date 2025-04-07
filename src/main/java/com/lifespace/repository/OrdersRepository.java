@@ -21,7 +21,7 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     List<Orders> findByOrderStatusAndOrderEndBefore(Integer orderStatus, Timestamp OrderEnd );
 
-    @EntityGraph(attributePaths = {"branchVO", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
+    @EntityGraph(attributePaths = {"branchVO", "rentalItemDetails", "rentalItemDetails.rentalItem", "event", "event.eventCategory"})
     List<Orders> findAll();
 
     @EntityGraph(attributePaths = {"branchVO", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})

@@ -24,6 +24,10 @@ public class Orders implements Serializable {
     @Column(name = "space_id")
     private String spaceId;
 
+    @ManyToOne
+    @JoinColumn(name = "space_id",  insertable = false, updatable = false)
+    private Space space;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private  Member member;
