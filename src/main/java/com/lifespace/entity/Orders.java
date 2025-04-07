@@ -24,9 +24,8 @@ public class Orders implements Serializable {
     @Column(name = "space_id")
     private String spaceId;
 
-    @ManyToOne
-    @JoinColumn(name = "space_id",  insertable = false, updatable = false)
-    private Space space;
+    @Column(name= "event_id")
+    private  String event_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -70,8 +69,12 @@ public class Orders implements Serializable {
     private Timestamp createdTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id", nullable = false)
+    @JoinColumn(name = "event_id",insertable = false, updatable = false, nullable = false)
     private Event event;
+
+    @ManyToOne
+    @JoinColumn(name = "space_id",  insertable = false, updatable = false)
+    private Space space;
 
     @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<RentalItemDetails> rentalItemDetails = new ArrayList<>();
@@ -220,11 +223,27 @@ public class Orders implements Serializable {
         this.spaceCommentPhotos = spaceCommentPhotos;
     }
 
+    public String getEvent_id() {
+        return event_id;
+    }
+
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
+    }
+
     public String getBranchId() {
         return branchId;
     }
 
     public void setBranchId(String branchId) {
         this.branchId = branchId;
+    }
+
+    public Space getSpace() {
+        return space;
+    }
+
+    public void setSpace(Space space) {
+        this.space = space;
     }
 }
