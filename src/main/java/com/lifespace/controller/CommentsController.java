@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lifespace.dto.OrdersDTO;
 import com.lifespace.entity.Comments;
 import com.lifespace.service.CommentsService;
+import com.lifespace.service.OrdersService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,6 +37,9 @@ public class CommentsController {
 
 	@Autowired
 	CommentsService commentsService;
+	
+	@Autowired
+    private OrdersService ordersSvc;
 	
 	@PostMapping("/comments")
 	public String insert(@RequestBody Comments comments) {
@@ -67,5 +72,12 @@ public class CommentsController {
 		List<Comments> comments = commentsService.getAll();
 		return comments;
 	}
+	
+	@GetMapping("/comments/getAll")
+    public List<OrdersDTO> getAllOrders() {
+
+        return ordersSvc.getAllOrdersDTOs();
+    }
+	
 	
 }

@@ -3,97 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSpace 後台管理系統 - 留言管理</title>
+    <title>LifeSpace 後台管理系統 - 活動留言板</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
-    <link href="/css/comments_backend.css" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+	<link href="/css/comments_backend.css" rel="stylesheet">
+	<style>
+	</style>
 </head>
 <body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 手機版漢堡按鈕 測試用-->
+            <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <!-- 側邊欄 -->
+            <div class="col-lg-2 sidebar collapse d-lg-block" id="sidebarMenu">
+                <div class="sidebar-header">
+                    <a href="/backend_index.html">
+                    <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+                    </a>
+                    <h2 class="sidebar-title">後台中心</h2>
+                </div>
+                <ul class="nav flex-column mt-3">
+                    <!-- 消息管理 -->
+                    <li class="nav-item">
+                        <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+                            <i class="fas fa-home"></i> 消息管理
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse submenu" id="newsSubmenu">
+                            <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+                        </ul>
+                    </li>
 
-<button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
-    <i class="fas fa-bars"></i>
-</button>
-<div class="container-fluid">
-    <div class="row">
-        <!-- 側邊欄 -->
-        <div class="col-lg-2 sidebar">
-            <div class="sidebar-header">
-                <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
-                <h2 class="sidebar-title">後台中心</h2>
+                    <!-- 帳號管理 -->
+                    <li class="nav-item">
+                        <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+                            <i class="fas fa-user"></i> 帳號管理
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse submenu" id="accountSubmenu">
+                            <li><a href="/member.html" class="submenu-item">會員帳號</a></li>
+                            <li><a href="#" class="submenu-item">管理員帳號</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 空間訂單管理 -->
+                    <li class="nav-item">
+                        <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
+                            <i class="fas fa-map-marker-alt"></i> 訂單管理
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse submenu" id="ordersSubmenu">
+                            <li><a href="/ordersWithSidebar.html" class="submenu-item">訂單</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 商品管理 -->
+                    <li class="nav-item">
+                        <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
+                            <i class="fas fa-box"></i> 商品管理
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse submenu" id="productSubmenu">
+                            <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
+                            <li><a href="#" class="submenu-item">租借品項</a></li>
+                            <li><a href="#" class="submenu-item">分點</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 活動留言評論管理 -->
+                    <li class="nav-item">
+                        <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
+                            <i class="fas fa-star"></i> 留言評論管理
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse submenu" id="commentSubmenu">
+                            <li><a href="/commentsBackend.html" class="submenu-item">活動留言板</a></li>
+                            <li><a href="/commentReportBackend.html" class="submenu-item">檢舉留言</a></li>
+                            <li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 常見問題管理 -->
+                    <li class="nav-item">
+                        <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+                            <i class="fas fa-headset"></i> 常見問題管理
+                            <i class="fas fa-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse submenu" id="faqSubmenu">
+                            <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
-            <ul class="nav flex-column mt-3">
-                <!-- 消息管理 -->
-                <li class="nav-item">
-                    <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
-                        <i class="fas fa-home"></i> 消息管理
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="collapse submenu" id="newsSubmenu">
-                        <li><a href="#" class="submenu-item">最新消息</a></li>
-                    </ul>
-                </li>
-
-                <!-- 帳號管理 -->
-                <li class="nav-item">
-                    <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
-                        <i class="fas fa-user"></i> 帳號管理
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="collapse submenu" id="accountSubmenu">
-                        <li><a href="#" class="submenu-item">會員帳號</a></li>
-                        <li><a href="#" class="submenu-item">管理員帳號</a></li>
-                    </ul>
-                </li>
-
-                <!-- 空間訂單管理 -->
-                <li class="nav-item">
-                    <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
-                        <i class="fas fa-map-marker-alt"></i> 空間訂單管理
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="collapse submenu" id="ordersSubmenu">
-                        <li><a href="#" class="submenu-item">訂單</a></li>
-                    </ul>
-                </li>
-
-                <!-- 商品管理 -->
-                <li class="nav-item">
-                    <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
-                        <i class="fas fa-box"></i> 商品管理
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="collapse submenu" id="productSubmenu">
-                        <li><a href="#" class="submenu-item">空間管理</a></li>
-                        <li><a href="#" class="submenu-item">租借品項</a></li>
-                        <li><a href="#" class="submenu-item">分點</a></li>
-                    </ul>
-                </li>
-
-                <!-- 活動留言評論管理 -->
-                <li class="nav-item">
-                    <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link active">
-                        <i class="fas fa-star"></i> 活動留言評論管理
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="collapse submenu show" id="commentSubmenu">
-                        <li><a href="#" class="submenu-item">活動留言板</a></li>
-                        <li><a href="#" class="submenu-item">檢舉留言</a></li>
-                    </ul>
-                </li>
-
-                <!-- 常見問題管理 -->
-                <li class="nav-item">
-                    <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
-                        <i class="fas fa-headset"></i> 常見問題管理
-                        <i class="fas fa-chevron-down ms-auto"></i>
-                    </a>
-                    <ul class="collapse submenu" id="faqSubmenu">
-                        <li><a href="#" class="submenu-item">常見問題</a></li>
-                    </ul>
-                </li>
-            </ul>
         </div>
         <!-- 側邊欄 -->
 
@@ -141,12 +147,12 @@
                         <table id="commentsTable" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>留言編號</th>
-                                    <th>會員編號</th>
-                                    <th>留言內容</th>
-                                    <th>留言時間</th>
-                                    <th>顯示狀態</th>
-                                    <th>操作</th>
+                                    <th>活動編號</th>
+                                    <th>活動名稱</th>
+                                    <th>活動板分類</th>
+                                    <th>地址</th>
+                                    <th>留言板開始時間</th>
+                                    <th>留言板結束時間</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -235,6 +241,9 @@
 <script src="/vendors/dataTables/dataTables.min.js"></script>
 <script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
 
+<!-- Sidebar JS -->
+<script src="/js/sidebar2.js"></script>
+
 <script>
     $(document).ready(function () {
         // 初始化DataTable
@@ -255,48 +264,65 @@
             searching: false, // 隱藏搜尋框本體
             
             ajax: {
-                url: '/comments',
-                dataSrc: function(json) {
+                url: '/comments/getAll',
+                dataSrc: ''
+                // dataSrc: function(json) {
                     // 將後端資料轉換為DataTable需要的格式
-                    return json.map(function(item) {
-                        return {
-                            commentId: item.commentId,
-                            eventMember: item.eventMember ? item.eventMember.eventMemberId : 'N/A',
-                            commentMessage: item.commentMessage,
-                            commentTime: formatDateTime(item.commentTime),
-                            commentHide: item.commentHide
-                        };
-                    });
-                }
+                //     return json.map(function(item) {
+                //         return {
+                //             commentId: item.commentId,
+                //             eventMember: item.eventMember ? item.eventMember.eventMemberId : 'N/A',
+                //             commentMessage: item.commentMessage,
+                //             commentTime: formatDateTime(item.commentTime),
+                //             commentHide: item.commentHide
+                //         };
+                //     });
+                // }
             },
             columns: [
-                { data: 'commentId' },
-                { data: 'eventMember' },
-                { data: 'commentMessage' },
-                { data: 'commentTime' },
-                { 
-                    data: 'commentHide',
-                    render: function(data) {
-                        if (data === 'VISIBLE') {
-                            return '<span class="badge bg-success">顯示中</span>';
-                        } else {
-                            return '<span class="badge bg-danger">已隱藏</span>';
-                        }
-                    }
-                },
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                        const hideShowBtn = row.commentHide === 'VISIBLE' ? 
-                            `<button class="btn btn-sm btn-hide toggle-visibility-btn" data-id="${row.commentId}" data-status="VISIBLE">隱藏</button>` :
-                            `<button class="btn btn-sm btn-show toggle-visibility-btn" data-id="${row.commentId}" data-status="HIDDEN">顯示</button>`;
+                { data: 'eventDTO' ,
+                	  render: function (event) {
+                	    return event ? `${event.eventId}` : '無';
+                	  }},
+             	 { data: 'eventDTO' ,
+                   render: function (event) {
+                   return event ? `${event.eventName}` : '無';
+                 }},
+                 { data: 'eventDTO' ,
+                   render: function (event) {
+                   return event ? `${event.eventCategoryName}` : '無';
+                 }},
+                { data: 'branchAddr' },
+                { data: 'orderStart' },
+                { data: 'orderEnd' },
+                
+                // { data: 'commentId' },
+                // { data: 'eventMember' },
+                // { data: 'commentMessage' },
+                // { data: 'commentTime' },
+                // { 
+                //     data: 'commentHide',
+                //     render: function(data) {
+                //         if (data === 'VISIBLE') {
+                //             return '<span class="badge bg-success">顯示中</span>';
+                //         } else {
+                //             return '<span class="badge bg-danger">已隱藏</span>';
+                //         }
+                //     }
+                // },
+                // {
+                //     data: null,
+                //     render: function(data, type, row) {
+                //         const hideShowBtn = row.commentHide === 'VISIBLE' ? 
+                //             `<button class="btn btn-sm btn-hide toggle-visibility-btn" data-id="${row.commentId}" data-status="VISIBLE">隱藏</button>` :
+                //             `<button class="btn btn-sm btn-show toggle-visibility-btn" data-id="${row.commentId}" data-status="HIDDEN">顯示</button>`;
                         
-                        return `
-                            <button class="btn btn-sm btn-primary edit-btn" data-id="${row.commentId}">編輯</button>
-                            ${hideShowBtn}
-                        `;
-                    }
-                }
+                //         return `
+                //             <button class="btn btn-sm btn-primary edit-btn" data-id="${row.commentId}">編輯</button>
+                //             ${hideShowBtn}
+                //         `;
+                //     }
+                // }
             ],
             createdRow: function(row, data, dataIndex) {
                 // 如果留言被隱藏，為該行添加特殊樣式
@@ -323,122 +349,21 @@
         }
 
         // 搜尋按鈕事件
-        $('#searchBtn').click(function() {
-            const boardType = $('#filterBoardType').val();
-            const region = $('#filterRegion').val();
-            const date = $('#filterDate').val();
-            const time = $('#filterTime').val();
-            
+
             // 重新載入DataTable並帶入搜尋參數
-            commentsTable.ajax.url(`/comments?boardType=${encodeURIComponent(boardType)}&region=${encodeURIComponent(region)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`).load();
-        });
+
 
         // 切換留言顯示/隱藏狀態
-        $('#commentsTable').on('click', '.toggle-visibility-btn', function() {
-            const commentId = $(this).data('id');
-            const currentStatus = $(this).data('status');
-            const newStatus = currentStatus === 'VISIBLE' ? 'HIDDEN' : 'VISIBLE';
-            
-            $.ajax({
-                url: `/comments/${commentId}`,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    commentId: commentId,
-                    commentHide: newStatus
-                }),
-                success: function() {
-                    commentsTable.ajax.reload();
-                },
-                error: function(xhr) {
-                    $('#modal-error-message').text(xhr.responseText || '操作失敗');
-                    $('#errorModal').modal('show');
-                }
-            });
-        });
+ 
 
         // 編輯留言按鈕事件
-        $('#commentsTable').on('click', '.edit-btn', function() {
-            const commentId = $(this).data('id');
-            
+
             // 獲取當前留言資料
-            $.ajax({
-                url: `/comments/${commentId}`,
-                type: 'GET',
-                success: function(comment) {
-                    $('#editCommentId').val(comment.commentId);
-                    $('#editEventMemberId').val(comment.eventMember.eventMemberId);
-                    $('#editCommentMessage').val(comment.commentMessage);
-                    $('#editCommentModal').modal('show');
-                },
-                error: function(xhr) {
-                    $('#modal-error-message').text(xhr.responseText || '獲取留言資料失敗');
-                    $('#errorModal').modal('show');
-                }
-            });
-        });
 
         // 提交編輯留言
-        $('#submitEditComment').click(function() {
-            const commentId = $('#editCommentId').val();
-            const commentMessage = $('#editCommentMessage').val();
-            
-            if (!commentMessage.trim()) {
-                alert('留言內容不能為空');
-                return;
-            }
-            
-            $.ajax({
-                url: `/comments/${commentId}`,
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    commentId: commentId,
-                    commentMessage: commentMessage
-                }),
-                success: function() {
-                    $('#editCommentModal').modal('hide');
-                    commentsTable.ajax.reload();
-                },
-                error: function(xhr) {
-                    $('#modal-error-message').text(xhr.responseText || '修改留言失敗');
-                    $('#errorModal').modal('show');
-                }
-            });
-        });
 
         // 提交新增留言
-        $('#submitAddComment').click(function() {
-            const eventMemberId = $('#eventMemberId').val();
-            const commentMessage = $('#commentMessage').val();
-            
-            if (!eventMemberId.trim() || !commentMessage.trim()) {
-                alert('請填寫所有必填欄位');
-                return;
-            }
-            
-            $.ajax({
-                url: '/comments',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    eventMember: {
-                        eventMemberId: eventMemberId
-                    },
-                    commentMessage: commentMessage,
-                    commentHide: 'VISIBLE'
-                }),
-                success: function() {
-                    $('#addCommentModal').modal('hide');
-                    $('#addCommentForm')[0].reset();
-                    commentsTable.ajax.reload();
-                },
-                error: function(xhr) {
-                    $('#modal-error-message').text(xhr.responseText || '新增留言失敗');
-                    $('#errorModal').modal('show');
-                }
-            });
-        });
+
     });
 </script>
 </body>
