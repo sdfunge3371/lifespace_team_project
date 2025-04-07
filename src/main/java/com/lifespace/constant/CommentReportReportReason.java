@@ -7,7 +7,7 @@ public enum CommentReportReportReason {
 	MARKETING_OR_ADS("推銷/廣告"),
 	HARASSMENT_CONTENT("騷擾內容"),;
 	
-	private String type;
+	private final String type;
 
 	CommentReportReportReason(String type) {
 		this.type = type;
@@ -17,7 +17,4 @@ public enum CommentReportReportReason {
 		return type;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
 }

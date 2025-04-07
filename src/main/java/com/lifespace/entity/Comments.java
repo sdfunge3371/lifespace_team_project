@@ -8,6 +8,8 @@ import com.lifespace.constant.CommentsCommentHide;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,6 +40,7 @@ public class Comments implements java.io.Serializable{
 //	@Pattern(regexp = "^EM\\\\d{3}$", message = "活動參與會員: 格式必須為EM001, EM002, ...")
 //	private String eventMemberId;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "comment_hide")
 	private CommentsCommentHide commentHide;
 	
