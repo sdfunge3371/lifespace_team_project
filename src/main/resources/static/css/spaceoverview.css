@@ -12,36 +12,246 @@
 }
 
 /* 搜尋欄 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #E6F7F8;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
 .search-bar {
-    background-color: #e6ffcc;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border-radius: 50px;
+    padding: 5px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 15px;
 }
 
 .search-bar input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    width: 100%;
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+}
+
+.search-button {
+    background-color: #6AC0BD;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.search-button:hover {
+    background-color: #3d8b40;
 }
 
 .filter-options {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .filter-option {
-    padding: 8px 15px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-label {
+    display: block;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     background-color: white;
-    border-radius: 5px;
     cursor: pointer;
-    flex-grow: 1;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+}
+
+.filter-select:hover, .filter-select:focus {
+    border-color: #4CAF50;
+}
+
+/* 時間過濾器的特殊樣式 */
+.time-filter {
+    flex: 0.5; /* 讓兩個時間選擇器佔用一個普通過濾器的空間 */
+    min-width: 120px;
+}
+
+/* 日期選擇器輸入框 */
+.date-picker {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+
+}
+
+/* 為日曆元素添加高 z-index 確保顯示在最上層 */
+.ui-datepicker,
+.calendar-demo,
+.date-picker-container .calendar-popup {
+    z-index: 9999 !important; /* 使用足夠高的 z-index 確保顯示在最上層 */
+    position: relative; /* 確保 z-index 生效 */
+}
+
+/* 如果您正在使用 jQuery UI 的 datepicker */
+#ui-datepicker-div {
+    z-index: 9999 !important;
+}
+
+/* 如果您使用的是自定義日曆 */
+.date-picker-wrapper {
+    position: relative;
+}
+
+.date-picker-calendar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+.date-picker:hover, .date-picker:focus {
+    border-color: #4CAF50;
+}
+
+/* 樣式化datepicker (jQuery UI) */
+.ui-datepicker {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+}
+
+.ui-datepicker .ui-datepicker-header {
+    border: none;
+    background: #6AC0BD;
+    color: white;
+    border-radius: 5px 5px 0 0;
+}
+
+.ui-datepicker .ui-datepicker-title {
+    font-weight: 500;
+}
+
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    top: 7px;
+}
+
+.ui-datepicker th {
+    font-weight: 500;
+    color: #555;
+}
+
+.ui-datepicker .ui-state-default {
+    background: #f5f5f5;
+    border: none;
+    color: #333;
     text-align: center;
-    margin: 0 5px;
+}
+
+.ui-datepicker .ui-state-hover {
+    background: #e0f2e0;
+    color: #4CAF50;
+}
+
+.ui-datepicker .ui-state-active {
+    background: #4CAF50;
+    color: white;
+}
+
+.ui-datepicker .ui-state-highlight {
+    background: #e0f2e0;
+    color: #4CAF50;
+}
+
+/* 日曆按鈕 */
+.calendar-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .search-button {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .filter-options {
+        flex-direction: column;
+    }
+
+    .filter-option {
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .filter-option, .time-filter {
+        flex: 1 1 calc(50% - 10px);
+    }
+}
+
+@media (max-width: 576px) {
+    .filter-option, .time-filter {
+        flex: 1 1 100%;
+    }
 }
 
 /* 地圖容器 */
@@ -157,6 +367,13 @@
     margin-bottom: 10px;
     font-size: 16px;
     color: #333;
+}
+
+/* 禁用時間選擇器的樣式 */
+.filter-select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 /* 修改價格範圍和距離範圍容器 */

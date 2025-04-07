@@ -47,6 +47,8 @@ public class SpaceService {
 	public Space addSpace(SpaceRequest space, List<MultipartFile> files) throws IOException {
 
 		Space s = new Space();
+
+//		s.setBranchId(space.getBranchVO().getBranchId());
 		s.setBranchId(space.getBranchId());
 		s.setSpaceName(space.getSpaceName());
 		s.setSpacePeople(space.getSpacePeople());

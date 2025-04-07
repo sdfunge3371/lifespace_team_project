@@ -1,5 +1,3 @@
-// 前端 JS，透過 AJAX 串接後端 /spaces API
-
 let showMapCheckbox, mapContainer, filterButton, filterPanel, spacesContainer;
 let priceRange, minPriceDisplay, maxPriceDisplay, distanceRange;
 let minDistanceDisplay, maxDistanceDisplay;
@@ -35,11 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 初始化價格滑桿
     noUiSlider.create(priceRange, {
-        start: [150, 2000],
+        start: [100, 2000],
         connect: true,
-        step: 50,
+        step: 10,
         range: {
-            min: 150,
+            min: 100,
             max: 2000
         },
         format: {
@@ -103,6 +101,7 @@ function fetchSpaces() {
                 price: space.spaceHourlyFee,
                 rating: space.spaceRating,
                 capacity: space.spacePeople,
+                status: space.spaceStatus,
                 usage: space.spaceUsageMaps.map(map => map.spaceUsage.spaceUsageName),
                 photo: space.spacePhotos.map(map => map.photo),
                 coordinates: [25.0497 + Math.random() * 0.01, 121.5380 + Math.random() * 0.01] // 模擬座標，之後會利用google maps API抓出
@@ -119,6 +118,11 @@ function renderSpaces(spacesToRender) {
 
     // 利用迴圈一個一個生出資料
     spacesToRender.forEach(space => {
+
+        if (space.status === 0) {    // 如果是「未上架」，則不生成此空間資料
+            return;   // forEach需要用return以執行迴圈continue功能
+        }
+
         const spaceCard = document.createElement('div');
         spaceCard.className = 'space-card';
         spaceCard.dataset.id = space.spaceId;
@@ -316,7 +320,7 @@ function setupEventListeners() {
         button.addEventListener('click', event => {
             const parentClass = event.currentTarget.parentElement.className;
             if (parentClass.includes('price-range')) {
-                priceRange.noUiSlider.set([150, 2000]);
+                priceRange.noUiSlider.set([100, 2000]);
             } else if (parentClass.includes('distance-range')) {
                 distanceRange.noUiSlider.set([100, 10000]);
             }
@@ -362,9 +366,71 @@ function applyFilters() {
 }
 
 
+// ========= 搜尋相關 =========
 
+document.querySelector(".search-button").addEventListener("click", function(e) {
+    e.preventDefault();
 
+    const input = document.querySelector(".search-input");
+    const keyword = input.value.trim();
 
+    if (!keyword) {
+        alert("搜尋欄不得空白！");
+        return;
+    }
+
+    fetch(`/spaces/name?keyword=${encodeURIComponent(keyword)}`)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().catch(() => null).then(errorData => {
+                    if (errorData && errorData.message) {
+                        throw new Error(errorData.message);
+                    }
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 將搜尋到的空間資料轉換成前端需要的格式
+            const searchedSpaces = data.map(space => ({
+                spaceId: space.spaceId,
+                name: space.spaceName,
+                location: `台北市松山區${space.spaceFloor}`,
+                price: space.spaceHourlyFee,
+                rating: space.spaceRating,
+                capacity: space.spacePeople,
+                status: space.spaceStatus,
+                usage: space.spaceUsageMaps.map(map => map.spaceUsage.spaceUsageName),
+                photo: space.spacePhotos.map(map => map.photo),
+                coordinates: [25.0497 + Math.random() * 0.01, 121.5380 + Math.random() * 0.01]
+            }));
+
+            // 重設所有篩選條件
+            document.querySelectorAll(".reset-button").forEach(button => {
+                button.click();
+            });
+            document.querySelectorAll('input[type="checkbox"][name="people"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.querySelectorAll('input[type="checkbox"][name="usage"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // 渲染搜尋結果
+            renderSpaces(searchedSpaces);
+            updateMapMarkers(searchedSpaces);
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+});
+
+// 按Enter也可以搜尋
+document.querySelector(".search-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        document.querySelector(".search-button").click();
+    }
+});
 
 
 
