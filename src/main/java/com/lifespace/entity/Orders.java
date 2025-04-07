@@ -33,7 +33,7 @@ public class Orders implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", insertable = false, updatable = false)
-    private BranchVO branchVO;
+    private Branch branch;
 
     @Column(name = "branch_id")
     private String branchId;
@@ -103,12 +103,12 @@ public class Orders implements Serializable {
     }
 
 
-    public BranchVO getBranchVO() {
-        return branchVO;
+    public Branch getBranch() {
+        return branch;
     }
 
-    public void setBranchVO(BranchVO branchVO) {
-        this.branchVO = branchVO;
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
     public Integer getTotalPrice() {

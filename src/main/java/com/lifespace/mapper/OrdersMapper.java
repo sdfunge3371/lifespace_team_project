@@ -37,8 +37,8 @@ public class OrdersMapper {
             );
         }
 
-        if (orders.getBranchVO() != null) {
-            dto.setBranchAddr(orders.getBranchVO().getBranchAddr());
+        if (orders.getBranch() != null) {
+            dto.setBranchAddr(orders.getBranch().getBranchAddr());
         }
 
         return dto;
