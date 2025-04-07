@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeSpace - 常見問題</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <!-- 瀏覽活動 -->
+    <link rel="stylesheet" href="./css/event_home.css">
+
+
+</head>
+
+<body>
+    <header>
+        <!-- Header Navbar Start ------------------------------------------------------------------------->
+        <div class="container-fluid nav-bar bg-transparent">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+                <a href="index.html" class="navbar-brand d-flex align-items-center text-center">
+                    <div class="icon p-2 me-2">
+                        <img class="img-fluid" src="img/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                    </div>
+                    <!-- <h1 class="m-0 text-primary">Makaan</h1> -->
+                    <img class="img-fluid" src="img/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                </a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <a href="" class="nav-item nav-link">瀏覽空間</a>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">客服中心</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="" class="dropdown-item">常見問題</a>
+                                <a href="" class="dropdown-item">線上客服</a>
+                            </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">參與活動</a>
+                            <div class="dropdown-menu rounded-0 m-0">
+                                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                                <a href="404.html" class="dropdown-item">404 Error</a>
+                            </div>
+                        </div>
+                        <a href="" class="nav-item nav-link">我的最愛</a>
+                    </div>
+                    <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i
+                                class="bi bi-person-circle">會員資料</i></a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a href="" class="dropdown-item">我的帳號</a>
+                            <a href="" class="dropdown-item">訂單</a>
+                            <a href="" class="dropdown-item">我參與的活動</a>
+                            <a href="" class="dropdown-item">優惠券管理</a>
+                            <a href="" class="dropdown-item">我的最愛</a>
+                            <a href="" class="dropdown-item">常見問題</a>
+                            <a href="property-agent.html" class="dropdown-item">登出</a>
+                        </div>
+                    </div>
+
+
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <!-- Header Navbar End -->
+    </header>
+
+    <!-- 活動搜尋 -->
+    <!-- <div class="search-container">
+        <form action="#">
+            <label for="search">搜尋</label>
+            <input type="text" id="search" placeholder="關鍵字">
+
+            <label for="date-picker">日期</label>
+            <input type="date" id="date-picker" placeholder="請選擇日期">
+
+            <label for="start-time">開始時間</label>
+            <select id="start-time"></select>
+
+            <label for="end-time">結束時間</label>
+            <select id="end-time" disabled></select>
+
+            <label for="location">地點</label>
+            <select id="location">
+                <option value="">地點</option>
+                <option value="taipei">台北</option>
+                <option value="taichung">台中</option>
+            </select>
+
+            <input class="search-btn" id="search-btn" value="尋找" type="submit">
+        </form>
+    </div> -->
+
+    <div class="container my-4">
+        <h3 class="section-title">活動搜尋</h3>
+        <div class="card p-4">
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-3">
+                    <label for="search" class="form-label">搜尋</label>
+                    <input type="text" id="search" class="form-control" placeholder="關鍵字">
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <label for="start-time" class="form-label">開始時間</label>
+                    <input type="datetime-local" id="eventStartTime" class="form-control mb-3" name="eventStartTime">
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <label for="end-time" class="form-label">結束時間</label>
+                    <input type="datetime-local" id="eventEndTime" class="form-control mb-3" name="eventEndTime">
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <label for="location" class="form-label">地點</label>
+                    <select id="location" class="form-select">
+                        <option value="">地點</option>
+                        <option value="taipei">台北</option>
+                        <option value="taichung">台中</option>
+                    </select>
+                </div>
+                <div class="col-md-6 col-lg-12 mt-3">
+                    <button class="btn btn-primary w-100" id="search-btn">尋找</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--  標籤輪播 -->
+    <div class="tag-wrapper">
+        <button class="tag-btn left-tag-btn">&lt;</button>
+        <div class="tag-container">
+            <div class="tag">團康</div>
+            <div class="tag">工作坊</div>
+            <div class="tag">讀書會</div>
+            <div class="tag">演講</div>
+            <div class="tag">聯誼</div>
+            <div class="tag">小空間</div>
+            <div class="tag">手做</div>
+            <div class="tag">桌遊</div>
+            <div class="tag">劇本殺</div>
+            <div class="tag">畫展</div>
+            <div class="tag">攝影</div>
+            <div class="tag">影片欣賞</div>
+            <div class="tag">生日派對</div>
+            <div class="tag">其他</div>
+        </div>
+        <button class="tag-btn right-tag-btn">&gt;</button>
+    </div>
+
+    <!-- 熱門推薦 -->
+    <div class="slide-outer">
+        <h2>熱門推薦</h2>
+        <div class="slider-container">
+            <div class="slider">
+                <!-- <div class="slide"><img src="./img/01.jpg" alt="#">
+                    <h3>永和狼人殺團</h3>
+                    <p>2/7 13:00-17:00 板橋區</p>
+                </div>
+                <div class="slide"><img src="./img/study.jpg" alt="#">
+                    <h3>微醺讀書團</h3>
+                    <p>2/7 18:00-20:00 中山區</p>
+                </div>
+                <div class="slide"><img src="./img/miapainter.jpg" alt="#">
+                    <h3>Mia藝大師畫集</h3>
+                    <p>2/9 14:00-17:00 信義區</p>
+                </div> -->
+            </div>
+            <button class="prev">&lt;</button>
+            <button class="next">&gt;</button>
+        </div>
+    </div>
+
+
+
+
+    <!-- 人工回覆聊天按鈕 -->
+    <div class="chat-icon" id="chatButton">
+        <img src="../picture/support.png" alt="客服聊天"> <!--  客服icon -->
+    </div>
+
+
+    <!-- footer ------------------------------------------------------------------------------>
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-black mb-4">
+                    <img class="img-fluid" src="img/LifeSpace3.png" alt="Icon" style="width: 250px; height: 60px;">
+                </h5>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-black mb-4">Quick Links</h5>
+                <a class="btn btn-link text-black-50" href="">About Us</a>
+                <a class="btn btn-link text-black-50" href="">Contact Us</a>
+                <a class="btn btn-link text-black-50" href="">Our Services</a>
+                <a class="btn btn-link text-black-50" href="">Privacy Policy</a>
+                <a class="btn btn-link text-black-50" href="">Terms & Condition</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-black mb-4">Photo Gallery</h5>
+                <div class="row g-2 pt-2">
+                    <div class="col-4">
+                        <img class="img-fluid rounded bg-light p-1" src="img/property-1.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid rounded bg-light p-1" src="img/property-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid rounded bg-light p-1" src="img/property-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid rounded bg-light p-1" src="img/property-4.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid rounded bg-light p-1" src="img/property-5.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid rounded bg-light p-1" src="img/property-6.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-black mb-4">Newsletter</h5>
+                <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+                <div class="position-relative mx-auto" style="max-width: 400px;">
+                    <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text"
+                        placeholder="Your email">
+                    <button type="button"
+                        class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/event_home.js"></script>
+
+    <script>
+
+        // 設置全局變量以跟踪當前顯示狀態
+        let currentDisplayMode = 'popular'; // 'popular' 或 'search'
+
+        // 當文檔加載完成時執行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 獲取所有活動
+            fetchAllEvents();
+
+            // 綁定搜尋按鈕點擊事件
+            document.getElementById('search-btn').addEventListener('click', function () {
+                fetchEventsByConditions();
+            });
+
+            // 添加清除按鈕（需要在 HTML 中添加此按鈕）
+            const clearButton = document.createElement('button');
+            clearButton.className = 'btn btn-secondary';
+            clearButton.textContent = '清除條件';
+            clearButton.id = 'clear-btn';
+            clearButton.style.marginLeft = '10px';
+
+            // 將清除按鈕添加到搜尋按鈕旁邊
+            const searchBtn = document.getElementById('search-btn');
+            searchBtn.parentNode.appendChild(clearButton);
+
+            // 綁定清除按鈕點擊事件
+            document.getElementById('clear-btn').addEventListener('click', function () {
+                clearSearchForm();
+                resetToPopularEvents();
+            });
+        });
+
+        // 清除搜尋表單
+        function clearSearchForm() {
+            document.getElementById('search').value = '';
+            document.getElementById('eventStartTime').value = '';
+            document.getElementById('eventEndTime').value = '';
+            document.getElementById('location').value = '';
+        }
+
+        // 重置到熱門推薦
+        function resetToPopularEvents() {
+            // 將標題改回「熱門推薦」
+            const slideOuterTitle = document.querySelector('.slide-outer h2');
+            slideOuterTitle.textContent = '熱門推薦';
+
+            // 重新獲取所有活動
+            fetchAllEvents();
+
+            // 更新顯示模式
+            currentDisplayMode = 'popular';
+        }
+
+        // 修改現有的 fetchAllEvents 函數
+        async function fetchAllEvents() {
+            // 使用API端點路徑
+            const apiUrl = 'http://localhost:8080/lifespace/event/getAll';
+
+            console.log('正在嘗試獲取活動數據，API 路徑:', apiUrl);
+
+
+            fetch(apiUrl)
+                .then(response => {
+                    console.log('API 響應狀態:', response.status);
+                    if (!response.ok) {
+                        throw new Error('網路回應不正常，狀態碼: ' + response.status);
+                    }
+                    console.log(response);
+                    return response.json();
+                    console.log(response);
+                })
+                .then(events => {
+                    console.log('成功獲取活動數據:', events);
+                    // 顯示活動在熱門推薦區域
+                    displayEvents(events, '熱門推薦');
+                })
+                .catch(error => {
+                    console.error('獲取活動時出錯:', error);
+
+                    // 如果需要，可以在這裡放置模擬數據
+                });
+        }
+
+        // 修改現有的 fetchEventsByConditions 函數
+        async function fetchEventsByConditions() {
+            const searchValue = document.getElementById('search').value || "";
+            const startTime = document.getElementById('eventStartTime').value || "";
+            const endTime = document.getElementById('eventEndTime').value || "";
+            const location = document.getElementById('location').value || "";
+
+            // 檢查是否有任何搜尋條件
+            if (!searchValue && !startTime && !endTime && !location) {
+                alert('請至少輸入一個搜尋條件');
+                return;
+            }
+
+            const apiUrl = 'http://localhost:8080/lifespace/event/search/native?' + new URLSearchParams({
+                eventName: searchValue,
+                startTime: startTime,
+                endTime: endTime,
+                location: location
+                // 其他可能的參數
+            }).toString();
+
+            // 避免中文關鍵字變亂碼，decodeURI
+            const newUrl = decodeURI(apiUrl);
+            console.log('正在嘗試獲取活動數據，API 路徑:', newUrl);
+
+            try {
+                const response = await fetch(newUrl);
+                if (response.ok) {
+                    const events = await response.json(); // 假設後端回傳 JSON 格式的活動列表
+                    console.log('搜尋結果:', events.content);
+
+                    // 如果沒有結果
+                    if (events.content.length === 0) {
+                        alert('沒有符合條件的活動');
+                        return;
+                    }
+
+                    // 顯示搜尋結果
+                    displayEvents(events.content, '查詢結果');
+
+                    // 更新顯示模式
+                    currentDisplayMode = 'search';
+                } else {
+                    alert('查詢活動失敗');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('發生錯誤，請稍後再試');
+            }
+        }
+
+        // 新的統一顯示活動函數，替代原有的 displayPopularEvents
+        function displayEvents(events, titleText) {
+            // 獲取顯示區域
+            let slider = null;
+            const slideOuters = document.querySelectorAll('.slide-outer');
+
+            for (const outer of slideOuters) {
+                const titleElement = outer.querySelector('h2');
+                // 修改標題為傳入的參數
+                titleElement.textContent = titleText;
+                slider = outer.querySelector('.slider');
+                break; // 只處理第一個 slide-outer
+            }
+
+            if (!slider) {
+                console.error('無法找到活動顯示區域的 slider 元素');
+                return;
+            }
+
+            // 清空現有內容
+            slider.innerHTML = '';
+
+            // 確保 events 是一個數組且有數據
+            if (!Array.isArray(events) || events.length === 0) {
+                console.error('沒有可顯示的活動數據');
+                const noEventsDiv = document.createElement('div');
+                noEventsDiv.className = 'no-events';
+                noEventsDiv.textContent = '沒有符合條件的活動';
+                slider.appendChild(noEventsDiv);
+                return;
+            }
+
+            // 添加活動到顯示區域
+            events.forEach(event => {
+                if (!event || !event.eventName) return;
+
+                // 創建活動卡片 (使用 <a> 標籤)
+                const slideLink = document.createElement('a');
+                slideLink.className = 'slide';
+
+                // 設定活動詳細頁面的 URL，並包含活動 ID
+                slideLink.href = `event_detail.html?eventId=${event.eventId}`;
+
+                // 活動名稱
+                const slideDivName = event.eventName;
+
+                // 格式化日期和時間
+                const formattedDate = event.eventDate ? new Date(event.eventDate).toLocaleDateString() : '日期未定';
+                const formattedStartTime = event.eventStartTime ? formatDateAndTime(event.eventStartTime) : '時間未定';
+                const formattedEndTime = event.eventEndTime ? formatDateAndTime(event.eventEndTime) : '';
+
+                // 取得照片 URL
+                let photoUrl = '';
+                if (event.photoUrls && event.photoUrls.length > 0) {
+                    photoUrl = event.photoUrls[0]; // 顯示第一張照片
+                }
+
+                // 創建活動卡片內容
+                let slideContent = `
+            ${photoUrl ? `<img src="${'http://localhost:8080' + photoUrl}">` : '<img src="http://localhost:8080//default.jpg" alt="預設圖片">'}
+            <h3>${slideDivName}</h3>
+            <p>${formattedStartTime} ${formattedEndTime ? '-' + formattedEndTime : ''}</p>
+        `;
+
+                slideLink.innerHTML = slideContent;
+
+                // 將活動卡片添加到 slider
+                slider.appendChild(slideLink);
+            });
+        }
+
+        // 保留原有的 formatDateAndTime 函數
+        function formatDateAndTime(dateTime) {
+            const date = new Date(dateTime);
+            const datePart = date.toLocaleDateString();
+            const timePart = date.toLocaleTimeString({ hour: '2-digit', minute: '2-digit' });
+            return `${datePart} ${timePart}`;
+        }
+
+    </script>
+
+
+</body>
+
+
+
+</html>
