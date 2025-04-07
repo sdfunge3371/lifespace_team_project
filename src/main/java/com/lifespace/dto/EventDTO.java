@@ -4,7 +4,7 @@ public class EventDTO {
 
     private String eventId;
     private String eventName;
-
+    private String eventCategoryName;
 
     public EventDTO(){
 
@@ -29,5 +29,13 @@ public class EventDTO {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    public String getEventCategoryName() {
+        return eventCategoryName;
+    }
+
+    public void setEventCategoryName(String eventCategoryName) {
+        this.eventCategoryName = eventCategoryName;
     }
 }
