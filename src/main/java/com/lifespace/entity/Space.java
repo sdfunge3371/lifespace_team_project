@@ -3,19 +3,12 @@ package com.lifespace.entity;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -32,13 +25,15 @@ public class Space implements java.io.Serializable {
 	@GeneratedValue(generator = "custom-id")
 	@GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.SpaceCustomStringIdGenerator")
 	private String spaceId;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "branch_id", referencedColumnName = "branch_id") 
-	@NotBlank(message = "分店編號：請勿空白")   // 等嘉祿做好後，改成Many To One
+
+	@NotBlank(message = "分店編號：請勿空白")
 	@Column(name = "branch_id")
 	private String branchId;
-//	private Branch branch;
+
+	// 等嘉祿做好後，改成Many To One
+//	@ManyToOne
+//	@JoinColumn(name = "branch_id", referencedColumnName = "branch_id")
+//	private BranchVO branchVO;
 	
 	@NotBlank(message = "空間名稱：請勿空白")
 	@Column(name = "space_name", unique = true)
@@ -278,12 +273,20 @@ public class Space implements java.io.Serializable {
 //	public void setOrders(Set<Orders> orders) {
 //		this.orders = orders;
 //	}
-//
+
 //	public Set<Event> getEvents() {
 //		return events;
 //	}
 //
 //	public void setEvents(Set<Event> events) {
 //		this.events = events;
+//	}
+
+//	public BranchVO getBranchVO() {
+//		return branchVO;
+//	}
+//
+//	public void setBranchVO(BranchVO branchVO) {
+//		this.branchVO = branchVO;
 //	}
 }

@@ -332,19 +332,18 @@ function fetchSpaces() {
 // === 2. GET: 透過ID或空間名稱搜尋單一空間 ===
 searchForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    const searchType = document.getElementById('searchType').value;
-
+    const searchType = document.getElementById('searchType').value;   // 抓目前是以什麼方式搜尋
 
     const keyword = searchInput.value.trim();   // 抓輸入欄的值
 
     if (!keyword) {     // 未輸入資料時
-        alert("輸入欄不得空白！");
+        alert("搜尋欄不得空白！");
         return;
     }
 
     // 先清空畫面與錯誤
-    tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center;">搜尋中...</td></tr>`;
-    errorDisplay.textContent = '';
+    tableBody.innerHTML = '';
+    // errorDisplay.textContent = '';
     paginationContainer.style.display = 'none';
 
     // 取得URL
@@ -378,8 +377,9 @@ searchForm.addEventListener('submit', function (e) {
         })
         .catch(error => {
             console.error(`Error fetching space ID ${keyword}:`, error);
-            errorDisplay.textContent = `搜尋失敗：${error.message}`;
-            tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color: red;">搜尋失敗</td></tr>`;
+            // errorDisplay.textContent = `搜尋失敗：${error.message}`;
+            alert(error.message);
+            // tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; color: red;">搜尋失敗</td></tr>`;
             showAllBtn.style.display = 'inline-block'; // 報錯時也可以顯示全部
         });
 })

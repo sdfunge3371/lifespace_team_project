@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 開始抓資料
     fetchSpace();
+    fetchComments();
 });
 
 // ========== 處理頁籤 ==========
@@ -40,27 +41,27 @@ navLinks.forEach(link => {
 // =============空間評論 modal=============
 
 // 處理評論排序下拉式清單
-const sortButton = document.getElementById('sortButton');
-const sortDropdown = document.getElementById('sortDropdown');
-const sortOptions = document.querySelectorAll('.sort-option');
+// const sortButton = document.getElementById('sortButton');
+// const sortDropdown = document.getElementById('sortDropdown');
+// const sortOptions = document.querySelectorAll('.sort-option');
 
-sortButton.addEventListener('click', function () {
-    sortDropdown.classList.toggle('active');
-});
+// sortButton.addEventListener('click', function () {
+//     sortDropdown.classList.toggle('active');
+// });
 
-sortOptions.forEach(option => {
-    option.addEventListener('click', function () {
-        sortButton.textContent = this.textContent;
-        sortDropdown.classList.remove('active');
-    });
-});
+// sortOptions.forEach(option => {
+//     option.addEventListener('click', function () {
+//         sortButton.textContent = this.textContent;
+//         sortDropdown.classList.remove('active');
+//     });
+// });
 
 // 關閉評論排序下拉清單 (Close dropdown when clicking outside)
-document.addEventListener('click', function (event) {
-    if (!event.target.closest('.sort-container')) {
-        sortDropdown.classList.remove('active');
-    }
-});
+// document.addEventListener('click', function (event) {
+//     if (!event.target.closest('.sort-container')) {
+//         sortDropdown.classList.remove('active');
+//     }
+// });
 
 // 設定空間評論model位置
 function showModalAbsolute(modal, overlay) {
@@ -538,6 +539,8 @@ function updateTotal() {
 
 // =========== AJAX部分 ===========
 
+// 載入空間資訊
+
 function fetchSpace() {
     const urlParams = new URLSearchParams(window.location.search);
     const spaceId = urlParams.get('spaceId');
@@ -549,10 +552,9 @@ function fetchSpace() {
             console.log(space);   // 檢查回傳的json是否正確
             insertPhotos(space.spacePhotos);
             insertAlert(space.spaceAlert);
-            insertInfo(space.spacePeople, "台北市中正區XXX路OO號", space.spaceFloor, space.spaceSize, space.spaceDesc);     // 地址到時候改成branchAddress
+            insertInfo(space.spacePeople, space.spaceUsageMaps, space.spaceFloor, space.spaceSize, space.spaceDesc);
             insertEquipments(space.spaceEquipments);
-            insertComments();
-            insertTransportation();
+            insertTransportation("台北市中正區XXX路OO號", space.spaceFloor);  // 地址到時候改成branchAddress
             insertAsideInfo(space.spaceName, space.spaceHourlyFee, space.spaceDailyFee);
             insertRentalItems();
         })
@@ -602,7 +604,7 @@ function insertAlert(msg) {
     }
 }
 
-function insertInfo(people, address, floor, size, desc) {
+function insertInfo(people, usageMaps, floor, size, desc) {
     document.querySelector('.space-people').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                          stroke-linejoin="round">
@@ -610,12 +612,19 @@ function insertInfo(people, address, floor, size, desc) {
                                         <circle cx="12" cy="7" r="4"></circle>
                                     </svg> 
                                     可容納人數：${people} 人`;
-    document.querySelector('.space-address').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg> ${address}${floor}${floor.trim() ? "樓" : ""}`;
+
+    let usageStr = '';
+    console.log(usageMaps);
+    usageMaps.forEach(map => {
+        usageStr = usageStr.concat(`${map.spaceUsage.spaceUsageName}、`);
+    })
+
+    document.querySelector('.space-usages').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M2 4h6a4 4 0 0 1 4 4v12a4 4 0 0 0-4-4H2z"></path>
+                                        <path d="M22 4h-6a4 4 0 0 0-4 4v12a4 4 0 0 1 4-4h6z"></path>
+                                    </svg> 本空間適用於：<b>${usageStr.length > 0 ? usageStr.slice(0, -1) : usageStr}</b>`;
+
     document.querySelector('.space-size').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">
@@ -654,12 +663,13 @@ function insertEquipments(equips) {
 
 }
 
-function insertComments() {
-
-}
-
-function insertTransportation() {
-
+function insertTransportation(address, floor) {
+document.querySelector('.space-address').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg> ${address}${floor}${floor.trim() ? "樓" : ""}`;
 }
 
 function insertAsideInfo(name, hourly, daily) {
@@ -671,4 +681,124 @@ function insertAsideInfo(name, hourly, daily) {
 
 function insertRentalItems() {
 
+}
+
+
+// 載入空間評價資訊
+function fetchComments() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const spaceId = urlParams.get('spaceId');
+
+    fetch(`/spaces/comments/${spaceId}`)
+        .then(response => response.json())
+        .then(data => {
+            insertHeadComments(data.content);
+            insertAllComments(data.content);
+        });
+        // .catch(error => console.log("報錯：" + error));
+}
+
+function insertHeadComments(comments) {
+    const spaceComment = document.querySelector(".space-comment");
+
+    // 計算平均滿意度
+    let totalRating = 0;
+    comments.forEach(c => totalRating += c.satisfaction);
+    const avgRating = comments.length ? (totalRating / comments.length).toFixed(1) : "0.0";
+    console.log(document.querySelector(".avg-rating"));
+    document.querySelector(".avg-rating").innerHTML = avgRating;
+
+    let totalComments = comments.length;
+    document.querySelector(".total-comments").innerHTML = `(${totalComments}則評論)`;
+
+
+    const commentsContainer = document.querySelector(".container-comment-row");
+    commentsContainer.innerHTML = ""; // 清空舊資料
+
+    comments.forEach(comment => {
+        const {
+            commentContent,
+            satisfaction,
+            commentTime,
+            photosUrls
+        } = comment;
+
+        // 滿意度星星生成
+        let starsHtml = "";
+        for (let i = 0; i < 5; i++) {
+            starsHtml += `<i class="fa-${i < satisfaction ? 'solid' : 'regular'} fa-star"></i>`;
+        }
+
+        // 評論時間處理
+        const timeString = formatRelativeTime(commentTime);
+
+        // 照片處理
+        let photosHtml = "";
+        if (Array.isArray(photosUrls) && photosUrls.length > 0) {
+            photosUrls.forEach(url => {
+                photosHtml += `<img src="${url}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
+            });
+        }
+
+        // 評論HTML建立
+        const commentCard = document.createElement("div");
+        commentCard.className = "col-md-6 mb-4";
+        commentCard.innerHTML = `
+                <div class="card p-3">
+                    <div class="d-flex justify-comments-between align-items-start">
+                        <div class="d-flex">
+                            <div class="avatar me-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0 me-2">匿名用戶</h5>
+                                    <small class="text-muted">${timeString}</small>
+                                </div>
+                                <div class="star mt-1">${starsHtml}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <p>${commentContent}</p>
+                        ${photosHtml ? `<div class="mt-2 d-flex flex-wrap">${photosHtml}</div>` : ""}
+                    </div>
+                </div>
+            `;
+
+        commentsContainer.appendChild(commentCard);
+
+        const commentButton = document.querySelector(".comment-button");
+        // 處理「查看所有評論」按鈕
+        if (comments.length > 3) {
+            commentButton.style.display = "block"; // 顯示按鈕
+        } else {
+            commentButton.style.display = "none"; // 隱藏按鈕
+        }
+    })
+}
+
+function insertAllComments(comments) {
+
+}
+
+// 檢查「評論」是多久前發的（n天前、n小時前）
+function formatRelativeTime(dateStr) {
+    const now = new Date();
+    const past = new Date(dateStr);
+    const diffMs = now - past;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(days / 365);
+
+    if (years > 0) return `${years}年前`;
+    if (months > 0) return `${months}個月前`;
+    if (days > 0) return `${days}天前`;
+    if (hours > 0) return `${hours}小時前`;
+    if (minutes > 0) return `${minutes}分鐘前`;
+    return `剛剛`;
 }

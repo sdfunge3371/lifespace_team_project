@@ -44,6 +44,7 @@ public class SpaceController {
 	@Autowired
 	private SpaceService spaceService;
 
+	// 取得所有空間
 	@GetMapping("/spaces")
 	public ResponseEntity<List<Space>> getAllSpaces() {
 		List<Space> allSpaces = spaceService.getAllSpaces();
@@ -53,6 +54,7 @@ public class SpaceController {
 		return ResponseEntity.ok(allSpaces);
 	}
 
+	// 透過ID取得單一空間
 	@GetMapping("/spaces/id/{spaceId}")
 	public ResponseEntity<Space> getSpaceById(@PathVariable	String spaceId) {
 		Space space = spaceService.getSpaceById(spaceId);
@@ -62,7 +64,8 @@ public class SpaceController {
 		}
 		return ResponseEntity.ok(space);
 	}
-	
+
+	// 透過關鍵字進行模糊搜尋
 	@GetMapping("/spaces/name")
 	public ResponseEntity<List<Space>> getSpacesByNameContainingIgnoreCase(@RequestParam String keyword) {  // 用@RequestParam以讓Postman處理空白字元
 		List<Space> spaces = spaceService.getSpacesByNameContainingIgnoreCase(keyword);
@@ -74,7 +77,8 @@ public class SpaceController {
 		return ResponseEntity.ok(spaces);
 
 	}
-	
+
+	// 新增空間
 	@PostMapping("/spaces")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> addSpace(@RequestPart("data") @Valid SpaceRequest space,
 									  @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
@@ -97,7 +101,8 @@ public class SpaceController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorBody);
 		}
 	}
-	
+
+	// 修改空間
 	@PutMapping("/spaces/{spaceId}")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> updateSpace(@PathVariable String spaceId,
 										 @RequestPart("data") @Valid SpaceRequest space,
@@ -123,14 +128,14 @@ public class SpaceController {
 		}
 	}
 
-	// 上、下架更新狀態
+	// 上、下架更新狀態（透過上、下架進行篩選）
 	@PutMapping("/spaces/status/{spaceId}")
 	public ResponseEntity<Space> toggleStatus(@PathVariable String spaceId, @RequestBody Map<String, String> body) {
 		Space spaceUpdated = spaceService.toggleStatus(spaceId, body);
 		return ResponseEntity.ok(spaceUpdated);
 	}
 
-	// 透過上、下架進行篩選
+
 	
 	
 	

@@ -15,8 +15,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
           rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -101,23 +106,96 @@
 
         <!-- 網頁內容 Start -->
         <!-- 搜尋欄 -->
-        <div class="search-bar">
-            <input type="text" placeholder="搜尋空間...">
+        <div class="search-container mt-3">
+            <!-- 搜尋輸入框和按鈕 -->
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="搜尋空間...">
+                <button class="search-button">搜尋</button>
+            </div>
+
+            <!-- 過濾選項 -->
             <div class="filter-options">
-                <div class="filter-option">日期</div>
-                <div class="filter-option">時間</div>
-                <div class="filter-option">人數</div>
-                <div class="filter-option">搜尋</div>
+
+                <!--日期-->
+                <div class="filter-option">
+                    <label class="filter-label">日期</label>
+                    <div class="date-picker-container">
+                        <input type="text" id="datepicker" class="date-picker" placeholder="選擇日期" readonly>
+                    </div>
+                </div>
+
+                <!--開始時間-->
+                <div class="filter-option time-filter">
+                    <label class="filter-label">開始時間</label>
+                    <select class="filter-select" id="start-time">
+                        <option selected disabled>選擇開始時間</option>
+                        <option value="08:00">08:00</option>
+                        <option value="08:30">08:30</option>
+                        <option value="09:00">09:00</option>
+                        <option value="09:30">09:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:00">11:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="12:00">12:00</option>
+                        <option value="12:30">12:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:00">14:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:00">15:00</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:00">17:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="18:00">18:00</option>
+                        <option value="18:30">18:30</option>
+                        <option value="19:00">19:00</option>
+                        <option value="19:30">19:30</option>
+                        <option value="20:00">20:00</option>
+                        <option value="20:30">20:30</option>
+                        <option value="21:00">21:00</option>
+                        <option value="21:30">21:30</option>
+                    </select>
+                </div>
+
+                <!--結束時間-->
+                <div class="filter-option time-filter">
+                    <label class="filter-label">結束時間</label>
+                    <select class="filter-select" id="end-time" disabled>
+                        <option selected disabled>請先選擇開始時間</option>
+                    </select>
+                </div>
+
+                <div class="filter-option">
+                    <label class="filter-label">地區</label>
+                    <select class="filter-select">
+                        <option selected disabled>選擇地區</option>
+                        <option>中正區</option>
+                        <option>大同區</option>
+                        <option>中山區</option>
+                        <option>松山區</option>
+                        <option>大安區</option>
+                        <option>萬華區</option>
+                        <option>信義區</option>
+                        <option>士林區</option>
+                        <option>北投區</option>
+                        <option>內湖區</option>
+                        <option>南港區</option>
+                        <option>文山區</option>
+                    </select>
+                </div>
             </div>
         </div>
         
         <!-- 地圖區域 (預設隱藏) -->
-        <div id="map-container" class="map-container hidden">
+        <div id="map-container" class="map-container hidden p-4">
             <div id="map"></div>
         </div>
         
         <!-- 過濾器選項 -->
-        <div class="filter-container">
+        <div class="filter-container p-4">
             <div class="filter-toggle">
                 <label class="checkbox-container">
                     <input type="checkbox" id="show-map-checkbox">
@@ -191,7 +269,7 @@
         </div>
         
         <!-- 空間列表 -->
-        <div class="spaces-grid" id="spaces-container">
+        <div class="spaces-grid p-4" id="spaces-container">
             <!-- 空間卡片將由JavaScript動態生成 -->
         </div>
 
@@ -297,9 +375,86 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        // 日期選擇
+        $(document).ready(function() {
+            // 初始化日期選擇器
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                firstDay: 1, // 星期一作為一週的第一天
+                dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"],
+                monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+                minDate: 0, // 今天之後的日期才可選
+                maxDate: "+3M" // 最多可選未來3個月
+            });
 
+            // 綁定日曆按鈕點擊事件
+            $(".calendar-button").click(function() {
+                $("#datepicker").datepicker("show");
+            });
+        });
+
+        // 開始、結束時間選擇
+        $(document).ready(function() {
+            // 初始化日期選擇器
+            if ($.fn.datepicker) {
+                $("#datepicker").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    minDate: 0,
+                    maxDate: "+3M"
+                    // 其他設定...
+                });
+            }
+
+            // 所有可能的時間選項
+            const allTimeSlots = [
+                "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+                "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+                "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+                "20:00", "20:30", "21:00", "21:30", "22:00"
+            ];
+
+            // 當開始時間改變時更新結束時間選項
+            $("#start-time").change(function() {
+                const $endTime = $("#end-time");
+                const selectedTime = $(this).val();
+
+                // 清空現有的結束時間選項
+                $endTime.empty();
+                $endTime.append('<option disabled>選擇結束時間</option>');
+
+                if (selectedTime) {
+                    // 找出選擇的開始時間在陣列中的索引
+                    const startIndex = allTimeSlots.indexOf(selectedTime);
+
+                    // 如果找到了開始時間
+                    if (startIndex !== -1) {
+                        // 添加可用的結束時間選項（從開始時間30分鐘後開始）
+                        for (let i = startIndex + 1; i < allTimeSlots.length; i++) {
+                            $endTime.append(`<option value="${allTimeSlots[i]}">${allTimeSlots[i]}</option>`);
+                        }
+
+                        // 啟用結束時間選擇器
+                        $endTime.prop('disabled', false);
+                    }
+                } else {
+                    // 如果沒有選擇開始時間，禁用結束時間選擇器
+                    $endTime.prop('disabled', true);
+                }
+            });
+
+            // 初始狀態下結束時間選擇器是禁用的
+            $("#end-time").prop('disabled', true);
+        });
+
+    </script>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
 </body>
 </html>
