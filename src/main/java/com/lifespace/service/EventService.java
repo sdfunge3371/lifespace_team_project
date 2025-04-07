@@ -3,14 +3,17 @@ package com.lifespace.service;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +37,8 @@ import com.lifespace.repository.EventRepository;
 import com.lifespace.repository.MemberRepository;
 import com.lifespace.repository.OrdersRepository;
 import com.lifespace.repository.SpaceRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service("eventService")
 public class EventService {
@@ -61,6 +66,9 @@ public class EventService {
 	
 	@Autowired
 	EventCategoryRepository eventCategoryRepository;
+	
+	@Autowired
+	MailService mailService;
 	
 	//新增活動
 	//@Transactional
@@ -259,7 +267,12 @@ public class EventService {
 				
 				System.out.println("使用者 ID: " + firstQueuedMemebr.getMember().getMemberId() +
 						" 已成功候補到活動: " + event.getEventName() );
-				//之後加上寄email給該位使用者
+				//之後加上寄email給該位成功候補的使用者
+				String memberName = firstQueuedMemebr.getMember().getMemberName();
+				String eventName = event.getEventName();
+				String toEmail = firstQueuedMemebr.getMember().getEmail();
+						
+				mailService.eventMemberNotification("成功候補", memberName, eventName, toEmail);
 				 
 			 }else {
 				//若活動尚未額滿，或已額滿但無候補人選，活動人數 -1
@@ -324,13 +337,108 @@ public class EventService {
 	    return "/event-images/" + fileName; // 返回可訪問的 URL
 	}
 	
-	//活動正式舉辦前一天(? 寄email給所有參加者以及舉辦者，用Thread(多執行續?)
-	//新增該service
 	
+	//隨時間自動更新活動狀態 ( 主要是 SCHEDULED 時間過了event_start_time後變成 HELD )，
+	//要用到Thread ( 多執行續 ) ?
+    public void UpdateHeldEvents() {
+        Timestamp now = Timestamp.from(Instant.now());
+        //找出狀態為SCHEDULED 且目前時間已經超過event_start_time
+        List<Event> scheduledEvents = eventRepository.findByEventStatusAndEventStartTimeAfter( EventStatus.SCHEDULED, now);
+        
+        //將狀態改為HELD
+        if(!scheduledEvents.isEmpty()){
+            for (Event event : scheduledEvents) {
+            	event.setEventStatus(EventStatus.HELD);
+            }
+            eventRepository.saveAll(scheduledEvents);
+            System.out.println("已自動更新" + scheduledEvents.size() + "個活動為已舉辦");
+        } else {
+            System.out.println("無活動需要更新");
+        }
+    }
+    
+	//自動更新排程器
+    @Scheduled(fixedRate = 60 * 60 * 1000)
+    @Transactional
+    public void autoUpdateEvents(){
+    	UpdateHeldEvents();
+        //System.out.println("排程器自動更新已舉辦的活動");
+    }
+
+    @PostConstruct
+    @Transactional
+    public void updateEventsByStartUp(){
+    	UpdateHeldEvents();
+    	notifyHeldEventsMembers();
+        System.out.println("啟動Spring後, 自動更新已舉辦的活動");
+    }
+    
+    //先在排程器中添加新方法調用
+    @Scheduled(cron = "0 0 10 * * ?") // 每天上午10點執行
+    @Transactional
+    public void scheduledNotificationCheck() {
+    	notifyHeldEventsMembers();
+        System.out.println("排程器檢查需要發送提醒的活動");
+    }
+    
+    
+	//活動正式舉辦前一天(? 寄email給所有參加者以及舉辦者，用Thread(多執行續?)
+    @Transactional(readOnly = true) // 只讀事務，因為我們只是查詢並發送郵件
+    public void notifyHeldEventsMembers() {
+    	
+    	 // 取得明天的日期（從當前時間加上24小時）
+        Timestamp tomorrow = new Timestamp(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+        // 取得後天的日期（當前時間加上48小時）
+        Timestamp dayAfterTomorrow = new Timestamp(System.currentTimeMillis() + 2 * 24 * 60 * 60 * 1000);
+        
+        // 找出明天開始的活動（event_start_time 介於明天和後天之間）
+        List<Event> eventsStartingTomorrow = eventRepository.findByEventStartTimeBetweenAndEventStatus(
+            tomorrow, dayAfterTomorrow, EventStatus.SCHEDULED);
+        
+        if (!eventsStartingTomorrow.isEmpty()) {
+            System.out.println("找到 " + eventsStartingTomorrow.size() + " 個明天開始的活動，準備發送提醒郵件");
+            
+            // 使用非同步方式發送郵件
+            CompletableFuture.runAsync(() -> {
+                for (Event event : eventsStartingTomorrow) {
+                	String eventName = event.getEventName();
+                    try {
+                        // 取得參加者名單
+                        List<EventMember> participants = eventMemberRepository.findByEvent_EventId(event.getEventId());
+                        
+                        // 發送郵件給參加者
+                        for (EventMember participant : participants) {
+                        	String member = participant.getMember().getEmail();
+                        	String mail = participant.getMember().getMemberName();
+                        	mailService.eventMemberNotification("活動開始通知", member, eventName, mail );
+                        }
+                   
+                        System.out.println("活動 '" + eventName + "' 的提醒郵件已發送");
+                    } catch (Exception e) {
+                        System.err.println("發送活動 '" + eventName + "' 的提醒郵件時出錯: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            });
+            
+            System.out.println("提醒郵件發送請求已提交");
+        } else {
+            System.out.println("沒有需要發送提醒的活動");
+        }
+       //寄email通知所有被設為取消的成員
+//         String memberName = firstQueuedMemebr.getMember().getMemberName();
+//		 String eventName = event.getEventName();
+//		 String toEmail = firstQueuedMemebr.getMember().getEmail();
+//					
+//		mailService.eventMemberNotification("活動取消", memberName, eventName, toEmail);
+    
+    }
+    
+    
+    
 	//活動內容是否可以修改?? 改人數上限(只能調高不能調低)、活動類別、活動標題、注意事項、使用者的話...?
 	
-	//隨時間自動更新活動狀態 ( 主要是 SCHEDULED 時間過了event_start_time後變成 HELD )，要用到Thread ( 多執行續 ) ?
-	
+
 	//(使用者方的活動頁面) 根據種類篩選出活動列表 ( 已報名ATTENT、替補狀態QUEUED、已參與的活動歷史、自己建立的活動 )
 	public Page<EventMemberResponse> filterEventsByUser(
 			String userCategory, 
@@ -371,8 +479,8 @@ public class EventService {
 	     //回傳的 Page<EventMemberResponse>
 	     return new PageImpl<>(responseList, pageable, memberResponsePage.getTotalElements());
 		
-		
 	}
+	
 	//舉辦者取消活動的Service(update活動狀態為CANCELLED、所有參加以及候補的成員狀態改為CANCELLED)
 	//並寄email通知所有參加者以及候補者
 	@Transactional
@@ -408,6 +516,13 @@ public class EventService {
 					
 					System.out.println("活動成員: " + cancellMember.getMember().getMemberId() 
 							+ "已被取消參加活動: " + eventId);
+					
+					//寄email通知所有被設為取消的成員
+					String memberName = cancellMember.getMember().getMemberName();
+					String eventName = event.getEventName();
+					String toEmail = cancellMember.getMember().getEmail();
+							
+					mailService.eventMemberNotification("活動取消", memberName, eventName, toEmail);
 				}
 				
 			}
@@ -416,36 +531,7 @@ public class EventService {
 		
 		//若活動開始時間已超過，則不能CANCELLED !! 要加判斷式
 		
-		
-		
+	
 	}
 	
-	// 將 Event 實體轉換為 EventResponse DTO
-//    private EventResponse convertToEventResponse(Event event) {
-//        EventResponse response = new EventResponse();
-//        response.setEventId(event.getEventId());
-//        response.setEventName(event.getEventName());
-//        response.setEventDate(event.getEventDate());
-//        response.setEventStartTime(event.getEventStartTime());
-//        response.setEventEndTime(event.getEventEndTime());
-//        response.setEventCategory(event.getEventCategory());
-//        response.setSpaceAddress(branchRepository.findById(spaceRepository.findById(event.getSpaceId())
-//        										.get()
-//        										.getBranchId())
-//        										.get()
-//        										.getBranchAddr());
-//        response.setOrganizer(memberRepository.findById(event.getMemberId()).get().getMemberName());
-//        response.setNumberOfParticipants(event.getNumberOfParticipants());
-//        response.setMaximumOfParticipants(event.getMaximumOfParticipants());
-//        response.setEventBriefing(event.getEventBriefing());
-//        response.setRemarks(event.getRemarks());
-//        response.setHostSpeaking(event.getHostSpeaking());
-//        response.setCreatedTime(event.getCreatedTime());
-//        
-//        // 取得並設置活動照片
-//        List<String> photoUrls = event.getPhotoUrls();
-//        response.setPhotoUrls(photoUrls != null ? photoUrls : new ArrayList<>());
-//        
-//        return response;
-//    }
 }

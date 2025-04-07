@@ -22,5 +22,40 @@ public class MailService {
 
         mailSender.send(message);
     }
+    
+    //跟活動相關的email發送
+    public void eventMemberNotification(
+    		String status, 
+    		String memberName, 
+    		String eventName, 
+    		String toEmail) {
+    	
+    	 SimpleMailMessage message = new SimpleMailMessage();
+    	 message.setFrom("mickylumc@gmail.com");
+         message.setTo(toEmail);
+         
+    	switch(status) {
+    		case "成功候補":
+    			 message.setSubject("成功候補活動通知");
+    			 message.setText(memberName + " 使用者您好，您已成功候補活動: " + eventName + 
+    					 "\n請到活動參與頁面查看是否已在「已報名活動」頁籤。若要取消報名則須自行取消，感謝您。");
+    	         mailSender.send(message);
+    			break;
+    		case "活動取消":
+    			message.setSubject("活動取消通知");
+   			 	message.setText(memberName + " 使用者您好，很遺憾活動: " + eventName + " 已被舉辦者取消。" +
+   					 "\n可至活動總覽頁面查詢更多您有興趣的活動，感謝您。");
+   			 	mailSender.send(message);
+    			break;
+    		case "活動開始通知":
+    			message.setSubject("活動即將舉辦通知");
+   			 	message.setText(memberName + " 使用者您好，活動: " + eventName + " 即將開始。" +
+   					 "\n請注意活動時間並準時參與。");
+   			 	mailSender.send(message);
+    			break;
+    		default:
+    			break;
+    	}
+    }
 
 }

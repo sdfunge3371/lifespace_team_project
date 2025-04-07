@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.lifespace.constant.EventStatus;
 import com.lifespace.dto.EventResponse;
 import com.lifespace.entity.Event;
 
@@ -15,6 +16,10 @@ import org.springframework.data.domain.Pageable;
 
 public interface EventRepository extends JpaRepository<Event,String>{
 
+	List<Event> findByEventStatusAndEventStartTimeAfter( EventStatus eventStatus, Timestamp timeStart );
+
+	List<Event> findByEventStartTimeBetweenAndEventStatus(
+			Timestamp start, Timestamp end, EventStatus status );
 	
 	@Query(value = "SELECT " +
 		    "e.event_id, e.event_name, e.event_start_time, e.event_end_time, " +
