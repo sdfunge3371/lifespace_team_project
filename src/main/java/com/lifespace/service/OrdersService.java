@@ -56,7 +56,7 @@ public class OrdersService {
         return optional.orElse(null);
     }
 
-      public List<Orders> getAllOrders() {
+    public List<Orders> getAllOrders() {
           return ordersRepository.findAll();
         }
 
