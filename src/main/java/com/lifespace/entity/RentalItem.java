@@ -1,64 +1,51 @@
 package com.lifespace.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import org.hibernate.annotations.GenericGenerator;
-import jakarta.persistence.GeneratedValue;
-
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "rental_item")
-public class RentalItem implements java.io.Serializable {
+public class RentalItem implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "rental_item_id")
-    @Pattern(regexp = "^R\\d{3}$", message = "租借品項流水號格式不正確")
     @GeneratedValue(generator = "custom-id")
     @GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.RentalItemCustomStringIdGenerator")
+    @Column(name = "rental_item_id")
     private String rentalItemId;
 
-    @Column(name = "rental_item_name")
-    @NotEmpty(message = "租借品項名稱: 請勿空白")
+    @Column(name = "rental_item_name", nullable = false, length = 20)
     private String rentalItemName;
 
-    @Column(name = "rental_item_price")
-    @NotNull(message = "租借品項價格: 請勿空白")
-    @Min(value = 0, message = "租借品項價格: 不能小於{value}")
+    @Column(name = "rental_item_price", nullable = false)
     private Integer rentalItemPrice;
 
-    @Column(name = "total_quantity")
-    @NotNull(message = "商品總數: 請勿空白")
-    @Min(value = 0, message = "商品總數: 不能小於{value}")
+    @Column(name = "total_quantity", nullable = false)
     private Integer totalQuantity;
 
-    @Column(name = "available_rental_quantity")
-    @NotNull(message = "可租借數量: 請勿空白")
-    @Min(value = 0, message = "可租借數量: 不能小於{value}")
+    @Column(name = "available_rental_quantity", nullable = false)
     private Integer availableRentalQuantity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
-    @Column(name = "branch_id")
-    @Pattern(regexp = "^B\\d{3}$", message = "分店流水號格式不正確")
-    private String branchId;
+    @Column(name = "rental_item_status", nullable = false)
+    private Integer rentalItemStatus;
 
-    @Column(name = "created_time", insertable = false, updatable = false)
+    @Column(name = "created_time")
     private Timestamp createdTime;
 
-    @OneToMany(mappedBy = "rentalItem", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<RentalItemDetails> rentalItemDetails;
+    @OneToMany(mappedBy = "rentalItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<RentalItemDetails> rentalItemDetails = new ArrayList<>();
 
     public RentalItem() {
     }
-
 
     public String getRentalItemId() {
         return rentalItemId;
@@ -100,13 +87,20 @@ public class RentalItem implements java.io.Serializable {
         this.availableRentalQuantity = availableRentalQuantity;
     }
 
-
-    public String getBranchId() {
-        return branchId;
+    public Branch getBranch() {
+        return branch;
     }
 
-    public void setBranchId(String branchId) {
-        this.branchId = branchId;
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    public Integer getRentalItemStatus() {
+        return rentalItemStatus;
+    }
+
+    public void setRentalItemStatus(Integer rentalItemStatus) {
+        this.rentalItemStatus = rentalItemStatus;
     }
 
     public Timestamp getCreatedTime() {
@@ -125,5 +119,3 @@ public class RentalItem implements java.io.Serializable {
         this.rentalItemDetails = rentalItemDetails;
     }
 }
-
-
