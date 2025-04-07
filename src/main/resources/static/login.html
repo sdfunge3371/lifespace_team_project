@@ -179,7 +179,8 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password }),
+                credentials: "include"  //一定要加這句才會把session放在瀏覽器的coockie內
             })
                 .then(res => {
                     if (!res.ok) {
@@ -189,7 +190,7 @@
                 })
                 .then(data => {
                     alert("登入成功，歡迎 " + data.memberName);
-                    // 可以跳轉頁面，例如 location.href = '/dashboard.html';
+                    location.href = "../html/try.html";
                 })
                 .catch(err => {
                     alert("登入失敗，請檢查帳號或密碼");

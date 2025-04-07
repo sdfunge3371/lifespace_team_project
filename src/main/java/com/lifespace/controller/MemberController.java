@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.lifespace.service.MailService;
 import com.lifespace.dto.MemberDTO;
 import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
 import com.lifespace.repository.MemberRepository;
+import com.lifespace.service.MailService;
 import com.lifespace.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
@@ -44,6 +45,8 @@ public class MemberController {
 	private MailService mailService;
 //	@Autowired
 //	private StringRedisTemplate redisTemplate;
+    // 建立一個簡單的記憶體 Map 來暫存驗證碼（key: email, value: code）
+    private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
 	
 	//-------------------------會員登入-----------------------------
 	@PostMapping("/member/login")
@@ -121,10 +124,6 @@ public class MemberController {
 	
 	
 	//------------------------------會員忘記密碼-"發送"驗證亂碼---------------------------
-	
-    // 建立一個簡單的記憶體 Map 來暫存驗證碼（key: email, value: code）
-    private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
-
     public MemberController(MailService mailService) {
         this.mailService = mailService;
     }
@@ -173,6 +172,25 @@ public class MemberController {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("驗證失敗或驗證碼過期");
 	    }
 	}
+	
+	
+	
+	//-----------------------------會員忘記密碼-"重設密碼"-------------------------------------
+	@PostMapping("/member/setPassword")
+	public ResponseEntity<String> resetPassword(
+	        @RequestParam String email,
+	        @RequestParam String newPassword) {
+
+	    try {
+	        memberService.resetPassword(email, newPassword);
+	        return ResponseEntity.ok("密碼更新成功");
+	    } catch (NoSuchElementException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("找不到該使用者");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("密碼更新失敗");
+	    }
+	}
+
 
 	
 	

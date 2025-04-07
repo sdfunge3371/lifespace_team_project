@@ -3,6 +3,7 @@ package com.lifespace.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +127,26 @@ public class MemberService {
 		}
 		return false;
 	}
+	
+	// ----------------忘記密碼-修改密碼------------------------------
+	
+	public void resetPassword(String email, String newPassword) {
+		Optional<Member> memberOpt = memberRepository.findByEmail(email);
 
+		if (memberOpt.isEmpty()) {
+		        throw new NoSuchElementException("找不到該會員");
+		    }
+		
+		 Member member = memberOpt.get();
+
+        // 使用 Spring Security 提供的 BCrypt 加密
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        member.setPassword(encodedPassword);
+
+        memberRepository.save(member);
+    }
+	
+	
 
 	// ----------------查詢---------------------------------
 	//模糊查詢
