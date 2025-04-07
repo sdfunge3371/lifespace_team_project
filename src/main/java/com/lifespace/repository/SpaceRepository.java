@@ -42,6 +42,7 @@ public interface SpaceRepository extends JpaRepository<Space, String> {
 					"WHERE (:spaceId IS NULL OR o.space_id = :spaceId ) " +
 				    "AND (:spaceName IS NULL OR s.space_name LIKE CONCAT('%', :spaceName, '%') ) " +
 				    "AND (:branchId IS NULL OR s.branch_id = :branchId ) " +
+				    "AND ( o.comment_content IS NOT NULL ) " +
 					"GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time",
 					countQuery = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, o.comment_content,  o.satisfaction, o.comment_time, "+
 							"GROUP_CONCAT(sp.space_photo) AS photos_urls "+
@@ -51,6 +52,7 @@ public interface SpaceRepository extends JpaRepository<Space, String> {
 							"WHERE (:spaceId IS NULL OR o.space_id = :spaceId ) " +
 						    "AND (:spaceName IS NULL OR s.space_name LIKE CONCAT('%', :spaceName, '%') ) " +
 						    "AND (:branchId IS NULL OR s.branch_id = :branchId ) " +
+						    "AND ( o.comment_content IS NOT NULL ) " +
 							"GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time",
 							nativeQuery = true)
 		Page<SpaceCommentResponse> findSpaceCommentsByConditions(
