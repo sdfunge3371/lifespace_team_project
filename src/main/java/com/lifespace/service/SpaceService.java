@@ -54,8 +54,7 @@ public class SpaceService {
 	public Space addSpace(SpaceRequest space, List<MultipartFile> files) throws IOException {
 
 		Space s = new Space();
-
-//		s.setBranchId(space.getBranchVO().getBranchId());
+		// 設定分點ID與其他欄位
 		s.setBranchId(space.getBranchId());
 		s.setSpaceName(space.getSpaceName());
 		s.setSpacePeople(space.getSpacePeople());
@@ -66,6 +65,11 @@ public class SpaceService {
 		s.setSpaceAlert(space.getSpaceAlert());
 		s.setSpaceStatus(space.getSpaceStatus());
 		s.setSpaceFloor(space.getSpaceFloor());
+
+		// 設定關聯分點
+		Branch branch = new Branch();
+		branch.setBranchId(space.getBranchId());
+		s.setBranch(branch);
 
 		// ============= 新增Space Equipments =============
 		Set<SpaceEquipment> equips = space.getSpaceEquipments().stream().map(se -> {
@@ -116,7 +120,11 @@ public class SpaceService {
 		if (s == null) {
 			throw new ResourceNotFoundException("找不到ID 為「 " + spaceId + " 」的空間");
 		}
-		s.setBranchId(space.getBranchId());
+		// 要跟 branch 關聯，才會更新branch的相關資料
+		Branch branch = new Branch();
+		branch.setBranchId(space.getBranchId());
+		s.setBranch(branch);
+
 		s.setSpaceName(space.getSpaceName());
 		s.setSpacePeople(space.getSpacePeople());
 		s.setSpaceSize(space.getSpaceSize());

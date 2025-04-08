@@ -40,29 +40,6 @@ navLinks.forEach(link => {
 
 // =============空間評論 modal=============
 
-// 處理評論排序下拉式清單
-// const sortButton = document.getElementById('sortButton');
-// const sortDropdown = document.getElementById('sortDropdown');
-// const sortOptions = document.querySelectorAll('.sort-option');
-
-// sortButton.addEventListener('click', function () {
-//     sortDropdown.classList.toggle('active');
-// });
-
-// sortOptions.forEach(option => {
-//     option.addEventListener('click', function () {
-//         sortButton.textContent = this.textContent;
-//         sortDropdown.classList.remove('active');
-//     });
-// });
-
-// 關閉評論排序下拉清單 (Close dropdown when clicking outside)
-// document.addEventListener('click', function (event) {
-//     if (!event.target.closest('.sort-container')) {
-//         sortDropdown.classList.remove('active');
-//     }
-// });
-
 // 設定空間評論model位置
 function showModalAbsolute(modal, overlay) {
 
@@ -553,8 +530,9 @@ function fetchSpace() {
             insertPhotos(space.spacePhotos);
             insertAlert(space.spaceAlert);
             insertInfo(space.spacePeople, space.spaceUsageMaps, space.spaceFloor, space.spaceSize, space.spaceDesc);
-            insertEquipments(space.spaceEquipments);
-            insertTransportation("台北市中正區XXX路OO號", space.spaceFloor);  // 地址到時候改成branchAddress
+            insertSpaceEquips(space.spaceEquipments);
+            insertPublicEquips(space.publicEquipments);
+            insertTransportation(space.branchAddr, space.spaceFloor);  // 地址到時候改成branchAddress
             insertAsideInfo(space.spaceName, space.spaceHourlyFee, space.spaceDailyFee);
             insertRentalItems();
         })
@@ -635,7 +613,7 @@ function insertInfo(people, usageMaps, floor, size, desc) {
     document.querySelector('.space-description').innerHTML = desc;
 }
 
-function insertEquipments(equips) {
+function insertSpaceEquips(equips) {
     const spaceEquips = document.querySelector('.space-equips');
 
     spaceEquips.innerHTML = '';
@@ -657,19 +635,58 @@ function insertEquipments(equips) {
         `;
         spaceEquips.appendChild(col);
     })
+}
 
-    // 公共設備導入
+function insertPublicEquips(equips) {
+    console.log(equips);
+    const publicEquips = document.querySelector('.public-equips');
 
+    publicEquips.innerHTML = '';
 
+    if (!equips || equips.length === 0) {
+        publicEquips.innerHTML = '<p class="text-muted">此空間的公共區尚未提供任何設備</p>';
+        return;
+    }
+
+    // 空間設備導入
+    equips.forEach(equip => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 mb-2';
+        col.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle me-2 text-primary"></i>
+                <span>${equip.publicEquipName}</span>
+            </div>
+        `;
+        publicEquips.appendChild(col);
+    })
 }
 
 function insertTransportation(address, floor) {
+
+    // 組合地址
+    const fullAddress = `${address}${floor}${floor.trim() ? "樓" : ""}`;
+    let iframeHTML = '';
+
+    // 顯示地址資訊
     document.querySelector('.space-address').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">
                                         <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path>
                                         <circle cx="12" cy="10" r="3"></circle>
-                                    </svg> ${address}${floor}${floor.trim() ? "樓" : ""}`;
+                                    </svg> ${fullAddress}`;
+
+    // 將地址encode，並製作Google Maps 嵌入式地圖
+    const encodedAddress = encodeURIComponent(fullAddress);
+    iframeHTML = `
+        <iframe
+            src="https://www.google.com/maps?q=${encodedAddress}&output=embed"
+            width="100%" height="450" style="border:0;" allowfullscreen=""
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>`;
+
+    // 插入 iframe 到在 .transportation 下方
+    document.querySelector('.transportation').insertAdjacentHTML('beforeend', iframeHTML);
 }
 
 function insertAsideInfo(name, hourly, daily) {

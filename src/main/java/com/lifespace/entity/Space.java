@@ -1,8 +1,11 @@
 package com.lifespace.entity;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,14 +29,14 @@ public class Space implements java.io.Serializable {
 	@GenericGenerator(name = "custom-id", strategy = "com.lifespace.util.SpaceCustomStringIdGenerator")
 	private String spaceId;
 
-	@NotBlank(message = "分店編號：請勿空白")
-	@Column(name = "branch_id")
+	@NotBlank(message = "分點編號：請勿空白")
+	@Column(name = "branch_id", insertable = false, updatable = false)
 	private String branchId;
 
-	// 等嘉祿做好後，改成Many To One
-//	@ManyToOne
-//	@JoinColumn(name = "branch_id", referencedColumnName = "branch_id")
-//	private BranchVO branchVO;
+	@ManyToOne
+	@JoinColumn(name = "branch_id", referencedColumnName = "branch_id")
+	@JsonIgnore
+	private Branch branch;
 	
 	@NotBlank(message = "空間名稱：請勿空白")
 	@Column(name = "space_name", unique = true)
@@ -60,7 +63,7 @@ public class Space implements java.io.Serializable {
 	
 	@Column(name = "space_desc")
 	private String spaceDesc;
-	
+
 	@Column(name = "space_rating")
 	private Double spaceRating = 0.0;
 	
@@ -124,6 +127,14 @@ public class Space implements java.io.Serializable {
 
 	public void setSpaceId(String spaceId) {
 		this.spaceId = spaceId;
+	}
+
+	public Branch getBranch() {
+		return branch;
+	}
+
+	public void setBranch(Branch branch) {
+		this.branch = branch;
 	}
 
 	public String getBranchId() {
@@ -265,6 +276,31 @@ public class Space implements java.io.Serializable {
 	public void setSpacePhotos(Set<SpacePhoto> spacePhotos) {
 		this.spacePhotos = spacePhotos;
 	}
+
+	// 取得分點地址
+	@Transient
+	public String getBranchAddr() {
+		return branch.getBranchAddr();
+	}
+
+	// 取得分點經緯度
+	@Transient
+	public Double getLatitude() {
+		return branch.getLatitude();
+	}
+
+	@Transient
+	public Double getLongitude() {
+		return branch.getLongitude();
+	}
+
+	@Transient
+	public List<PublicEquipment> getPublicEquipments() {
+		return branch.getPublicEquipments();
+	}
+
+
+	// 取得分點公共設備
 
 //	public Set<Orders> getOrders() {
 //		return orders;
