@@ -214,4 +214,4 @@ nb-configuration.xml
 
 *.log
 
-/Users/ryuryu4211/Desktop/LifeSpace/workspace/LifeSpaceSpr/src/main/resources/application.properties
+#/Users/ryuryu4211/Desktop/LifeSpace/workspace/LifeSpaceSpr/src/main/resources/application.properties
