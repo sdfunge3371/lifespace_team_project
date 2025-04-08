@@ -1,0 +1,306 @@
+
+* {
+  box-sizing: border-box; /*避免 padding 影響大小 */
+  margin: 0;
+  padding: 0;
+}
+
+/* 搜尋欄區塊，寬度固定，不影響內部欄位 */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* 控制欄位間距 */
+  background: white;
+  padding: 10px 20px; /* 減少內邊距，讓高度變小 */
+  border-radius: 20px; /* 減小圓角 */
+  border: 1px solid #0000006e;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1050px; /* 控制最大寬度，避免過長 */
+  margin: 15px auto; /* 讓搜尋框置中 */
+  flex-wrap: nowrap; /* 確保欄位不會換行 */
+  overflow: hidden; /* 防止內容超出 */
+}
+
+/* 讓搜尋欄中的每個元素有適當的比例 */
+.search-container input,
+.search-container select ,
+.search-container .search-btn {
+  flex: 1; /* 讓欄位自適應 */
+  min-width: 110px; /* 設定最小寬度 */
+  border: 1px solid #00000070;
+  padding: 6px;
+  border-radius: 10px; /* 減小圓角 */
+  font-size: 12px; /* 縮小字體 */
+  height: 35px; /* 降低高度 */
+}
+
+/* 讓 label 文字與輸入框對齊 */
+.search-container label {
+  font-weight: bold;
+  white-space: nowrap; /* 避免 label 文字換行 */
+  font-size: 14px;
+  margin-right: 5px; /* 讓 label 和輸入框有點間距 */
+}
+
+/* 關鍵字搜尋框 */
+#search {
+  flex: 1.5; /* 關鍵字搜尋框稍微大一點 */
+  max-width: 300px;
+  margin-right: 15px; /* 增加關鍵字框與日期選擇框的間距 */
+}
+
+/* 日期選擇框，內文字置中 */
+#date-picker {
+  flex: 1;
+  max-width: 140px;
+  text-align: center;
+  margin-right: 20px; /* 增加日期與下一個欄位的間距 */
+}
+
+/* 開始與結束時間選擇框變小，並且內文字置中 */
+#start-time {
+  flex: 0.5;
+  max-width: 80px;
+  text-align: center;
+  appearance: none;
+  background-color: white;
+  margin-right: 10px; /* 調整開始時間與前後元素的間距 */
+}
+
+#end-time {
+  flex: 0.5;
+  max-width: 80px;
+  text-align: center;
+  appearance: none;
+  background-color: white;
+  margin-right: 20px; /* 調整結束時間與下一個元素的間距 */
+}
+
+/* 地點選擇框，內文字置中 */
+#location {
+  flex: 1;
+  max-width: 200px;
+  text-align: center;
+  margin-right: 15px; /* 增加與前後欄位的距離 */
+}
+
+#category {
+  flex: 1;
+  max-width: 200px;
+  text-align: center;
+  margin-right: 15px; /* 增加與前後欄位的距離 */
+}
+
+/* 尋找按鈕 */
+.search-btn {
+  background: #abebe4;
+  border-radius: 12px;
+  border: none !important;
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 12px;
+  transition: background 0.3s;
+  white-space: nowrap;
+  width: auto;
+  min-width: 60px !important; /* 強制設定最小寬度 */
+  max-width: 80px;
+  text-align: center;
+  flex: none !important; /* 避免按鈕被 flex 影響 */
+}
+
+/* 搜尋按鈕 hover 效果 */
+.search-btn:hover {
+  background: #d1f0ed;
+}
+
+/* 讓所有 select 選擇框的內容置中 */
+.search-container select {
+  text-align: center;
+  text-align-last: center; /* 讓選單的預設值也置中 */
+}
+
+/***********************活動標籤************************************/
+/*  Tag (標籤) 風格 */
+.tag-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  max-width: 1000px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.tag-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 20px;
+  white-space: nowrap;
+  scrollbar-width: none;
+  width: 85%;
+}
+
+.tag {
+  font-size: 20px; /* 字體加大 */
+    padding: 12px 18px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+
+/*  Tag (標籤) 左右滑動按鈕 */
+.tag-btn {
+  background: none;
+  color: #3b403a;
+  border: none;
+  cursor: pointer;
+  font-size: 26px; /* 按鈕字體加大 */
+  font-weight: bold;
+  padding: 8px 12px;
+}
+
+.left-tag-btn {
+  margin-right: 10px;
+}
+
+.right-tag-btn {
+  margin-left: 10px;
+}
+
+
+/* ======================================================================================================================== */
+
+/* 修改 slider 的 CSS */
+.slide-outer {
+  width: 100%; /* 改為百分比寬度 */
+  max-width: 1320px; /* 保留最大寬度 */
+  position: relative;
+  margin: 40px auto; /* 置中 */
+  overflow: hidden;
+}
+
+.slider-container {
+  position: relative;
+  overflow: hidden; /* 確保超出部分隱藏 */
+  width: 100%;
+}
+
+/* 內層容器：使用 flex 橫向排列所有卡片 */
+.slider {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+  width: 100%; /* 確保寬度 */
+}
+
+/* 單一活動卡片 */
+.slide {
+  flex: 0 0 calc(25% - 20px); /* 4 張卡片平均分配寬度 */
+  margin: 0 10px;  /* 左右間距 */
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.slide img {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 10px;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+
+/* 左右切換按鈕 */
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  font-size: 20px;
+  color: #fff;
+  background-color: rgba(0,0,0,0.3);
+  cursor: pointer;
+  outline: none;
+}
+
+.slider-container .prev {
+  left: 0;
+}
+
+.slider-container .next {
+  right: 0;
+}
+
+/* 當按鈕被停用時 */
+.prev:disabled,
+.next:disabled {
+  background-color: rgba(0,0,0,0.1);
+  cursor: not-allowed;
+}
+
+
+
+
+
+/* 按鈕組佈局 */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* 按鈕之間的間距 */
+}
+
+.btn-group .btn {
+    flex: 1; /* 兩個按鈕等寬 */
+    padding: 10px; /* 調整內距 */
+    font-size: 16px; /* 字體大小 */
+}
+
+/* 保持原有的按鈕顏色 */
+#search-btn {
+    background-color: #6AC0BD;
+    border-color: #6AC0BD;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+#search-btn:hover {
+    background-color: #d1f0ed;
+    border-color: #d1f0ed;
+}
+
+#search-btn:focus,
+#search-btn:active {
+    background-color: #6AC0BD !important;
+    border-color: #6AC0BD !important; /* 點擊時保持原色 */
+    box-shadow: none; /* 移除 Bootstrap 預設的焦點陰影 */
+}
+
+
+
+/* 清除按鈕 - 保持次要按鈕灰色 */
+#clear-btn {
+    background-color: #6c757d;
+    border-color: #6c757d; /* 確保邊框顏色與背景一致 */
+    color: white;
+}
+
+#clear-btn:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+}
+
+#clear-btn:focus,
+#clear-btn:active {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important; /* 點擊時保持原色 */
+    box-shadow: none; /* 移除 Bootstrap 預設的焦點陰影 */
+}
+
+
