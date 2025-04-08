@@ -248,22 +248,21 @@ public class MemberController {
 
 
 	// -------------------------修改-------------------------------------------
-	// 修改功能
-	@PostMapping(value="/member/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String updateMember(
-			@PathVariable String memberId,
-			@RequestParam("memberName") String memberName, 
-			@RequestParam("email") String email,
-			@RequestParam("phone") String phone,
-			// 從表單拉下來的東西都是String，這邊請spring boot協助轉型Integer
-			@RequestParam("accountStatus") Integer accountStatus, 
-			@RequestParam("password") String password,
-			@RequestParam("birthday") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
-			@RequestPart(value = "memberImage", required = false) MultipartFile memberImage
-	) {
-		boolean success = memberService.updateMem(memberId, memberName, email, phone, accountStatus, password, birthday, memberImage);
-		return success ? "成功更新資料" : "update失敗，數據不存在";
-	}
+		// 修改功能
+		@PostMapping(value="/member/{memberId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+		public String updateMember(
+				@PathVariable String memberId,
+				@RequestParam("memberName") String memberName, 
+				@RequestParam("email") String email,
+				@RequestParam("phone") String phone,
+				// 從表單拉下來的東西都是String，這邊請spring boot協助轉型Integer
+				@RequestParam("accountStatus") Integer accountStatus, 
+				@RequestParam("birthday") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
+				@RequestPart(value = "memberImage", required = false) MultipartFile memberImage
+		) {
+			boolean success = memberService.updateMem(memberId, memberName, email, phone, accountStatus, birthday, memberImage);
+			return success ? "成功更新資料" : "update失敗，數據不存在";
+		}
 	
 	
 	
