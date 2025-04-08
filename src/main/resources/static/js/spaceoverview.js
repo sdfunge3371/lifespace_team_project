@@ -11,8 +11,12 @@ let filters = {
     usage: []
 };
 
+// 地圖相關
 let map;
-let markers = [];
+let markersData = [];   // 座標位置顯示
+let activeInfoWindow = null; // Keep track of the currently open InfoWindow
+
+
 let activeCardId = null;
 let spaces = [];
 let usages = [];
@@ -84,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchSpaces();
     fetchSpaceUsages();
-    initializeMap();
     setupEventListeners();
 });
 
@@ -93,21 +96,23 @@ function fetchSpaces() {
     fetch('/spaces')
         .then(response => response.json())
         .then(data => {
-            //
+            console.log(data);
             spaces = data.map(space => ({
                 spaceId: space.spaceId,
                 name: space.spaceName,
-                location: `台北市松山區${space.spaceFloor}`, // 可從 space.branchId 取得更多資訊
+                location: `${space.branchAddr}${space.spaceFloor + (space.spaceFloor ? "樓" : "")}`, // 可從 space.branchId 取得更多資訊
                 price: space.spaceHourlyFee,
                 rating: space.spaceRating,
                 capacity: space.spacePeople,
                 status: space.spaceStatus,
                 usage: space.spaceUsageMaps.map(map => map.spaceUsage.spaceUsageName),
                 photo: space.spacePhotos.map(map => map.photo),
-                coordinates: [25.0497 + Math.random() * 0.01, 121.5380 + Math.random() * 0.01] // 模擬座標，之後會利用google maps API抓出
+                coordinates: [space.latitude, space.longitude] // 模擬座標，之後會利用google maps API抓出
             }));
             renderSpaces(spaces);
-            updateMapMarkers(spaces);
+            if (map) { // Only update markers if map is initialized
+                updateMapMarkers(spaces);
+            }
         })
         .catch(error => console.error('取得空間資料失敗:', error));
 }
@@ -139,7 +144,7 @@ function renderSpaces(spacesToRender) {
                 </div>
                 <div class="space-location">
                     <div class="location-text">
-                        <i class="fas fa-map-marker-alt"></i> ${space.location}樓
+                        <i class="fas fa-map-marker-alt"></i> ${space.location}
                     </div>
                     <div class="people-count">
                         <i class="fas fa-user"></i> ${space.capacity}
@@ -154,7 +159,7 @@ function renderSpaces(spacesToRender) {
         `;
         spacesContainer.appendChild(spaceCard);
 
-        // 地圖放大（會改掉）
+        // 地圖放大
         spaceCard.addEventListener('click', () => {
             if (showMapCheckbox.checked) highlightMarker(space.spaceId);
         });
@@ -231,29 +236,142 @@ function renderUsages(usages) {
 }
 
 // ============= 地圖相關 =============
-function initializeMap() {
-    map = L.map('map').setView([25.0497, 121.5380], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+function initMap() {
+    console.log("Google Maps API Loaded - initMap called");
+    try {
+        const Map = google.maps.Map;   // 導入Google Maps
+
+        map = new Map(document.getElementById("map"), {
+            center: { lat: 25.0497, lng: 121.5380 },   // 預設以台北市為中心
+            zoom: 13,
+            mapId: "37060db895f0c169",
+            disableDefaultUI: true,
+            zoomControl: true
+        });
+
+        if (spaces && spaces.length > 0) {
+            updateMapMarkers(spaces);
+        }
+
+    } catch (error) {
+        console.error("Error initializing Google Map:", error);
+        alert("無法載入地圖，請稍後再試。");
+    }
 }
 
+
 function updateMapMarkers(spacesList) {
-    markers.forEach(marker => map.removeLayer(marker));
-    markers = [];
+    if (!map) {
+        console.warn("updateMapMarkers called before map was initialized.");
+        return;
+    }
 
+    const AdvancedMarkerElement = google.maps.marker?.AdvancedMarkerElement;
+    const InfoWindow = google.maps.InfoWindow;
+    const Size = google.maps.Size;
+
+    // 若資訊小彈窗開著，把他關了，並清除所有資訊小彈窗的資料
+    if (activeInfoWindow) {
+        activeInfoWindow.close();
+        activeInfoWindow = null;
+    }
+
+    // 清除所有座標
+    markersData.forEach(data => {
+        if (data.markerElement) {
+            data.markerElement.map = null;
+        }
+    });
+    markersData = [];
+
+    // 建立新的座標、資訊
     spacesList.forEach(space => {
-        const marker = L.marker(space.coordinates)
-            .addTo(map)
-            .bindPopup(`<b>${space.name}</b><br>${space.location}<br>$${space.price}/hr`);
+        // 座標超出範圍之檢查
+        if (!isValidCoordinates(space.coordinates)) {
+            console.warn(`Skipping marker for space "${space.name}" due to invalid coordinates:`, space.coordinates);
+            return;
+        }
 
-        marker.spaceId = space.spaceId;
-        markers.push(marker);
+        // 建立座標
+        const position = {
+            lat: parseFloat(space.coordinates[0]),
+            lng: parseFloat(space.coordinates[1])
+        };
 
-        marker.on('click', () => highlightCard(space.spaceId));
+        let markerElement;
+        try {
+            markerElement = new AdvancedMarkerElement({
+                position: position,
+                map: map,
+            });
+        } catch (error) {
+            console.error(`Error creating AdvancedMarkerElement for space ${space.spaceId}:`, error, "Position:", position);
+            return;
+        }
+
+
+        // 建立資訊小彈窗
+        const infoWindowContent = `<b>${space.name || '未命名'}</b><br>${space.location || ''}<br>$${space.price != null ? space.price : '??'}/hr`;
+        const infoWindow = new InfoWindow({
+            content: infoWindowContent,
+            pixelOffset: new Size(0, -10)
+        });
+
+        // 點擊座標時觸發
+        markerElement.addEventListener("click", () => {
+            if (activeInfoWindow) {
+                activeInfoWindow.close();
+            }
+            infoWindow.open({ map: map, anchor: markerElement });
+            activeInfoWindow = infoWindow;
+            highlightCard(space.spaceId); // 強調該空間card
+        });
+
+        // 儲存座標、資訊彈窗、spaceId
+        markersData.push({
+            markerElement: markerElement,
+            infoWindow: infoWindow,
+            spaceId: space.spaceId
+        });
     });
 }
 
+function highlightMarker(spaceId) {
+
+    if (!map)
+        return;
+
+    const data = markersData.find(d => d.spaceId === spaceId);
+    if (data && data.markerElement) {
+        const position = data.markerElement.position;
+        if(position) {
+            map.setCenter(position);
+            map.setZoom(15);
+
+            // 確保一次只能開一個彈窗
+            if (activeInfoWindow) {
+                activeInfoWindow.close();
+            }
+            data.infoWindow.open({ map: map, anchor: data.markerElement });
+            activeInfoWindow = data.infoWindow;
+        } else {
+            console.warn(`Could not get position for marker with spaceId: ${spaceId}`);
+        }
+
+    } else {
+        console.warn(`Marker data not found for spaceId: ${spaceId}`);
+    }
+}
+
+// 經緯度檢查
+function isValidCoordinates(coords) {
+    return Array.isArray(coords) &&
+        coords.length === 2 &&
+        !isNaN(parseFloat(coords[0])) && isFinite(coords[0]) && Math.abs(coords[0]) <= 90 &&
+        !isNaN(parseFloat(coords[1])) && isFinite(coords[1]) && Math.abs(coords[1]) <= 180;
+}
+
+// 點擊座標時，該空間card會有光暈
 function highlightCard(spaceId) {
     document.querySelectorAll('.space-card').forEach(card => card.style.boxShadow = 'none');
     const card = document.querySelector(`.space-card[data-id="${spaceId}"]`);
@@ -264,21 +382,13 @@ function highlightCard(spaceId) {
     activeCardId = spaceId;
 }
 
-function highlightMarker(spaceId) {
-    const marker = markers.find(m => m.spaceId === spaceId);
-    if (marker) {
-        map.setView(marker.getLatLng(), 15);
-        marker.openPopup();
-    }
-}
-
 // ============= Event Listeners集中設定 =============
 function setupEventListeners() {
     // 顯示/隱藏地圖
     showMapCheckbox.addEventListener('change', () => {
         if (showMapCheckbox.checked) {
             mapContainer.classList.remove('hidden');
-            setTimeout(() => map.invalidateSize(), 100);
+            setTimeout(() => google.maps.event.trigger(map, 'resize'), 100);
         } else {
             mapContainer.classList.add('hidden');
         }
@@ -362,7 +472,9 @@ function applyFilters() {
     });
 
     renderSpaces(filteredSpaces);
-    updateMapMarkers(filteredSpaces);
+    if (map) { // Only update markers if map is initialized
+        updateMapMarkers(filteredSpaces);
+    }
 }
 
 
@@ -402,7 +514,7 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
                 status: space.spaceStatus,
                 usage: space.spaceUsageMaps.map(map => map.spaceUsage.spaceUsageName),
                 photo: space.spacePhotos.map(map => map.photo),
-                coordinates: [25.0497 + Math.random() * 0.01, 121.5380 + Math.random() * 0.01]
+                coordinates: [space.latitude, space.longitude]
             }));
 
             // 重設所有篩選條件
@@ -418,7 +530,9 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
 
             // 渲染搜尋結果
             renderSpaces(searchedSpaces);
-            updateMapMarkers(searchedSpaces);
+            if (map) { // Only update markers if map is initialized
+                updateMapMarkers(searchedSpaces);
+            }
         })
         .catch(error => {
             alert(error.message);

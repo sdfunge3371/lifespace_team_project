@@ -300,7 +300,7 @@
     <form id="spaceForm" name="form1">
 
         <div class="form-group">
-            <label for="branchId">所屬分店:</label>
+            <label for="branchId">所屬分點:</label>
             <select id="branchId" name="branchId" class="form-control" size="1">
                 <option value="">讀取中...</option>
             </select>
@@ -699,6 +699,12 @@
         errorDiv.innerHTML = '';
 
         const formData = new FormData();
+
+        if (!form.branchId.value) {
+            displayErrors(["請選擇所屬分點"]);
+            return;
+        }
+
         const spaceData = {
             branchId: form.branchId.value,
             spaceName: form.spaceName.value,
@@ -713,6 +719,8 @@
             spaceStatus: form.spaceStatus.value,
             spaceFloor: form.spaceFloor.value
         };
+
+        console.log(form.branchId.value);
 
         formData.append("data", new Blob([JSON.stringify(spaceData)], { type: "application/json" }));
 
@@ -758,7 +766,7 @@
             });
     });
 
-    // --- 2. GET: 取得分店列表 ---
+    // --- 2. GET: 取得分點列表 ---
     async function fetchBranches() {
         const selectElement = document.getElementById('branchId');
         const loadingOptionText = '讀取中...';

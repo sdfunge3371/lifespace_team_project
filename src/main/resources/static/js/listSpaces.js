@@ -194,7 +194,7 @@ function showRowData(space) {
                         <td>${escapeHtml(space.spaceRating.toFixed(1))}</td>
                         <td title="${escapeHtml(space.spaceAlert)}">${truncateText(escapeHtml(space.spaceAlert), 20)}</td>
                         <td>${escapeHtml(space.spaceStatusText)}</td>
-                        <td title="${escapeHtml(space.spaceFloor)}">${truncateText(escapeHtml(space.spaceFloor), 20)} 樓</td>
+                        <td title="${escapeHtml(space.spaceFloor)}">${truncateText(escapeHtml(space.branchAddr), 20) + truncateText(escapeHtml(space.spaceFloor), 20) + (space.spaceFloor ? "樓" : "")}</td>
                         <td title="${equipmentNames}">${truncateText(equipmentNames, 20)}</td>
                         <td title="${usageNames}">${truncateText(usageNames, 20)}</td>
                         <td>${photoData}</td>
@@ -313,6 +313,7 @@ function fetchSpaces() {
             }
         })
         .then(data => {   // 處理JSON資料
+            console.log(data);
             if (!Array.isArray(data)) {     // 回傳的JSON格式必須為Array (Array裡面的每一個Object都是一組空間資料)
                 throw new Error("Received data is not an array");
             }
