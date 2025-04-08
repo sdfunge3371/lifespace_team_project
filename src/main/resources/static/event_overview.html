@@ -9,46 +9,63 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="images/favicon.ico" rel="icon">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
+          rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.css" />
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/style.css">
-
+    
     <!-- 瀏覽活動 -->
-    <link rel="stylesheet" href="./css/event_home.css">
+   	<link rel="stylesheet" href="css/event_overview.css">
 
 
 </head>
 
 <body>
-    <header>
-        <!-- Header Navbar Start ------------------------------------------------------------------------->
+     
+     <div class="container-xxl bg-white p-0">
+
+        <!-- Header Navbar Start -->
         <div class="container-fluid nav-bar bg-transparent">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
-                <a href="index.html" class="navbar-brand d-flex align-items-center text-center">
+                <a href="#" class="navbar-brand d-flex align-items-center text-center">
                     <div class="icon p-2 me-2">
-                        <img class="img-fluid" src="img/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                        <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
                     </div>
                     <!-- <h1 class="m-0 text-primary">Makaan</h1> -->
-                    <img class="img-fluid" src="img/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                    <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="" class="nav-item nav-link">瀏覽空間</a>
+                        <a href="#" class="nav-item nav-link active">Home</a>
+                        <a href="spaceoverview.html" class="nav-item nav-link">瀏覽空間</a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">客服中心</a>
                             <div class="dropdown-menu rounded-0 m-0">
@@ -59,8 +76,8 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">參與活動</a>
                             <div class="dropdown-menu rounded-0 m-0">
-                                <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                <a href="404.html" class="dropdown-item">404 Error</a>
+                                <a href="#" class="dropdown-item">Testimonial</a>
+                                <a href="#" class="dropdown-item">404 Error</a>
                             </div>
                         </div>
                         <a href="" class="nav-item nav-link">我的最愛</a>
@@ -79,43 +96,13 @@
                             <a href="property-agent.html" class="dropdown-item">登出</a>
                         </div>
                     </div>
-
-
-                    </a>
                 </div>
             </nav>
         </div>
         <!-- Header Navbar End -->
-    </header>
-
-    <!-- 活動搜尋 -->
-    <!-- <div class="search-container">
-        <form action="#">
-            <label for="search">搜尋</label>
-            <input type="text" id="search" placeholder="關鍵字">
-
-            <label for="date-picker">日期</label>
-            <input type="date" id="date-picker" placeholder="請選擇日期">
-
-            <label for="start-time">開始時間</label>
-            <select id="start-time"></select>
-
-            <label for="end-time">結束時間</label>
-            <select id="end-time" disabled></select>
-
-            <label for="location">地點</label>
-            <select id="location">
-                <option value="">地點</option>
-                <option value="taipei">台北</option>
-                <option value="taichung">台中</option>
-            </select>
-
-            <input class="search-btn" id="search-btn" value="尋找" type="submit">
-        </form>
-    </div> -->
 
     <div class="container my-4">
-        <h3 class="section-title">活動搜尋</h3>
+        <h2 class="section-title">活動搜尋</h2>
         <div class="card p-4">
             <div class="row g-3">
                 <div class="col-md-6 col-lg-3">
@@ -138,9 +125,32 @@
                         <option value="taichung">台中</option>
                     </select>
                 </div>
-                <div class="col-md-6 col-lg-12 mt-3">
-                    <button class="btn btn-primary w-100" id="search-btn">尋找</button>
-                </div>
+                <div class="col-md-6 col-lg-2">
+    <label for="category" class="form-label">活動類別</label>
+    <select id="category" class="form-select">
+        <option value="">所有類別</option>
+        <option value="EC001">團康</option>
+        <option value="EC002">工作坊</option>
+        <option value="EC003">讀書會</option>
+        <option value="EC004">演講</option>
+        <option value="EC005">聯誼</option>
+        <option value="EC006">小空間</option>
+        <option value="EC007">手做</option>
+        <option value="EC008">桌遊</option>
+        <option value="EC009">劇本殺</option>
+        <option value="EC010">畫展</option>
+        <option value="EC011">攝影</option>
+        <option value="EC012">影片欣賞</option>
+        <option value="EC013">生日派對</option>
+        <option value="EC014">其他</option>
+    </select>
+</div>
+                <div class="col-md-12 mt-3 d-flex justify-content-center">
+    				<div class="btn-group" style="width: 100%; max-width: 600px;">
+        				<button class="btn btn-primary w-50" id="search-btn">尋找</button>
+        				<button class="btn btn-secondary w-50" id="clear-btn">清除條件</button>
+    				</div>
+				</div>
             </div>
         </div>
     </div>
@@ -170,7 +180,7 @@
 
     <!-- 熱門推薦 -->
     <div class="slide-outer">
-        <h2>熱門推薦</h2>
+        <h2>  熱門推薦</h2>
         <div class="slider-container">
             <div class="slider">
                 <!-- <div class="slide"><img src="./img/01.jpg" alt="#">
@@ -186,86 +196,110 @@
                     <p>2/9 14:00-17:00 信義區</p>
                 </div> -->
             </div>
-            <button class="prev">&lt;</button>
-            <button class="next">&gt;</button>
         </div>
     </div>
 
 
-
-
-    <!-- 人工回覆聊天按鈕 -->
-    <div class="chat-icon" id="chatButton">
-        <img src="../picture/support.png" alt="客服聊天"> <!--  客服icon -->
-    </div>
-
-
-    <!-- footer ------------------------------------------------------------------------------>
-    <div class="container py-5">
-        <div class="row g-5">
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-black mb-4">
-                    <img class="img-fluid" src="img/LifeSpace3.png" alt="Icon" style="width: 250px; height: 60px;">
-                </h5>
-                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                <div class="d-flex pt-2">
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+     <!-- Footer Start -->
+        <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="text-black mb-4">
+                            <img class="img-fluid" src="images/img.bootstrap/LifeSpace3.png" alt="Icon"
+                                 style="width: 250px; height: 60px;">
+                        </h5>
+                        <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                        <div class="d-flex pt-2">
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="text-black mb-4">Quick Links</h5>
+                        <a class="btn btn-link text-black-50" href="">About Us</a>
+                        <a class="btn btn-link text-black-50" href="">Contact Us</a>
+                        <a class="btn btn-link text-black-50" href="">Our Services</a>
+                        <a class="btn btn-link text-black-50" href="">Privacy Policy</a>
+                        <a class="btn btn-link text-black-50" href="">Terms & Condition</a>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="text-black mb-4">Photo Gallery</h5>
+                        <div class="row g-2 pt-2">
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="images/img.bootstrap/property-1.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="images/img.bootstrap/property-2.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="images/img.bootstrap/property-3.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="images/img.bootstrap/property-4.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="images/img.bootstrap/property-5.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid rounded bg-light p-1" src="images/img.bootstrap/property-6.jpg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="text-black mb-4">Newsletter</h5>
+                        <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+                        <div class="position-relative mx-auto" style="max-width: 400px;">
+                            <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text"
+                                   placeholder="Your email">
+                            <button type="button"
+                                    class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-black mb-4">Quick Links</h5>
-                <a class="btn btn-link text-black-50" href="">About Us</a>
-                <a class="btn btn-link text-black-50" href="">Contact Us</a>
-                <a class="btn btn-link text-black-50" href="">Our Services</a>
-                <a class="btn btn-link text-black-50" href="">Privacy Policy</a>
-                <a class="btn btn-link text-black-50" href="">Terms & Condition</a>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-black mb-4">Photo Gallery</h5>
-                <div class="row g-2 pt-2">
-                    <div class="col-4">
-                        <img class="img-fluid rounded bg-light p-1" src="img/property-1.jpg" alt="">
+            <div class="container">
+                <div class="copyright">
+                    <div class="row">
+                        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                            &copy; <a class="border-bottom" href="#">Your Site Name</a>, All Right Reserved.
+
+                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                            Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                        </div>
+                        <div class="col-md-6 text-center text-md-end">
+                            <div class="footer-menu">
+                                <a href="">Home</a>
+                                <a href="">Cookies</a>
+                                <a href="">Help</a>
+                                <a href="">FQAs</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <img class="img-fluid rounded bg-light p-1" src="img/property-2.jpg" alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid rounded bg-light p-1" src="img/property-3.jpg" alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid rounded bg-light p-1" src="img/property-4.jpg" alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid rounded bg-light p-1" src="img/property-5.jpg" alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid rounded bg-light p-1" src="img/property-6.jpg" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <h5 class="text-black mb-4">Newsletter</h5>
-                <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
-                <div class="position-relative mx-auto" style="max-width: 400px;">
-                    <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text"
-                        placeholder="Your email">
-                    <button type="button"
-                        class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
                 </div>
             </div>
         </div>
+        <!-- Footer End -->
+        
     </div>
-    <!-- footer -->
 
     <script src="./js/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./js/event_home.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <!-- <script src="./js/event_home.js"></script> -->
 
+
+ 	<script src="js/wow.min.js"></script>
+    <script src="js/easing.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
+    <script src="js/event_overview.js"></script>
+    
     <script>
 
         // 設置全局變量以跟踪當前顯示狀態
@@ -281,17 +315,6 @@
                 fetchEventsByConditions();
             });
 
-            // 添加清除按鈕（需要在 HTML 中添加此按鈕）
-            const clearButton = document.createElement('button');
-            clearButton.className = 'btn btn-secondary';
-            clearButton.textContent = '清除條件';
-            clearButton.id = 'clear-btn';
-            clearButton.style.marginLeft = '10px';
-
-            // 將清除按鈕添加到搜尋按鈕旁邊
-            const searchBtn = document.getElementById('search-btn');
-            searchBtn.parentNode.appendChild(clearButton);
-
             // 綁定清除按鈕點擊事件
             document.getElementById('clear-btn').addEventListener('click', function () {
                 clearSearchForm();
@@ -305,6 +328,7 @@
             document.getElementById('eventStartTime').value = '';
             document.getElementById('eventEndTime').value = '';
             document.getElementById('location').value = '';
+            document.getElementById('category').value = ''; 
         }
 
         // 重置到熱門推薦
@@ -356,9 +380,10 @@
             const startTime = document.getElementById('eventStartTime').value || "";
             const endTime = document.getElementById('eventEndTime').value || "";
             const location = document.getElementById('location').value || "";
+			const category = document.getElementById('category').value || ""; 
 
             // 檢查是否有任何搜尋條件
-            if (!searchValue && !startTime && !endTime && !location) {
+            if (!searchValue && !startTime && !endTime && !location && !category) {
                 alert('請至少輸入一個搜尋條件');
                 return;
             }
@@ -367,8 +392,8 @@
                 eventName: searchValue,
                 startTime: startTime,
                 endTime: endTime,
-                location: location
-                // 其他可能的參數
+                location: location,
+                category: category,
             }).toString();
 
             // 避免中文關鍵字變亂碼，decodeURI
@@ -460,7 +485,7 @@
 
                 // 創建活動卡片內容
                 let slideContent = `
-            ${photoUrl ? `<img src="${'http://localhost:8080' + photoUrl}">` : '<img src="http://localhost:8080//default.jpg" alt="預設圖片">'}
+            ${photoUrl ? `<img src="${'http://localhost:8080' + photoUrl}">` : '<img src="http://localhost:8080/default.jpg" alt="預設圖片">'}
             <h3>${slideDivName}</h3>
             <p>${formattedStartTime} ${formattedEndTime ? '-' + formattedEndTime : ''}</p>
         `;
@@ -482,7 +507,9 @@
 
     </script>
 
-
+	<!-- Template Javascript -->
+    <script src="js/main.js"></script>
+    
 </body>
 
 
