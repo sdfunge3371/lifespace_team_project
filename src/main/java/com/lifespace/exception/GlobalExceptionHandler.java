@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,11 +12,24 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	//會員資料的報錯處理
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<Map<String, Object>> handleValidationException(ValidationException ex) {
+	    Map<String, Object> errorBody = new HashMap<>();
+	    errorBody.put("message", "輸入資料有誤");
+	    errorBody.put("errors", ex.getErrors());
+	    return ResponseEntity
+	            .status(HttpStatus.BAD_REQUEST)
+	            .contentType(MediaType.APPLICATION_JSON)
+	            .body(errorBody);
+	}
+
+	
 	@ExceptionHandler(HttpMessageNotReadableException.class)   // 400
 	public ResponseEntity<Map<String, String>> handleFormatError(HttpMessageNotReadableException ex) {
 		String message = ex.getMostSpecificCause().getMessage();

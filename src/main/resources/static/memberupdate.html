@@ -94,7 +94,7 @@
                 <td>
                     <h2>會員資料修改</h2>
                     <h4>
-                        <a href="/springboottry/member.html">回首頁</a>
+                        <a href="../html/member.html">回首頁</a>
                     </h4>
                 </td>
             </tr>
@@ -116,10 +116,6 @@
             <label>帳號狀態:</label>
             <input type="text" id="accountStatus"><br>
             <span id="errStatus" class="err-msg"></span><br>
-
-            <label>密碼:</label><br>
-            <input type="password" id="password"><br>
-            <span id="errPwd" class="err-msg"></span><br>
 
             <label>生日:</label><br>
             <input type="date" id="birthday"><br>
@@ -150,7 +146,6 @@
                         document.getElementById("email").value = data.email;
                         document.getElementById("phone").value = data.phone;
                         document.getElementById("accountStatus").value = data.accountStatus;
-                        document.getElementById("password").value = data.password;
                         document.getElementById("birthday").value = data.birthday;
                         //照片顯示
                         document.getElementById('preview').src = `http://localhost:8080/member/image/${memberId}`;
@@ -173,7 +168,6 @@
             formData.append("email", document.getElementById("email").value);
             formData.append("phone", document.getElementById("phone").value);
             formData.append("accountStatus", document.getElementById("accountStatus").value);
-            formData.append("password", document.getElementById("password").value);
             formData.append("birthday", document.getElementById("birthday").value);
 
             const fileInput = document.getElementById("memberImage");
@@ -185,9 +179,12 @@
                 method: "POST",
                 body: formData
             })
-                .then(response => {
-                    if (!response.ok) throw new Error("更新失敗");
-                    return response.text();
+                .then(async res => {
+                	if (!res.ok) {
+                        const errorData = await res.json();
+                        throw new Error(errorData.message + "\n" + errorData.errors.join("\n"));
+                    }
+                    return res.text();
                 })
                 .then(msg => {
                     alert("✅ 修改成功！");

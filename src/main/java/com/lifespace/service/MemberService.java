@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.lifespace.dto.MemberDTO;
 import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
+import com.lifespace.exception.MemberValidator;
 import com.lifespace.repository.MemberRepository;
 
 import jakarta.persistence.EntityManager;
@@ -102,31 +103,37 @@ public class MemberService {
 	}
 
 	// ------------------修改------------------------------
-	public boolean updateMem(String memberId, String memberName, String email, String phone, Integer accountStatus,
-			String password, LocalDate birthday, MultipartFile memberImage) {
-		Optional<Member> optional = memberRepository.findById(memberId);
-		if (optional.isPresent()) {
-			Member member = optional.get();
-			// 更新欄位
-			member.setMemberName(memberName);
-			member.setEmail(email);
-			member.setPhone(phone);
-			member.setAccountStatus(accountStatus);
-			member.setPassword(password);
-			member.setBirthday(birthday);
-			// 更新圖片(有更動才更新)
-			if (memberImage != null && !memberImage.isEmpty()) {
-				try {
-					member.setMemberImage(memberImage.getBytes());
-				} catch (IOException e) {
-					e.printStackTrace();
+		public boolean updateMem(String memberId, String memberName, String email, String phone, Integer accountStatus,
+				LocalDate birthday, MultipartFile memberImage) {
+			
+			//先抓出會員ID
+			Optional<Member> optional = memberRepository.findById(memberId);
+			
+			//欄位驗證(會員資訊除錯)，如果驗證失敗就會自動 throw，會被 Global Handler 接住
+			new MemberValidator(memberRepository, memberId, memberName, email, phone).validateAndThrow();
+			
+			//更新修正後的會員資料
+			if (optional.isPresent()) {
+				Member member = optional.get();
+				// 更新欄位
+				member.setMemberName(memberName);
+				member.setEmail(email);
+				member.setPhone(phone);
+				member.setAccountStatus(accountStatus);
+				member.setBirthday(birthday);
+				// 更新圖片(有更動才更新)
+				if (memberImage != null && !memberImage.isEmpty()) {
+					try {
+						member.setMemberImage(memberImage.getBytes());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+				memberRepository.save(member);
+				return true;
 			}
-			memberRepository.save(member);
-			return true;
+			return false;
 		}
-		return false;
-	}
 	
 	// ----------------忘記密碼-修改密碼------------------------------
 	
