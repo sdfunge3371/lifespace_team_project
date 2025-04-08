@@ -1,5 +1,7 @@
 package com.lifespace.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -267,25 +269,48 @@ public class MemberController {
 	
 	
 
-	// ------------------------查詢-------------------------------------------
-	// 全部查詢功能(一進入頁面就可以看到所有人的資料)
-	@GetMapping("/member")
-	public List<Member> getAllMembers() {
-		return memberService.findAllMem();
-	}
-
-	// 查詢並顯示照片功能
-	@GetMapping(value = "/member/image/{memberId}", produces = MediaType.IMAGE_JPEG_VALUE)
-	public ResponseEntity<byte[]> getMemberImage(@PathVariable String memberId) {
-		Optional<Member> memberOpt = memberService.findByIdMem(memberId);
-		System.out.println("有人請求圖片: " + memberId);
-		if (memberOpt.isPresent() && memberOpt.get().getMemberImage() != null) {
-			byte[] imageData = memberOpt.get().getMemberImage();
-			return ResponseEntity.ok().body(imageData);
-		} else {
-			return ResponseEntity.notFound().build();
+		// ------------------------查詢-------------------------------------------
+		// 全部查詢功能(一進入頁面就可以看到所有人的資料)
+		@GetMapping("/member")
+		public List<Member> getAllMembers() {
+			return memberService.findAllMem();
 		}
-	}
+		
+		// 單一查詢ID功能
+		@GetMapping("/member/id/{memberId}")
+		public Member readId(@PathVariable String memberId) {
+			Member member = memberService.findByIdMem(memberId).orElse(null);
+			return member;
+		}
+
+		// 查詢並顯示照片功能
+		@GetMapping(value = "/member/image/{memberId}", produces = MediaType.IMAGE_JPEG_VALUE)
+		public ResponseEntity<byte[]> getMemberImage(@PathVariable String memberId) {
+			Optional<Member> memberOpt = memberService.findByIdMem(memberId);
+			System.out.println("有人請求圖片: " + memberId);
+			
+			// 會員有照片 → 回傳照片
+		    if (memberOpt.isPresent() && memberOpt.get().getMemberImage() != null) {
+		    	byte[] imageData = memberOpt.get().getMemberImage();
+		    	return ResponseEntity.ok().body(imageData);
+		    }
+		    
+		    // 會員有資料，但沒上傳照片 → 回傳預設照片
+		    try (InputStream defaultStream = getClass().getResourceAsStream("/static/img/default.jpg")) {
+		        if (defaultStream != null) {
+		            byte[] defaultImage = defaultStream.readAllBytes();
+		            return ResponseEntity.ok(defaultImage);
+		        }
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		    }
+		    
+		    // 會員根本不存在、或預設圖檔也壞了
+		    return ResponseEntity.notFound().build();
+			
+				 
+		}
 
 	// 為了讓每個路徑都更清楚的指定是什麼欄位的值，所以再路徑上加上分類
 	@PostMapping("/member/search")
@@ -296,13 +321,7 @@ public class MemberController {
 	
 	
 	
-//	// 單一查詢ID功能
-//	@GetMapping("/member/id/{memberId}")
-//	public Member readId(@PathVariable String memberId) {
-//		Member member = memberService.findByIdMem(memberId).orElse(null);
-//		return member;
-//	}
-//
+
 //	// 單一查詢Name功能
 //	@GetMapping("/member/name/{memberName}")
 //	public Member readName(@PathVariable String memberName) {
