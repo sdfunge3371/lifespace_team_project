@@ -1,7 +1,7 @@
 package com.lifespace.constant;
 
 public enum CommentsCommentHide {
-	VISIBEL("留言顯示"), HIDDEN("留言隱藏"),;
+	VISIBLE("留言顯示"), HIDDEN("留言隱藏"),;
 
 	private final String type;
 	

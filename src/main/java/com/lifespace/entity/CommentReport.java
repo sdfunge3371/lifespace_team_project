@@ -11,6 +11,8 @@ import com.lifespace.constant.CommentReportStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -59,6 +61,7 @@ public class CommentReport implements java.io.Serializable{
 //	@Pattern(regexp = "^C\\\\d{3}$", message = "留言編號: 格式必須為C001, C002, ...")
 //	private String commentId;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "manage_type")
 	private CommentReportManageType manageType;
 	
@@ -70,10 +73,12 @@ public class CommentReport implements java.io.Serializable{
 	@NotEmpty(message="檢舉內容: 請勿空白")
 	private String reportMessage;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "report_reason")
 	@NotEmpty(message="檢舉原因: 請勿空白")
 	private CommentReportReportReason reportReason;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	@NotNull(message="案件處理狀態: 請勿空白")
 	private CommentReportStatus status;
