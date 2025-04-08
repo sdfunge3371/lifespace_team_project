@@ -483,16 +483,16 @@ function updateTotal() {
         const startTimeStr = document.getElementById('startTimeInput').value; // e.g. "10:30"
         const endTimeStr = document.getElementById('endTimeInput').value;   // e.g. "15:00"
         const endButton = document.getElementById('endTimeButton');
-    
+
         if (startTimeStr && endTimeStr && !endButton.innerHTML.startsWith("結束")) {  // 確保都已有值再做解析
             // 解析 "HH:MM"
             const [startHour, startMin] = startTimeStr.split(':').map(Number);
             const [endHour, endMin] = endTimeStr.split(':').map(Number);
-    
+
             // 轉換成「總分鐘數」再相減
             const startTotalMin = startHour * 60 + startMin;
             const endTotalMin = endHour * 60 + endMin;
-    
+
             // 若有需要，先判斷是否 end > start
             const diffMin = endTotalMin - startTotalMin;
             if (diffMin > 0) {
@@ -500,12 +500,12 @@ function updateTotal() {
             }
             console.log(startTimeStr, endTimeStr, durationHours);
         }
-    
+
         // 將「使用時間」顯示在網頁上
         document.querySelector('.duration-span').textContent = durationHours;
     } else {  // 若為日租
         document.querySelector('.duration-span').textContent = 0;
-    }   
+    }
 
 
     // 計算租借品項
@@ -516,8 +516,8 @@ function updateTotal() {
     document.getElementById('equipmentCost').textContent = '$ ' + equipmentTotal;
 
     // 計算總金額
-      // --- 空間使用費 & 總金額 ---
-    let spaceCost = 0;   
+    // --- 空間使用費 & 總金額 ---
+    let spaceCost = 0;
     let total = 0;
 
     if (isDaily) {
@@ -531,7 +531,7 @@ function updateTotal() {
     }
     // const total = spaceTotal * durationHours + equipmentTotal;
 
-    
+
     document.getElementById('spaceCost').textContent = '$ ' + spaceCost;
     document.getElementById('totalCost').textContent = '$ ' + total;
 }
@@ -664,7 +664,7 @@ function insertEquipments(equips) {
 }
 
 function insertTransportation(address, floor) {
-document.querySelector('.space-address').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+    document.querySelector('.space-address').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">
                                         <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"></path>
@@ -693,24 +693,24 @@ function fetchComments() {
         .then(response => response.json())
         .then(data => {
             insertHeadComments(data.content);
-            insertAllComments(data.content);
         });
-        // .catch(error => console.log("報錯：" + error));
+    // .catch(error => console.log("報錯：" + error));
 }
 
 function insertHeadComments(comments) {
-    const spaceComment = document.querySelector(".space-comment");
+
 
     // 計算平均滿意度
     let totalRating = 0;
     comments.forEach(c => totalRating += c.satisfaction);
     const avgRating = comments.length ? (totalRating / comments.length).toFixed(1) : "0.0";
-    console.log(document.querySelector(".avg-rating"));
     document.querySelector(".avg-rating").innerHTML = avgRating;
 
+    // 計算評論總數量
     let totalComments = comments.length;
     document.querySelector(".total-comments").innerHTML = `(${totalComments}則評論)`;
 
+    console.log(totalComments);
 
     const commentsContainer = document.querySelector(".container-comment-row");
     commentsContainer.innerHTML = ""; // 清空舊資料
@@ -768,19 +768,78 @@ function insertHeadComments(comments) {
 
         commentsContainer.appendChild(commentCard);
 
-        const commentButton = document.querySelector(".comment-button");
-        // 處理「查看所有評論」按鈕
-        if (comments.length > 3) {
-            commentButton.style.display = "block"; // 顯示按鈕
-        } else {
-            commentButton.style.display = "none"; // 隱藏按鈕
-        }
     })
+
+    const commentButton = document.querySelector(".comment-button");
+    // 處理「查看所有評論」按鈕
+    if (comments.length > 3) {
+        commentButton.style.display = "block"; // 顯示按鈕
+        insertAllComments(comments);
+    } else {
+        commentButton.style.display = "none"; // 隱藏按鈕
+    }
 }
 
 function insertAllComments(comments) {
+    // 抓取評論container，並初始化
+    const reviewContainer = document.querySelector(".review-container");
+    reviewContainer.innerHTML = "";
+    comments.forEach(comment => {
+        const {
+            commentContent,
+            satisfaction,
+            commentTime,
+            photosUrls
+        } = comment;
 
+        // 滿意度星星生成
+        let starsHtml = "";
+
+        for (let i = 0; i < 5; i++) {
+            starsHtml += `<i class="fa-${i < satisfaction ? 'solid' : 'regular'} fa-star"></i>`;
+        }
+
+        // 評論時間處理
+        const timeString = formatRelativeTime(commentTime);
+
+        // 照片處理
+        let photosHtml = "";
+        if (Array.isArray(photosUrls) && photosUrls.length > 0) {
+            photosUrls.forEach(url => {
+                photosHtml += `<img src="${url}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
+            });
+        }
+
+        const reviewDiv = document.createElement("div");
+        reviewDiv.className = "review-item p-3";
+        reviewDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="d-flex">
+                            <div class="avatar me-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h5 class="mb-0 me-2">匿名用戶</h5>
+                                    <small class="text-muted">${timeAgo}</small>
+                                </div>
+                                <div class="star mt-1">
+                                    ${starsHtml}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <p>${commentText}</p>
+                        <a href="#" class="text-dark text-decoration-none fw-medium">查看完整内容</a>
+                        <div class="comment-images mt-2">${imagesHtml}</div>
+                    </div>
+                `;
+
+        reviewContainer.appendChild(reviewDiv);
+    })
 }
+
 
 // 檢查「評論」是多久前發的（n天前、n小時前）
 function formatRelativeTime(dateStr) {

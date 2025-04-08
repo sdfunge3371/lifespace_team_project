@@ -191,7 +191,7 @@ function showRowData(space) {
                         <td>$${escapeHtml(space.spaceHourlyFee)}/hr</td>
                         <td>$${escapeHtml(space.spaceDailyFee)}/d</td>
                         <td title="${escapeHtml(space.spaceDesc)}">${truncateText(escapeHtml(space.spaceDesc), 20)}</td>
-                        <td>${escapeHtml(space.spaceRating)}</td>
+                        <td>${escapeHtml(space.spaceRating.toFixed(1))}</td>
                         <td title="${escapeHtml(space.spaceAlert)}">${truncateText(escapeHtml(space.spaceAlert), 20)}</td>
                         <td>${escapeHtml(space.spaceStatusText)}</td>
                         <td title="${escapeHtml(space.spaceFloor)}">${truncateText(escapeHtml(space.spaceFloor), 20)} 樓</td>
@@ -369,6 +369,7 @@ searchForm.addEventListener('submit', function (e) {
         .then(data => {
             if (Array.isArray(data)) {
                 allSpacesData = data;
+                filteredSpacesData = [...data];
                 currentPage = 1;
                 displayPagedData();  // 顯示多筆（模糊查詢）
             } else {
