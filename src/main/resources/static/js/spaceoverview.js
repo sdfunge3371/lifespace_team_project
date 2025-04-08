@@ -148,7 +148,7 @@ function renderSpaces(spacesToRender) {
                 <div class="space-rating">
                     <span class="space-price">$${space.price}/hr</span>
                     <div class="rating-stars">
-                        <i class="fas fa-star"></i> ${space.rating}</div>
+                        <i class="fas fa-star"></i> ${space.rating.toFixed(1)}</div>
                 </div>
             </div>
         `;

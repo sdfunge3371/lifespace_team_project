@@ -33,6 +33,9 @@ public class OrdersService {
 
     @Autowired
     private SpaceCommentPhotoRepository spaceCommentPhotoRepository;
+
+    @Autowired
+    private SpaceService spaceService;
     
     public void updateOrderStatusByOrderId(String orderId) {
 
@@ -145,6 +148,10 @@ public class OrdersService {
                 }
             }
         }
+
+        // for睿寓：更新空間滿意度平均
+        String spaceId = orders.getSpaceId(); // ← 這裡取得空間 ID
+        spaceService.updateSpaceRating(spaceId);
     }
 
 

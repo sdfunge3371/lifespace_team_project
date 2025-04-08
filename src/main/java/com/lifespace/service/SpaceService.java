@@ -1,6 +1,8 @@
 package com.lifespace.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import com.lifespace.dto.SpaceCommentResponse;
 import com.lifespace.dto.SpaceEquipmentRequest;
 import com.lifespace.dto.SpaceRequest;
 import com.lifespace.entity.*;
+import com.lifespace.repository.OrdersRepository;
 import com.lifespace.repository.SpaceUsageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,9 +33,13 @@ public class SpaceService {
 
     @Autowired
     private SpaceUsageRepository spaceUsageRepository;
+    @Autowired
+    private OrdersRepository ordersRepository;
 
 	public List<Space> getAllSpaces() {  // 取得所有空間
-		return spaceRepository.findAll();
+		List<Space> allSpaces = spaceRepository.findAll();
+		recalculateAllSpaceRatings(allSpaces);
+		return allSpaces;
 	}
 
 	public Space getSpaceById(String spaceId) {  // 透過id取得單一空間
@@ -171,6 +178,7 @@ public class SpaceService {
 		return spaceRepository.save(s);   // CascadeType.ALL + orphanRemoval = true
 	}
 
+	// 切換上、下架狀態
 	public Space toggleStatus(String spaceId, Map<String, String> body) {
 		String newStatus = body.get("status");
 		Space s = spaceRepository.findById(spaceId).orElse(null);
@@ -186,26 +194,59 @@ public class SpaceService {
 
 		return spaceRepository.save(s);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	// 計算個別空間的平均滿意度
+	public void updateSpaceRating(String spaceId) {
+		System.out.println("test");
+		Double avgRating = spaceRepository.findAverageSatisfactionBySpaceId(spaceId);
+
+		if (avgRating == null) {
+			avgRating = 0.0;
+		}
+
+//		// 四捨五入到小數點第一位
+//		avgRating = BigDecimal.valueOf(avgRating)
+//				.setScale(1, RoundingMode.HALF_UP)
+//				.doubleValue();
+
+		Space s = spaceRepository.findById(spaceId).orElse(null);
+
+		if (s == null) {
+			throw new ResourceNotFoundException("找不到ID 為「 " + spaceId + " 」的空間");
+		}
+
+		s.setSpaceRating(avgRating);
+		spaceRepository.save(s);
+	}
+
+	// 取得所有空間時，同時計算空間滿意度
+	public void recalculateAllSpaceRatings(List<Space> allSpaces) {
+//		List<Space> allSpaces = spaceRepository.findAll();
+
+		for (Space space : allSpaces) {
+			String spaceId = space.getSpaceId();
+			updateSpaceRating(spaceId);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	//找特定空間id的評論
 	public Page<SpaceCommentResponse> getSpaceCommentsById(String spaceId,Pageable pageable) {
 			
