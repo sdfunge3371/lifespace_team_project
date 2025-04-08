@@ -1,4 +1,5 @@
 package com.lifespace.service;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import org.springframework.validation.BindingResult;
 import com.lifespace.dto.FaqAddDTO;
 import com.lifespace.dto.FaqDTO;
 import com.lifespace.dto.FaqUpdateDTO;
-import com.lifespace.entity.FaqVO;
+import com.lifespace.entity.Faq;
 import com.lifespace.repository.FaqRepository;
 
 @Service
@@ -43,8 +44,8 @@ public class FaqService {
 		// 建立要回傳給前端的DTO List
 		List<FaqDTO> list = new ArrayList<>();
 		// 查詢資料庫中所有FAQ資料（VO）
-		List<FaqVO> listVO = repository.findAll();
-		for (FaqVO vo : listVO) {
+		List<Faq> listVO = repository.findAll();
+		for (Faq vo : listVO) {
 			// 把每一筆VO轉換成DTO，加進list
 			list.add(voToFaqDTO(vo));
 		}
@@ -54,8 +55,8 @@ public class FaqService {
 	// ----------前台取得欄位(取得狀態上架的FAQ)----------
 	public List<FaqDTO> getAllFaqs(Integer faqStatus) {
 		List<FaqDTO> list = new ArrayList<>();
-		List<FaqVO> listVO = repository.findByFaqStatus(1);
-		for (FaqVO vo : listVO) {
+		List<Faq> listVO = repository.findByFaqStatus(1);
+		for (Faq vo : listVO) {
 			list.add(voToFaqDTO(vo));
 		}
 		return list;
@@ -63,9 +64,9 @@ public class FaqService {
 
 	// ----------下架----------
 	public void deprecatedFaq(String faqId) {
-		Optional<FaqVO> voTemp = repository.findById(faqId);
+		Optional<Faq> voTemp = repository.findById(faqId);
 		if (voTemp.isPresent()) { // 如果voTemp 有值，代表找到了這筆 FAQ
-			FaqVO vo = voTemp.get();
+			Faq vo = voTemp.get();
 			vo.setFaqStatus(0); // 將狀態改為0
 			repository.save(vo); // 修改後的 FAQ 寫回資料庫
 		}
@@ -73,7 +74,7 @@ public class FaqService {
 
 	// ----------新增FAQ----------
 	public void insertFaq(String faqAsk, String faqAnswer, String adminId) {
-		FaqVO faq = new FaqVO(); // 建立新的實體物件（Entity）
+		Faq faq = new Faq(); // 建立新的實體物件（Entity）
 //		faq.setFaqId(generateNextFaqId());
 		faq.setFaqAsk(faqAsk);
 		faq.setFaqAnswer(faqAnswer);
@@ -107,9 +108,9 @@ public class FaqService {
 	// ----------修改FAQ----------
 	public void updateFaq(String faqId, String faqAsk, String faqAnswer) {
 		// Optional防止NullPointerException
-		Optional<FaqVO> voTemp = repository.findById(faqId);
+		Optional<Faq> voTemp = repository.findById(faqId);
 		if (voTemp.isPresent()) {
-			FaqVO vo = voTemp.get();
+			Faq vo = voTemp.get();
 			vo.setFaqAsk(faqAsk);
 			vo.setFaqAnswer(faqAnswer);
 			repository.save(vo);
@@ -133,15 +134,15 @@ public class FaqService {
 		}
 	}
 
-	public FaqVO getOneFaq(String faqId) {
-		Optional<FaqVO> optional = repository.findById(faqId);
+	public Faq getOneFaq(String faqId) {
+		Optional<Faq> optional = repository.findById(faqId);
 //		return optional.get();
 		return optional.orElse(null); // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
 	}
 
 	// 將DTO 轉換成 VO 存入資料庫
-	private FaqVO dtoToFaqVo(FaqDTO dto) {
-		FaqVO faqVo = new FaqVO();
+	private Faq dtoToFaqVo(FaqDTO dto) {
+		Faq faqVo = new Faq();
 		faqVo.setFaqId(dto.getFaqId());
 		faqVo.setAdminId(dto.getAdminId());
 		faqVo.setFaqAsk(dto.getFaqAsk());
@@ -153,7 +154,7 @@ public class FaqService {
 	}
 
 	// 資料回傳前端VO轉換成DTO
-	private FaqDTO voToFaqDTO(FaqVO vo) {
+	private FaqDTO voToFaqDTO(Faq vo) {
 		FaqDTO faqDto = new FaqDTO();
 		faqDto.setFaqId(vo.getFaqId());
 		faqDto.setAdminId(vo.getAdminId());

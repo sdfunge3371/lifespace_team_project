@@ -1,13 +1,7 @@
 package com.lifespace.dto;
 
 import java.sql.Timestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-
+// 作為前後端之間傳遞資料的橋樑，而不是直接操作資料庫的實體（Entity）
 public class FaqDTO implements java.io.Serializable{
 
 	private String faqId;

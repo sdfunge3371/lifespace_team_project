@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity	//要加上@Entity才能成為JPA的一個Entity類別
 @Table(name = "news_status")
-public class NewsStatusVO {
+public class NewsStatus {
 
 	@Id
 	@Column(name = "news_status_id")
@@ -34,13 +34,13 @@ public class NewsStatusVO {
 	@OneToMany(mappedBy = "newsStatus",cascade = CascadeType.ALL)
 	@OrderBy("news_id asc")
 	@JsonManagedReference //搭配使用，保留輸出的那一端
-	private Set<NewsVO> newsSet;
+	private Set<News> newsSet;
 	
-	public NewsStatusVO() {
+	public NewsStatus() {
 		super();
 	}
 	
-	public NewsStatusVO(Integer newsStatusId) {
+	public NewsStatus(Integer newsStatusId) {
 		super();
 		this.newsStatusId = newsStatusId;
 	}
@@ -63,10 +63,10 @@ public class NewsStatusVO {
 	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
 	}
-	public Set<NewsVO> getNewsSet() {
+	public Set<News> getNewsSet() {
 		return newsSet;
 	}
-	public void setNewsSet(Set<NewsVO> newsSet) {
+	public void setNewsSet(Set<News> newsSet) {
 		this.newsSet = newsSet;
 	}
 	

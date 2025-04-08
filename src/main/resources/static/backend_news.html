@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LifeSpace 後台管理系統-常見問題</title>
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="/vendors/dataTables/datatable_faq.css" rel="stylesheet">
-<link href="./css/faq_back.css" rel="stylesheet">
+<meta charset="utf-8">
+<title>LifeSpace - 最新消息</title>
+<meta content="" name="keywords">
+<meta content="" name="description">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+	rel="stylesheet">
+<!-- DataTables CSS -->
+<link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<link href="./css/style.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <link href="./css/sidebar.css" rel="stylesheet">
-
-
+<link href="./css/news_back.css" rel="stylesheet">
 
 </head>
+
 <body>
-	 <div class="container-fluid">
+
+<div class="container-fluid">
         <div class="row">
             <!-- 手機版漢堡按鈕 測試用-->
             <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
@@ -105,126 +116,75 @@
        </div>  
         <!-- 側邊欄 -->
 
-	<!-- Main Content -->
-	
 	<div class="main-content">
-		<div class="header">
-			<h1 >常見問題</h1>
-		</div>
+  <!-- 最新消息一覽 -->
+  <section class="py-2">
+    <div class="container-fluid">
+      <div class="row gx-5">
+        <div class="col-12">
+          <h2 class="mb-3">最新消息一覽</h2>
 
-		<!-- Hashtag 按鈕區域 -->
-          <div class="hashtag-container">
-            <button class="hashtag-button">全部</button>
-            <button class="hashtag-button">使用規範</button>
-            <button class="hashtag-button">租賃相關</button>
-            <button class="hashtag-button">付款方式</button>
-            <button class="hashtag-button">其他</button>
-        </div>
-
-
-		<table id="faqTable" class="display">
-			<button id="btn-add-faq" class="btn btn-success mb-3">新增FAQ</button>
-			<thead>
-				<tr>
-					<th>常見問題編號</th>
-					<th>管理者編號</th>
-					<th>常見問題</th>
-					<th>回答</th>
-					<th>建檔時間</th>
-					<th>問題狀態</th>
-					<th>修改</th>
-					<th>狀態操作</th>
-				</tr>
-			</thead>
-			<tbody id="faqBody">
-				<!-- 用 jQuery 動態產生列表內容 -->
-			</tbody>
-		</table>
-		<br>
-	
-	<!-- 新增 FAQ Modal -->
-<div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="addFaqModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="addFaqForm">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addFaqModalLabel">新增常見問題</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">常見問題</label>
-            <textarea class="form-control" id="add-faqAsk"></textarea>
-            <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="add-faqAsk-error"></span>
+          <!-- 篩選與新增按鈕同一行 -->
+          <div class="row mb-3 align-items-center">
+            <div class="col-auto">
+              <select id="categoryFilter" class="form-select" style="max-width: 200px;">
+                <option value="all">所有消息種類</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <select id="statusFilter" class="form-select" style="max-width: 200px;">
+                <option value="-1">所有消息狀態</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <a href="backend_addnews.html" class="btn btn-primary">新增消息</a>
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">回答內容</label>
-            <textarea class="form-control large-textarea" id="add-faqAnswer"></textarea>
-            <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="add-faqAnswer-error"></span>
+
+          <!-- 消息表格 -->
+          <div class="table-responsive">
+            <table class="table table-striped align-middle" id="newsTable">
+              <thead>
+                <tr>
+                  <th>消息編號</th>
+                  <th>消息標題</th>
+                  <th>消息內容</th>
+                  <th>消息種類</th>
+                  <th>消息起始日</th>
+                  <th>消息結束日</th>
+                  <th>管理員ID</th>
+                  <th>消息狀態</th>
+                  <th>消息圖片</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="newsBody">
+                <!-- 動態產生消息資料 -->
+              </tbody>
+            </table>
           </div>
+
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">確定新增</button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
+  </section>
 </div>
 
 
 
 
-<!-- 編輯 FAQ Modal -->
-<div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="editFaqForm">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editFaqModalLabel">編輯常見問題</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="edit-faqId">
-          <div class="mb-3">
-            <label class="form-label">常見問題</label>
-            <textarea class="form-control" id="edit-faqAsk"></textarea>
-          <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="edit-faqAsk-error"></span>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">回答內容</label>
-            <textarea class="form-control large-textarea" id="edit-faqAnswer"></textarea>
-          <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="edit-faqAnswer-error"></span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">確定修改</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-</div>
+	<!-- jQuery & DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="js/backmain.js"></script>
 
-		<!-- jQuery -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		
-		<!-- Bootstrap JS -->
-		<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
-		
-		<!-- DataTables -->
-		<script src="/vendors/dataTables/datatable_faq.js"></script>
-		
-		  <!-- Sidebar JS -->
- 		 <script src="/js/sidebar2.js"></script>
-		
-		<script src="./js/faq_back.js"></script>
+	<!-- Sidebar JS -->
+	<script src="/js/sidebar2.js"></script>
+	<!-- 	<script src="js/backpage.js"></script> -->
+	<script src="js/news_back.js"></script>
 
-	
-
-	
 </body>
 </html>
