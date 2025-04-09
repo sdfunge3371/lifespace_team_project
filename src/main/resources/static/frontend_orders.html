@@ -126,70 +126,21 @@
         <div class="tab" data-tab="cancel-orders">已取消訂單</div>
     </div>
 
-    <!-- 空間訂單 -->
-    <div id="space-orders" class="tab-content active">
-        <div class="order-container">
-            <div class="order-img">
-                <img src="images\img.bootstrap\house3.jpg" alt="商品圖片">
-            </div>
-            <div class="order-info">
-                <p>訂單編號: xxxxxxxxxx</p>
-                <p>日期: 2025/08/02</p>
-                <p>時段: 08:00 - 14:00</p>
-                <p>地點: 臺北市中山區林森北路119巷26號</p>
-                <p>訂單金額: 580</p>
+    <!--不同的訂單區塊-->
+<!--    <div id="space-orders" class="tab-content" style="display: none;"></div>-->
+<!--    <div id="history-orders" class="tab-content" style="display: none;"></div>-->
+<!--    <div id="cancel-orders" class="tab-content" style="display: none;"></div>-->
 
-                <button class="toggle-details">揪團資訊 ▼</button>
-
-                <div class="details">
-                    <p>活動名稱：打桌遊</p>
-                    <p>活動描述：好玩的桌遊</p>
-                </div>
-
-                <div class="actions">
-                    <button class="action-button message-button">留言板</button>
-                    <button class="action-button cancel">取消訂單</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="order-container">
-            <div class="order-img">
-                <img src="images\img.bootstrap\house4.jpg" alt="商品圖片">
-            </div>
-            <div class="order-info">
-                <p>訂單編號: yyyyyyyyyy</p>
-                <p>日期: 2025/09/01</p>
-                <p>時段: 10:00 - 16:00</p>
-                <p>地點: 臺北市中山區林森北路119巷26號</p>
-                <p>訂單金額: 580</p>
-
-                <div class="actions">
-                    <button class="action-button group-button">揪團去</button>
-                    <button class="action-button cancel">取消訂單</button>
-                </div>
-            </div>
-        </div>
+    <div id="space-orders" class="tab-content" style="min-height: 300px;">
+        <div class="empty-state d-none">尚無訂單</div>
     </div>
 
-    <!-- 歷史訂單 -->
-    <div id="history-orders" class="tab-content">
-        <div class="order-container">
-            <div class="order-img">
-                <img src="images\img.bootstrap\house1.jpg" alt="商品圖片">
-            </div>
-            <div class="order-info">
-                <p>訂單編號: zzzzzzzzzz</p>
-                <p>日期: 2025/07/20</p>
-                <p>時段: 12:00 - 18:00</p>
-                <p>地點: 臺北市中山區林森北路119巷26號</p>
-                <p>訂單金額: 580</p>
+    <div id="history-orders" class="tab-content" style="min-height: 300px;">
+        <div class="empty-state d-none">尚無歷史訂單</div>
+    </div>
 
-                <div class="actions">
-                    <button class="action-button review">評價</button>
-                </div>
-            </div>
-        </div>
+    <div id="cancel-orders" class="tab-content" style="min-height: 300px;">
+        <div class="empty-state d-none">尚無取消訂單</div>
     </div>
 
     <!-- 取消訂單確認對話框 -->
@@ -257,289 +208,299 @@
         </div>
     </div>
     <!-- JavaScript Libraries -->
-    <script src="js/wow.min.js"></script>
-    <script src="js/easing.min.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="js/wow.min.js"></script>
+<script src="js/easing.min.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-    <script>
+<script src="js/main.js"></script>
+<script>
         $(document).ready(function () {
+            const memberId = 'M003';
+
+            //頁籤
             $(".tab").click(function () {
-                var tabId = $(this).data("tab");
+                const tabId = $(this).data("tab");
                 $(".tab").removeClass("active");
                 $(this).addClass("active");
                 $(".tab-content").removeClass("active").hide(); // 隱藏所有內容
                 $("#" + tabId).addClass("active").fadeIn(); // 顯示選中的內容
             });
 
-            $(document).on("click", ".toggle-details", function () {
-                var details = $(this).next(".details");
-                if (details.is(":visible")) {
-                    details.slideUp();
-                    $(this).text("揪團資訊 ▼");
-                } else {
-                    details.slideDown();
-                    $(this).text("揪團資訊 ▲");
-                }
-            });
+            $.ajax({
+                url: `/orders/member/${memberId}`,
+                method: 'GET',
+                success: function (orders) {
+                    // console.log("取得的訂單資料：", orders);
+                    $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
 
-            $(document).on("click", ".group-button", function () {
-                var button = $(this);
-                var confirmGroup = confirm("確定要進行揪團嗎？");
-                if (confirmGroup) {
-                    setTimeout(function () {
-                        alert("揪團成功！");
-                        button.text("留言板").removeClass("group-button").addClass("message-button");
-                        var groupInfo = `
-                        <button class="toggle-details">揪團資訊 ▼</button>
-                            <div class="details">
-                                <h4><strong>活動名稱:</strong> 新的桌遊揪團</h4>
-                                <p><strong>活動描述:</strong> 這是一個新的揪團活動</p>
+                    orders.forEach(orders => {
+                        const start = new Date(orders.orderStart);
+                        const end = new Date(orders.orderEnd);
+                        const dateStr = start.toLocaleDateString('zh-TW');
+                        const timeStr = `${start.getHours()} - ${end.getHours()}`
+
+                        const eventHtml = orders.eventDTO ? `
+                            <button class="toggle-details">揪團資訊 ▼</button>
+                            <div class="details" style="display:none;">
+                                <p>活動名稱：${orders.eventDTO.eventName}</p>
+                                <p>活動描述：${orders.eventDTO.eventDescription || ''}</p>
                             </div>
+                            ` : '';
+
+                        const actionButtonHtml = orders.eventDTO ? `
+                        <a class="action-button message-button" href="group_message.html?eventId=${orders.eventDTO.eventId}">留言板</a>
+                        ` : `
+                        <button class="action-button group-button">揪團去</button>
                         `;
-                        button.closest(".actions").before(groupInfo);
-                    }, 500);
-                }
-            });
 
-            // 新增取消訂單功能
-            let currentOrderContainer = null;
 
-            // 點擊取消訂單按鈕
-            $(document).on("click", ".action-button.cancel", function () {
-                currentOrderContainer = $(this).closest(".order-container");
-                $(".cancel-dialog").css("display", "flex").fadeIn();
+                        const cardHtml = `
+                        <div class="order-container">
+                            <div class="order-img">
+                                <img src="images/img.bootstrap/house-placeholder.jpg" alt="空間圖片">
+                            </div>
+                            <div class="order-info">
+                                <p>訂單編號: ${orders.orderId}</p>
+                                <p>日期: ${dateStr}</p>
+                                <p>時段: ${timeStr}</p>
+                                <p>地點: ${orders.branchAddr}</p>
+                                <p>訂單金額: ${orders.totalPrice}</p>
+                                ${eventHtml}
+                                <div class="actions">
+                                    ${orders.orderStatus === 1 ? `
+                                         ${actionButtonHtml}
+                                        <button class="action-button cancel">取消訂單</button>
+                                    ` : orders.orderStatus === 2 ? `
+                                        <button class="action-button review">評價</button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        `;
 
-                // 重置取消原因選項
-                $("#cancel-reason-select").val("");
-                $("#cancel-reason-other").hide().val("");
-            });
+                        if (orders.orderStatus === 1) {
+                            $('#space-orders').append(cardHtml);
 
-            // 如果選擇"其他原因"，顯示文本輸入框
-            $("#cancel-reason-select").change(function () {
-                if ($(this).val() === "other") {
-                    $("#cancel-reason-other").show();
-                } else {
-                    $("#cancel-reason-other").hide();
-                }
-            });
-
-            // 點擊返回按鈕
-            $(".cancel-back-btn").click(function () {
-                $(".cancel-dialog").fadeOut();
-                currentOrderContainer = null;
-            });
-
-            // 點擊確認取消按鈕
-            $(".cancel-confirm-btn").click(function () {
-                let reason = $("#cancel-reason-select").val();
-
-                if (!reason) {
-                    alert("請選擇取消原因");
-                    return;
-                }
-
-                if (reason === "other" && !$("#cancel-reason-other").val().trim()) {
-                    alert("請說明取消原因");
-                    return;
-                }
-
-                if (currentOrderContainer) {
-                    // 先關閉確認對話框
-                    $(".cancel-dialog").fadeOut();
-
-                    // 等待對話框完全關閉後再處理訂單
-                    setTimeout(function () {
-                        // 標記訂單為已取消
-                        currentOrderContainer.addClass("cancelled-order");
-
-                        // 添加已取消標籤到訂單編號後
-                        let orderNumberElem = currentOrderContainer.find(".order-info p:first-child");
-                        if (!orderNumberElem.find(".cancelled-tag").length) {
-                            orderNumberElem.append('<span class="cancelled-tag">已取消</span>');
+                        } else if (orders.orderStatus === 2) {
+                            $('#history-orders').append(cardHtml);
+                        } else if (orders.orderStatus === 0) {
+                            $('#cancel-orders').append(cardHtml);
                         }
 
-                        // 禁用所有按鈕
-                        currentOrderContainer.find(".action-button").prop("disabled", true);
-                        currentOrderContainer.find(".toggle-details").prop("disabled", true);
+                    });
 
-                        // 等待訂單更新視覺效果完成後再顯示成功訊息
-                        setTimeout(function () {
-                            alert("訂單已成功取消！");
-                        }, 300);
+                    //判斷訂單區塊是否有訂單
 
-                        currentOrderContainer = null;
-                    }, 400); // 給予充分時間讓對話框完全關閉
-                }
-            });
+                    if ($('#space-orders .order-container').length === 0) {
+                        $('#space-orders .empty-state').removeClass('d-none');
+                    } else {
+                        $('#space-orders .empty-state').addClass('d-none');
+                    }
 
-            $(document).ready(function () {
-                $(".tab-content").hide(); // 先隱藏所有內容
-                $("#space-orders").show(); // 預設顯示空間訂單
+                    if ($('#history-orders .order-container').length === 0) {
+                        $('#history-orders .empty-state').removeClass('d-none');
+                    } else {
+                        $('#history-orders .empty-state').addClass('d-none');
+                    }
 
-                $(".tab").click(function () {
-                    var tabId = $(this).data("tab");
+                    if ($('#cancel-orders .order-container').length === 0) {
+                        $('#cancel-orders .empty-state').removeClass('d-none');
+                    } else {
+                        $('#cancel-orders .empty-state').addClass('d-none');
+                    }
 
+                    //資料載入完成後,預設先顯示空間訂單
+                    $(".tab-content").removeClass("active").hide();
+                    $("#space-orders").addClass("active").fadeIn();
                     $(".tab").removeClass("active");
-                    $(this).addClass("active");
+                    $(".tab[data-tab='space-orders']").addClass("active");
+                },
+                error: function () {
+                    alert("訂單載入失敗, 請稍後在試");
+                }
+            });
 
-                    $(".tab-content").hide(); // 隱藏所有內容
-                    $("#" + tabId).fadeIn(); // 顯示選中的內容
+            //活動資訊收合
+            $(document).on("click", ".toggle-details", function () {
+                const details = $(this).next(".details");
+                const $btn = $(this);
+                details.slideToggle(200, function (){
+                    $btn.text(details.is(":visible") ? "揪團資訊 ▲" : "揪團資訊 ▼");
                 });
             });
 
-            // 評價相關的 jQuery 代碼
-            $(document).ready(function () {
-                // 儲存當前評價的訂單和上傳的照片
-                var currentReviewOrder = null;
-                var uploadedPhotos = [];
+            //點擊取消訂單
+            $(document).on("click", ".cancel", function () {
+                const orderId = $(this).data("order-id");
 
-                // 點擊評價按鈕
-                $(document).on("click", ".action-button.review", function () {
-                    currentReviewOrder = $(this).closest(".order-container");
-                    $(".review-dialog").css("display", "flex").fadeIn();
-
-                    // 重置評價表單
-                    $("input[name='rating']").prop("checked", false);
-                    $(".review-text").val("");
-                    $("#photoPreview").empty();
-                    uploadedPhotos = [];
-                });
-
-                // 點擊取消評價按鈕
-                $(".review-cancel-btn").click(function () {
-                    $(".review-dialog").fadeOut();
-                    currentReviewOrder = null;
-                });
-
-                // 照片上傳處理
-                $("#photoUpload").change(function (e) {
-                    handleFiles(e.target.files);
-                });
-
-                // 拖放照片功能 - 使用jQuery實現
-                var $dropArea = $("#dropArea");
-
-                $dropArea.on('dragenter dragover', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    $(this).addClass('highlight');
-                });
-
-                $dropArea.on('dragleave drop', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    $(this).removeClass('highlight');
-                });
-
-                $dropArea.on('drop', function (e) {
-                    e.preventDefault();
-                    var files = e.originalEvent.dataTransfer.files;
-                    handleFiles(files);
-                });
-
-                // 處理上傳的照片文件
-                function handleFiles(files) {
-                    if (uploadedPhotos.length >= 5) {
-                        alert("最多只能上傳5張照片");
-                        return;
-                    }
-
-                    // 將FileList轉換為Array
-                    var filesArray = $.makeArray(files);
-
-                    // 限制最多5張照片
-                    var remainingSlots = 5 - uploadedPhotos.length;
-                    var filesToProcess = filesArray.slice(0, remainingSlots);
-
-                    $.each(filesToProcess, function (index, file) {
-                        if (!file.type.match('image.*')) {
-                            alert("請只上傳圖片檔案");
-                            return;
+                if (confirm(`確定要取消訂單${orderId}嗎?`)) {
+                    $.ajax({
+                        url: `/orders/cancel/${orderId}`,
+                        method: "POST",
+                        success: function () {
+                            alert("訂單已取消");
+                            location.reload();
+                        },
+                        error: function (xhr) {
+                            alert("訂單取消失敗" + xhr.responseText);
                         }
-
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            uploadedPhotos.push({
-                                file: file,
-                                dataUrl: e.target.result
-                            });
-
-                            displayPhotos();
-                        };
-                        reader.readAsDataURL(file);
                     });
                 }
-
-                // 顯示已上傳的照片
-                function displayPhotos() {
-                    var $photoPreview = $("#photoPreview");
-                    $photoPreview.empty();
-
-                    $.each(uploadedPhotos, function (index, photo) {
-                        var $photoItem = $('<div class="photo-item"></div>');
-                        var $img = $('<img>').attr('src', photo.dataUrl);
-                        var $removeBtn = $('<button class="remove-photo">×</button>');
-
-                        $removeBtn.on('click', function () {
-                            uploadedPhotos.splice(index, 1);
-                            displayPhotos();
-                        });
-
-                        $photoItem.append($img, $removeBtn);
-                        $photoPreview.append($photoItem);
-                    });
-                }
-
-                // 點擊提交評價按鈕
-                $(".review-submit-btn").click(function () {
-                    // 獲取評分
-                    var rating = $("input[name='rating']:checked").val();
-                    // 獲取評論文字
-                    var reviewText = $(".review-text").val().trim();
-
-                    // 驗證
-                    if (!rating) {
-                        alert("請為此次體驗評分");
-                        return;
-                    }
-
-                    if (!reviewText) {
-                        alert("請分享您的使用體驗");
-                        return;
-                    }
-
-                    if (currentReviewOrder) {
-                        // 關閉評價對話框
-                        $(".review-dialog").fadeOut();
-
-                        // 處理評價提交邏輯
-                        setTimeout(function () {
-                            // 在訂單編號後添加已評價標籤
-                            var $orderNumberElem = currentReviewOrder.find(".order-info p:first-child");
-                            if ($orderNumberElem.find(".reviewed-tag").length === 0) {
-                                $orderNumberElem.append('<span class="reviewed-tag">已評價</span>');
-                            }
-
-                            // 禁用評價按鈕
-                            currentReviewOrder.find(".action-button.review").prop("disabled", true);
-
-                            // 顯示評價成功訊息
-                            setTimeout(function () {
-                                alert("評價提交成功！感謝您的反饋。");
-                            }, 300);
-
-                            currentReviewOrder = null;
-                            uploadedPhotos = [];
-                        }, 400);
-                    }
-                });
             });
         });
+        //
+        //     // 評價相關的 jQuery 代碼
+        //     $(document).ready(function () {
+        //         // 儲存當前評價的訂單和上傳的照片
+        //         var currentReviewOrder = null;
+        //         var uploadedPhotos = [];
+        //
+        //         // 點擊評價按鈕
+        //         $(document).on("click", ".action-button.review", function () {
+        //             currentReviewOrder = $(this).closest(".order-container");
+        //             $(".review-dialog").css("display", "flex").fadeIn();
+        //
+        //             // 重置評價表單
+        //             $("input[name='rating']").prop("checked", false);
+        //             $(".review-text").val("");
+        //             $("#photoPreview").empty();
+        //             uploadedPhotos = [];
+        //         });
+        //
+        //         // 點擊取消評價按鈕
+        //         $(".review-cancel-btn").click(function () {
+        //             $(".review-dialog").fadeOut();
+        //             currentReviewOrder = null;
+        //         });
+        //
+        //         // 照片上傳處理
+        //         $("#photoUpload").change(function (e) {
+        //             handleFiles(e.target.files);
+        //         });
+        //
+        //         // 拖放照片功能 - 使用jQuery實現
+        //         var $dropArea = $("#dropArea");
+        //
+        //         $dropArea.on('dragenter dragover', function (e) {
+        //             e.preventDefault();
+        //             e.stopPropagation();
+        //             $(this).addClass('highlight');
+        //         });
+        //
+        //         $dropArea.on('dragleave drop', function (e) {
+        //             e.preventDefault();
+        //             e.stopPropagation();
+        //             $(this).removeClass('highlight');
+        //         });
+        //
+        //         $dropArea.on('drop', function (e) {
+        //             e.preventDefault();
+        //             var files = e.originalEvent.dataTransfer.files;
+        //             handleFiles(files);
+        //         });
+        //
+        //         // 處理上傳的照片文件
+        //         function handleFiles(files) {
+        //             if (uploadedPhotos.length >= 5) {
+        //                 alert("最多只能上傳5張照片");
+        //                 return;
+        //             }
+        //
+        //             // 將FileList轉換為Array
+        //             var filesArray = $.makeArray(files);
+        //
+        //             // 限制最多5張照片
+        //             var remainingSlots = 5 - uploadedPhotos.length;
+        //             var filesToProcess = filesArray.slice(0, remainingSlots);
+        //
+        //             $.each(filesToProcess, function (index, file) {
+        //                 if (!file.type.match('image.*')) {
+        //                     alert("請只上傳圖片檔案");
+        //                     return;
+        //                 }
+        //
+        //                 var reader = new FileReader();
+        //                 reader.onload = function (e) {
+        //                     uploadedPhotos.push({
+        //                         file: file,
+        //                         dataUrl: e.target.result
+        //                     });
+        //
+        //                     displayPhotos();
+        //                 };
+        //                 reader.readAsDataURL(file);
+        //             });
+        //         }
+        //
+        //         // 顯示已上傳的照片
+        //         function displayPhotos() {
+        //             var $photoPreview = $("#photoPreview");
+        //             $photoPreview.empty();
+        //
+        //             $.each(uploadedPhotos, function (index, photo) {
+        //                 var $photoItem = $('<div class="photo-item"></div>');
+        //                 var $img = $('<img>').attr('src', photo.dataUrl);
+        //                 var $removeBtn = $('<button class="remove-photo">×</button>');
+        //
+        //                 $removeBtn.on('click', function () {
+        //                     uploadedPhotos.splice(index, 1);
+        //                     displayPhotos();
+        //                 });
+        //
+        //                 $photoItem.append($img, $removeBtn);
+        //                 $photoPreview.append($photoItem);
+        //             });
+        //         }
+        //
+        //         // 點擊提交評價按鈕
+        //         $(".review-submit-btn").click(function () {
+        //             // 獲取評分
+        //             var rating = $("input[name='rating']:checked").val();
+        //             // 獲取評論文字
+        //             var reviewText = $(".review-text").val().trim();
+        //
+        //             // 驗證
+        //             if (!rating) {
+        //                 alert("請為此次體驗評分");
+        //                 return;
+        //             }
+        //
+        //             if (!reviewText) {
+        //                 alert("請分享您的使用體驗");
+        //                 return;
+        //             }
+        //
+        //             if (currentReviewOrder) {
+        //                 // 關閉評價對話框
+        //                 $(".review-dialog").fadeOut();
+        //
+        //                 // 處理評價提交邏輯
+        //                 setTimeout(function () {
+        //                     // 在訂單編號後添加已評價標籤
+        //                     var $orderNumberElem = currentReviewOrder.find(".order-info p:first-child");
+        //                     if ($orderNumberElem.find(".reviewed-tag").length === 0) {
+        //                         $orderNumberElem.append('<span class="reviewed-tag">已評價</span>');
+        //                     }
+        //
+        //                     // 禁用評價按鈕
+        //                     currentReviewOrder.find(".action-button.review").prop("disabled", true);
+        //
+        //                     // 顯示評價成功訊息
+        //                     setTimeout(function () {
+        //                         alert("評價提交成功！感謝您的反饋。");
+        //                     }, 300);
+        //
+        //                     currentReviewOrder = null;
+        //                     uploadedPhotos = [];
+        //                 }, 400);
+        //             }
+        //         });
+        //     });
+        // });
 
 
     </script>
@@ -634,8 +595,6 @@
         </div>
     </div>
     <!-- Footer End -->
-</div>
-
-
+ </div>
 </body>
 </html>
