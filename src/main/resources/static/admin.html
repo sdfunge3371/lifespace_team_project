@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理員管理系統</title>
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="../css/sidebar.css" rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+	rel="stylesheet">
+<link href="../css/member.css" rel="stylesheet">
+<style>
+.main-content {
+	margin-left: 240px; /* 假設你的 sidebar 寬度是 240px */
+	padding: 20px;
+	box-sizing: border-box;
+	background-color: #f8f9fa;
+	min-height: 100vh; /* 確保內容撐滿整個畫面高度 */
+}
+</style>
+</head>
+
+<body>
+	<button class="btn btn-primary d-md-none m-2" type="button"
+		data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+		<i class="fas fa-bars"></i>
+	</button>
+	<!-- 側邊欄 -->
+	<div class="col-lg-2 sidebar">
+		<div class="sidebar-header">
+			<img src="../img/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo"
+				class="sidebar-logo">
+			<h2 class="sidebar-title">後台中心</h2>
+		</div>
+		<ul class="nav flex-column mt-3">
+			<!-- 消息管理 -->
+			<li class="nav-item"><a href="#newsSubmenu"
+				data-bs-toggle="collapse" class="nav-link"> <i
+					class="fas fa-home"></i> 消息管理 <i
+					class="fas fa-chevron-down ms-auto"></i>
+			</a>
+				<ul class="collapse submenu" id="newsSubmenu">
+					<li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+				</ul></li>
+
+			<!-- 帳號管理 -->
+			<li class="nav-item"><a href="#accountSubmenu"
+				data-bs-toggle="collapse" class="nav-link"> <i
+					class="fas fa-user"></i> 帳號管理 <i
+					class="fas fa-chevron-down ms-auto"></i>
+			</a>
+				<ul class="collapse submenu" id="accountSubmenu">
+					<li><a href="#" class="submenu-item">會員帳號</a></li>
+					<li><a href="#" class="submenu-item">管理員帳號</a></li>
+				</ul></li>
+
+			<!-- 空間訂單管理 -->
+			<li class="nav-item"><a href="#ordersSubmenu"
+				data-bs-toggle="collapse" class="nav-link"> <i
+					class="fas fa-map-marker-alt"></i> 空間訂單管理 <i
+					class="fas fa-chevron-down ms-auto"></i>
+			</a>
+				<ul class="collapse submenu" id="ordersSubmenu">
+					<li><a href="#" class="submenu-item">訂單</a></li>
+				</ul></li>
+
+			<!-- 商品管理 -->
+			<li class="nav-item"><a href="#productSubmenu"
+				data-bs-toggle="collapse" class="nav-link"> <i
+					class="fas fa-box"></i> 商品管理 <i class="fas fa-chevron-down ms-auto"></i>
+			</a>
+				<ul class="collapse submenu" id="productSubmenu">
+					<li><a href="#" class="submenu-item">空間管理</a></li>
+					<li><a href="#" class="submenu-item">租借品項</a></li>
+					<li><a href="#" class="submenu-item">分點</a></li>
+				</ul></li>
+
+			<!-- 活動留言評論管理 -->
+			<li class="nav-item"><a href="#commentSubmenu"
+				data-bs-toggle="collapse" class="nav-link"> <i
+					class="fas fa-star"></i> 活動留言評論管理 <i
+					class="fas fa-chevron-down ms-auto"></i>
+			</a>
+				<ul class="collapse submenu" id="commentSubmenu">
+					<li><a href="#" class="submenu-item">活動留言板</a></li>
+					<li><a href="#" class="submenu-item">檢舉留言</a></li>
+				</ul></li>
+
+			<!-- 常見問題管理 -->
+			<li class="nav-item"><a href="#faqSubmenu"
+				data-bs-toggle="collapse" class="nav-link"> <i
+					class="fas fa-headset"></i> 常見問題管理 <i
+					class="fas fa-chevron-down ms-auto"></i>
+			</a>
+				<ul class="collapse submenu" id="faqSubmenu">
+					<li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+				</ul></li>
+		</ul>
+	</div>
+	<!-- 側邊欄結束 -->
+
+
+	<!-- 自己的表格內容 ------------------------------------------------------->
+	<div class="main-content">
+		<h2>管理員管理系統</h2>
+		<div class="add-member">
+			<button onclick="location.href='./adminadd.html'">新增管理員</button>
+		</div>
+
+		<!---- 搜尋  --->
+		<button id="toggleSearchBtn">🔍 搜尋</button>
+		<div class="search-container" id="searchContainer"
+			style="display: none;">
+
+			<!-- 第一行：管理員編號、姓名 -->
+			<div class="search-row">
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="adminId">管理員編號</label> <span
+							onclick="document.getElementById('adminId').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" name="adminId" id="adminId" placeholder="A001" />
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="adminName">姓名</label> <span
+							onclick="document.getElementById('adminName').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" name="adminName" id="adminName"
+						placeholder="輸入姓名" />
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="email">信箱名稱</label> <span
+							onclick="document.getElementById('email').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" id="email" name="email" placeholder="請輸入名稱"
+						onblur="appendGmail()" />
+				</div>
+			</div>
+
+
+			<!-- 第二行：狀態、註冊日期、生日 -->
+			<div class="search-row">
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="accountStatus">帳號狀態：</label> <span
+							onclick="document.getElementById('accountStatus').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<select name="accountStatus" id="accountStatus">
+						<option value="">請選擇</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="registrationTime">註冊日期：</label> <span
+							onclick="document.getElementById('registrationTime').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="date" name="registrationTime" id="registrationTime" />
+
+				</div>
+			</div>
+
+			<div class="btn">
+				<!-- 搜尋按鈕 -->
+				<div class="search-btn">
+					<button type="button" id="searchBtn">查尋</button>
+				</div>
+				<!-- 回首頁 -->
+				<div class="search-btn">
+					<a href="../html/member.html">
+						<button type="button" id="resetBtn">重整</button>
+					</a>
+				</div>
+			</div>
+
+
+		</div>
+
+
+		<!--------------------------------- 會員資料表 ----------------------------->
+		<table id="adminTable">
+			<thead>
+				<tr>
+					<th>管理員流水號</th>
+					<th>姓名</th>
+					<th>信箱</th>
+					<th>帳號狀態</th>
+					<th>註冊時間</th>
+					<th>修改</th>
+				</tr>
+			</thead>
+			<!-- 原本查詢表單下面加上 -->
+			<tbody id="resultArea" class="search-result"></tbody>
+			<tbody id="adminBody"></tbody>
+		</table>
+
+
+
+	</div>
+
+	</div>
+	</div>
+
+	<!-- JQuery JS -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<!-- member JS -->
+	<script src="../js/admin.js"></script>
+
+	<!-- sidebar2 JS -->
+	<script src="../js/sidebar2.js"></script>
+
+	<!-- Bootstrap JS -->
+	<script src="../vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>
