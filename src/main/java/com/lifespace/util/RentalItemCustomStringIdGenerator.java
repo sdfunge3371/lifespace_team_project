@@ -26,12 +26,12 @@ public class RentalItemCustomStringIdGenerator implements IdentifierGenerator {
                 String maxId = rs.getString(1);
                 if (maxId != null) {
                     int num = Integer.parseInt(maxId.substring(2));
-                    return "RI" + String.format("%03d", num + 1);   // ?改成自己表格的開頭
+                    return "RI" + String.format("%03d", num + 1);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "RI001"; // default 起始值，?改成自己表格的開頭
+        return "RI001"; // default 起始值
     }
 }
