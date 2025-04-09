@@ -32,9 +32,15 @@ public class BranchMapper {
     public static List<PublicEquipmentDTO> toPublicEquipmentDTOList(List<PublicEquipment> publicEquipments) {
         return publicEquipments
                 .stream()
-                .map(publicEquipment -> new PublicEquipmentDTO(
+                .map(publicEquipment -> {
+                    PublicEquipmentDTO dto = new PublicEquipmentDTO(
                         publicEquipment.getPublicEquipId(),
                         publicEquipment.getPublicEquipName()
-                )).collect(Collectors.toList());
+                    );
+                    dto.setBranchId(publicEquipment.getBranch() != null ? 
+                                    publicEquipment.getBranch().getBranchId() : null);
+                    dto.setCreatedTime(publicEquipment.getCreatedTime());
+                    return dto;
+                }).collect(Collectors.toList());
     }
 }

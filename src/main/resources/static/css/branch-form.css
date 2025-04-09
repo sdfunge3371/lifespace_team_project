@@ -1,0 +1,81 @@
+/* 公共設備標籤樣式 */
+.public-equipment-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.equipment-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background-color: #e8f4f8;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    border: 1px solid #70b6c1;
+    color: #333;
+}
+
+.equipment-tag .btn-close {
+    font-size: 0.7rem;
+    margin-left: 6px;
+    padding: 2px;
+    opacity: 0.7;
+    color: #dc3545;
+}
+
+.equipment-tag .btn-close:hover {
+    opacity: 1;
+    color: #dc3545;
+}
+
+/* 表單樣式增強 */
+label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.form-control:focus, 
+.form-check-input:focus {
+    border-color: #70b6c1;
+    box-shadow: 0 0 0 0.25rem rgba(112, 182, 193, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #70b6c1;
+    border-color: #70b6c1;
+}
+
+/* 按鈕樣式 */
+.btn-primary {
+    background-color: #70b6c1;
+    border-color: #70b6c1;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #5a9da7;
+    border-color: #5a9da7;
+}
+
+/* 模態框樣式 */
+.modal-header {
+    background-color: #e6f7f8;
+    border-bottom: 1px solid #70b6c1;
+}
+
+.modal-title {
+    color: #333;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .row > div {
+        margin-bottom: 1rem;
+    }
+}

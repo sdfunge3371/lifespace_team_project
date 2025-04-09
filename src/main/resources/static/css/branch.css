@@ -37,6 +37,15 @@
 .table td {
     vertical-align: middle;
     text-align: center;
+    word-break: break-word; /* 讓文字可以換行 */
+    max-width: 150px; /* 限制最大寬度 */
+}
+
+/* 公共設備欄位特殊樣式 */
+.table td.public-equipment {
+    text-align: left;
+    font-size: 0.9em;
+    line-height: 1.4;
 }
 
 .table tbody tr:hover {
