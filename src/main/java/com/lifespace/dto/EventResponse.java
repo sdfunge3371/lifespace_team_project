@@ -20,6 +20,10 @@ public class EventResponse {
 	 
 	 private String spaceAddress;
 	 
+	 private Double latitude;
+	 
+	 private Double longitude;
+	 
 	 private String organizer;
 	 
 	 private Integer numberOfParticipants;
@@ -90,6 +94,23 @@ public class EventResponse {
 
 	public void setSpaceAddress(String spaceAddress) {
 		this.spaceAddress = spaceAddress;
+	}
+
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 	public String getOrganizer() {
@@ -174,7 +195,9 @@ public class EventResponse {
         String remarks,
         String hostSpeaking, 
         Timestamp createdTime,
-        String spaceAddress,         
+        String spaceAddress,
+        Double latitude,
+        Double longitude,
         String organizer,       
         String photoUrls           // 從查詢結果中的 GROUP_CONCAT(ep.photo) 映射
     ) {
@@ -192,6 +215,8 @@ public class EventResponse {
         this.createdTime = createdTime;
         this.organizer = organizer;
         this.spaceAddress = spaceAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
         
         // 如果 photoUrls 是字符串，需要將其轉換為 List
         if (photoUrls != null) {
