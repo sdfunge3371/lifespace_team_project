@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>租借品項管理</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+    <link href="/css/rental_item.css" rel="stylesheet">
+    <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 側邊欄 -->
+    <div class="col-lg-2 sidebar">
+        <div class="sidebar-header">
+         <a href="/backend_index.html">
+         <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+         </a>
+          <h2 class="sidebar-title">後台中心</h2>
+        </div>
+        <ul class="nav flex-column mt-3">
+            <!-- 消息管理 -->
+            <li class="nav-item">
+                <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-home"></i> 消息管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="newsSubmenu">
+                    <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+                </ul>
+            </li>
+
+            <!-- 帳號管理 -->
+            <li class="nav-item">
+                <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-user"></i> 帳號管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="accountSubmenu">
+                    <li><a href="#" class="submenu-item">會員帳號</a></li>
+                    <li><a href="#" class="submenu-item">管理員帳號</a></li>
+                </ul>
+            </li>
+
+          <!-- 空間訂單管理 -->
+          <li class="nav-item">
+            <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-map-marker-alt"></i> 空間訂單管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="ordersSubmenu">
+              <li><a href="/ordersWithSidebar.html" class="submenu-item">訂單</a></li>
+            </ul>
+          </li>
+
+          <!-- 商品管理 -->
+          <li class="nav-item">
+            <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
+              <i class="fas fa-box"></i> 商品管理
+              <i class="fas fa-chevron-down ms-auto"></i>
+            </a>
+            <ul class="collapse submenu" id="productSubmenu">
+              <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
+              <li><a href="/rental_item.html" class="submenu-item active">租借品項</a></li>
+              <li><a href="/branch.html" class="submenu-item">分點</a></li>
+            </ul>
+          </li>
+
+            <!-- 活動留言評論管理 -->
+            <li class="nav-item">
+                <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-star"></i> 活動留言評論管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="commentSubmenu">
+                    <li><a href="#" class="submenu-item">活動留言板</a></li>
+                    <li><a href="#" class="submenu-item">檢舉留言</a></li>
+                </ul>
+            </li>
+
+            <!-- 常見問題管理 -->
+            <li class="nav-item">
+                <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-headset"></i> 常見問題管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="faqSubmenu">
+                    <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <!-- 側邊欄結束 -->
+
+    <!-- 主要內容區 -->
+    <div class="container-fluid mt-4 main-content">
+        <div class="card">
+            <!-- 標題 -->
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">租借品項管理</h2>
+            </div>
+
+            <!-- 表格 -->
+            <div class="card-body">
+                <!-- 搜尋區域 -->
+                <div class="search-area mb-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="searchTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span id="selectedSearchType">依租借品項編號搜尋</span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="searchTypeDropdown">
+                                    <li><a class="dropdown-item search-type" href="#" data-type="rentalItemId">依租借品項編號搜尋</a></li>
+                                    <li><a class="dropdown-item search-type" href="#" data-type="rentalItemName">依租借品項名稱搜尋</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchInput" placeholder="請輸入搜尋內容">
+                                <button class="btn btn-primary" id="searchBtn">搜尋</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 篩選區域 -->
+                <div class="filter-area d-flex mb-4">
+                    <button class="btn btn-outline-secondary me-2" id="allRentalItemsBtn">所有租借品項</button>
+                    <button class="btn btn-outline-secondary me-2" id="activeRentalItemsBtn">上架中租借品項</button>
+                    <button class="btn btn-outline-secondary" id="inactiveRentalItemsBtn">下架租借品項</button>
+                    
+                    <button class="btn btn-success ms-auto" id="addRentalItemBtn">新增租借品項</button>
+                </div>
+
+                <!-- 表格內容 -->
+                <div class="table-responsive">
+                    <table id="rentalItemTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>租借品項編號</th>
+                                <th>租借品項名稱</th>
+                                <th>租借品項價格</th>
+                                <th>商品總數</th>
+                                <th>可租借數量</th>
+                                <th>分點編號</th>
+                                <th>租借品項狀態</th>
+                                <th>建檔時間</th>
+                                <th>操作</th>
+                                <th>上下架</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 動態生成表格內容 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分頁區域 -->
+                <div class="pagination-area d-flex justify-content-center align-items-center mt-4">
+                    <button class="btn btn-outline-secondary me-2" id="prevPageBtn">上一頁</button>
+                    <span id="currentPage" class="mx-2">1</span>
+                    <button class="btn btn-outline-secondary ms-2" id="nextPageBtn">下一頁</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="/vendors/dataTables/dataTables.min.js"></script>
+    <script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Sidebar JS -->
+    <script src="/js/sidebar2.js"></script>
+
+    <!-- Rental Item JS -->
+    <script src="/js/rental_item.js"></script>
+</body>
+</html>

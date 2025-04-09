@@ -1,0 +1,147 @@
+/* 主要內容區域 */
+.main-content {
+    margin-left: 240px; /* 配合側邊欄寬度 */
+    padding: 20px;
+}
+
+/* 卡片樣式 */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 15px 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* 表格樣式 */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    color: #333;
+    background-color: #f8f9fa;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table td {
+    vertical-align: middle;
+    text-align: center;
+    word-break: break-word; /* 讓文字可以換行 */
+    max-width: 150px; /* 限制最大寬度 */
+}
+
+.table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* 按鈕樣式 */
+.btn {
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #70b6c1;
+    border-color: #70b6c1;
+}
+
+.btn-primary:hover {
+    background-color: #5a9da7;
+    border-color: #5a9da7;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary.active {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: green;
+}
+
+/* 搜尋區域樣式 */
+.search-area {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* 篩選區域樣式 */
+.filter-area {
+    margin-bottom: 20px;
+}
+
+/* 分頁區域樣式 */
+.pagination-area {
+    margin-top: 20px;
+}
+
+#currentPage {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* 響應式設計 */
+@media (max-width: 992px) {
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .card-header h2 {
+        margin-bottom: 10px;
+    }
+    
+    .search-area .row {
+        flex-direction: column;
+    }
+    
+    .search-area .col-md-6 {
+        margin-bottom: 10px;
+    }
+    
+    .filter-area {
+        flex-wrap: wrap;
+    }
+    
+    .filter-area button {
+        margin-bottom: 10px;
+    }
+}

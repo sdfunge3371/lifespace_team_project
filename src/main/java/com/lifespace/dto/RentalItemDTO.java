@@ -1,48 +1,19 @@
-package com.lifespace.entity;
+package com.lifespace.dto;
 
-import com.lifespace.util.RentalItemCustomStringIdGenerator;
-import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-
-import java.io.Serializable;
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "rental_item")
-public class RentalItem implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(generator = "rental-item-id-generator")
-    @GenericGenerator(name = "rental-item-id-generator", 
-                     type = RentalItemCustomStringIdGenerator.class)
-    @Column(name = "rental_item_id")
+public class RentalItemDTO {
     private String rentalItemId;
-
-    @Column(name = "rental_item_name")
     private String rentalItemName;
-
-    @Column(name = "rental_item_price")
     private Integer rentalItemPrice;
-
-    @Column(name = "total_quantity")
     private Integer totalQuantity;
-
-    @Column(name = "available_rental_quantity")
     private Integer availableRentalQuantity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id", nullable = false)
-    private Branch branch;
-
-    @Column(name = "rental_item_status")
+    private String branchId;
+    private String branchName; // 額外添加分點名稱，便於顯示
     private Integer rentalItemStatus;
-
-    @Column(name = "created_time")
     private Timestamp createdTime;
 
-    public RentalItem() {
+    public RentalItemDTO() {
     }
 
     public String getRentalItemId() {
@@ -85,12 +56,20 @@ public class RentalItem implements Serializable {
         this.availableRentalQuantity = availableRentalQuantity;
     }
 
-    public Branch getBranch() {
-        return branch;
+    public String getBranchId() {
+        return branchId;
     }
 
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public Integer getRentalItemStatus() {
