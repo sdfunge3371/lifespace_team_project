@@ -164,13 +164,23 @@ $(document).ready(function() {
         const currentPageItems = allBranches.slice(startIndex, endIndex);
 
         if (currentPageItems.length === 0) {
-            tableBody.append('<tr><td colspan="9" class="text-center">無符合條件的資料</td></tr>');
+            tableBody.append('<tr><td colspan="10" class="text-center">無符合條件的資料</td></tr>');
             return;
         }
 
         currentPageItems.forEach(function(branch) {
             const statusText = branch.branchStatus === 1 ? '上架中' : '下架';
             const statusBtnText = branch.branchStatus === 1 ? '下架' : '上架中';
+            
+            // 處理公共設備名稱顯示
+            let publicEquipmentNames = '';
+            if (branch.publicEquipmentDTOList && branch.publicEquipmentDTOList.length > 0) {
+                publicEquipmentNames = branch.publicEquipmentDTOList
+                    .map(item => item.publicEquipName)
+                    .join(', ');
+            } else {
+                publicEquipmentNames = '無公共設備';
+            }
             
             const row = `
                 <tr>
@@ -181,6 +191,7 @@ $(document).ready(function() {
                     <td>${branch.longitude}</td>
                     <td>${statusText}</td>
                     <td>${formatDate(branch.createdTime)}</td>
+                    <td class="public-equipment">${publicEquipmentNames}</td>
                     <td>
                         <button class="btn btn-primary btn-sm edit-btn" data-id="${branch.branchId}">編輯</button>
                     </td>

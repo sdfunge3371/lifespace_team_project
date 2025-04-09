@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>分點管理</title>
+    <title>編輯分點</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="/css/sidebar.css" rel="stylesheet">
     <link href="/css/branch.css" rel="stylesheet">
-    <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- 側邊欄 -->
@@ -98,71 +97,92 @@
         <div class="card">
             <!-- 標題 -->
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">分點管理</h2>
+                <h2 class="mb-0">編輯分點</h2>
             </div>
 
-            <!-- 表格 -->
+            <!-- 表單 -->
             <div class="card-body">
-                <!-- 搜尋區域 -->
-                <div class="search-area mb-4">
-                    <div class="row">
+                <form id="editBranchForm">
+                    <input type="hidden" id="branchId" name="branchId">
+                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="searchTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="selectedSearchType">依分點編號搜尋</span>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="searchTypeDropdown">
-                                    <li><a class="dropdown-item search-type" href="#" data-type="branchId">依分點編號搜尋</a></li>
-                                    <li><a class="dropdown-item search-type" href="#" data-type="branchName">依分點名稱搜尋</a></li>
-                                </ul>
-                            </div>
+                            <label for="branchName" class="form-label">分點名稱</label>
+                            <input type="text" class="form-control" id="branchName" name="branchName" maxlength="10" required>
+                            <small class="text-muted">最多10個字</small>
                         </div>
+                    </div>
+                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="searchInput" placeholder="請輸入搜尋內容">
-                                <button class="btn btn-primary" id="searchBtn">搜尋</button>
+                            <label for="branchAddr" class="form-label">分點地址</label>
+                            <input type="text" class="form-control" id="branchAddr" name="branchAddr" maxlength="50" required>
+                            <small class="text-muted">最多50個字</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="latitude" class="form-label">地址緯度</label>
+                            <input type="number" step="0.0001" class="form-control" id="latitude" name="latitude" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="longitude" class="form-label">地址經度</label>
+                            <input type="number" step="0.0001" class="form-control" id="longitude" name="longitude" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label d-block">分點狀態</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="branchStatus" id="status0" value="0">
+                                <label class="form-check-label" for="status0">下架</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="branchStatus" id="status1" value="1">
+                                <label class="form-check-label" for="status1">上架中</label>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <label class="form-label">公共設備</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-primary btn-sm" id="editPublicEquipBtn">
+                                    <i class="fas fa-plus-circle me-1"></i>編輯公共設備
+                                </button>
+                                <div class="public-equipment-container">
+                                    <!-- 這裡將動態添加公共設備標籤 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="/branch.html" class="btn btn-secondary">取消</a>
+                        <button type="submit" class="btn btn-primary">完成</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <!-- 篩選區域 -->
-                <div class="filter-area d-flex mb-4">
-                    <button class="btn btn-outline-secondary me-2" id="allBranchesBtn">所有分點</button>
-                    <button class="btn btn-outline-secondary me-2" id="activeBranchesBtn">上架中分點</button>
-                    <button class="btn btn-outline-secondary" id="inactiveBranchesBtn">下架分點</button>
-                    
-                    <button class="btn btn-success ms-auto" id="addBranchBtn">新增分點</button>
+    <!-- 編輯公共設備彈窗 -->
+    <div class="modal fade" id="publicEquipModal" tabindex="-1" aria-labelledby="publicEquipModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="publicEquipModalLabel">編輯公共設備</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <!-- 表格內容 -->
-                <div class="table-responsive">
-                    <table id="branchTable" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>分點編號</th>
-                                <th>分點名稱</th>
-                                <th>分點地址</th>
-                                <th>地址緯度</th>
-                                <th>地址經度</th>
-                                <th>分點狀態</th>
-                                <th>建檔時間</th>
-                                <th>公共設備名稱</th>
-                                <th>操作</th>
-                                <th>上下架</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 動態生成表格內容 -->
-                        </tbody>
-                    </table>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="publicEquipName" class="form-label">公共設備名稱</label>
+                        <input type="text" class="form-control" id="publicEquipName" maxlength="20">
+                        <small class="text-muted">最多20個字</small>
+                    </div>
                 </div>
-
-                <!-- 分頁區域 -->
-                <div class="pagination-area d-flex justify-content-center align-items-center mt-4">
-                    <button class="btn btn-outline-secondary me-2" id="prevPageBtn">上一頁</button>
-                    <span id="currentPage" class="mx-2">1</span>
-                    <button class="btn btn-outline-secondary ms-2" id="nextPageBtn">下一頁</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" id="editEquipConfirmBtn">完成</button>
                 </div>
             </div>
         </div>
@@ -174,14 +194,10 @@
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
 
-    <!-- DataTables -->
-    <script src="/vendors/dataTables/dataTables.min.js"></script>
-    <script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
-
     <!-- Sidebar JS -->
     <script src="/js/sidebar2.js"></script>
 
-    <!-- Branch JS -->
-    <script src="/js/branch.js"></script>
+    <!-- Edit Branch JS -->
+    <script src="/js/edit-branch.js"></script>
 </body>
 </html>
