@@ -1,5 +1,7 @@
 package com.lifespace.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lifespace.util.RentalItemCustomStringIdGenerator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -32,8 +34,9 @@ public class RentalItem implements Serializable {
     @Column(name = "available_rental_quantity")
     private Integer availableRentalQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "branch_id", referencedColumnName = "branch_id", nullable = false)
+    @JsonBackReference
     private Branch branch;
 
     @Column(name = "rental_item_status")

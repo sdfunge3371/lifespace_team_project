@@ -299,6 +299,10 @@ public class Space implements java.io.Serializable {
 		return branch.getPublicEquipments();
 	}
 
+	@Transient
+	public List<RentalItem> getRentalItems() {
+		return branch.getRentalItems();
+	}
 
 	// 取得分點公共設備
 
@@ -316,13 +320,5 @@ public class Space implements java.io.Serializable {
 //
 //	public void setEvents(Set<Event> events) {
 //		this.events = events;
-//	}
-
-//	public BranchVO getBranchVO() {
-//		return branchVO;
-//	}
-//
-//	public void setBranchVO(BranchVO branchVO) {
-//		this.branchVO = branchVO;
 //	}
 }

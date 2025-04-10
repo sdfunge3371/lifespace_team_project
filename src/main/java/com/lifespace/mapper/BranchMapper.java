@@ -21,6 +21,7 @@ public class BranchMapper {
         dto.setLongitude(branch.getLongitude());
         dto.setBranchStatus(branch.getBranchStatus());
         dto.setCreatedTime(branch.getCreatedTime());
+        dto.setRentalItems(branch.getRentalItems());
 
         if (branch.getPublicEquipments() != null) {
             dto.setPublicEquipmentDTOList(toPublicEquipmentDTOList(new ArrayList<>(branch.getPublicEquipments())));

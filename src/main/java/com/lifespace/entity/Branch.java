@@ -46,7 +46,8 @@ public class Branch implements Serializable {
     @JsonManagedReference
     private List<PublicEquipment> publicEquipments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<RentalItem> rentalItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -1,5 +1,7 @@
 package com.lifespace.dto;
 
+import com.lifespace.entity.RentalItem;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,17 @@ public class BranchDTO {
     private Integer branchStatus;
     private Timestamp createdTime;
     private List<PublicEquipmentDTO> publicEquipmentDTOList = new ArrayList<>();
+    private List<RentalItem> rentalItems = new ArrayList<>();
 
     public BranchDTO() {
+    }
+
+    public List<RentalItem> getRentalItems() {
+        return rentalItems;
+    }
+
+    public void setRentalItems(List<RentalItem> rentalItems) {
+        this.rentalItems = rentalItems;
     }
 
     public String getBranchId() {
