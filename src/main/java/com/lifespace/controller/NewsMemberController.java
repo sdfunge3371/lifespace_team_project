@@ -15,7 +15,7 @@ import com.lifespace.service.NewsService;
 public class NewsMemberController {
 
 	@Autowired
-	NewsService newsSvc;
+	private NewsService newsSvc;
 	
 	
 	// 前台取得全部欄位(依上架狀態)

@@ -27,7 +27,7 @@ import jakarta.validation.Valid;
 public class NewsAdminController {
 
 	@Autowired
-	NewsService newsSvc;
+	private NewsService newsSvc;
 	
 	// 後台取得全部欄位
 	@GetMapping("query")

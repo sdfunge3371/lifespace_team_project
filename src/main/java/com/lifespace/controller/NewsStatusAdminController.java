@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lifespace.dto.NewsStatusDTO;
 import com.lifespace.service.NewsStatusService;
 
-//會回傳 JSON，不會找 View
+//會回傳 JSON
 @RestController
 @RequestMapping("/admin/newsStatus")
 public class NewsStatusAdminController {
 
 	@Autowired
-	NewsStatusService newsStatusSvc;
+	private NewsStatusService newsStatusSvc;
 
 	@GetMapping("query")
 	public List<NewsStatusDTO> getAll() {
