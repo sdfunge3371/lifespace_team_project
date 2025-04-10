@@ -28,7 +28,7 @@ public interface EventMemberRepository extends JpaRepository<EventMember,String>
 		//根據條件查詢活動，為了使用者活動頁面一覽分類用
 		
 		@Query(value = "SELECT " +
-			    "em.event_id, em.member_id, e.event_name, e.event_start_time, e.event_end_time, "+
+			    "em.event_id, em.member_id, ord.member_id AS organizerId, e.event_name, e.event_start_time, e.event_end_time, "+
 			    "ec.event_category_name, e.event_status, e.number_of_participants, "+
 			    "e.maximum_of_participants, em.participate_status, em.created_time, "+
 			    "GROUP_CONCAT(ep.photo) AS photo_urls " +
@@ -41,9 +41,9 @@ public interface EventMemberRepository extends JpaRepository<EventMember,String>
 	            "AND (:participateStatus IS NULL OR em.participate_status LIKE CONCAT('%', :participateStatus, '%')) "+
 				"AND (:eventStatus IS NULL OR e.event_status LIKE CONCAT('%', :eventStatus, '%')) "+
 				"AND (:organizerId IS NULL OR ord.member_id = :organizerId) "+
-				"GROUP BY em.event_id, em.participate_status, em.created_time, em.member_id"
+				"GROUP BY em.event_id, em.participate_status, em.created_time, em.member_id, ord.member_id"
 				,countQuery = "SELECT " +
-					    "em.event_id, em.member_id, e.event_name, e.event_start_time, e.event_end_time, "+
+					    "em.event_id, em.member_id, ord.member_id AS organizerId, e.event_name, e.event_start_time, e.event_end_time, "+
 					    "ec.event_category_name, e.event_status, e.number_of_participants, "+
 					    "e.maximum_of_participants, em.participate_status, em.created_time, "+
 					    "GROUP_CONCAT(ep.photo) AS photo_urls " +
@@ -56,7 +56,7 @@ public interface EventMemberRepository extends JpaRepository<EventMember,String>
 			            "AND (:participateStatus IS NULL OR em.participate_status LIKE CONCAT('%', :participateStatus, '%')) "+
 						"AND (:eventStatus IS NULL OR e.event_status LIKE CONCAT('%', :eventStatus, '%')) "+
 						"AND (:organizerId IS NULL OR ord.member_id = :organizerId) "+
-						"GROUP BY em.event_id, em.participate_status, em.created_time, em.member_id"
+						"GROUP BY em.event_id, em.participate_status, em.created_time, em.member_id, ord.member_id"
 				,nativeQuery = true)
 	 	Page<EventMemberResponse> getEventByMemberConditions( 
 	 			@Param("memberId") String memberId,
