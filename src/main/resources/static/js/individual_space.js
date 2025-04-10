@@ -9,6 +9,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // 開始抓資料
     fetchSpace();
     fetchComments();
+
+    setupOrderConfirmModal();
 });
 
 // ========== 處理頁籤 ==========
@@ -486,10 +488,16 @@ function updateTotal() {
 
 
     // 計算租借品項
-    const equip1 = parseInt(document.getElementById('equip1').value) * 30;
-    const equip2 = parseInt(document.getElementById('equip2').value) * 50;
-    const equip3 = parseInt(document.getElementById('equip3').value) * 100;
-    const equipmentTotal = equip1 + equip2 + equip3;
+    let equipmentTotal = 0;
+    const equipmentInputs = document.querySelectorAll('.quantity-input');   // 抓租借品項輸入的數量
+
+    // 計算各租借品項的金額
+    equipmentInputs.forEach(input => {
+        const quantity = parseInt(input.value);
+        const price = parseInt(input.dataset.price);
+        equipmentTotal += quantity * price;
+    });
+
     document.getElementById('equipmentCost').textContent = '$ ' + equipmentTotal;
 
     // 計算總金額
@@ -534,7 +542,7 @@ function fetchSpace() {
             insertPublicEquips(space.publicEquipments);
             insertTransportation(space.branchAddr, space.spaceFloor);  // 地址到時候改成branchAddress
             insertAsideInfo(space.spaceName, space.spaceHourlyFee, space.spaceDailyFee);
-            insertRentalItems();
+            insertRentalItems(space.rentalItems);
         })
         .catch(error => console.log(error));
 }
@@ -696,8 +704,29 @@ function insertAsideInfo(name, hourly, daily) {
 
 }
 
-function insertRentalItems() {
+function insertRentalItems(itemObj) {
+    const rentalItemContainer = document.querySelector(".rental-item-container");
 
+    // 清空舊的租借品項，只留標題
+    rentalItemContainer.innerHTML = `<div class="rental-item-title section-title">租借品項加購</div>`;
+
+    itemObj.forEach(item => {
+        if (item.rentalItemStatus === 0 || item.availableRentalQuantity <= 0) {
+            return;
+        }
+
+        const itemHtml = `
+                    <div class="rental-item">
+                        <div class="equipment-name">${item.rentalItemName} (+$${item.rentalItemPrice})</div>
+                        <div class="quantity-control">
+                            <button class="quantity-btn" onclick="changeQuantity('${item.rentalItemId}', -1)">-</button>
+                            <input type="number" id="${item.rentalItemId}" class="quantity-input" value="0" min="0" data-price="${item.rentalItemPrice}" onchange="updateTotal()">
+                            <button class="quantity-btn" onclick="changeQuantity('${item.rentalItemId}', 1)">+</button>
+                        </div>
+                    </div>
+                `;
+        rentalItemContainer.insertAdjacentHTML('beforeend', itemHtml);  // 把上述HTML接在下面
+    })
 }
 
 
@@ -726,8 +755,6 @@ function insertHeadComments(comments) {
     // 計算評論總數量
     let totalComments = comments.length;
     document.querySelector(".total-comments").innerHTML = `(${totalComments}則評論)`;
-
-    console.log(totalComments);
 
     const commentsContainer = document.querySelector(".container-comment-row");
     commentsContainer.innerHTML = ""; // 清空舊資料
@@ -858,6 +885,127 @@ function insertAllComments(comments) {
 }
 
 
+// 點擊「開始預訂」時
+document.querySelector(".pay-button").addEventListener("click", () => {
+    // 檢查選購欄資料是否接確實填寫
+    const isDaily = document.getElementById("daily").checked;   // 檢查時租日租勾哪一個
+    let dateSelected = document.getElementById("dateToggleButton").textContent.trim() !== "選擇日期";
+
+    // 檢查時間是否已選擇 (僅時租需要)
+    const startTimeSelected = document.getElementById("startTimeButton").textContent.trim() !== "開始時間";
+    const endTimeSelected = document.getElementById("endTimeButton").textContent.trim() !== "結束時間";
+
+    // 驗證條件
+    let isValid = false;
+    let errorMessage = "";
+
+    if (isDaily) {
+        if (!dateSelected)
+            errorMessage = "請選擇預訂日期";
+        else {
+            isValid = true;
+        }
+    } else {
+        if (!dateSelected || !startTimeSelected || !endTimeSelected) {
+            errorMessage = "請選擇預訂日期、開始時間及結束時間";
+        } else {
+            isValid = true;
+        }
+    }
+
+    // 驗證失敗時，跳出警告
+    if (!isValid) {
+        alert(errorMessage);
+        return;
+    }
+
+    // 顯示modal及遮罩(overlay)
+    document.getElementById("orderConfirmModal").style.display = "block";
+    document.querySelector(".overlay").classList.remove("hidden");
+
+    // 重置所有modal內容
+    document.querySelector(".space-name").textContent = "";
+    document.getElementById("rentTypeText").textContent = "";
+    document.getElementById("rentFeeText").textContent = "";
+    document.getElementById("usagePeriodText").textContent = "";
+    document.getElementById("spaceCostText").textContent = "";
+    document.getElementById("equipmentCostText").textContent = "";
+    document.getElementById("totalCostText").textContent = "";
+    document.getElementById("rentalItemList").innerHTML = "";
+
+    // 填入新數據
+
+    // 直接從選購欄抓資料
+    const spaceName = document.querySelector(".header-title").textContent;
+
+    // 抓費率
+
+    const rate = isDaily ? parseInt(document.getElementById("daily-price").textContent) : parseInt(document.getElementById("hourly-price").textContent);
+
+    const rentTypeText = isDaily ? "日租" : "時租";
+    const rentFeeText = `$${rate}/${isDaily ? "d" : "hr"}`;
+
+    // 抓開始、結束時間
+    let selectedDate = document.getElementById("dateToggleButton").textContent.trim();
+    let startTime = document.getElementById("startTimeInput").value;
+    let endTime = document.getElementById("endTimeInput").value;
+    let usageText = selectedDate + (isDaily ? "" : ` ${startTime} ~ ${endTime}`);
+
+    // 抓租借時數
+    const durationHours = parseFloat(document.querySelector(".duration-span").textContent);
+    if (!isDaily) usageText += ` (${durationHours}hr)`;
+
+    // 將資料丟進確認訂單的modal
+    document.querySelector(".space-name").textContent = spaceName;
+    document.getElementById("rentTypeText").textContent = rentTypeText;
+    document.getElementById("rentFeeText").textContent = rentFeeText;
+    document.getElementById("usagePeriodText").textContent = usageText;
+
+    // 抓租借品項並丟進modal
+    const itemList = document.getElementById("rentalItemList");
+    itemList.innerHTML = "";
+    const allInputs = document.querySelectorAll(".quantity-input");  // 抓各租借品項的數量
+
+    allInputs.forEach(input => {
+        const qty = parseInt(input.value);
+        if (qty > 0) {  // 如果不是0才顯示
+            const name = input.closest(".rental-item").querySelector(".equipment-name").textContent;
+            const li = document.createElement("li");
+            li.textContent = `${name} *${qty}`;
+            itemList.appendChild(li);
+        }
+    });
+
+    // 將金額相關資料丟進modal
+    document.getElementById("spaceCostText").textContent = document.getElementById("spaceCost").textContent;
+    document.getElementById("equipmentCostText").textContent = document.getElementById("equipmentCost").textContent;
+    document.getElementById("totalCostText").textContent = document.getElementById("totalCost").textContent;
+})
+
+// 關閉確認訂單modal
+function setupModalCloseListeners() {
+    // 按modal的叉叉關閉
+    const closeModalBtn = document.querySelector(".close-modal");
+    closeModalBtn.onclick = function() {
+        document.getElementById("orderConfirmModal").style.display = "none";
+        document.querySelector(".overlay").classList.add("hidden");
+    };
+
+    // 按modal外面任意處關閉
+    const overlay = document.querySelector(".overlay");
+    overlay.onclick = function() {
+        document.getElementById("orderConfirmModal").style.display = "none";
+        this.classList.add("hidden");
+    };
+}
+
+// 當DOM載入完成時設置關閉eventListener
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupModalCloseListeners);
+} else {
+    setupModalCloseListeners();
+}
+
 // 檢查「評論」是多久前發的（n天前、n小時前）
 function formatRelativeTime(dateStr) {
     const now = new Date();
@@ -877,4 +1025,31 @@ function formatRelativeTime(dateStr) {
     if (hours > 0) return `${hours}小時前`;
     if (minutes > 0) return `${minutes}分鐘前`;
     return `剛剛`;
+}
+
+// 修正modal顯示位置要在可視區域中心
+function setupOrderConfirmModal() {
+    const orderModal = document.getElementById('orderConfirmModal');
+
+    // 設置樣式
+    orderModal.style.position = 'fixed';   // 使用fixed而不是absolute
+    orderModal.style.top = '50%';
+    orderModal.style.left = '50%';
+    orderModal.style.transform = 'translate(-50%, -50%)';
+    orderModal.style.zIndex = '10080';     // 確保z-index足夠高
+
+    // 為modal內容設置最大高度，以確保在小屏幕上不會超出視窗
+    const modalContent = orderModal.querySelector('.modal-content');
+    if (modalContent) {
+        modalContent.style.maxHeight = '80vh';
+        modalContent.style.overflowY = 'auto';
+    }
+
+    // 修正遮罩層樣式
+    const overlay = document.querySelector('.overlay');
+    overlay.style.position = 'fixed';      // 使用fixed而不是absolute
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
 }

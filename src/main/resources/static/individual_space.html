@@ -396,11 +396,11 @@
                         </div>
 
                         <!-- 租借品項加購欄 -->
-                        <div class="equipment-section">
-                            <div class="section-title">租借品項加購</div>
+                        <div class="rental-item-container equipment-section">
+                            <div class="rental-item-title section-title">租借品項加購</div>
 
-                            <!--Ajax導入「租賃設備名稱」+「加購價」-->
-                            <div class="equipment-item">
+                            <!--Ajax導入「租借品項名稱」+「加購價」-->
+                            <div class="rental-item">
                                 <div class="equipment-name">設備1 (+$30)</div>
                                 <div class="quantity-control">
                                     <button class="quantity-btn" onclick="changeQuantity('equip1', -1)">-</button>
@@ -410,7 +410,7 @@
                                 </div>
                             </div>
 
-                            <div class="equipment-item">
+                            <div class="rental-item">
                                 <div class="equipment-name">設備2 (+$50)</div>
                                 <div class="quantity-control">
                                     <button class="quantity-btn" onclick="changeQuantity('equip2', -1)">-</button>
@@ -420,7 +420,7 @@
                                 </div>
                             </div>
 
-                            <div class="equipment-item">
+                            <div class="rental-item">
                                 <div class="equipment-name">設備3 (+$100)</div>
                                 <div class="quantity-control">
                                     <button class="quantity-btn" onclick="changeQuantity('equip3', -1)">-</button>
@@ -458,7 +458,7 @@
                             </div>
                         </div>
 
-                        <button class="pay-button">立即付款</button>
+                        <button class="pay-button">開始預訂</button>
                     </div>
                 </aside>
             </div>
@@ -723,6 +723,41 @@
     </div>
 
     <div class="overlay hidden"></div>
+
+    <!-- 空間評論modal End -->
+
+
+    <!-- 確認訂單 Modal -->
+    <div id="orderConfirmModal" style="display: none;">
+        <div class="modal-content" style="max-width: 700px; margin: auto; background: white; padding: 2rem;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>確認訂單</h4>
+                <span class="close-modal" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
+            </div>
+            <div class="summary-box d-flex">
+                <div class="image-placeholder me-3" style="width: 120px; height: 120px; background-color: #eee; border-radius: 8px;"></div>
+                <div>
+                    <h5 class="space-name">空間名稱</h5>
+                    <p>時租/日租：<span id="rentTypeText">-</span></p>
+                    <p>費率：<span id="rentFeeText">-</span></p>
+                    <p>使用時段：<span id="usagePeriodText">-</span></p>
+                    <p>租借品項：</p>
+                    <ul id="rentalItemList" style="padding-left: 1rem;"></ul>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="d-flex justify-content-between"><span>空間使用費</span><span id="spaceCostText">$0</span></div>
+                <div class="d-flex justify-content-between"><span>租借品項加價</span><span id="equipmentCostText">$0</span></div>
+                <div class="d-flex justify-content-between fw-bold fs-5 mt-2"><span>總金額</span><span id="totalCostText">$0</span></div>
+            </div>
+            <div class="text-end mt-4">
+                <button class="btn btn-dark">前往付款</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 背景遮罩 -->
+<!--    <div id="modalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;"></div>-->
 
     <!-- 空間評論modal End -->
 
