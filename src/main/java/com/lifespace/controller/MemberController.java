@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.lifespace.SessionUtils;
 import com.lifespace.dto.MemberDTO;
 import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
@@ -82,7 +83,7 @@ public class MemberController {
 	//-----------------------取得登入會員資訊（從 Session 抓）------------------------------
 	@GetMapping("/member/profile")
 	public ResponseEntity<?> getProfile(HttpSession session){
-		String memberId = (String) session.getAttribute("loginMember");
+		String memberId = SessionUtils.getLoginMemberId(session); // 統一從工具類拿
 		
 		if(memberId == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
