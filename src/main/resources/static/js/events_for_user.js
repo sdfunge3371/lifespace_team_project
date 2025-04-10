@@ -98,11 +98,9 @@ $(document).ready(function () {
            // 渲染活動卡片
            function renderEventCard(event, tabId) {
                const startTime = new Date(event.eventStartTime);
-               const endTime = new Date(event.eventEndTime);
-               
+
                const formattedStartDate = `${startTime.getFullYear()}/${(startTime.getMonth()+1).toString().padStart(2, '0')}/${startTime.getDate().toString().padStart(2, '0')}`;
                const formattedStartTime = `${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')}`;
-               const formattedEndTime = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
                
                // 活動狀態標籤樣式
                let statusClass = '';
@@ -131,14 +129,18 @@ $(document).ready(function () {
                // 活動操作按鈕
                let actionButtons = '';
                
-               if (tabId === 'registered-events' || tabId === 'queued-events') {
-                   // 已報名或候補的活動可以取消參與
-                   actionButtons = `
-                       <button class="action-button cancel-button" data-event-id="${event.eventId}" data-event-name="${event.eventName}">
-                           取消參與
-                       </button>
-                   `;
-               }
+			   console.log(event);
+			   
+			   // 根據不同條件決定是否顯示取消參與按鈕
+			   if ((tabId === 'registered-events' || tabId === 'queued-events') 
+						&& event.organizerId !== event.memberId ) {
+			       // 已報名或候補的活動可以取消參與，但舉辦人不能取消參與自己的活動
+			       actionButtons += `
+			           <button class="action-button cancel-button" data-event-id="${event.eventId}" data-event-name="${event.eventName}">
+			               取消參與
+			           </button>
+			       `;
+			   }
                
                if (tabId === 'created-events' && event.eventStatus === 'SCHEDULED') {
                    // 自己建立且尚未舉辦的活動可以取消舉辦
@@ -166,34 +168,48 @@ $(document).ready(function () {
                }
                
                // 活動卡片 HTML
-               const cardHtml = `
-                   <div class="event-container" data-event-id="${event.eventId}">
-                       <div class="event-img">
-                           <img src="${imageUrl}" alt="${event.eventName}">
-                       </div>
-                       <div class="event-info">
-                           <span class="event-status ${statusClass}">${statusText}</span>
-                           <h4>${event.eventName}</h4>
-                           <span class="event-category">${event.eventCategoryName}</span>
-                           <div class="event-time">
-                               <i class="fas fa-calendar-alt"></i>
-                               ${formattedStartDate} ${formattedStartTime}-${formattedEndTime}
-                           </div>
-                           <div class="event-location">
-                               <i class="fas fa-users"></i>
-                               參與人數: ${event.numberOfParticipants}/${event.maximumOfParticipants}
-                           </div>
-                           <div class="event-actions">
-                               ${actionButtons}
-                           </div>
-                       </div>
-                   </div>
-               `;
+			   const cardHtml = `
+			       <div class="event-container" data-event-id="${event.eventId}">
+			           <div class="event-img">
+			               <img src="${imageUrl}" alt="${event.eventName}">
+			           </div>
+			           <div class="event-info">
+			               <span class="event-status ${statusClass}">${statusText}</span>
+			               <h4>${event.eventName}</h4>
+			               <span class="event-category">${event.eventCategoryName}</span>
+			               <div class="event-time">
+			                   <i class="fas fa-calendar-alt"></i>
+			                   ${formattedStartDate} ${formattedStartTime}
+			               </div>
+			               <div class="event-location">
+			                   <i class="fas fa-users"></i>
+			                   參與人數: ${event.numberOfParticipants}/${event.maximumOfParticipants}
+			               </div>
+			               <div class="event-actions">
+			                   ${actionButtons}
+			               </div>
+			           </div>
+			       </div>
+			   `;
                
                // 附加到對應頁籤
                $(`#${tabId}`).append(cardHtml);
            }
            
+		   // 活動卡片點擊事件 - 導向活動詳情頁面
+		   $(document).on('click', '.event-container', function(e) {
+		       // 如果點擊的是按鈕或按鈕內部的元素，不執行導航
+		       if ($(e.target).closest('.action-button').length > 0) {
+		           return;
+		       }
+		       
+		       const eventId = $(this).data('event-id');
+		       if (eventId) {
+		           // 導向活動詳情頁面
+		           window.location.href = `http://localhost:8080/event_detail.html?eventId=${eventId}`;
+		       }
+		   });
+		   
            // 更新分頁控制
            function updatePagination() {
                const paginationContainer = $('.pagination-container');
@@ -270,7 +286,7 @@ $(document).ready(function () {
            
 		   
            // 處理取消參與活動點擊
-           $(document).on('click', '.cancel-button', function() {
+           $(document).off('click', '.cancel-button').on('click', '.cancel-button', function() {
                const eventId = $(this).data('event-id');
                const eventName = $(this).data('event-name');
                const organizerId = $(this).data('organizer-id'); // 若有值表示是取消舉辦
@@ -289,70 +305,16 @@ $(document).ready(function () {
                }
            });
            
-           // 確認取消參與活動
-           $('#confirmCancelBtn').click(function() {
-               if (!cancelEventId) return;
-               
-               $('#cancelEventModal').modal('hide');
-               
-               // 顯示處理中狀態
-               $(`#${currentTab}`).append(`
-                   <div class="alert alert-info cancel-processing">
-                       正在處理您的請求，請稍候...
-                   </div>
-               `);
-               
-               // 發送取消請求
-               $.ajax({
-                   url: 'http://localhost:8080/lifespace/event/removeMemFromEvent',
-                   method: 'PUT',
-                   data: {
-                       eventId: cancelEventId,
-                       memberId: memberId
-                   },
-                   success: function(response) {
-                       $('.cancel-processing').remove();
-                       
-                       // 顯示成功訊息
-                       $(`#${currentTab}`).append(`
-                           <div class="alert alert-success">
-                               已成功取消參與活動
-                           </div>
-                       `);
-                       
-                       // 重新加載活動數據
-                       setTimeout(function() {
-                           $('.alert').fadeOut(function() {
-                               $(this).remove();
-                               loadEventData();
-                           });
-                       }, 2000);
-                   },
-                   error: function(xhr) {
-                       $('.cancel-processing').remove();
-                       
-                       // 顯示錯誤訊息
-                       $(`#${currentTab}`).append(`
-                           <div class="alert alert-danger">
-                               取消參與失敗: ${xhr.responseText || '請稍後再試'}
-                           </div>
-                       `);
-                       
-                       setTimeout(function() {
-                           $('.alert').fadeOut(function() {
-                               $(this).remove();
-                           });
-                       }, 3000);
-                   }
-               });
-           });
-           
+
            // 確認取消舉辦活動
-           $('#confirmCancelHostBtn').click(function() {
+           $('#confirmCancelHostBtn').one('click', function() {
                if (!cancelEventId || !cancelOrganizerId) return;
                
                $('#cancelHostEventModal').modal('hide');
                
+			   // 顯示全局 spinner
+			   showLoadingSpinner();
+					   
                // 顯示處理中狀態
                $(`#${currentTab}`).append(`
                    <div class="alert alert-info cancel-processing">
@@ -363,7 +325,7 @@ $(document).ready(function () {
                // 發送取消舉辦請求
                $.ajax({
                    url: 'http://localhost:8080/lifespace/event/cancell',
-                   method: 'GET',
+                   method: 'PUT',
                    data: {
                        organizerId: cancelOrganizerId,
                        eventId: cancelEventId
@@ -379,12 +341,12 @@ $(document).ready(function () {
                        `);
                        
                        // 重新加載活動數據
-                       setTimeout(function() {
+                      setTimeout(function() {
                            $('.alert').fadeOut(function() {
                                $(this).remove();
                                loadEventData();
-                           });
-                       }, 2000);
+                         });
+                      }, 2000);
                    },
                    error: function(xhr) {
                        $('.cancel-processing').remove();
@@ -401,7 +363,11 @@ $(document).ready(function () {
                                $(this).remove();
                            });
                        }, 3000);
-                   }
+                   },
+				   complete: function() {
+				   	               // 無論成功或失敗都隱藏 spinner
+				   	               hideLoadingSpinner();
+				   	           }
                });
            });
            
@@ -409,11 +375,11 @@ $(document).ready(function () {
            loadEventData();
            
            // 設置定時刷新 - 每60秒刷新一次當前頁面的數據
-           setInterval(function() {
-               if (document.visibilityState === 'visible') {
-                   loadEventData();
-               }
-           }, 60000); // 60秒
+           //setInterval(function() {
+          //     if (document.visibilityState === 'visible') {
+           //       loadEventData();
+         //     }
+         //  }, 60000); // 60秒
 		   
 		   
 		   // 新增一個全局的 spinner 顯示/隱藏函數
@@ -477,37 +443,37 @@ $(document).ready(function () {
 		   });
 
 		   // 如果是取消舉辦活動，也需要類似的修改
-		   $('#confirmCancelHostBtn').click(function() {
-		       if (!cancelEventId || !cancelOrganizerId) return;
+		   //$('#confirmCancelHostBtn').click(function() {
+		    //   if (!cancelEventId || !cancelOrganizerId) return;
 
 		       // 關閉彈窗
-		       $('#cancelHostEventModal').modal('hide');
+		    //   $('#cancelHostEventModal').modal('hide');
 
 		       // 顯示全局 spinner
-		       showLoadingSpinner();
+		    //   showLoadingSpinner();
 
 		       // 發送取消舉辦請求
-		       $.ajax({
-		           url: '/lifespace/event/cancell',
-		           method: 'GET',
-		           data: {
-		               organizerId: cancelOrganizerId,
-		               eventId: cancelEventId
-		           },
-		           success: function() {
+		  //     $.ajax({
+		     //      url: 'http://localhost:8080/lifespace/event/cancell',
+		    //       method: 'GET',
+		    //       data: {
+		    //           organizerId: cancelOrganizerId,
+		    //           eventId: cancelEventId
+		    //       },
+		  //         success: function() {
 		               // 重新加載當前頁面的數據
-		               loadEventData();
-		           },
-		           error: function(xhr) {
+		 //              loadEventData();
+		 //          },
+		 //          error: function(xhr) {
 		               // 顯示錯誤訊息
-		               alert('取消舉辦失敗: ' + (xhr.responseText || '請稍後再試'));
-		           },
-		           complete: function() {
+		  //             alert('取消舉辦失敗: ' + (xhr.responseText || '請稍後再試'));
+		  //     },
+		//           complete: function() {
 		               // 無論成功或失敗都隱藏 spinner
-		               hideLoadingSpinner();
-		           }
-		       });
-		   });
+		//               hideLoadingSpinner();
+		//           }
+		//       });
+
 		   
 		   
 		   

@@ -148,7 +148,7 @@ public class EventController {
     }
     
     //舉辦者取消活動
-    @GetMapping("/cancell")
+    @PutMapping("/cancell")
     public String cancellEvent(
     		@RequestParam(required = true) String organizerId, 
     		@RequestParam(required = true) String eventId){

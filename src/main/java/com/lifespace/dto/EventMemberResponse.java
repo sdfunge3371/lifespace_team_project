@@ -11,6 +11,8 @@ public class EventMemberResponse {
 	 
 	 private String memberId;
 	 
+	 private String organizerId;
+	 
 	 private String eventName;
 	 
 	 private Timestamp eventStartTime;
@@ -45,6 +47,14 @@ public class EventMemberResponse {
 
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
+	}
+
+	public String getOrganizerId() {
+		return organizerId;
+	}
+
+	public void setOrganizerId(String organizerId) {
+		this.organizerId = organizerId;
 	}
 
 	public String getEventName() {
@@ -127,12 +137,13 @@ public class EventMemberResponse {
 		this.photoUrls = photoUrls;
 	}
 
-	public EventMemberResponse(String eventId, String memberId, String eventName, Timestamp eventStartTime,
+	public EventMemberResponse(String eventId, String memberId, String organizerId, String eventName, Timestamp eventStartTime,
 			Timestamp eventEndTime, String eventCategoryName, String eventStatus, Integer numberOfParticipants,
 			Integer maximumOfParticipants, String participateStatus, Timestamp createdTime, String photoUrls) {
 		super();
 		this.eventId = eventId;
 		this.memberId = memberId;
+		this.organizerId = organizerId;
 		this.eventName = eventName;
 		this.eventStartTime = eventStartTime;
 		this.eventEndTime = eventEndTime;

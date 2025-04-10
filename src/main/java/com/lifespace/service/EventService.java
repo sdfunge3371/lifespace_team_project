@@ -512,6 +512,9 @@ public class EventService {
 					
 					cancellMember.setParticipateStatus(EventMemberStatus.CANCELLED);
 					cancellMember.setCreatedTime(currentTime);
+					
+					eventMemberRepository.save(cancellMember);
+					
 					cancelledMembers.add(cancellMember.getMember());
 					
 					System.out.println("活動成員: " + cancellMember.getMember().getMemberId() 
