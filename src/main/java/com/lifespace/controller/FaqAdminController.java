@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 public class FaqAdminController {
 
 	@Autowired
-	FaqService faqSvc;
+	private FaqService faqSvc;
 	
 	// 後台取得FAQ
 	@GetMapping("query")

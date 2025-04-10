@@ -16,7 +16,7 @@ import com.lifespace.service.NewsCategoryService;
 public class NewsCategoryAdminController {
 
 	@Autowired
-	NewsCategoryService newsCategorySvc;
+	private NewsCategoryService newsCategorySvc;
 
 	@GetMapping("query")
 	public List<NewsCategoryDTO> getAll() {
