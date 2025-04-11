@@ -21,10 +21,10 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     List<Orders> findByOrderStatusAndOrderEndBefore(Integer orderStatus, Timestamp OrderEnd );
 
-    @EntityGraph(attributePaths = {"branch", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
+    @EntityGraph(attributePaths = {"branch", "member", "rentalItemDetails", "rentalItemDetails.rentalItem"})
     List<Orders> findAll();
 
-    @EntityGraph(attributePaths = {"branch", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
+    @EntityGraph(attributePaths = {"branch", "member", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
     List<Orders> findByMember_MemberIdAndMember_AccountStatus(String memberId, Integer accountStatus);
     
     

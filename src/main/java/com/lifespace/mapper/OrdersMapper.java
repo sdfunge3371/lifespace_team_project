@@ -26,6 +26,7 @@ public class OrdersMapper {
         dto.setOrderStart(orders.getOrderStart());
         dto.setOrderEnd(orders.getOrderEnd());
         dto.setPaymentDatetime(orders.getPaymentDatetime());
+        dto.setAccountsPayable(orders.getAccountsPayable());
         dto.setOrderStatus(orders.getOrderStatus());
 
         if(orders.getEvent() != null) {

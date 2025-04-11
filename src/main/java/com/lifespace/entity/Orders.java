@@ -3,6 +3,7 @@ package com.lifespace.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -63,9 +64,10 @@ public class Orders implements Serializable {
     private Integer accountsPayable;
 
     @Column(name = "order_status")
-    private Integer orderStatus;
+    private Integer orderStatus = 1;
 
     @Column(name = "created_time")
+    @UpdateTimestamp
     private Timestamp createdTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -248,4 +250,21 @@ public class Orders implements Serializable {
     }
 
 
+
+    @Column(name = "member_id", insertable = false, updatable = false)
+    private String memberId;
+
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+    @Transient
+    public String getBranchAddr() {
+        return branch.getBranchAddr();
+    }
 }
