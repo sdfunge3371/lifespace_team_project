@@ -1,4 +1,3 @@
-
 body {
     font-family: Arial, sans-serif;
 }
@@ -9,123 +8,193 @@ body {
 
 .tabs {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
-    border-bottom: 2px ;
+    border-bottom: 1px solid #e4e9e4;
     background-color: #EFFDF5;
-    margin-left: 160px;
+    margin-left: 40px;
+    margin-right: 40px;
+    padding-top: 20px;
 }
 
 /* 頁籤標籤 */
 .tab {
-    padding: 12px 20px;
+    padding: 12px 24px;
     cursor: pointer;
-    color: #888;
+    color: #777;
     font-size: 16px;
-    font-weight: normal;
+    font-weight: 500;
     position: relative;
-    transition: color 0.3s ease;
-    right: 500px;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-right: 10px;
+}
+
+/* 頁籤懸停效果 */
+.tab:hover {
+    color: #555;
+    background-color: rgba(124, 187, 124, 0.05);
 }
 
 /* 當頁籤被選中時 */
 .tab.active {
     color: #00b98e;
-    font-weight: bold;
-    border-bottom: 3px solid rgb(124, 187, 124); /* 添加底線 */
+    font-weight: 600;
+    border-bottom: 3px solid rgb(124, 187, 124);
 }
 
 /* 訂單區塊 */
 .order-container {
     display: flex;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin: 0px 10px 0px 40px;
+    border: none;
+    padding: 24px;
+    margin: 20px 10px 20px 40px;
     width: 1000px;
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
 }
+
+.order-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
 .order-img {
-    width: 170px;
-    height: 170px;
-    background-color: #ddd;
-    margin:10px 15px 0px 0px;
+    width: 180px;
+    height: 180px;
+    background-color: #f0f4f1;
+    margin: 0 20px 0 0;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0; /* 確保圖片大小不會縮小 */
+    position: relative;
 }
+
 .order-img img {
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
 }
+
+.order-img:hover img {
+    transform: scale(1.05);
+}
+
 .order-info {
     flex: 1;
-    border: 2px ;
-    padding: 10px;
+    padding: 5px 0;
+    position: relative;
+}
+
+.order-info p {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #444;
+    line-height: 1.5;
 }
 
 .details {
-    display: none;
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px ;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+    margin-top: 12px;
+    padding: 15px;
+    border: 1px solid #e8efe8;
+    background-color: #f8fbf8;
+    border-radius: 6px;
 }
+
+.details p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
 .actions {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: flex-end;
-    margin-top: 10px;
-
+    margin-top: 15px;
 }
+
 /* 按鈕設計 */
 .toggle-details {
-    cursor: pointer;
-    background-color:rgb(124, 187, 124);
-    color: white;
-    border: none;
-    padding: 5px 10px;
+    background-color: #f5f9f5;
+    border: 1px solid #ddd;
+    color: #476d47;
+    padding: 6px 12px;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    margin: 10px 0;
+    font-weight: 500;
 }
+
+.toggle-details:hover {
+    background-color: #edf4ed;
+}
+
 .action-button {
     background-color: rgb(124, 187, 124);
     color: white;
     border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 8px 16px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
+.action-button:hover {
+    background-color: rgb(93, 165, 93);
+    transform: translateY(-1px);
 }
+
+.action-button:active {
+    transform: translateY(1px);
+}
+
 .action-button.cancel {
-    background-color: #6c757d;
-    /* border:1px solid red; */
+    background-color: #8a8a8a;
 }
+
+.action-button.cancel:hover {
+    background-color: #777777;
+}
+
 .action-button.review {
-    /* border:1px solid red; */
-    background-color: rgb(124, 187, 124);
+    background-color: rgb(98, 182, 98);
 }
+
+.action-button.review:hover {
+    background-color: rgb(82, 160, 82);
+}
+
 .tab-content {
     display: none; /* 預設隱藏所有內容 */
     background-color: #EFFDF5;
-    /* border:1px solid red; */
+    min-height: 400px;
 }
 
 .space-orders {
     display: block; /* 預設顯示空間訂單 */
     background-color: #EFFDF5;
     height: 100%;
-    /* border:1px solid red; */
 }
+
 .history-orders {
     background-color: #EFFDF5;
     height: 100%;
 }
 
-
-#space-orders, #history-orders {
+#space-orders, #history-orders, #cancel-orders {
     display: flex;
     flex-direction: column;
     gap: 20px; /* 設定訂單之間的間隔 */
@@ -141,132 +210,135 @@ body {
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 2000;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
 }
 
 .cancel-dialog-content {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
+    padding: 25px;
+    border-radius: 12px;
+    width: 450px;
     max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .cancel-dialog-title {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: #333;
+}
+
+.cancel-reason select, .cancel-reason textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     margin-bottom: 15px;
+    font-size: 14px;
 }
 
 .cancel-dialog-buttons {
-    padding: 5px 10px;
-    border-radius: 5px;
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 25px;
 }
 
 .cancel-dialog-buttons button {
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 8px 16px;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
 .cancel-confirm-btn {
-    padding: 5px 10px;
-    border-radius: 5px;
     background-color: rgb(124, 187, 124);
     color: white;
 }
 
+.cancel-confirm-btn:hover {
+    background-color: rgb(93, 165, 93);
+}
+
 .cancel-back-btn {
-    padding: 5px 10px;
-    border-radius: 5px;
-    background-color: #6c757d;
+    background-color: #8a8a8a;
     color: white;
+}
+
+.cancel-back-btn:hover {
+    background-color: #777777;
 }
 
 /* 已取消訂單樣式 */
 .cancelled-order {
-    opacity: 0.5;
+    opacity: 0.7;
+}
+
+.cancelled-tag, .reviewed-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
 }
 
 .cancelled-tag {
-    display: inline-block;
-    background-color: #6c757d;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-left: 10px;
+    background-color: #f0f0f0;
+    color: #777;
+}
+
+.reviewed-tag {
+    background-color: #e1f4e1;
+    color: #4a8c4a;
 }
 
 /* 評價對話框樣式 */
 .review-dialog {
     display: none;
     position: fixed;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-}
-
-.review-dialog-content {
-    background-color: white;
-    padding: 25px;
-    border-radius: 8px;
-    width: 500px;
-    max-width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.review-dialog {
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999; /* 確保遠高於 Header 的 z-index */
-    display: none;
+    z-index: 2000;
     align-items: center;
     justify-content: center;
 }
 
-
 .review-dialog-content {
     background-color: white;
-    padding: 25px;
-    border-radius: 8px;
-    width: 500px;
+    padding: 30px;
+    border-radius: 12px;
+    width: 550px;
     max-width: 90%;
     max-height: 90vh;
-    position: relative;
-    z-index: 10000; /* 比背景遮罩更高 */
+    overflow-y: auto;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
 }
 
 .review-dialog-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
     color: #333;
     text-align: center;
 }
 
 /* 星級評分 */
 .rating-container {
-    margin-bottom: 25px;
+    margin-bottom: 28px;
     text-align: center;
 }
 
 .rating-container p {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     font-size: 16px;
     color: #444;
 }
@@ -310,37 +382,45 @@ body {
     transform: scale(0.9);
     transition: 0.1s;
 }
+
 /* 照片上傳區域樣式 */
 .photo-upload-container {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     border: 2px dashed #ccc;
-    padding: 15px;
-    border-radius: 5px;
+    padding: 20px;
+    border-radius: 8px;
     text-align: center;
     background-color: #f9f9f9;
+    transition: all 0.3s;
+}
+
+.photo-upload-container:hover {
+    border-color: #aaa;
+    background-color: #f5f5f5;
 }
 
 .photo-upload-container p {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    color: #666;
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    color: #555;
 }
 
 .photo-preview {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 12px;
+    margin-top: 18px;
     justify-content: center;
 }
 
 .photo-item {
     position: relative;
-    width: 80px;
-    height: 80px;
-    border-radius: 4px;
+    width: 90px;
+    height: 90px;
+    border-radius: 6px;
     overflow: hidden;
     background-color: #eee;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .photo-item img {
@@ -351,88 +431,111 @@ body {
 
 .remove-photo {
     position: absolute;
-    top: 2px;
-    right: 2px;
-    background-color: rgba(0, 0, 0, 0.5);
+    top: 3px;
+    right: 3px;
+    background-color: rgba(0, 0, 0, 0.6);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
+}
+
+.remove-photo:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
 }
 
 /* 評論文字框樣式 */
 .review-text {
     width: 100%;
-    min-height: 120px;
-    max-height: 300px; /* 如果想限制最大高度 */
-    padding: 10px;
+    min-height: 130px;
+    max-height: 300px;
+    padding: 12px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    margin-bottom: 22px;
     font-family: Arial, sans-serif;
-    resize: none; /* 移除調整大小的控制點 */
-    overflow: auto; /* 需要時出現滾動條 */
-    box-sizing: border-box; /* 保證寬度包含邊框和內距 */
+    resize: none;
+    overflow: auto;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.review-text:focus {
+    border-color: rgb(124, 187, 124);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(124, 187, 124, 0.2);
 }
 
 /* 按鈕樣式 */
 .review-dialog-buttons {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 12px;
 }
 
 .review-submit-btn {
     background-color: rgb(124, 187, 124);
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 10px 18px;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.review-submit-btn:hover {
+    background-color: rgb(93, 165, 93);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .review-cancel-btn {
-    background-color: #6c757d;
+    background-color: #8a8a8a;
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 10px 18px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.review-cancel-btn:hover {
+    background-color: #777777;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 文件上傳按鈕樣式 */
 .file-upload-label {
     display: inline-block;
-    padding: 8px 15px;
+    padding: 8px 16px;
     background-color: #f0f0f0;
     color: #333;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 12px;
     border: 1px solid #ddd;
     font-size: 14px;
+    transition: all 0.2s;
+}
+
+.file-upload-label:hover {
+    background-color: #e5e5e5;
+    border-color: #ccc;
 }
 
 .file-upload-input {
     display: none;
-}
-
-/* 已完成評價的訂單標籤 */
-.reviewed-tag {
-    display: inline-block;
-    background-color: rgb(124, 187, 124);
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-left: 10px;
 }
 
 /* 拖放區域高亮樣式 */
@@ -440,3 +543,224 @@ body {
     border-color: rgb(124, 187, 124) !important;
     background-color: rgba(124, 187, 124, 0.1) !important;
 }
+
+.order-info .label {
+    font-weight: 600;
+    color: #333;
+    margin-right: 8px;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.view-space-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 10px;
+    font-size: 0.85rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #333;
+    font-weight: 500;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.view-space-btn:hover {
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 明細按鈕樣式 */
+.view-detail-btn {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #555;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+
+.view-detail-btn:hover {
+    background-color: #f7f7f7;
+    border-color: #bbb;
+    color: #333;
+}
+
+/* 空狀態樣式 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background-color:transparent;
+    border-radius: 16px;
+    margin: 40px auto;
+    max-width: 520px;
+    /*box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);*/
+    transition: all 0.3s ease;
+    /*border: 1px solid #eee;*/
+}
+
+.empty-state p {
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+    margin-bottom: 18px;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.empty-state .btn {
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.empty-state .btn:hover {
+    background-color: #00b98e;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Modal 相關樣式 */
+.modal {
+    z-index: 2050 !important; /* 提高Modal的z-index值 */
+}
+
+.modal-backdrop {
+    z-index: 2040 !important; /* 提高backdrop的z-index值 */
+}
+
+/* 確保navbar的z-index低於modal */
+.container-fluid.nav-bar,
+.navbar {
+    z-index: 1030 !important;
+}
+
+
+/* ✅ modal-dialog 正中間顯示 */
+.modal-dialog .modal-wide{
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+    max-width: 600px; !important;
+}
+
+.modal-backdrop.show {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1100 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Modal 內容樣式 */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.modal-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+
+.btn-secondary {
+    background-color: #8a8a8a;
+    border: none;
+    padding: 7px 15px;
+    border-radius: 5px;
+}
+
+.btn-secondary:hover {
+    background-color: #777777;
+}
+
+/* 讓價格明細更美觀 */
+#price-detail-body {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+#price-detail-body p {
+    margin-bottom: 12px;
+}
+
+#price-detail-body strong {
+    color: #333;
+}
+
+#price-detail-body ul {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+#price-detail-body ul li {
+    margin-bottom: 5px;
+}
+
+#price-detail-body hr {
+    margin: 15px 0;
+    border-color: #eee;
+}
+
+.view-details-btn,
+.view-space-btn,
+.action-button,
+.toggle-details,
+.view-space {
+    outline: none;
+    box-shadow: none;
+    border-color: transparent;
+    background-color: #f5f5f5; /* 背景顏色一致 */
+}
+
+/* 隱藏點擊後出現的橘色 focus 邊框 */
+.view-details-btn:focus,
+.view-space-btn:focus,
+.action-button:focus,
+.toggle-details:focus,
+.view-space:focus,
+.view-details-btn:focus-visible,
+.view-space-btn:focus-visible,
+.action-button:focus-visible,
+.toggle-details:focus-visible,
+.view-space:focus-visible,
+button:focus,
+button:focus-visible,
+a:focus,
+a:focus-visible {
+    outline:  #f5f5f5 !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* 可加 hover 樣式美化 */
+.view-details-btn:hover,
+.view-space-btn:hover {
+    background-color: #e0e0e0;
+    transition: all 0.2s ease;
+}
+

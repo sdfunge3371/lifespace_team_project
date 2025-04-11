@@ -27,6 +27,8 @@ public class OrdersMapper {
         dto.setOrderEnd(orders.getOrderEnd());
         dto.setPaymentDatetime(orders.getPaymentDatetime());
         dto.setOrderStatus(orders.getOrderStatus());
+        dto.setBranchAddr(orders.getBranch().getBranchAddr());
+        dto.setSpaceFloor(orders.getSpace().getSpaceFloor());
 
         if(orders.getEvent() != null) {
             dto.setEventDTO(toEventDTO(orders.getEvent()));
@@ -37,8 +39,16 @@ public class OrdersMapper {
             );
         }
 
-        if (orders.getBranch() != null) {
-            dto.setBranchAddr(orders.getBranch().getBranchAddr());
+//        if (orders.getBranch() != null && orders.getSpace().getSpaceFloor() != null) {
+//            dto.setBranchAddr(orders.getBranch().getBranchAddr());
+//            dto.setSpaceFloor(orders.getSpace().getSpaceFloor());
+//        }
+
+        if (orders.getOrderStart() != null && orders.getOrderEnd() != null) {
+            long spaceMillis = orders.getOrderEnd().getTime() - orders.getOrderStart().getTime();
+            long spaceHalfHourUnits = spaceMillis / (1000 * 60 * 30) ; //每30分鐘
+            int spaceFee =(int) (orders.getSpace().getSpaceHourlyFee() * spaceHalfHourUnits / 2);
+            dto.setCalculatedSpaceFee(spaceFee);
         }
 
         return dto;

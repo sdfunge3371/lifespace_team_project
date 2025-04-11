@@ -4,6 +4,7 @@ package com.lifespace.controller;
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.service.OrdersService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,14 +44,17 @@ public class OrdersController {
     }
 
     //會員查詢訂單session
-//     @GetMapping("/member/orders")
-//    public List<OrdersDTO> getOrdersByLonginMember(HttpSession session) {
-//        Member member = (Member) session.getAttribute("member");
-//        if(member == null) {
-//            throw new IllegalStateException("請登入會員");
-//        }
-//        return ordersSvc.getAllOrdersDTOsByMemberId(member.getMemberId());
-//    }
+     @GetMapping("/member/orders")
+    public ResponseEntity<?> getOrdersByLoginMember(HttpSession session) {
+        String memberId = (String) session.getAttribute("loginMember");
+
+        if (memberId == null) {
+            return ResponseEntity.status(401).body("尚未登入會員");
+        }
+
+        List<OrdersDTO> memberOrders = ordersSvc.getAllOrdersByMemberId(memberId);
+        return ResponseEntity.ok(memberOrders);
+     }
 
     //會員查詢訂單測試
     @GetMapping("/member/{memberId}")
