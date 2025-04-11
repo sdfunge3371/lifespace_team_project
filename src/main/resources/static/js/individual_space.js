@@ -524,6 +524,8 @@ function updateTotal() {
 
 // =========== AJAX部分 ===========
 
+let branchId = null;
+
 // 載入空間資訊
 
 function fetchSpace() {
@@ -535,6 +537,7 @@ function fetchSpace() {
         .then(response => response.json())
         .then(space => {
             console.log(space);   // 檢查回傳的json是否正確
+            branchId = space.branchId;
             insertPhotos(space.spacePhotos);
             insertAlert(space.spaceAlert);
             insertInfo(space.spacePeople, space.spaceUsageMaps, space.spaceFloor, space.spaceSize, space.spaceDesc);
@@ -600,7 +603,6 @@ function insertInfo(people, usageMaps, floor, size, desc) {
                                     可容納人數：${people} 人`;
 
     let usageStr = '';
-    console.log(usageMaps);
     usageMaps.forEach(map => {
         usageStr = usageStr.concat(`${map.spaceUsage.spaceUsageName}、`);
     })
@@ -646,7 +648,6 @@ function insertSpaceEquips(equips) {
 }
 
 function insertPublicEquips(equips) {
-    console.log(equips);
     const publicEquips = document.querySelector('.public-equips');
 
     publicEquips.innerHTML = '';
@@ -1053,3 +1054,86 @@ function setupOrderConfirmModal() {
     overlay.style.width = '100%';
     overlay.style.height = '100%';
 }
+
+// ============= POST: 送出訂單 =============
+document.querySelector('.payment-btn').addEventListener("click", function() {
+    // 取得spaceId
+    const urlParams = new URLSearchParams(window.location.search);
+    const spaceId = urlParams.get("spaceId");
+
+    const isDaily = document.getElementById("daily").checked;
+    const dateStr = document.getElementById("dateToggleButton").textContent.trim(); // yyyy/mm/dd
+
+    const startTime = document.getElementById("startTimeInput").value;
+    const endTime = document.getElementById("endTimeInput").value;
+
+    // 時租、日租費率
+    const hourlyRate = parseInt(document.getElementById("hourly-price").textContent);
+    const dailyRate = parseInt(document.getElementById("daily-price").textContent);
+
+    const rate = isDaily ? dailyRate : hourlyRate;
+
+    // 小步的表格沒有$
+    const spaceCost = parseInt(document.getElementById("spaceCost").textContent.replace(/\$| /g, ''));
+    const equipmentCost = parseInt(document.getElementById("equipmentCost").textContent.replace(/\$| /g, ''));
+    const totalPrice = parseInt(document.getElementById("totalCost").textContent.replace(/\$| /g, ''));
+
+    const selectedDate = new Date(dateStr);
+    const yyyy = selectedDate.getFullYear();
+    const mm = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+    const dd = selectedDate.getDate().toString().padStart(2, '0');
+
+    // 不要動，就這樣放
+    let orderStart = `${yyyy}-${mm}-${dd} ${startTime || '00:00'}:00`;
+    let orderEnd = `${yyyy}-${mm}-${dd} ${endTime || '23:59'}:00`;
+
+    // 建立rentalItemDeatilsDTOList
+    const rentalItemList = [];
+    const allInputs = document.querySelectorAll(".quantity-input");     // 抓租借品項的數字
+
+    allInputs.forEach(input =>  {
+        const quantity = parseInt(input.value);
+        if (quantity > 0) {
+            rentalItemList.push({
+                rentalItemId: input.id,
+                rentalItemName: input.closest(".rental-item").querySelector(".equipment-name").textContent.replace(/\s\(\+\$\d+\)/, ""),
+                // rentalItemPrice: parseInt(input.dataset.price),
+                rentalItemQuantity: quantity,
+                // rentalTotalPrice: parseInt(input.dataset.price) * quantity
+            });
+        }
+    })
+
+    // 建立ordersDTO的結構
+    const ordersDTO = {
+        spaceId,
+        branchId: branchId,
+        orderStart,
+        orderEnd,
+        totalPrice: spaceCost,
+        accountsPayable: totalPrice,
+        paymentDatetime: Date.now(),
+        memberId: "M001",   // TODO: 先寫死，之後串會員之後會再改
+        eventDTO: null,     // 活動要在付款之後才放上去 (利用修改的方式)
+        rentalItemDetailsDTOList: rentalItemList
+    };
+
+    console.log(ordersDTO);
+
+    fetch("/orders", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ordersDTO)
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            console.log("預訂成功");
+            // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
+        })
+        .catch(error => console.error(error.message));
+
+})

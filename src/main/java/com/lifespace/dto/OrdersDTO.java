@@ -7,7 +7,7 @@ import java.util.List;
 public class OrdersDTO {
 
     private String orderId;
-    private String MemberId;
+    private String memberId;
     private String spaceId;
     private String branchId;
     private Timestamp orderStart;
@@ -18,6 +18,8 @@ public class OrdersDTO {
     private String branchAddr;
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
+
+    private Integer accountsPayable;
 
     public OrdersDTO(){
 
@@ -37,14 +39,6 @@ public class OrdersDTO {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
-    }
-
-    public String getMemberId() {
-        return MemberId;
-    }
-
-    public void setMemberId(String memberId) {
-        MemberId = memberId;
     }
 
     public Timestamp getOrderStart() {
@@ -118,5 +112,22 @@ public class OrdersDTO {
 
     public void setBranchAddr(String branchAddr) {
         this.branchAddr = branchAddr;
+    }
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+
+    public Integer getAccountsPayable() {
+        return accountsPayable;
+    }
+
+    public void setAccountsPayable(Integer accountsPayable) {
+        this.accountsPayable = accountsPayable;
     }
 }

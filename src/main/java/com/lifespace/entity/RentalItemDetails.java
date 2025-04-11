@@ -14,6 +14,7 @@ public class RentalItemDetails implements Serializable {
 
     @Id
     @Column(name = "rental_item_details_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rentalItemDetailsId;
 
     @Column(name = "rental_item_quantity")
@@ -71,5 +72,7 @@ public class RentalItemDetails implements Serializable {
     public void setCreatedTime(Timestamp createdTime) {
         this.createdTime = createdTime;
     }
+
+
 
 }

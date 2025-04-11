@@ -41,7 +41,7 @@ public class RentalItemDetailsDTO {
         return rentalItemQuantity;
     }
 
-    public void setTotalQuantity(Integer totalQuantity) {
+    public void setRentalItemQuantity(Integer rentalItemQuantity) {
         this.rentalItemQuantity = rentalItemQuantity;
     }
 
@@ -51,5 +51,16 @@ public class RentalItemDetailsDTO {
 
     public void setRentalTotalPrice(Integer rentalTotalPrice) {
         this.rentalTotalPrice = rentalTotalPrice;
+    }
+
+
+    private String rentalItemId;
+
+    public String getRentalItemId() {
+        return rentalItemId;
+    }
+
+    public void setRentalItemId(String rentalItemId) {
+        this.rentalItemId = rentalItemId;
     }
 }
