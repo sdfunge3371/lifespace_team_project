@@ -128,8 +128,8 @@ $('#updateNewsForm').on('submit', function(e) {
 			//讓瀏覽器自動設定 multipart/form-data 和 boundary
 			contentType: false,
 			success: function(res) {
-				// 後端回傳的是 { redirect: "/backend_news.html" }
-				    window.location.href = res.redirect;
+				        alert('修改成功'); // 彈出提示框
+				          window.location.href = "/backend_news.html";
 			},
 			error: function(xhr) {
 				const errors = xhr.responseJSON;
