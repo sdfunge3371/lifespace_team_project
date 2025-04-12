@@ -169,8 +169,8 @@ $(document).ready(function() {
         }
 
         currentPageItems.forEach(function(item) {
-            const statusText = item.rentalItemStatus === 1 ? '上架中' : '下架';
-            const statusBtnText = item.rentalItemStatus === 1 ? '下架' : '上架中';
+            const statusText = item.rentalItemStatus === 1 ? '上架' : '下架';
+            const statusBtnText = item.rentalItemStatus === 1 ? '下架' : '上架';
             
             const row = `
                 <tr>

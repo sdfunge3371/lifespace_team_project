@@ -12,11 +12,13 @@ $(document).ready(function() {
         }
         
         // 收集表單數據
+        const totalQuantity = parseInt($('#totalQuantity').val());
+        
         const formData = {
             rentalItemName: $('#rentalItemName').val().trim(),
             rentalItemPrice: parseInt($('#rentalItemPrice').val()),
-            totalQuantity: parseInt($('#totalQuantity').val()),
-            availableRentalQuantity: parseInt($('#availableRentalQuantity').val()),
+            totalQuantity: totalQuantity,
+            availableRentalQuantity: totalQuantity, // 將商品總數設為可租借數量
             branchId: $('#branchId').val(),
             rentalItemStatus: parseInt($('input[name="rentalItemStatus"]:checked').val())
         };
@@ -65,10 +67,9 @@ $(document).ready(function() {
         const rentalItemName = $('#rentalItemName').val().trim();
         const rentalItemPrice = $('#rentalItemPrice').val().trim();
         const totalQuantity = $('#totalQuantity').val().trim();
-        const availableRentalQuantity = $('#availableRentalQuantity').val().trim();
         const branchId = $('#branchId').val();
         
-        if (!rentalItemName || !rentalItemPrice || !totalQuantity || !availableRentalQuantity) {
+        if (!rentalItemName || !rentalItemPrice || !totalQuantity) {
             alert('未輸入資料');
             return false;
         }

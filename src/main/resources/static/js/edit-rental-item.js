@@ -22,12 +22,29 @@ $(document).ready(function() {
             return;
         }
         
+        // 獲取原始數量和新數量
+        const originalTotalQty = parseInt($('#originalTotalQuantity').val());
+        const originalAvailableQty = parseInt($('#originalAvailableQuantity').val());
+        const newTotalQty = parseInt($('#totalQuantity').val());
+        
+        // 計算差額
+        const qtyDifference = newTotalQty - originalTotalQty;
+        
+        // 計算新的可租借數量
+        let newAvailableQty = originalAvailableQty + qtyDifference;
+        
+        // 檢查新的可租借數量是否為負數
+        if (newAvailableQty < 0) {
+            alert('商品總數不可低於可租借數量');
+            return;
+        }
+        
         const formData = {
             rentalItemId: $('#rentalItemId').val(),
             rentalItemName: $('#rentalItemName').val().trim(),
             rentalItemPrice: parseInt($('#rentalItemPrice').val()),
-            totalQuantity: parseInt($('#totalQuantity').val()),
-            availableRentalQuantity: parseInt($('#availableRentalQuantity').val()),
+            totalQuantity: newTotalQty,
+            availableRentalQuantity: newAvailableQty,
             branchId: $('#branchId').val(),
             rentalItemStatus: parseInt($('input[name="rentalItemStatus"]:checked').val())
         };
@@ -84,7 +101,8 @@ $(document).ready(function() {
                     $('#rentalItemName').val(rentalItem.rentalItemName);
                     $('#rentalItemPrice').val(rentalItem.rentalItemPrice);
                     $('#totalQuantity').val(rentalItem.totalQuantity);
-                    $('#availableRentalQuantity').val(rentalItem.availableRentalQuantity);
+                    $('#originalTotalQuantity').val(rentalItem.totalQuantity);
+                    $('#originalAvailableQuantity').val(rentalItem.availableRentalQuantity);
                     
                     // 選擇對應的分點
                     // 等待分點數據加載完成後再設置選中狀態
@@ -116,12 +134,24 @@ $(document).ready(function() {
         const rentalItemName = $('#rentalItemName').val().trim();
         const rentalItemPrice = $('#rentalItemPrice').val().trim();
         const totalQuantity = $('#totalQuantity').val().trim();
-        const availableRentalQuantity = $('#availableRentalQuantity').val().trim();
         const branchId = $('#branchId').val();
         
-        if (!rentalItemName || !rentalItemPrice || !totalQuantity || !availableRentalQuantity) {
+        if (!rentalItemName || !rentalItemPrice || !totalQuantity) {
             alert('未輸入資料');
             return false;
+        }
+        
+        // 檢查新的商品總數是否會導致可租借數量為負數
+        const originalTotalQty = parseInt($('#originalTotalQuantity').val());
+        const originalAvailableQty = parseInt($('#originalAvailableQuantity').val());
+        const newTotalQty = parseInt(totalQuantity);
+        
+        if (originalTotalQty > newTotalQty) {
+            const decrease = originalTotalQty - newTotalQty;
+            if (decrease > originalAvailableQty) {
+                alert('商品總數不可低於可租借數量');
+                return false;
+            }
         }
         
         // 檢查分點是否已選擇

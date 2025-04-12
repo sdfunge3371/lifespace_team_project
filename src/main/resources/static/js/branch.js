@@ -40,12 +40,12 @@ $(document).ready(function() {
         loadAllBranches();
     });
 
-    // 篩選按鈕事件 - 上架中分點
+    // 篩選按鈕事件 - 上架分點
     $('#activeBranchesBtn').on('click', function() {
         $(this).addClass('active').css('color', 'green');
         $('#allBranchesBtn, #inactiveBranchesBtn').removeClass('active').css('color', 'black');
         currentFilter = 'active';
-        loadBranchesByStatus(1); // 1表示上架中
+        loadBranchesByStatus(1); // 1表示上架
     });
 
     // 篩選按鈕事件 - 下架分點
@@ -169,8 +169,8 @@ $(document).ready(function() {
         }
 
         currentPageItems.forEach(function(branch) {
-            const statusText = branch.branchStatus === 1 ? '上架中' : '下架';
-            const statusBtnText = branch.branchStatus === 1 ? '下架' : '上架中';
+            const statusText = branch.branchStatus === 1 ? '上架' : '下架';
+            const statusBtnText = branch.branchStatus === 1 ? '下架' : '上架';
             
             // 處理公共設備名稱顯示
             let publicEquipmentNames = '';
