@@ -12,6 +12,10 @@ public class SpaceCommentResponse {
 	
 	private String branchId;
 	  
+	private String memberName;
+	
+	private byte[] memberImage;
+	
 	private String commentContent;
 	
 	private Integer satisfaction;
@@ -42,6 +46,22 @@ public class SpaceCommentResponse {
 
 	public void setBranchId(String branchId) {
 		this.branchId = branchId;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public byte[] getMemberImage() {
+		return memberImage;
+	}
+
+	public void setMemberImage(byte[] memberImage) {
+		this.memberImage = memberImage;
 	}
 
 	public String getCommentContent() {
@@ -76,11 +96,13 @@ public class SpaceCommentResponse {
 		this.photosUrls = photosUrls;
 	}
 
-	public SpaceCommentResponse(String spaceId, String spaceName, String branchId, String commentContent,
-			Integer satisfaction, Timestamp commentTime, String photosUrls) {
+	public SpaceCommentResponse(String spaceId, String spaceName, String branchId, String memberName,
+				byte[] memberImage, String commentContent, Integer satisfaction, Timestamp commentTime, String photosUrls) {
 		this.spaceId = spaceId;
 		this.spaceName = spaceName;
 		this.branchId = branchId;
+		this.memberName = memberName;
+		this.memberImage = memberImage;
 		this.commentContent = commentContent;
 		this.satisfaction = satisfaction;
 		this.commentTime = commentTime;

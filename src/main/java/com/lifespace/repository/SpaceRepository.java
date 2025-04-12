@@ -25,26 +25,30 @@ public interface SpaceRepository extends JpaRepository<Space, String> {
 
 
     //依照條件篩選空間評論
-    @Query(value = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, o.comment_content,  o.satisfaction, o.comment_time, " +
+    @Query(value = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, m.member_name AS member_name, "+
+    		"m.member_image AS member_image, o.comment_content, o.satisfaction, o.comment_time, " +
             "GROUP_CONCAT(sp.space_photo) AS photos_urls " +
             "FROM orders o " +
             "LEFT JOIN space_comment_photo sp ON sp.order_id = o.order_id " +
             "LEFT JOIN space s ON s.space_id = o.space_id " +
+            "LEFT JOIN member m ON m.member_id = o.member_id " +
             "WHERE (:spaceId IS NULL OR o.space_id = :spaceId ) " +
             "AND (:spaceName IS NULL OR s.space_name LIKE CONCAT('%', :spaceName, '%') ) " +
             "AND (:branchId IS NULL OR s.branch_id = :branchId ) " +
             "AND ( o.comment_content IS NOT NULL ) " +
-            "GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time",
-            countQuery = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, o.comment_content,  o.satisfaction, o.comment_time, " +
+            "GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time, m.member_name, m.member_image",
+            countQuery = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, m.member_name AS member_name, "+
+            		"m.member_image AS member_image, o.comment_content, o.satisfaction, o.comment_time, " +
                     "GROUP_CONCAT(sp.space_photo) AS photos_urls " +
                     "FROM orders o " +
                     "LEFT JOIN space_comment_photo sp ON sp.order_id = o.order_id " +
                     "LEFT JOIN space s ON s.space_id = o.space_id " +
+                    "LEFT JOIN member m ON m.member_id = o.member_id " +
                     "WHERE (:spaceId IS NULL OR o.space_id = :spaceId ) " +
                     "AND (:spaceName IS NULL OR s.space_name LIKE CONCAT('%', :spaceName, '%') ) " +
                     "AND (:branchId IS NULL OR s.branch_id = :branchId ) " +
                     "AND ( o.comment_content IS NOT NULL ) " +
-                    "GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time",
+                    "GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time, m.member_name, m.member_image",
             nativeQuery = true)
     Page<SpaceCommentResponse> findSpaceCommentsByConditions(
             @Param("spaceId") String spaceId,
