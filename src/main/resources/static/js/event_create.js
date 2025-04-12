@@ -1,7 +1,55 @@
 // 已上傳的照片數組
         let uploadedPhotos = [];
         const MAX_PHOTOS = 3;
+	
+		// 當文檔加載完成時執行
+		document.addEventListener('DOMContentLoaded', function () {
 
+		   //獲取表格活動類別
+		    fetchAllEventsCategory();
+		        	
+		});
+		
+		// 獲取所有活動類別
+		       async function fetchAllEventsCategory() {
+		            // 使用API端點路徑
+		            const apiUrl = 'http://localhost:8080/lifespace/event/getAllCategories';
+
+		            console.log('正在嘗試獲取活動類別數據，API 路徑:', apiUrl);
+
+		            fetch(apiUrl)
+		                .then(response => {
+		                    console.log('API 響應狀態:', response.status);
+		                    if (!response.ok) {
+		                        throw new Error('網路回應不正常，狀態碼: ' + response.status);
+		                    }
+		                    return response.json();
+		                })
+		                .then(categories => {
+		                    // 顯示活動類別在條件搜尋區域
+		                	displayCategories(categories);
+		                })
+		                .catch(error => {
+		                    console.error('獲取活動類別時出錯:', error);
+
+		                });
+		        }
+				
+		function displayCategories(categories){
+			// 獲取活動類別下拉選單
+			const categorySelect = document.getElementById('eventCategory');
+				            
+			// 先清空原有的選項（除了預設選項）
+			categorySelect.innerHTML = '';
+				       
+			// 為每個類別添加 option
+			categories.forEach(category => {
+				      const newCategory = `<option value=${category.eventCategoryId}>${category.eventCategoryName}</option>`;
+				       categorySelect.innerHTML = categorySelect.innerHTML  + newCategory;  
+				    });   
+			}
+			
+			
         // 監聽文件選擇事件
         document.getElementById('photos').addEventListener('change', function () {
             // 如果已經達到最大上傳數
