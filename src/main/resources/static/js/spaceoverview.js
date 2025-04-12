@@ -191,6 +191,9 @@ function renderSpaces(spacesToRender) {
             icon.classList.toggle('far');
             icon.classList.toggle('fas');
             event.currentTarget.classList.toggle('active');
+
+            // TODO: 存到最愛清單
+
         });
 
         // 點擊卡片後，跳轉到個別空間頁面

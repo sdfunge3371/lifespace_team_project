@@ -9,6 +9,7 @@ import com.lifespace.repository.OrdersRepository;
 import com.lifespace.repository.RentalItemRepository;
 import com.lifespace.repository.SpaceCommentPhotoRepository;
 
+import com.lifespace.repository.SpaceRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,18 +187,21 @@ public class OrdersService {
     @Autowired
     private RentalItemRepository rentalItemRepository;
 
+    @Autowired
+    private SpaceRepository spaceRepository;
+
     // 睿寓：新增訂單
     @Transactional
     public OrdersDTO createOrder(OrdersDTO ordersDTO) {
         Orders order = new Orders();
 
-        order.setMemberId(ordersDTO.getMemberId());
         order.setSpaceId(ordersDTO.getSpaceId());
         order.setBranchId(ordersDTO.getBranchId());
         order.setOrderStart(ordersDTO.getOrderStart());
         order.setOrderEnd(ordersDTO.getOrderEnd());
         order.setTotalPrice(ordersDTO.getTotalPrice());
         order.setAccountsPayable(ordersDTO.getAccountsPayable());
+        order.setMemberId(ordersDTO.getMemberId());
         order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
 
         // 建立Branch與Member的關聯，讓Mapper取得
@@ -209,25 +213,16 @@ public class OrdersService {
         member.setMemberId(ordersDTO.getMemberId());
         order.setMember(member);
 
+        Space space = spaceRepository.findById(ordersDTO.getSpaceId())
+                .orElseThrow(() -> new RuntimeException("找不到空間"));
+        space.setSpaceId(ordersDTO.getSpaceId());
+        order.setSpace(space);
+
         // 若有加購項目
         List<RentalItemDetailsDTO> rentalItemList = ordersDTO.getRentalItemDetailsDTOList();
 
         if (rentalItemList != null && !rentalItemList.isEmpty()) {
-//            List<RentalItemDetails> rentalItems = rentalItemList.stream().map(dto -> {
-//                RentalItem rentalItem = rentalItemRepository.findById(dto.getRentalItemId())
-//                        .orElseThrow(() -> new RuntimeException("找不到租借品項"));
-//
-//                RentalItemDetails item = new RentalItemDetails();
-//                item.setRentalItem(rentalItem);
-//                item.setRentalItemQuantity(dto.getRentalItemQuantity());
-//
-//                item.setCreatedTime(new Timestamp(System.currentTimeMillis()));
-//                item.setOrders(order); // 關聯訂單
-//                return item;
-//            }).collect(Collectors.toList());
-//
-//
-//            order.setRentalItemDetails(rentalItems);
+
             List<RentalItemDetails> rentalItems = new ArrayList<>();
 
             for (RentalItemDetailsDTO dto : ordersDTO.getRentalItemDetailsDTOList()) {
