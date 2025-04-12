@@ -19,6 +19,8 @@ public class OrdersController {
 
     @Autowired
     private OrdersService ordersSvc;
+    @Autowired
+    private OrdersService ordersService;
 
     public OrdersController(OrdersService ordersSvc) {
 
@@ -70,6 +72,14 @@ public class OrdersController {
 
     	ordersSvc.addSpaceComments(commentRequest, photos);
         return "執行 insert sapce comment jpa 方法";
+    }
+
+
+    // 睿寓：新增訂單
+    @PostMapping
+    public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO) {
+        OrdersDTO newOrder = ordersService.createOrder(ordersDTO);
+        return ResponseEntity.ok(newOrder);
     }
     
 }

@@ -2,10 +2,11 @@ package com.lifespace.service;
 
 
 import com.lifespace.dto.OrdersDTO;
+import com.lifespace.dto.RentalItemDetailsDTO;
 import com.lifespace.dto.SpaceCommentRequest;
-import com.lifespace.entity.Orders;
-import com.lifespace.entity.SpaceCommentPhoto;
+import com.lifespace.entity.*;
 import com.lifespace.repository.OrdersRepository;
+import com.lifespace.repository.RentalItemRepository;
 import com.lifespace.repository.SpaceCommentPhotoRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -171,5 +172,64 @@ public class OrdersService {
 	    photo.transferTo(new File(filePath));
 	    return "/space-comment-images/" + fileName; // 返回可訪問的 URL
 	}
+
+
+
+
+
+
+
+
+
+
+    @Autowired
+    private RentalItemRepository rentalItemRepository;
+
+    // 睿寓：新增訂單
+    @Transactional
+    public OrdersDTO createOrder(OrdersDTO ordersDTO) {
+        Orders order = new Orders();
+
+        order.setMemberId(ordersDTO.getMemberId());
+        order.setSpaceId(ordersDTO.getSpaceId());
+        order.setBranchId(ordersDTO.getBranchId());
+        order.setOrderStart(ordersDTO.getOrderStart());
+        order.setOrderEnd(ordersDTO.getOrderEnd());
+        order.setTotalPrice(ordersDTO.getTotalPrice());
+        order.setAccountsPayable(ordersDTO.getAccountsPayable());
+        order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
+
+        // 建立分點的關聯，讓Mapper取得Branch
+        Branch branch = new Branch();
+        branch.setBranchId(ordersDTO.getBranchId());
+        order.setBranch(branch);
+
+        Member member = new Member();
+        member.setMemberId(ordersDTO.getMemberId());
+        order.setMember(member);
+
+        // 若有加購項目
+        List<RentalItemDetailsDTO> rentalItemList = ordersDTO.getRentalItemDetailsDTOList();
+        if (rentalItemList != null && !rentalItemList.isEmpty()) {
+            List<RentalItemDetails> rentalItems = rentalItemList.stream().map(dto -> {
+                RentalItem rentalItem = rentalItemRepository.findById(dto.getRentalItemId())
+                        .orElseThrow(() -> new RuntimeException("找不到租借品項"));
+
+                RentalItemDetails item = new RentalItemDetails();
+                item.setRentalItem(rentalItem);
+                item.setRentalItemQuantity(dto.getRentalItemQuantity());
+
+                item.setCreatedTime(new Timestamp(System.currentTimeMillis()));
+                item.setOrders(order); // 關聯訂單
+                return item;
+            }).collect(Collectors.toList());
+
+
+            order.setRentalItemDetails(rentalItems);
+        }
+
+        ordersRepository.save(order);
+        return OrdersMapper.toOrdersDTO(order);
+    }
 
 }

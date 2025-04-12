@@ -97,7 +97,6 @@ public class SpaceService {
 
 		// ============= 新增Space Usage maps =============
 
-		System.out.println("SpaceUsageIds: " + space.getSpaceUsageIds());
 		List<SpaceUsage> usages = spaceUsageRepository.findAllById(space.getSpaceUsageIds());
 
 		// 3. 建立對應的 SpaceUsageMap

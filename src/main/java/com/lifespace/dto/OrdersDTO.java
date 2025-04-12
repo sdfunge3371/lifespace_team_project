@@ -9,7 +9,7 @@ import java.util.List;
 public class OrdersDTO {
 
     private String orderId;
-    private String MemberId;
+    private String memberId;
     private String spaceId;
     private String branchId;
     private Timestamp orderStart;
@@ -23,7 +23,9 @@ public class OrdersDTO {
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
-    public OrdersDTO() {
+    private Integer accountsPayable;
+
+    public OrdersDTO(){
 
     }
 
@@ -41,14 +43,6 @@ public class OrdersDTO {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
-    }
-
-    public String getMemberId() {
-        return MemberId;
-    }
-
-    public void setMemberId(String memberId) {
-        MemberId = memberId;
     }
 
     public Timestamp getOrderStart() {
@@ -124,7 +118,6 @@ public class OrdersDTO {
         this.branchAddr = branchAddr;
     }
 
-
     public Integer getCalculatedSpaceFee() {
         return calculatedSpaceFee;
     }
@@ -155,4 +148,21 @@ public class OrdersDTO {
         return branchAddr + spaceFloor + "樓";
 
     }
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+
+    public Integer getAccountsPayable() {
+        return accountsPayable;
+    }
+
+    public void setAccountsPayable(Integer accountsPayable) {
+        this.accountsPayable = accountsPayable;
+    }
 }
+
