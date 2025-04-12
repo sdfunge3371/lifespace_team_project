@@ -613,6 +613,7 @@ function updateTotal() {
 // =========== AJAX部分 ===========
 
 let branchId = null;
+let spaceFloor = null;
 
 // 載入空間資訊
 
@@ -626,6 +627,7 @@ function fetchSpace() {
         .then(space => {
             console.log(space);   // 檢查回傳的json是否正確
             branchId = space.branchId;
+            spaceFloor = space.spaceFloor;
             insertPhotos(space.spacePhotos);
             insertAlert(space.spaceAlert);
             insertInfo(space.spacePeople, space.spaceUsageMaps, space.spaceFloor, space.spaceSize, space.spaceDesc);
@@ -1226,7 +1228,8 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
         paymentDatetime: Date.now(),
         memberId: "M001",   // TODO: 先寫死，之後串會員之後會再改
         eventDTO: null,     // 活動要在付款之後才放上去 (利用修改的方式)
-        rentalItemDetailsDTOList: rentalItemList
+        rentalItemDetailsDTOList: rentalItemList,
+        spaceFloor: spaceFloor
     };
 
     fetch("/orders", {
@@ -1236,13 +1239,24 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
         },
         body: JSON.stringify(ordersDTO)
     })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                return res.json().catch(() => null).then(errorData => {
+                    if (errorData && errorData.message) {
+                        throw new Error(errorData.message);
+                    }
+                });
+            }
+            return res.json();
+        })
         .then(data => {
             console.log(data);
 
-            console.log("預訂成功");
             // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
         })
-        .catch(error => console.error(error.message));
+        .catch(error => {
+            alert("預訂失敗");
+            console.error(error.message);
+        });
 
 })
