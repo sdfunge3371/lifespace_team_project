@@ -5,7 +5,7 @@ body {
     }
     .main-content {
       padding: 5px 10px;
-      margin-left: 220px;
+      margin-left: 17%;
       max-width: calc(100% - 220px);
     }
     @media (max-width: 768px) {
@@ -52,5 +52,4 @@ body {
   padding: 10px 40px 10px 0px; /* 只保留左側 padding，右邊去掉 */
 /*   border-bottom: 1px solid #ccc; */
 }
-    
-    
+
