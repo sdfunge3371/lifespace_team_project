@@ -1,5 +1,7 @@
 package com.lifespace.dto;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,8 @@ public class OrdersDTO {
     private Timestamp paymentDatetime;
     private Integer orderStatus;
     private String branchAddr;
+    private Integer calculatedSpaceFee;
+    private String spaceFloor;
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
@@ -114,6 +118,36 @@ public class OrdersDTO {
         this.branchAddr = branchAddr;
     }
 
+    public Integer getCalculatedSpaceFee() {
+        return calculatedSpaceFee;
+    }
+
+    public void setCalculatedSpaceFee(Integer calculatedSpaceFee) {
+        this.calculatedSpaceFee = calculatedSpaceFee;
+    }
+
+
+    public String getSpaceFloor() {
+        return spaceFloor;
+    }
+
+    public void setSpaceFloor(String spaceFloor) {
+        this.spaceFloor = spaceFloor;
+    }
+
+    public String getSpaceLocation() {
+
+        if (branchAddr == null || branchAddr.trim().isEmpty()) {
+            return "";
+        }
+
+        if (spaceFloor == null || spaceFloor.trim().isEmpty()) {
+            return branchAddr;
+        }
+
+        return branchAddr + spaceFloor + "樓";
+
+    }
     public String getMemberId() {
         return memberId;
     }
@@ -131,3 +165,4 @@ public class OrdersDTO {
         this.accountsPayable = accountsPayable;
     }
 }
+

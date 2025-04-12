@@ -20,10 +20,10 @@
                 <i class="fas fa-bars"></i>
             </button>
             <!-- 側邊欄 -->
-            <div class="col-lg-2 sidebar collapse d-lg-block" id="sidebarMenu">
+            <div class="col-lg-2 sidebar">
                 <div class="sidebar-header">
                     <a href="/backend_index.html">
-                    <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+                        <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
                     </a>
                     <h2 class="sidebar-title">後台中心</h2>
                 </div>
@@ -47,7 +47,7 @@
                         </a>
                         <ul class="collapse submenu" id="accountSubmenu">
                             <li><a href="/member.html" class="submenu-item">會員帳號</a></li>
-                            <li><a href="#" class="submenu-item">管理員帳號</a></li>
+                            <li><a href="/admin.html" class="submenu-item">管理員帳號</a></li>
                         </ul>
                     </li>
 
@@ -70,8 +70,8 @@
                         </a>
                         <ul class="collapse submenu" id="productSubmenu">
                             <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
-                            <li><a href="#" class="submenu-item">租借品項</a></li>
-                            <li><a href="#" class="submenu-item">分點</a></li>
+                            <li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
+                            <li><a href="/branch.html" class="submenu-item">分點</a></li>
                         </ul>
                     </li>
 
@@ -233,13 +233,13 @@
                     data: 'orderStatus',
                     render: function (data) {
                         if (data === 1) {
-                            return '已付款';
+                            return '<span style="color: black;">已付款</span>';
                         } else if (data === 0) {
-                            return '已取消';
+                            return '<span style="color: red;">已取消</span>';
                         } else if (data === 2) {
-                            return '已完成';
+                            return '<span style="color: green;">已完成</span>';
                         } else {
-                            return '處理中';
+                            return '<span style="color: coral;">已付款</span>';
                         }
                     }
                 },

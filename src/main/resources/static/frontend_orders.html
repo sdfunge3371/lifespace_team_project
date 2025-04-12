@@ -99,26 +99,6 @@
     </div>
     <!-- Header Navbar End -->
 
-    <!-- Modal Start -->
-    <div class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Modal body text goes here.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal End -->
-
     <!-- 頁籤選單 -->
     <div class="tabs">
         <div class="tab active" data-tab="space-orders">空間訂單</div>
@@ -127,20 +107,31 @@
     </div>
 
     <!--不同的訂單區塊-->
-<!--    <div id="space-orders" class="tab-content" style="display: none;"></div>-->
-<!--    <div id="history-orders" class="tab-content" style="display: none;"></div>-->
-<!--    <div id="cancel-orders" class="tab-content" style="display: none;"></div>-->
-
     <div id="space-orders" class="tab-content" style="min-height: 300px;">
-        <div class="empty-state d-none">尚無訂單</div>
+        <div class="empty-state d-none text-center">
+            <p>尚無訂單</p>
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+                開始空間瀏覽
+            </a>
+        </div>
     </div>
 
     <div id="history-orders" class="tab-content" style="min-height: 300px;">
-        <div class="empty-state d-none">尚無歷史訂單</div>
+        <div class="empty-state d-none text-center">
+            <p>尚無訂單</p>
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+                開始空間瀏覽
+            </a>
+        </div>
     </div>
 
     <div id="cancel-orders" class="tab-content" style="min-height: 300px;">
-        <div class="empty-state d-none">尚無取消訂單</div>
+        <div class="empty-state d-none text-center">
+            <p>尚無訂單</p>
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+                開始空間瀏覽
+            </a>
+        </div>
     </div>
 
     <!-- 取消訂單確認對話框 -->
@@ -207,6 +198,27 @@
             </div>
         </div>
     </div>
+
+    <!-- 明細 Modal 放在 HTML 最底部 -->
+    <div class="modal fade" id="priceDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-wide">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">訂單金額明細</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="price-detail-body">
+                    <!-- 動態內容 -->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- JavaScript Libraries -->
 <script src="js/wow.min.js"></script>
 <script src="js/easing.min.js"></script>
@@ -218,62 +230,71 @@
     <!-- Template Javascript -->
 <script src="js/main.js"></script>
 <script>
-        $(document).ready(function () {
-            const memberId = 'M003';
+    $(document).ready(function () {
+        const memberId = 'M005';
 
-            //頁籤
-            $(".tab").click(function () {
-                const tabId = $(this).data("tab");
-                $(".tab").removeClass("active");
-                $(this).addClass("active");
-                $(".tab-content").removeClass("active").hide(); // 隱藏所有內容
-                $("#" + tabId).addClass("active").fadeIn(); // 顯示選中的內容
-            });
+        //頁籤
+        $(".tab").click(function () {
+            const tabId = $(this).data("tab");
+            $(".tab").removeClass("active");
+            $(this).addClass("active");
+            $(".tab-content").removeClass("active").hide(); // 隱藏所有內容
+            $("#" + tabId).addClass("active").fadeIn(); // 顯示選中的內容
+        });
 
-            $.ajax({
-                url: `/orders/member/${memberId}`,
-                method: 'GET',
-                success: function (orders) {
-                    // console.log("取得的訂單資料：", orders);
-                    $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
+        $.ajax({
+            url: '/orders/member',
+            method: 'GET',
+            credentials: 'include', // ✅ 保證 cookie (session) 會附帶上去
+            success: function (orders) {
+                // console.log("取得的訂單資料：", orders);
+                $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
 
-                    orders.forEach(orders => {
-                        const start = new Date(orders.orderStart);
-                        const end = new Date(orders.orderEnd);
-                        const dateStr = start.toLocaleDateString('zh-TW');
-                        const timeStr = `${start.getHours()} - ${end.getHours()}`
-
-                        const eventHtml = orders.eventDTO ? `
-                            <button class="toggle-details">揪團資訊 ▼</button>
-                            <div class="details" style="display:none;">
-                                <p>活動名稱：${orders.eventDTO.eventName}</p>
-                                <p>活動描述：${orders.eventDTO.eventDescription || ''}</p>
-                            </div>
-                            ` : '';
-
-                        const actionButtonHtml = orders.eventDTO ? `
-                        <a class="action-button message-button" href="group_message.html?eventId=${orders.eventDTO.eventId}">留言板</a>
-                        ` : `
-                        <button class="action-button group-button">揪團去</button>
-                        `;
+                orders.forEach(orders => {
+                    const start = new Date(orders.orderStart);
+                    const end = new Date(orders.orderEnd);
+                    const dateStr = start.toLocaleDateString('zh-TW');
+                    const timeStr = `${start.getHours().toString().padStart(2, '0')} : ${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')} : ${end.getMinutes().toString().padStart(2, '0')}`
 
 
-                        const cardHtml = `
+                    const cardHtml = `
                         <div class="order-container">
-                            <div class="order-img">
-                                <img src="images/img.bootstrap/house-placeholder.jpg" alt="空間圖片">
+                            <div class="order-img position-relative">
+                                <img src="images/img.bootstrap/house-placeholder.jpg" alt="空間圖片" class="img-fluid">
+                                <a href="space_detail.html?spaceId=${orders.spaceId}"
+                                   class="btn btn-sm btn-light text-dark border view-space-btn">
+                                    查看空間
+                                </a>
                             </div>
                             <div class="order-info">
-                                <p>訂單編號: ${orders.orderId}</p>
-                                <p>日期: ${dateStr}</p>
-                                <p>時段: ${timeStr}</p>
-                                <p>地點: ${orders.branchAddr}</p>
-                                <p>訂單金額: ${orders.totalPrice}</p>
-                                ${eventHtml}
+                                <p><span class="label">訂單編號：</span>${orders.orderId}</p>
+                                <p><span class="label">訂單日期：</span>${dateStr}</p>
+                                <p><span class="label">租借時段：</span>${timeStr}</p>
+                                <p><span class="label">空間地點：</span>${orders.spaceLocation}</p>
+                                <p>
+                                    <span class="label">訂單金額：</span>$${orders.totalPrice}
+                                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2 view-detail-btn"
+                                        data-spacefee="${orders.calculatedSpaceFee|| 0}"
+                                        data-items='${JSON.stringify(orders.rentalItemDetailsDTOList || [])}'>
+                                        查看明細
+                                    </button>
+                                </p>
+                                ${orders.eventDTO ? `
+                                <button class="toggle-details">揪團資訊 ▼</button>
+                                <div class="details" style="display:none;">
+                                    <p><span class="label">活動編號：</span>${orders.eventDTO.eventId}</p>
+                                    <p><span class="label">活動名稱：</span>${orders.eventDTO.eventName}</p>
+                                    <p><span class="label">活動類型：</span>${orders.eventDTO.eventCategoryName}</p>
+                                </div>
+                                ` : ''}
                                 <div class="actions">
                                     ${orders.orderStatus === 1 ? `
-                                         ${actionButtonHtml}
-                                        <button class="action-button cancel">取消訂單</button>
+                                        ${orders.eventDTO ? `
+                                            <a class="action-button message-button" href="group_message.html?eventId=${orders.eventDTO.eventId}">留言板</a>
+                                        ` : `
+                                            <button class="action-button group-button">揪團去</button>
+                                        `}
+                                        <button class="action-button cancel" data-order-id="${orders.orderId}">取消訂單</button>
                                     ` : orders.orderStatus === 2 ? `
                                         <button class="action-button review">評價</button>
                                     ` : ''}
@@ -282,14 +303,14 @@
                         </div>
                         `;
 
-                        if (orders.orderStatus === 1) {
-                            $('#space-orders').append(cardHtml);
+                    if (orders.orderStatus === 1) {
+                        $('#space-orders').append(cardHtml);
 
-                        } else if (orders.orderStatus === 2) {
-                            $('#history-orders').append(cardHtml);
-                        } else if (orders.orderStatus === 0) {
-                            $('#cancel-orders').append(cardHtml);
-                        }
+                    } else if (orders.orderStatus === 2) {
+                        $('#history-orders').append(cardHtml);
+                    } else if (orders.orderStatus === 0) {
+                        $('#cancel-orders').append(cardHtml);
+                    }
 
                     });
 
@@ -318,11 +339,17 @@
                     $("#space-orders").addClass("active").fadeIn();
                     $(".tab").removeClass("active");
                     $(".tab[data-tab='space-orders']").addClass("active");
-                },
-                error: function () {
-                    alert("訂單載入失敗, 請稍後在試");
+                    },
+                    error: function (xhr) {
+                    if (xhr.status === 401) {
+                        alert("請先登入");
+                        location.href = "/login/login.html"; // ✅ 自動導回登入頁
+                    } else {
+                        alert("載入失敗，請稍後再試");
                 }
-            });
+            }
+
+        });
 
             //活動資訊收合
             $(document).on("click", ".toggle-details", function () {
@@ -337,7 +364,7 @@
             $(document).on("click", ".cancel", function () {
                 const orderId = $(this).data("order-id");
 
-                if (confirm(`確定要取消訂單${orderId}嗎?`)) {
+                if (confirm(`您確定要取消此訂單嗎？取消後將無法恢復。`)) {
                     $.ajax({
                         url: `/orders/cancel/${orderId}`,
                         method: "POST",
@@ -351,7 +378,43 @@
                     });
                 }
             });
+
+        $(document).on("click", ".view-detail-btn", function () {
+            // 從按鈕 data 取得參數
+            const spaceFeeTotal = Number($(this).data("spacefee")) || 0;
+            let rentalItems = $(this).attr("data-items");
+
+            try {
+                rentalItems = JSON.parse(rentalItems); // 明確轉成 array
+            } catch (e) {
+                rentalItems = [];
+            }
+
+            // 空間費用顯示
+            let html = `<p><strong>空間費用：</strong>$${spaceFeeTotal}</p>`;
+
+            // 加購品項明細
+            if (Array.isArray(rentalItems) && rentalItems.length > 0) {
+                html += `<p><strong>租借品項：</strong></p><ul>`;
+                rentalItems.forEach(item => {
+                    html += `<li>${item.rentalItemName} x ${item.rentalItemQuantity}：$${item.rentalItemPrice * item.rentalItemQuantity}</li>`;
+                });
+                html += `</ul>`;
+            } else {
+                html += `<p><strong>租借品項：</strong>無</p>`;
+            }
+
+            // 計算總金額
+            const itemTotal = rentalItems.reduce((sum, item) => sum + item.rentalItemPrice * item.rentalItemQuantity, 0);
+            const total = spaceFeeTotal + itemTotal;
+
+            html += `<hr><p><strong>總金額：</strong>$${total}</p>`;
+
+            // 顯示 Modal
+            $("#price-detail-body").html(html);
+            $("#priceDetailModal").modal('show');
         });
+    });
         //
         //     // 評價相關的 jQuery 代碼
         //     $(document).ready(function () {
@@ -595,6 +658,6 @@
         </div>
     </div>
     <!-- Footer End -->
- </div>
+</div>
 </body>
 </html>
