@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ import com.lifespace.repository.EventRepository;
 import com.lifespace.service.EventPhotoService;
 import com.lifespace.service.EventService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
@@ -135,13 +137,24 @@ public class EventController {
     //使用者根據種類篩選出活動列表 
     @GetMapping("/search/ByMember")
     public ResponseEntity<Page<EventMemberResponse>> filterEventsByUser(
+    		HttpSession session, // 取得使用者資訊
     		@RequestParam(required = true) String userCategory,
-    		@RequestParam(required = false) String memberId,
+    		//@RequestParam(required = false) String memberId,
             @RequestParam(required = false) String participateStatus,
             @RequestParam(required = false) String eventStatus,
             @RequestParam(required = false) String organizerId,
             @RequestParam(defaultValue = "5") @Max(10) @Min(0) Integer size,
             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
+    	
+    	 // 從 session 取得會員 ID
+        String memberId = (String) session.getAttribute("loginMember"); 
+
+        // 檢查是否成功取得使用者 ID
+        if (memberId == null) {
+            // 如果 session 中沒有使用者 ID，表示使用者未登入，回傳錯誤或導向登入頁面
+        	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        
         // 創建分頁和排序條件
         Pageable pageable = PageRequest.of( page, size
         			//Sort.by("eventStartTime").descending()
