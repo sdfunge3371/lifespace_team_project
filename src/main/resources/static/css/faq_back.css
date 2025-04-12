@@ -7,7 +7,7 @@ body {
 /* 主要區塊設定 */
 .main-content {
      padding: 0 40px 30px 40px; /* 上方 padding 改成 0 */
-      margin-left: 220px;
+      margin-left: 17%;
       max-width: calc(100% - 220px);
     }
 
