@@ -852,6 +852,7 @@ function fetchComments() {
     fetch(`/spaces/comments/${spaceId}`)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             insertHeadComments(data.content);
         });
     // .catch(error => console.log("報錯：" + error));
@@ -876,11 +877,22 @@ function insertHeadComments(comments) {
     comments.forEach(comment => {
         const {
             commentContent,
+            memberImage,
+            memberName,
             satisfaction,
             commentTime,
             photosUrls
         } = comment;
 
+        // 會員頭貼處理
+        let avatarHtml = "";
+        if (memberImage == null) {
+            avatarHtml = `<i class="fas fa-user"></i>`;
+        } else {
+            // 會員頭貼處理
+            const avatarImgSrc = `data:image/jpeg;base64,${memberImage}`;
+            avatarHtml = `<img src="${avatarImgSrc}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
+        }
         // 滿意度星星生成
         let starsHtml = "";
         for (let i = 0; i < 5; i++) {
@@ -894,7 +906,9 @@ function insertHeadComments(comments) {
         let photosHtml = "";
         if (Array.isArray(photosUrls) && photosUrls.length > 0) {
             photosUrls.forEach(url => {
-                photosHtml += `<img src="${url}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
+                const commentImgSrc = `data:image/jpeg:base64,${url}`;
+                // 改成base64陣列
+                photosHtml += `<img src="${commentImgSrc}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
             });
         }
 
@@ -906,11 +920,11 @@ function insertHeadComments(comments) {
                     <div class="d-flex justify-comments-between align-items-start">
                         <div class="d-flex">
                             <div class="avatar me-3">
-                                <i class="fas fa-user"></i>
+                                ${avatarHtml}
                             </div>
                             <div>
                                 <div class="d-flex align-items-center">
-                                    <h5 class="mb-0 me-2">匿名用戶</h5>
+                                    <h5 class="mb-0 me-2">${memberName}</h5>
                                     <small class="text-muted">${timeString}</small>
                                 </div>
                                 <div class="star mt-1">${starsHtml}</div>
@@ -1001,6 +1015,30 @@ function insertAllComments(comments) {
 
 // 點擊「開始預訂」時
 document.querySelector(".pay-button").addEventListener("click", () => {
+    // 登入攔截
+    // fetch("/spaces/member/current",  {
+    //     method: "GET",
+    //     credentials: "include"
+    // })
+    //     .then(res => {
+    //         if (!res.ok) {
+    //             throw new Error("尚未登入");
+    //         }
+    //         return res.json();
+    //     })
+    //     .then(member => {
+    //         // 通過驗證，執行原本預訂邏輯
+    //         showReservation();
+    //         })
+    //         .catch(err => {
+    //             alert("預訂前請先登入");
+    //     });
+
+    showReservation();  // 啟動攔截器後，把這行刪掉
+})
+
+
+function showReservation() {
     // 檢查選購欄資料是否接確實填寫
     const isDaily = document.getElementById("daily").checked;   // 檢查時租日租勾哪一個
     let dateSelected = document.getElementById("dateToggleButton").textContent.trim() !== "選擇日期";
@@ -1094,8 +1132,7 @@ document.querySelector(".pay-button").addEventListener("click", () => {
     document.getElementById("spaceCostText").textContent = document.getElementById("spaceCost").textContent;
     document.getElementById("equipmentCostText").textContent = document.getElementById("equipmentCost").textContent;
     document.getElementById("totalCostText").textContent = document.getElementById("totalCost").textContent;
-})
-
+}
 // 關閉確認訂單modal
 function setupModalCloseListeners() {
     // 按modal的叉叉關閉

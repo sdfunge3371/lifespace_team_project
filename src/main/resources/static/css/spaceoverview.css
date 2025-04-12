@@ -256,7 +256,7 @@ body {
 
 /* 地圖容器 */
 .map-container {
-    height: 300px;
+    height: 550px;
     margin-bottom: 20px;
     border-radius: 5px;
     overflow: hidden;
