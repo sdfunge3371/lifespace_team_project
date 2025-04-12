@@ -304,6 +304,11 @@ public class Space implements java.io.Serializable {
 		return branch.getRentalItems();
 	}
 
+	@Transient
+	public String getBranchName() {
+		return branch.getBranchName();
+	}
+
 	// 取得分點公共設備
 
 //	public Set<Orders> getOrders() {

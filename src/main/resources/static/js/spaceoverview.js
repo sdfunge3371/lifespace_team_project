@@ -37,11 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 初始化價格滑桿
     noUiSlider.create(priceRange, {
-        start: [100, 2000],
+        start: [0, 2000],
         connect: true,
         step: 10,
         range: {
-            min: 100,
+            min: 0,
             max: 2000
         },
         format: {
@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 開始抓後端的資料
+let branches = [];  // 用來存所有分店的資訊（地圖彈窗會用到）
 function fetchSpaces() {
     fetch('/spaces')
         .then(response => response.json())
@@ -103,6 +104,9 @@ function fetchSpaces() {
             spaces = data.map(space => ({
                 spaceId: space.spaceId,
                 name: space.spaceName,
+                branchId: space.branchId,
+                branchAddr: space.branchaddr,
+                branchName: space.branchName,
                 location: `${space.branchAddr}${space.spaceFloor + (space.spaceFloor ? "樓" : "")}`, // 可從 space.branchId 取得更多資訊
                 price: space.spaceHourlyFee,
                 rating: space.spaceRating,
@@ -113,6 +117,10 @@ function fetchSpaces() {
                 coordinates: [space.latitude, space.longitude], // 模擬座標，之後會利用google maps API抓出
                 distance: null
             }));
+
+            // 提取分店資訊
+            branches = extractBranchInfo(spaces);
+
             renderSpaces(spaces);
 
             // 如果已經獲取到用戶位置，則更新距離
@@ -123,7 +131,7 @@ function fetchSpaces() {
             }
 
             if (map) {  // 地圖初始化後，更新座標
-                updateMapMarkers(spaces);
+                updateMapMarkers(branches);
             }
         })
         .catch(error => console.error('取得空間資料失敗:', error));
@@ -143,6 +151,7 @@ function renderSpaces(spacesToRender) {
         const spaceCard = document.createElement('div');
         spaceCard.className = 'space-card';
         spaceCard.dataset.id = space.spaceId;
+        spaceCard.dataset.branchId = space.branchId;
 
 
         // 處理目前的距離
@@ -181,7 +190,9 @@ function renderSpaces(spacesToRender) {
 
         // 地圖放大
         spaceCard.addEventListener('click', () => {
-            if (showMapCheckbox.checked) highlightMarker(space.spaceId);
+            if (showMapCheckbox.checked && space.branchId) {
+                highlightBranchMarker(space.branchId);
+            }
         });
 
         // 加入最愛
@@ -218,7 +229,6 @@ function fetchSpaceUsages() {
             renderUsages(usages);
         })
 }
-
 
 function renderUsages(usages) {
     const usageOptions = document.querySelector(".usage-options");
@@ -265,6 +275,9 @@ let locationRetries = 0;
 const MAX_LOCATION_RETRIES = 3;
 const LOCATION_CACHE_KEY = 'user_location_cache';
 const LOCATION_CACHE_EXPIRY = 30 * 60 * 1000; // 30分鐘，單位為毫秒
+
+
+// ======= 取得定位 =======
 
 // 抓快取中的地點
 function getCachedLocation() {
@@ -368,6 +381,7 @@ function updateMapIfInitialized() {
     }
 }
 
+// 之後會改成抓分點
 function updateSpacesDistance() {
     if (!userLocation) return;
 
@@ -395,6 +409,24 @@ function updateSpacesDistance() {
     applyFilters();
 }
 
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; // 地球半徑（公尺）
+    const a1 = lat1 * Math.PI / 180;
+    const a2 = lat2 * Math.PI / 180;
+    const da = (lat2 - lat1) * Math.PI / 180;
+    const dl = (lon2 - lon1) * Math.PI / 180;
+
+    const a = Math.sin(da / 2) * Math.sin(da / 2) +
+        Math.cos(a1) * Math.cos(a2) *
+        Math.sin(dl / 2) * Math.sin(dl / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return Math.round(R * c); // 單位：公尺
+}
+
+// ======= 初始化地圖 =======
+
 function initMap() {
     if (map)
         return;
@@ -416,9 +448,9 @@ function initMap() {
             map.setCenter(userLocation);
         }
 
-        // 更新地圖標記
-        if (spaces && spaces.length > 0) {
-            updateMapMarkers(spaces);
+        // 更新分點地圖標記
+        if (branches && branches.length > 0) {
+            updateBranchMarkers(branches);
         }
 
 
@@ -428,26 +460,45 @@ function initMap() {
     }
 }
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371e3; // 地球半徑（公尺）
-    const a1 = lat1 * Math.PI / 180;
-    const a2 = lat2 * Math.PI / 180;
-    const da = (lat2 - lat1) * Math.PI / 180;
-    const dl = (lon2 - lon1) * Math.PI / 180;
+// 取得分點位置資訊
+function extractBranchInfo(spacesData) {
+    const branchMap = new Map(); // 使用 Map 避免重複
 
-    const a = Math.sin(da / 2) * Math.sin(da / 2) +
-        Math.cos(a1) * Math.cos(a2) *
-        Math.sin(dl / 2) * Math.sin(dl / 2);
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    spacesData.forEach(space => {
+        // 假設 space 有 branchId 和 branchAddr 屬性
+        // 如果沒有 branchId, 則使用座標作為識別
+        const branchId = space.branchId || `loc_${space.coordinates[0]}_${space.coordinates[1]}`;
+        const branchName = space.branchName;
+        const branchAddr = space.branchAddr || space.location;
 
-    return Math.round(R * c); // 單位：公尺
+        // 如果座標無效，則跳過
+        if (!isValidCoordinates(space.coordinates)) {
+            return;
+        }
+
+        // 如果該分店尚未加入 Map，則加入
+        if (!branchMap.has(branchId)) {
+            branchMap.set(branchId, {
+                branchId: branchId,
+                name: branchName,
+                address: branchAddr,
+                coordinates: space.coordinates,
+                spaces: []
+            });
+        }
+
+        // 將空間加入該分店的空間列表
+        branchMap.get(branchId).spaces.push(space.spaceId);
+    });
+
+    // 將 Map 轉換為陣列
+    return Array.from(branchMap.values());
 }
 
-
-function updateMapMarkers(spacesList) {
+function updateMapMarkers(branchesList) {
     if (!map) {
-        console.warn("updateMapMarkers called before map was initialized.");
+        console.warn("還沒初始化地圖");
         return;
     }
 
@@ -470,17 +521,17 @@ function updateMapMarkers(spacesList) {
     markersData = [];
 
     // 建立新的座標、資訊
-    spacesList.forEach(space => {
+    branchesList.forEach(branch => {
         // 座標超出範圍之檢查
-        if (!isValidCoordinates(space.coordinates)) {
-            console.warn(`Skipping marker for space "${space.name}" due to invalid coordinates:`, space.coordinates);
+        if (!isValidCoordinates(branch.coordinates)) {
+            console.warn(`Skipping marker for branch "${branch.name}" due to invalid coordinates:`, branch.coordinates);
             return;
         }
 
         // 建立座標
         const position = {
-            lat: parseFloat(space.coordinates[0]),
-            lng: parseFloat(space.coordinates[1])
+            lat: parseFloat(branch.coordinates[0]),
+            lng: parseFloat(branch.coordinates[1])
         };
 
         let markerElement;
@@ -488,45 +539,97 @@ function updateMapMarkers(spacesList) {
             markerElement = new AdvancedMarkerElement({
                 position: position,
                 map: map,
+                title: branch.name
             });
         } catch (error) {
-            console.error(`Error creating AdvancedMarkerElement for space ${space.spaceId}:`, error, "Position:", position);
+            console.error(`Error creating AdvancedMarkerElement for branch ${branch.branchId}:`, error, "Position:", position);
             return;
         }
 
-
         // 建立資訊小彈窗
-        const infoWindowContent = `<b>${space.name || '未命名'}</b><br>${space.location || ''}<br>$${space.price != null ? space.price : '??'}/hr`;
+        const spacesCount = branch.spaces.length;
+        const infoWindowContent = `
+            <div style="min-width: 150px;">
+                <h4 style="margin: 5px 0;">${branch.name || '未命名分店'}</h4>
+                <p style="margin: 5px 0;">${branch.address || '未命名分店'}</p>
+                <p style="margin: 5px 0;">包含 ${spacesCount} 個空間</p>
+                <button id="filter-branch-btn" 
+                    style="background-color: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-top: 5px;">
+                    查看此分店空間
+                </button>
+            </div>
+        `;
+
         const infoWindow = new InfoWindow({
             content: infoWindowContent,
             pixelOffset: new Size(0, -10)
         });
 
+
         // 點擊座標時觸發
-        markerElement.addEventListener("click", () => {
+        markerElement.addEventListener("mouseenter", () => {
             if (activeInfoWindow) {
                 activeInfoWindow.close();
             }
             infoWindow.open({ map: map, anchor: markerElement });
             activeInfoWindow = infoWindow;
-            highlightCard(space.spaceId); // 強調該空間card
+
+            // 添加按鈕點擊事件
+            setTimeout(() => {
+                const filterBtn = document.getElementById('filter-branch-btn');
+                if (filterBtn) {
+                    filterBtn.addEventListener('click', () => {
+                        // 篩選出該分店的空間
+                        filterSpacesByBranch(branch.branchId, branch.spaces);
+                        // 關閉資訊視窗
+                        infoWindow.close();
+                    });
+                }
+            }, 100);
         });
 
         // 儲存座標、資訊彈窗、spaceId
         markersData.push({
             markerElement: markerElement,
             infoWindow: infoWindow,
-            spaceId: space.spaceId
+            branchId: branch.branchId,
+            spaces: branch.spaces
         });
     });
 }
 
-function highlightMarker(spaceId) {
+// 根據branchId篩選空間
+function filterSpacesByBranch(branchId, branchSpaces) {
+    // 篩選出該分店的空間
+    const filteredSpaces = spaces.filter(space =>
+        branchSpaces.includes(space.spaceId)
+    );
 
-    if (!map)
+    // 如果沒有空間，則顯示提示
+    if (filteredSpaces.length === 0) {
+        alert("此分店目前沒有可用空間。");
         return;
+    }
 
-    const data = markersData.find(d => d.spaceId === spaceId);
+    // 重置其他篩選條件
+    document.querySelectorAll(".reset-button").forEach(button => {
+        button.click();
+    });
+    document.querySelectorAll('input[type="checkbox"][name="people"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    document.querySelectorAll('input[type="checkbox"][name="usage"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // 顯示篩選結果
+    renderSpaces(filteredSpaces);
+}
+
+function highlightBranchMarker(branchId) {
+    if (!map) return;
+
+    const data = markersData.find(d => d.branchId === branchId);
     if (data && data.markerElement) {
         const position = data.markerElement.position;
         if(position) {
@@ -539,12 +642,24 @@ function highlightMarker(spaceId) {
             }
             data.infoWindow.open({ map: map, anchor: data.markerElement });
             activeInfoWindow = data.infoWindow;
-        } else {
-            console.warn(`Could not get position for marker with spaceId: ${spaceId}`);
-        }
 
+            // 添加按鈕點擊事件
+            setTimeout(() => {
+                const filterBtn = document.getElementById('filter-branch-btn');
+                if (filterBtn) {
+                    filterBtn.addEventListener('click', () => {
+                        // 篩選出該分店的空間
+                        filterSpacesByBranch(branchId, data.spaces);
+                        // 關閉資訊視窗
+                        data.infoWindow.close();
+                    });
+                }
+            }, 100);
+        } else {
+            console.warn(`Could not get position for marker with branchId: ${branchId}`);
+        }
     } else {
-        console.warn(`Marker data not found for spaceId: ${spaceId}`);
+        console.warn(`Marker data not found for branchId: ${branchId}`);
     }
 }
 
@@ -615,7 +730,7 @@ function setupEventListeners() {
         button.addEventListener('click', event => {
             const parentClass = event.currentTarget.parentElement.className;
             if (parentClass.includes('price-range')) {
-                priceRange.noUiSlider.set([100, 2000]);
+                priceRange.noUiSlider.set([0, 2000]);
             } else if (parentClass.includes('distance-range')) {
                 distanceRange.noUiSlider.set([0, 10000]);
             }
@@ -665,9 +780,9 @@ function applyFilters() {
     });
 
     renderSpaces(filteredSpaces);
-    if (map) { // Only update markers if map is initialized
-        updateMapMarkers(filteredSpaces);
-    }
+    // if (map) { // Only update markers if map is initialized
+    //     updateMapMarkers(filteredSpaces);
+    // }
 }
 
 
@@ -730,9 +845,9 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
                 renderSpaces(spaces);
             }
 
-            if (map) {
-                updateMapMarkers(spaces);
-            }
+            // if (map) {
+            //     updateMapMarkers(spaces);
+            // }
 
         })
         .catch(error => {
