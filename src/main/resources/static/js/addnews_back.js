@@ -96,28 +96,28 @@ $('#addNewsForm').on('submit', function(e) {
 
 
 	$.ajax({
-		url: '/admin/news/insertvalid',
-		method: 'POST',
-		data: formData,
-		//不把 FormData 轉成字串格式（保持原始的二進位傳送）
-		processData: false,
-		//讓瀏覽器自動設定 multipart/form-data 和 boundary
-		contentType: false,
-		success: function(res) {
-			// 後端回傳的是 { redirect: "/backend_news.html" }
-			window.location.href = res.redirect;
-		},
-		error: function(xhr) {
-			const errors = xhr.responseJSON;
-			$('#add-newsTitle-error').text(errors.newsTitle || '');
-			$('#add-newsContent-error').text(errors.newsContent || '');
-			$('#add-newsCategoryId-error').text(errors.newsCategoryId || '');
-			$('#add-newsStartDate-error').text(errors.newsStartDate || '');
-			$('#add-newsEndDate-error').text(errors.newsEndDate || '');
-			$('#add-newsStatusId-error').text(errors.newsStatusId || '');
-		}
+	    url: '/admin/news/insertvalid',
+	    method: 'POST',
+	    data: formData,
+	    // 不把 FormData 轉成字串格式（保持原始的二進位傳送）
+	    processData: false,
+	    // 讓瀏覽器自動設定 multipart/form-data 和 boundary
+	    contentType: false,
+	    success: function(res) {
+	        alert('新增成功'); // 彈出提示框
+	          window.location.href = "/backend_news.html";
+	    },
+	    error: function(xhr) {
+	        const errors = xhr.responseJSON;
+	        $('#add-newsTitle-error').text(errors.newsTitle || '');
+	        $('#add-newsContent-error').text(errors.newsContent || '');
+	        $('#add-newsCategoryId-error').text(errors.newsCategoryId || '');
+	        $('#add-newsStartDate-error').text(errors.newsStartDate || '');
+	        $('#add-newsEndDate-error').text(errors.newsEndDate || '');
+	        $('#add-newsStatusId-error').text(errors.newsStatusId || '');
+	    }
 	});
-});
+
 // 使用者輸入內容時就清除錯誤訊息
 $('#newsTitle, #newsContent, #newsCategoryId, #newsStartDate, #newsEndDate, #newsStatusId').on('input change', function() {
 	const fieldId = $(this).attr('id');
@@ -128,4 +128,5 @@ $('#newsTitle, #newsContent, #newsCategoryId, #newsStartDate, #newsEndDate, #new
 // 取消回首頁
 $('#cancelBtn').on('click', function() {
 	window.location.href = '/backend_news.html';
+});
 });

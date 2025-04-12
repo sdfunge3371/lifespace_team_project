@@ -109,29 +109,33 @@
 	<!-- Main Content -->
 	
 	<div class="main-content">
-		<div class="header">
-			<h1 >常見問題</h1>
-		</div>
+<div class="header sticky-header">
+  <h2 class="mb-0">常見問題</h2>
+</div>
 
-		<table id="faqTable" class="display">
-			<button id="btn-add-faq" class="btn btn-success mb-3">新增FAQ</button>
-			<thead>
-				<tr>
-					<th>常見問題編號</th>
-					<th>管理者編號</th>
-					<th>常見問題</th>
-					<th>回答</th>
-					<th>建檔時間</th>
-					<th>問題狀態</th>
-					<th>修改</th>
-					<th>狀態操作</th>
-				</tr>
-			</thead>
-			<tbody id="faqBody">
-				<!-- 用 jQuery 動態產生列表內容 -->
-			</tbody>
-		</table>
-		<br>
+
+  <button id="btn-add-faq" class="btn btn-success mb-3">新增 FAQ</button>
+
+  <div class="table-responsive">
+    <table id="faqTable" class="display">
+      <thead>
+        <tr>
+          <th>常見問題編號</th>
+          <th>管理者編號</th>
+          <th>常見問題</th>
+          <th>回答</th>
+          <th>建檔時間</th>
+          <th>問題狀態</th>
+          <th>修改</th>
+          <th>狀態操作</th>
+        </tr>
+      </thead>
+      <tbody id="faqBody">
+        <!-- jQuery 動態生成 -->
+      </tbody>
+    </table>
+  </div>
+</div>
 	
 	<!-- 新增 FAQ Modal -->
 <div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="addFaqModalLabel" aria-hidden="true">
