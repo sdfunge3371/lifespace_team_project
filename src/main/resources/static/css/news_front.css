@@ -1,0 +1,72 @@
+/* === 桌面版預設樣式（剛剛那份） === */
+.news-title {
+  width: 20%;
+  text-align: center !important;
+}
+
+.news-content {
+  width: 35%;
+  text-align: center !important;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.news-category {
+  width: 15%;
+  text-align: center !important; 
+}
+
+.news-image {
+  width: 15%;
+  text-align: center !important;
+}
+
+/* === 768px 以下的響應式調整 === */
+@media (max-width: 768px) {
+  #newsTable {
+    font-size: 14px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+/*   #newsTable thead { */
+/*     display: none; 隱藏表頭，讓內容清爽 */
+/*   } */
+
+  #newsTable tbody tr {
+    display: block;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+
+  #newsTable tbody td {
+    display: block;
+    text-align: left;
+    padding: 5px 10px;
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  /* 自訂每個欄位前的 label（可選） */
+  #newsTable tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    display: inline-block;
+    width: 100px;
+    color: #333;
+  }
+
+  /* 內容欄擴大使用空間 */
+  .news-content {
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+/* 消息圖片固定寬度 */
+#newsTable td:nth-child(4) {
+  width: 120px;
+  text-align: center;
+}
