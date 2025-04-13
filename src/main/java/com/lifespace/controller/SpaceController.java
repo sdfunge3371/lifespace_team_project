@@ -80,6 +80,17 @@ public class SpaceController {
 
 	}
 
+	// 關鍵字、時間複合搜尋
+	@GetMapping("/spaces/available")
+	public ResponseEntity<List<Space>> getSpacesAvailable(
+			@RequestParam(required = false) String keyword,
+			@RequestParam(required = false) String date,
+			@RequestParam(required = false) String startTime,
+			@RequestParam(required = false) String endTime) {
+		List<Space> availableSpaces = spaceService.getAvailableSpaces(keyword, date, startTime, endTime);
+		return ResponseEntity.ok(availableSpaces);
+	}
+
 	// 新增空間
 	@PostMapping("/spaces")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> addSpace(@RequestPart("data") @Valid SpaceRequest space,

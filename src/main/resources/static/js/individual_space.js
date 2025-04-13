@@ -237,10 +237,17 @@ function renderCalendar(year, month) {
 
         // 檢查這一天是否在過去
         const checkDate = new Date(year, month, i);
+
+        const isSameDate = checkDate.getFullYear() === now.getFullYear()
+            && checkDate.getMonth() === now.getMonth()
+            && checkDate.getDate() === now.getDate();
+
         const isPastDate = checkDate < new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const isFutureDate = checkDate > maxDate;  // 檢查是否超過3個月
+        const isTodayAndDaily = isSameDate && document.getElementById("daily").checked;
 
-        if (isPastDate || isFutureDate) {
+
+        if (isPastDate || isFutureDate || isTodayAndDaily) {
             // 過去的日期設為禁用狀態
             dayElement.classList.add('disabled-day');
         } else {
@@ -1031,14 +1038,19 @@ function insertHeadComments(comments) {
         } = comment;
 
         // 會員頭貼處理
-        let avatarHtml = "";
+        let avatarImgSrc = "";
+
+        // 若會員沒有頭貼時，使用預設頭貼
         if (memberImage == null) {
-            avatarHtml = `<i class="fas fa-user"></i>`;
+            avatarImgSrc = `images/default.jpg`;
+
         } else {
             // 會員頭貼處理
-            const avatarImgSrc = `data:image/jpeg;base64,${memberImage}`;
-            avatarHtml = `<img src="${avatarImgSrc}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
+            avatarImgSrc = `data:image/jpeg;base64,${memberImage}`;
         }
+
+        const avatarHtml = `<img src="${avatarImgSrc}" alt="評論照片" class="avatar-img">`;
+
         // 滿意度星星生成
         let starsHtml = "";
         for (let i = 0; i < 5; i++) {

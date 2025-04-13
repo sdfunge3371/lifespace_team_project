@@ -3,6 +3,9 @@ package com.lifespace.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -295,4 +298,39 @@ public class SpaceService {
 	        return new PageImpl<>(responseList, pageable, commentPage.getTotalElements());
 			
 			}
+
+
+	// 關鍵字、開始結束日間的複合查詢
+	public List<Space> getAvailableSpaces(String keyword, String dateStr, String startTimeStr, String endTimeStr) {
+		LocalTime startTime = LocalTime.parse(startTimeStr);
+		LocalTime endTime = LocalTime.parse(endTimeStr);
+
+		List<Space> targetSpaces;
+
+		// 先對關鍵字模糊搜尋
+		if (keyword != null && !keyword.isBlank()) {
+			targetSpaces = spaceRepository.findBySpaceNameContainingIgnoreCase(keyword);
+		} else {
+			targetSpaces = spaceRepository.findAll(); // 若沒關鍵字則撈全部
+		}
+
+		if (targetSpaces == null || targetSpaces.isEmpty()) {
+			throw new ResourceNotFoundException("查無空間");
+		}
+
+		if (dateStr == null || dateStr.isBlank()) {
+			return targetSpaces; // 沒日期就不篩預約
+		}
+
+		LocalDate date = LocalDate.parse(dateStr);
+		LocalDateTime startDateTime = LocalDateTime.of(date, startTime);
+		LocalDateTime endDateTime = LocalDateTime.of(date, endTime);
+
+		// 再過濾出沒被預約的空間
+		return targetSpaces.stream()
+				.filter(space -> !spaceRepository.existsBySpaceIdAndOrderOverlap(
+						space.getSpaceId(), startDateTime, endDateTime))
+				.collect(Collectors.toList());
+	}
+
 }

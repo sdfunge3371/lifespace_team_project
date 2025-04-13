@@ -275,7 +275,6 @@ body {
 .filter-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
     align-items: center;
 }
 
@@ -434,7 +433,7 @@ body {
 }
 
 .space-card {
-    background-color: #ffecec;
+    background-color: #edf8f8;
     border-radius: 5px;
     overflow: hidden;
 }
@@ -544,7 +543,7 @@ body {
 .noUi-handle {
     width: 20px;
     height: 20px;
-    background: #4CAF50;
+    background: #6AC0BD;
     border: none !important;
     border-radius: 50%;
     cursor: pointer;
@@ -561,7 +560,7 @@ body {
 
 /* 連接區塊顏色 */
 .noUi-connect {
-    background: #4CAF50;
+    background: #6AC0BD;
 }
 
 /* 響應式設計 */
