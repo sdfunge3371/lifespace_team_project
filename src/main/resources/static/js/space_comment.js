@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.body.classList.toggle('sidebar-open');
                 });
             }
+			
+			// 獲取所有分點
+			fetchAllBranches();
 
             // 分頁狀態
             let currentPage = 0;
@@ -37,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function () {
             resetBtn.addEventListener('click', function () {
                 spaceIdInput.value = '';
                 spaceNameInput.value = '';
-                branchIdInput.value = '';
+                document.getElementById('location').value = '';
                 currentPage = 0;
-                fetchComments();
+				fetchComments();
             });
 
             // 關閉圖片模態框
@@ -54,14 +57,47 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+			
+			// 獲取所有地點
+			async function fetchAllBranches() {
+			       // 使用API端點路徑
+			       const apiUrl = 'http://localhost:8080/branch/getAll';
+
+			       fetch(apiUrl)
+			           .then(response => {
+			               console.log('API 響應狀態:', response.status);
+			               if (!response.ok) {
+			                   throw new Error('網路回應不正常，狀態碼: ' + response.status);
+			               }
+			               return response.json();
+			           })
+			           .then(branches => {
+			               // 顯示活動地點在條件搜尋區域
+			               displayBranches(branches);
+			           })
+			           .catch(error => {
+			               console.error('獲取活動地點時出錯:', error);
+			           });	
+			   }
+			
+			   
+			function displayBranches(branches) {
+			       const branchSelect = document.getElementById('location');
+			       branchSelect.innerHTML = '<option value="">所有分點</option>';
+			       branches.forEach(branch => {
+			             const newBranch = `<option value=${branch.branchId}>${branch.branchName}</option>`;
+			             branchSelect.innerHTML = branchSelect.innerHTML + newBranch;  
+			         });   
+			}
+				  
             // 獲取評論資料
             function fetchComments() {
                 showLoading();
 
                 const spaceId = spaceIdInput.value.trim();
                 const spaceName = spaceNameInput.value.trim();
-                const branchId = branchIdInput.value.trim();
-
+				const branchId = document.getElementById('location').value || "";
+				
                 // 構建API URL
                 let url = `http://localhost:8080/spaces/comments?page=${currentPage}&size=${pageSize}`;
                 if (spaceId) url += `&spaceId=${encodeURIComponent(spaceId)}`;

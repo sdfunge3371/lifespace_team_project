@@ -33,6 +33,7 @@ public interface EventRepository extends JpaRepository<Event,String>{
 		    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
 		    "LEFT JOIN event_category ec ON ec.event_category_id = e.event_category_id "+
 		    "WHERE (:eventName IS NULL OR e.event_name LIKE CONCAT('%', :eventName, '%')) " +
+		    "AND (:eventStatus IS NULL OR e.event_status LIKE CONCAT('%', :eventStatus, '%')) "+
 		    "AND (:startTime IS NULL OR e.event_start_time >= :startTime) " +
 		    "AND (:endTime IS NULL OR e.event_end_time <= :endTime) " +
 		    "AND (:category IS NULL OR ec.event_category_id = :category) "+
@@ -50,6 +51,7 @@ public interface EventRepository extends JpaRepository<Event,String>{
 				    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
 				    "LEFT JOIN event_category ec ON ec.event_category_id = e.event_category_id "+
 				    "WHERE (:eventName IS NULL OR e.event_name LIKE CONCAT('%', :eventName, '%')) " +
+				    "AND (:eventStatus IS NULL OR e.event_status LIKE CONCAT('%', :eventStatus, '%')) "+
 				    "AND (:startTime IS NULL OR e.event_start_time >= :startTime) " +
 				    "AND (:endTime IS NULL OR e.event_end_time <= :endTime) " +
 				    "AND (:category IS NULL OR ec.event_category_id = :category) "+
@@ -62,6 +64,7 @@ public interface EventRepository extends JpaRepository<Event,String>{
 	            @Param("endTime") Timestamp endTime,
 	            @Param("category") String category,
 	            @Param("branch") String branch,
+	            @Param("eventStatus") String eventStatus,
 	            Pageable pageable);
 	 
 	 
@@ -84,18 +87,7 @@ public interface EventRepository extends JpaRepository<Event,String>{
 	 	EventResponse getOneEvent(@Param("eventId") String eventId);
 
 	 
-//	 	@Query(value = "SELECT " +
-//	 			"e.event_id, e.event_name, e.event_start_time, e.event_end_time, " +
-//			    "e.event_category, e.event_status, e.number_of_participants, " +
-//			    "e.maximum_of_participants, e.event_briefing, e.remarks, e.host_speaking, " +
-//			    "e.created_time, br.branch_addr AS space_address, mem.member_name AS organizer, GROUP_CONCAT(ep.photo) AS photo_urls " +
-//			    "FROM event e "+
-//			    "LEFT JOIN event_photo ep ON e.event_id = ep.event_id " +
-//			    "LEFT JOIN orders ord ON e.event_id = ord.event_id " +
-//			    "LEFT JOIN member mem ON ord.member_id = mem.member_id " +
-//			    "LEFT JOIN branch br ON ord.branch_id = br.branch_id " +
-//			    "GROUP BY e.event_id, br.branch_addr, mem.member_name",nativeQuery = true)
-//	 	List<EventResponse> getAllEvents();
+	 	//首頁預設最新活動推薦，以及活動總覽頁面熱門推薦
+	 	Page<Event> findByEventStatus(EventStatus eventStatus, Pageable pageable);
 
-	 
 }
