@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,13 +93,39 @@ public class EventController {
         return ResponseEntity.ok("執行remove event member jpa方法");
     }
     
-    @GetMapping("/getAll")
-    public List<Event> getAll() {
-    	System.out.println("被要求檔案");
-    	  List<Event> events = eventSvc.getAll();
+    @GetMapping("/getNewEvents")
+    public Page<Event> getNewEvents(
+    		 @RequestParam(defaultValue = "6") @Max(10) @Min(0) Integer size,
+             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
+    	
+    	// 創建分頁和排序條件
+        Pageable pageable = PageRequest.of( page, size,
+        			Sort.by("createdTime").descending()
+        );
+        
+    	  Page<Event> events = eventSvc.getAll(pageable);
           for (Event event : events) {
               event.getPhotoUrls(); // 確保 photoUrls 被填充
           }
+          
+        return events;
+    }
+    
+    @GetMapping("/getAll")
+    public Page<Event> getAllforOverview(
+    		 @RequestParam(defaultValue = "5") @Max(10) @Min(0) Integer size,
+             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
+    	
+    	// 創建分頁和排序條件
+        Pageable pageable = PageRequest.of( page, size,
+        			Sort.by("numberOfParticipants").descending()
+        );
+        
+    	  Page<Event> events = eventSvc.getAll(pageable);
+          for (Event event : events) {
+              event.getPhotoUrls(); // 確保 photoUrls 被填充
+          }
+          
         return events;
     }
     
@@ -130,9 +157,8 @@ public class EventController {
             @RequestParam(defaultValue = "5") @Max(10) @Min(0) Integer size,
             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
         // 創建分頁和排序條件
-        Pageable pageable = PageRequest.of( page, size
-        			//Sort.by("eventStartTime").descending()
-        );
+        Pageable pageable = PageRequest.of( page, size);
+        
         // 處理空字符串
         eventName = (eventName != null && eventName.trim().isEmpty()) ? null : eventName;
         category = (category != null && category.trim().isEmpty()) ? null : category;

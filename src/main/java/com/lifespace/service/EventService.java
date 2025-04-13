@@ -300,10 +300,12 @@ public class EventService {
 			return searchedEvent;  
 		}
 
-	//找出所有活動
-	public List<Event> getAll() {
-			return eventRepository.findAll();
-		}
+	//找出所有可參加的活動
+	public Page<Event> getAll(Pageable pageable) {
+		Page<Event> availableEvents =  eventRepository.findByEventStatus(
+				EventStatus.SCHEDULED, pageable);
+		return availableEvents;
+	}
 	
 	// 添加搜尋方法
     public Page<EventResponse> searchEvents( String eventName,
@@ -319,7 +321,8 @@ public class EventService {
         		endTime,
         		category,
         		branch,
-                pageable
+        		"SCHEDULED",
+                pageable         
         );
         
         List<EventResponse> responseList = eventPage.getContent();
