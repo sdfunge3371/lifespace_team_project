@@ -3,14 +3,24 @@ package com.lifespace.controller;
 
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.dto.SpaceCommentRequest;
+import com.lifespace.ecpay.payment.integration.AllInOne;
+import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
+import com.lifespace.ecpay.payment.integration.ecpayOperator.EcpayFunction;
 import com.lifespace.entity.Orders;
 import com.lifespace.service.OrdersService;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +76,129 @@ public class OrdersController {
 //
 //        return ordersSvc.getAllOrdersByMemberId(memberId);
 //    }
+
+    @PostMapping("/createOrders")
+    public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO, HttpSession session) {
+        String memberId = (String) session.getAttribute("loginMember");
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        ordersDTO.setMemberId(memberId);
+        OrdersDTO newOrder = ordersSvc.createOrder(ordersDTO);
+        return ResponseEntity.ok(newOrder);
+    }
+
+    @PostMapping("/ecpay-checkout/{orderId}")
+    public ResponseEntity<String> checkoutWithEcpay(@PathVariable String orderId) {
+        OrdersDTO order = ordersSvc.getOrdersDTOByOrderId(orderId);
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ecpay-查無訂單");
+        }try {
+            URL fileURL = getClass().getClassLoader().getResource("payment_conf.xml");
+            if (fileURL == null) {
+                return ResponseEntity.status(500).body("payment_conf.xml未載入");
+            } else {
+                System.out.println("payment_conf.xml 載入成功：" + fileURL);
+            }
+
+            AllInOne all = new AllInOne("");
+            AioCheckOutOneTime aio = new AioCheckOutOneTime();
+
+            String tradeNo = order.getOrderId() + "_" + System.currentTimeMillis();
+            aio.setMerchantTradeNo(tradeNo);
+            aio.setMerchantTradeDate(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+            aio.setTotalAmount(order.getAccountsPayable().toString());
+            aio.setTradeDesc("LifeSpace 空間租借");
+            aio.setItemName("空間租借費用");
+            aio.setReturnURL("https://9ffc-118-168-96-165.ngrok-free.app/ecpay/return");
+            aio.setClientBackURL("http://localhost:8080/frontend_orders.html");
+            aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
+            aio.setNeedExtraPaidInfo("N");
+
+            String form = all.aioCheckOut(aio, null);
+            return ResponseEntity.ok(form);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("訂單建立成功, 但金流表單建立失敗");
+        }
+    }
+
+    public ResponseEntity<String> handleEcpayReturn(HttpServletRequest request) {
+        Map<String, String[]> paramsMap = request.getParameterMap();
+        Map<String, String> ecpayParams = new HashMap<>();
+        paramsMap.forEach((key, value) -> {
+            if(value.length > 0) {
+                ecpayParams.put(key, value[0]);
+            }
+        });
+
+        //回傳的CheckMacValue
+        String CheckMacValue = ecpayParams.get("CheckMacValue");
+
+        //用EcpayFunction計算CheckMacValue
+        String HashKey = "pwFHCqoQZGmho4w6";
+        String HashIV = "EkRm7iFT261dpevs";
+
+        String localCheckMacValue = EcpayFunction.genCheckMacValue(HashKey, HashIV, ecpayParams);
+
+        //比對兩個CheckMacValue是否一致
+        if (CheckMacValue != null && CheckMacValue.equalsIgnoreCase(localCheckMacValue)) {
+            System.out.println("回傳比對成功");
+
+            String rtnCode = ecpayParams.get("RtnCode");
+            String tradeNo = ecpayParams.get("MerchantTradeNo");
+            String orderId = tradeNo.split("_")[0];
+
+            if ("1".equals(rtnCode)) {
+                ordersSvc.paidOrders(orderId);
+                System.out.println("更新訂單狀態為已付款" + orderId);
+            }
+            return ResponseEntity.ok("1|OK");
+
+        }else {
+            System.out.println("回傳比對失敗");
+            return ResponseEntity.ok("0|FAIL");
+        }
+    }
+
+//    @PostMapping("/ecpay-checkout/{orderId}")
+//    public ResponseEntity<String> creatOrderWithEcpay(@RequestBody OrdersDTO ordersDTO, HttpSession session) {
+//        String memberId = (String) session.getAttribute("loginMember");
+//
+//        if (memberId == null) {
+//            return ResponseEntity.status(401).body("尚未登入會員");
+//        }
+//
+//        ordersDTO.setMemberId(memberId);
+//        OrdersDTO newOrder = ordersSvc.createOrder(ordersDTO);
+//
+//        try{
+//            AllInOne all = new AllInOne("");
+//            AioCheckOutOneTime aioOrders = new AioCheckOutOneTime();
+//            String ecpayTradeNo = newOrder.getOrderId() + "_" + System.currentTimeMillis();
+//
+//            aioOrders.setMerchantTradeNo(ecpayTradeNo);
+//            aioOrders.setMerchantTradeDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//            aioOrders.setTotalAmount(newOrder.getAccountsPayable().toString());
+//            aioOrders.setTradeDesc("LifeSpace");
+//            aioOrders.setItemName("空間租借費用");
+//
+//            aioOrders.setIgnorePayment("WebATM#ATM#CVS#BARCODE"); //隱藏付款方式只顯示信用卡
+//
+//            aioOrders.setReturnURL("https://9ffc-118-168-96-165.ngrok-free.app/ecpay/erturn");
+//            aioOrders.setClientBackURL("http://localhost:8080/frontend_orders.html");
+//
+//            aioOrders.setNeedExtraPaidInfo("N"); //額外付款資訊
+//
+//            String form = all.aioCheckOut(aioOrders, null); //產生HTML form表單
+//            return  ResponseEntity.ok(form);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return ResponseEntity.status(500).body("有建立訂單, 但金流表單產生失敗");
+//        }
+//    }
     
     @PostMapping("/addComment")
     public String addSpaceComments(
@@ -77,7 +210,7 @@ public class OrdersController {
     }
 
 
-    // 睿寓：新增訂單
+//     睿寓：新增訂單
     @PostMapping
     public ResponseEntity<OrdersDTO> createOrder(@RequestBody OrdersDTO ordersDTO) {
         OrdersDTO newOrder = ordersService.createOrder(ordersDTO);
