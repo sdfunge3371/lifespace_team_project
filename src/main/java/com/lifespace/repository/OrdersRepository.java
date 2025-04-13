@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,14 +27,19 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     @EntityGraph(attributePaths = {"branch", "member", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
     List<Orders> findByMember_MemberIdAndMember_AccountStatus(String memberId, Integer accountStatus);
-    
-    
-    
-    
-    
+
+
+
+
+
     //用舉辦人id以及活動id查詢訂單，作為舉辦者取消活動用
     Optional<Orders> findByEventEventIdAndMemberMemberId(String eventId, String memberId);
-    
+
+    // 根據空間抓該空間已經被預訂的所有時段
+    @Query("SELECT o FROM Orders o WHERE o.space.spaceId = :spaceId AND FUNCTION('DATE', o.orderStart) = :date AND o.orderStatus = 1")
+    List<Orders> findReservedOrdersBySpaceIdAndDate(@Param("spaceId") String spaceId, @Param("date") java.time.LocalDate date);
+
+
 }
 
 
