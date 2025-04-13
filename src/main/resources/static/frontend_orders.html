@@ -231,7 +231,6 @@
 <script src="js/main.js"></script>
 <script>
     $(document).ready(function () {
-        const memberId = 'M005';
 
         //頁籤
         $(".tab").click(function () {
@@ -243,7 +242,7 @@
         });
 
         $.ajax({
-            url: '/orders/member',
+            url: '/orders/member/orders',
             method: 'GET',
             credentials: 'include', // ✅ 保證 cookie (session) 會附帶上去
             success: function (orders) {
