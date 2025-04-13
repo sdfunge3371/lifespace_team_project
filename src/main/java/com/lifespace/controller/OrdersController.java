@@ -61,11 +61,11 @@ public class OrdersController {
      }
 
     //會員查詢訂單測試
-    @GetMapping("/member/{memberId}")
-    public List<OrdersDTO> getOrdersByMemberId(@PathVariable String memberId) {
-
-        return ordersSvc.getAllOrdersByMemberId(memberId);
-    }
+//    @GetMapping("/member/{memberId}")
+//    public List<OrdersDTO> getOrdersByMemberId(@PathVariable String memberId) {
+//
+//        return ordersSvc.getAllOrdersByMemberId(memberId);
+//    }
     
     @PostMapping("/addComment")
     public String addSpaceComments(

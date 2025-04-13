@@ -12,7 +12,7 @@ import java.util.Map;
 @RequestMapping("/api/config")
 public class ApiKeyController {
 
-    @Value("${google.maps.api-key}")
+    @Value("AIzaSyBfzEXbtKJZ4_ST2PjgyrN6oPZdDw29Ugc")
     private String googleMapsApiKey;
 
     @GetMapping("/google-maps-key")
