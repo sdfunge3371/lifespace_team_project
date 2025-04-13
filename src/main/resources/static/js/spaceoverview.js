@@ -1,11 +1,12 @@
 let showMapCheckbox, mapContainer, filterButton, filterPanel, spacesContainer;
 let priceRange, minPriceDisplay, maxPriceDisplay, distanceRange;
 let minDistanceDisplay, maxDistanceDisplay;
+let targetSearchingElement;
 
 let filters = {
-    minPrice: 150,
+    minPrice: 0,
     maxPrice: 2000,
-    minDistance: 100,
+    minDistance: 0,
     maxDistance: 10000,
     peopleCount: [],
     usage: []
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     distanceRange = document.getElementById('distance-range');
     minDistanceDisplay = document.getElementById('min-distance');
     maxDistanceDisplay = document.getElementById('max-distance');
+    targetSearchingElement = document.querySelector(".target-searching");
 
     // 初始化價格滑桿
     noUiSlider.create(priceRange, {
@@ -791,15 +793,52 @@ function applyFilters() {
 document.querySelector(".search-button").addEventListener("click", function(e) {
     e.preventDefault();
 
-    const input = document.querySelector(".search-input");
-    const keyword = input.value.trim();
+    const keyword = document.querySelector(".search-input").value.trim();
+    const date = document.getElementById("datepicker").value.trim();
+    let startTime = document.getElementById("start-time").value;
+    let endTime = document.getElementById("end-time").value;
+    let targetSearching = "正在尋找 ";
 
-    if (!keyword) {
-        alert("搜尋欄不得空白！");
+
+    if (!keyword && !date) {
+        alert("請至少輸入關鍵字或選擇日期！");
         return;
     }
 
-    fetch(`/spaces/name?keyword=${encodeURIComponent(keyword)}`)
+    if (keyword) {
+        targetSearching += `含有「${keyword}」`;
+    }
+
+    if (date) {
+        if (keyword) targetSearching += ", ";
+        targetSearching += `可預訂時間為 ${date} `;
+    }
+
+    if (!startTime || startTime === "選擇開始時間") {
+        startTime = "08:00";
+    } else {
+        targetSearching += `${startTime} `;
+    }
+
+    if (!endTime || endTime === "請先選擇開始時間" || endTime === "選擇結束時間") {
+        endTime = "22:00";
+    } else {
+        targetSearching += `~ ${endTime}`;
+    }
+
+    targetSearching += " 的空間";
+
+
+    // 設定URL參數
+    const queryParams = new URLSearchParams();
+    if (keyword) queryParams.append("keyword", keyword);
+    if (date) queryParams.append("date", date);
+    queryParams.append("startTime", startTime);
+    queryParams.append("endTime", endTime);
+
+
+    // 從後端開始抓符合條件的空間
+    fetch(`/spaces/available?${queryParams.toString()}`)
         .then(response => {
             if (!response.ok) {
                 return response.json().catch(() => null).then(errorData => {
@@ -830,24 +869,16 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
             document.querySelectorAll(".reset-button").forEach(button => {
                 button.click();
             });
-            // document.querySelectorAll('input[type="checkbox"][name="people"]').forEach(checkbox => {
-            //     checkbox.checked = false;
-            // });
-            // document.querySelectorAll('input[type="checkbox"][name="usage"]').forEach(checkbox => {
-            //     checkbox.checked = false;
-            // });
 
             spaces = searchedSpaces;
+
+            targetSearchingElement.innerHTML = targetSearching;
 
             if (userLocation) {
                 updateSpacesDistance();
             } else {
                 renderSpaces(spaces);
             }
-
-            // if (map) {
-            //     updateMapMarkers(spaces);
-            // }
 
         })
         .catch(error => {
