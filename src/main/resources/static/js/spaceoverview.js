@@ -105,7 +105,7 @@ function fetchSpaces() {
                 spaceId: space.spaceId,
                 name: space.spaceName,
                 branchId: space.branchId,
-                branchAddr: space.branchaddr,
+                branchAddr: space.branchAddr,
                 branchName: space.branchName,
                 location: `${space.branchAddr}${space.spaceFloor + (space.spaceFloor ? "樓" : "")}`, // 可從 space.branchId 取得更多資訊
                 price: space.spaceHourlyFee,
