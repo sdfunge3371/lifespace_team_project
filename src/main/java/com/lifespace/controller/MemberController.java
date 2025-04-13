@@ -81,34 +81,34 @@ public class MemberController {
 	
 	
 	//-----------------------取得登入會員資訊（從 Session 抓）------------------------------
-	@GetMapping("/member/profile")
-	public ResponseEntity<?> getProfile(HttpSession session){
-		String memberId = SessionUtils.getLoginMemberId(session); // 統一從工具類拿
-		
-		if(memberId == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
+		@GetMapping("/member/account")
+		public ResponseEntity<?> getProfile(HttpSession session){
+			String memberId = SessionUtils.getLoginMemberId(session); // 統一從工具類拿
+			
+			if(memberId == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
+			}
+			
+			Optional<Member> memberOpt = memberService.findByIdMem(memberId);
+			if(memberOpt.isPresent()) {
+				Member member = memberOpt.get();
+				Map<String, Object> response = new HashMap<>();
+				response.put("memberId", member.getMemberId());
+				response.put("memberName", member.getMemberName());
+				response.put("email", member.getEmail());
+				return ResponseEntity.ok(response);
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("會員不存在");
+			}
+			
 		}
-		
-		Optional<Member> memberOpt = memberService.findByIdMem(memberId);
-		if(memberOpt.isPresent()) {
-			Member member = memberOpt.get();
-			Map<String, Object> response = new HashMap<>();
-			response.put("memberId", member.getMemberId());
-			response.put("memberName", member.getMemberName());
-			response.put("email", member.getEmail());
-			return ResponseEntity.ok(response);
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("會員不存在");
-		}
-		
-	}
 	
 	
 	//-------------------------------會員登出功能------------------------------------
 	@PostMapping("/member/logout")
-	public ResponseEntity<?> logout(HttpSession session) {
-	    session.invalidate(); // 清除所有 session 屬性
-	    return ResponseEntity.ok("已成功登出");
+	public String logout(HttpSession session) {
+		SessionUtils.removeMemberLogin(session); // 清掉 session 裡的loginMember
+		return "../html/login"; //返回登入頁面
 	}
 	
 	

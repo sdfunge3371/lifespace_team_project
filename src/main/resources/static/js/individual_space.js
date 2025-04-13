@@ -130,6 +130,14 @@ function setActive(element, id) {
     const durationRow = document.getElementById('durationRow');
     const rate = document.getElementById('rate');  // 費率那一行
 
+    // 切換時、日租時，清空日期、開始時間、結束時間的欄位，並收合所有下拉式清單
+    resetTimeSelections();
+    resetDateSelection();  // 清空日期欄位
+
+    document.getElementById('startTimeContainer').style.display = 'none';
+    document.getElementById('endTimeContainer').style.display = 'none';
+
+
     if (id === 'daily') {
         // 大字費率顯示日租
         hourlyPrice.style.display = 'none';
@@ -140,6 +148,7 @@ function setActive(element, id) {
         // 費率文字改成日租 (抓取上面 .main-daily-price 裡的值)
         const dailyPricetext = document.getElementById('daily-price').textContent;
         rate.innerHTML = `$ <span class="rate-span">${dailyPricetext}</span>/d`;
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());  // 重新渲染日曆
     } else {
         // 大字費率顯示時租
         hourlyPrice.style.display = 'block';
@@ -150,6 +159,7 @@ function setActive(element, id) {
         // 費率文字改成時租 (抓取上面 .main-hourly-price 裡的值)
         const hourlyPricetext = document.getElementById('hourly-price').textContent;
         rate.innerHTML = `$ <span class="rate-span">${hourlyPricetext}</span>/hr`;
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());  // 重新渲染日曆
     }
 
     updateTotal();
@@ -239,14 +249,36 @@ function renderCalendar(year, month) {
                 dayElement.classList.add('current-day');
             }
 
+            const spaceId = new URLSearchParams(window.location.search).get("spaceId");
+
+            const yyyy = checkDate.getFullYear();
+            const mm = String(checkDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(checkDate.getDate()).padStart(2, '0');
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+            // 若是日租，檢查是否該日有預約
+            if (document.getElementById("daily").checked) {
+                // 非同步查詢該日期是否有預約，若有則禁用
+                checkDateReserved(spaceId, dateStr).then(isReserved => {
+                    if (isReserved) {
+                        dayElement.classList.add('disabled-day');
+                    }
+                });
+            // 若是時租，檢查該日的所有時段是否皆以被預約
+            } else {
+                checkAllStartTimeDisabled(spaceId, dateStr).then(allDisabled => {
+                    if (allDisabled) {
+                        dayElement.classList.add('disabled-day');
+                    }
+                });
+            }
+
             // 點擊事件（只有未來日期才能點擊）
             dayElement.addEventListener('click', function () {
-                const selectedDate = new Date(year, month, i);
+                window.selectedDate = checkDate;
+                const formattedDate = checkDate.toLocaleDateString('zh-TW');
 
                 // 儲存選中的日期，供時間選擇使用
-                window.selectedDate = selectedDate;
-
-                dateToggleButton.innerHTML = selectedDate.toLocaleDateString('zh-TW') + `
+                dateToggleButton.innerHTML = formattedDate + `
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">
@@ -261,11 +293,74 @@ function renderCalendar(year, month) {
 
                 // 當選擇了新日期，重置時間選擇
                 resetTimeSelections();
+
+                // 取得該空間的剩餘可租借時間
+                fetchReservedTimes(spaceId, dateStr);
             });
         }
 
         calendarDays.appendChild(dayElement);
     }
+}
+
+// 檢查哪些天無法再預訂
+function checkDateReserved(spaceId, dateStr) {
+    return fetch(`/orders/reserved-times?spaceId=${spaceId}&date=${dateStr}`)
+        .then(res => res.json())
+        .then(reservedList => reservedList.length > 0)  // 有任何預約就回 true
+        .catch(err => {
+            console.error("查詢失敗", err);
+            return false;
+        });
+}
+
+// 檢查某天的所有時段是否皆已無法預訂
+function checkAllStartTimeDisabled(spaceId, dateStr) {
+    return fetch(`/orders/reserved-times?spaceId=${spaceId}&date=${dateStr}`)
+        .then(res => res.json())
+        .then(reservedList => {
+            // 每 30 分鐘一次，從 08:00 ~ 21:30，共 28 個時間點
+            const allStartTimes = [];
+            for (let hour = 8; hour <= 21; hour++) {
+                for (let minute = 0; minute < 60; minute += 30) {
+                    allStartTimes.push(hour * 60 + minute);
+                }
+            }
+
+            // 移除所有已被預約的時間
+            const availableTimes = allStartTimes.filter(min => {
+                for (const range of reservedList) {
+                    const [startH, startM] = range.start.split(':').map(Number);
+                    const [endH, endM] = range.end.split(':').map(Number);
+                    const rangeStart = startH * 60 + startM;
+                    const rangeEnd = endH * 60 + endM;
+                    if (min >= rangeStart && min < rangeEnd) return false;
+                }
+                return true;
+            });
+
+            // 如果所有時段都被擋掉了，代表無法預約，回傳 true
+            return availableTimes.length === 0;
+        })
+        .catch(err => {
+            console.error("檢查是否全部時間被預約失敗", err);
+            return false; // 預設不禁止
+        });
+}
+
+let reservedTimeRanges = [];
+// 取得該空間的剩餘可租借時間
+function fetchReservedTimes(spaceId, date) {
+    fetch(`/orders/reserved-times?spaceId=${spaceId}&date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+            reservedTimeRanges = data;
+            console.log(`${date} 已預約時段：`, reservedTimeRanges);
+        })
+        .catch(error => {
+            console.log(error);
+            reservedTimeRanges = [];
+        })
 }
 
 // 重置時間選擇
@@ -290,6 +385,13 @@ function resetTimeSelections() {
     selectedStartTime = null;
 }
 
+// 重置日期選擇
+function resetDateSelection() {
+    document.getElementById("dateToggleButton").innerHTML = `選擇日期 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+    window.selectedDate = null;
+}
 // 上個月按鈕
 prevMonthButton.addEventListener('click', function () {
     const now = new Date();
@@ -418,6 +520,21 @@ function generateStartTimeOptions(containerId, buttonId, inputId, minTime) {
                 }
             }
 
+            // 檢查當日哪些時段已經被預訂
+            for (const range of reservedTimeRanges) {
+                const [startH, startM] = range.start.split(':').map(Number);
+                const [endH, endM] = range.end.split(':').map(Number);
+
+                const rangeStartMin = startH * 60 + startM;
+                const rangeEndMin = endH * 60 + endM;
+                const currentMin = hour * 60 + minute;
+
+                if (currentMin >= rangeStartMin && currentMin < rangeEndMin) {
+                    isDisabled = true;
+                    break;
+                }
+            }
+
             // 增加 disabled 類別到不可選的時間
             if (isDisabled) {
                 html += `
@@ -441,6 +558,7 @@ function generateStartTimeOptions(containerId, buttonId, inputId, minTime) {
 function generateTimeOptions(containerId, buttonId, inputId, minTime) {
     const container = document.getElementById(containerId);
     let html = '<ul class="time-list">';
+
     // 若有設定最小時間，轉換成分鐘數
     let minTimeMinutes = 0;
     if (minTime) {
@@ -448,7 +566,11 @@ function generateTimeOptions(containerId, buttonId, inputId, minTime) {
         minTimeMinutes = parseInt(parts[0]) * 60 + parseInt(parts[1]);
     }
 
+    // 偵測要不要在結束時間清單繼續產生接下來時間的
+    let disabledEncountered = 0;
+
     // 顯示出8:00~22:00的開始時間選擇清單
+    outer:
     for (let hour = 8; hour <= 22; hour++) {
         for (let minute = 0; minute < 60; minute += 30) {
             // 若到 22:00 時，僅允許 minute 為 0
@@ -460,6 +582,30 @@ function generateTimeOptions(containerId, buttonId, inputId, minTime) {
             let currentTimeMinutes = hour * 60 + minute;
             if (minTime && currentTimeMinutes <= minTimeMinutes) {
                 continue;
+            }
+
+            let disabledFlag = false;
+
+            // 檢查當日哪些時段已經被預訂
+            for (const range of reservedTimeRanges) {
+                const [startH, startM] = range.start.split(':').map(Number);
+                const [endH, endM] = range.end.split(':').map(Number);
+
+                const rangeStartMin = startH * 60 + startM;
+                const rangeEndMin = endH * 60 + endM;
+                const currentMin = hour * 60 + minute;
+
+                if (currentMin >= rangeStartMin && currentMin <= rangeEndMin) {
+                    // 一旦遇到第一個被借走的時段，後面全部不顯示
+                    disabledFlag = true;
+                    break;
+                }
+            }
+
+            if (disabledFlag) {
+                disabledEncountered++;
+                if (disabledEncountered > 1)
+                    break outer;
             }
 
             // 補 0 成兩位數字
@@ -1234,8 +1380,8 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
     const dd = selectedDate.getDate().toString().padStart(2, '0');
 
     // 不要動，就這樣放
-    let orderStart = `${yyyy}-${mm}-${dd} ${startTime || '00:00'}:00`;
-    let orderEnd = `${yyyy}-${mm}-${dd} ${endTime || '23:59'}:00`;
+    let orderStart = `${yyyy}-${mm}-${dd} ${startTime || '08:00'}:00`;
+    let orderEnd = `${yyyy}-${mm}-${dd} ${endTime || '22:00'}:00`;
 
     // 建立rentalItemDeatilsDTOList
     const rentalItemList = [];

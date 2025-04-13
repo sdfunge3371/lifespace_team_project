@@ -1,6 +1,6 @@
 $(document).ready(function () {
-           // 設定當前會員ID - 實際使用時應從會話或登入狀態獲取
-           const memberId = 'M001';
+           // 設定目前會員ID，之後改從session獲取
+           //const memberId = 'M001';
            
            // 目前活動類型和頁碼
            let currentTab = 'registered-events';
@@ -54,9 +54,10 @@ $(document).ready(function () {
                $.ajax({
                    url: 'http://localhost:8080/lifespace/event/search/ByMember',
                    method: 'GET',
+				   credentials: 'include', //加入session
                    data: {
                        userCategory: userCategory,
-                       memberId: memberId,
+                       //memberId: memberId,
                        page: currentPage,
                        size: pageSize
                    },
@@ -145,7 +146,7 @@ $(document).ready(function () {
                if (tabId === 'created-events' && event.eventStatus === 'SCHEDULED') {
                    // 自己建立且尚未舉辦的活動可以取消舉辦
                    actionButtons = `
-                       <button class="action-button cancel-button" data-organizer-id="${memberId}" data-event-id="${event.eventId}" data-event-name="${event.eventName}">
+                       <button class="action-button cancel-button" data-organizer-id="${event.organizerId}" data-event-id="${event.eventId}" data-event-name="${event.eventName}">
                            取消舉辦
                        </button>
                    `;

@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -546,4 +547,24 @@ public class EventService {
 	
 	}
 	
+	//確認使用者對特定活動的參與狀態
+	public boolean  checkMemberEventStatus(String eventId, String memberId) {
+	
+		try {
+	        // 查詢使用者在此活動的參與狀態
+	        Optional<EventMember> eventMember = eventMemberRepository.findByEventEventIdAndMemberMemberId(eventId, memberId);
+	        
+	        //若使用者沒有參加活動或無活動資料，則回傳false
+	        if ( !eventMember.isPresent() || 
+	        		eventMember.get().getParticipateStatus() == EventMemberStatus.CANCELLED ) {
+	            return false;
+	        } else {
+	        	//若使用者有參加或已候補，則回傳true
+	            return true;
+	        }
+	    } catch (Exception e) {
+	    	throw new ResourceNotFoundException("查詢使用者參與狀態失敗");
+	    }
+		
+	}
 }

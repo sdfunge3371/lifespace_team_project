@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -255,5 +256,11 @@ public class OrdersService {
         return OrdersMapper.toOrdersDTO(order);
 
     }
+
+    // 查詢已預訂時段
+    public List<Orders> findReservedOrdersBySpaceIdAndDate(String spaceId, LocalDate date) {
+        return ordersRepository.findReservedOrdersBySpaceIdAndDate(spaceId, date);
+    }
+
 
 }
