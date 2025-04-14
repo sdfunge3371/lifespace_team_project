@@ -226,7 +226,7 @@
         $.ajax({
             url: '/orders/member/orders',
             method: 'GET',
-            credentials: 'include', // ✅ 保證 cookie (session) 會附帶上去
+            credentials: 'include', // 會員 cookie用
             success: function (orders) {
                 // console.log("取得的訂單資料：", orders);
                 $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
@@ -324,7 +324,7 @@
                     error: function (xhr) {
                     if (xhr.status === 401) {
                         alert("請先登入");
-                        location.href = "/login/login.html"; // ✅ 自動導回登入頁
+                        location.href = "/login.html";
                     } else {
                         alert("載入失敗，請稍後再試");
                 }
