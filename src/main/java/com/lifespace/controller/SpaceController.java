@@ -152,12 +152,15 @@ public class SpaceController {
 	@GetMapping("/spaces/member/current")
 	public ResponseEntity<?> getCurrentMember(HttpSession session) {
 		String memberId = (String) session.getAttribute("loginMember");
+//		String memberId = "M001";
 
 		if (memberId == null) {
 			return ResponseEntity.status(401).body("尚未登入會員");
 		}
 
-		return ResponseEntity.ok(memberId);
+		Map<String, String> res = new HashMap<>();
+		res.put("memberId", memberId);  // key 可以自訂為你前端想用的名字
+		return ResponseEntity.ok(res);
 	}
 
 
