@@ -2,12 +2,15 @@ package com.lifespace.controller;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,26 +68,64 @@ public class EventController {
     }
     
     @PutMapping("/addMemToEvent")
-    public String addToEvent(@RequestParam(required = true) String eventId, @RequestParam(required = true) String memberId)
-    		throws Exception {
+    public ResponseEntity<String> addToEvent(@RequestParam(required = true) String eventId, HttpSession session )
+    		 throws Exception {
     	
+        String memberId = (String) session.getAttribute("loginMember");
+        
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入才能參加活動");
+        }
+        
     	eventSvc.addMemberToEvent(memberId, eventId);
-        return "執行add event member jpa方法";
+        return ResponseEntity.ok("執行add event member jpa方法");
     }
     
     @PutMapping("/removeMemFromEvent")
-    public String removeFromEvent(@RequestParam(required = true) String eventId, @RequestParam(required = true) String memberId) {
-    	eventSvc.removeMemberFromEvent(memberId, eventId);
-        return "執行remove event member jpa方法";
+    public ResponseEntity<String> removeFromEvent(@RequestParam(required = true) String eventId, HttpSession session ) {
+    	String memberId = (String) session.getAttribute("loginMember");
+       
+    	if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入才能取消參加活動");
+        }
+    	
+        eventSvc.removeMemberFromEvent(memberId, eventId);
+        return ResponseEntity.ok("執行remove event member jpa方法");
     }
     
-    @GetMapping("/getAll")
-    public List<Event> getAll() {
-    	System.out.println("被要求檔案");
-    	  List<Event> events = eventSvc.getAll();
+    @GetMapping("/getNewEvents")
+    public Page<Event> getNewEvents(
+    		 @RequestParam(defaultValue = "6") @Max(10) @Min(0) Integer size,
+             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
+    	
+    	// 創建分頁和排序條件
+        Pageable pageable = PageRequest.of( page, size,
+        			Sort.by("createdTime").descending()
+        );
+        
+    	  Page<Event> events = eventSvc.getAll(pageable);
           for (Event event : events) {
               event.getPhotoUrls(); // 確保 photoUrls 被填充
           }
+          
+        return events;
+    }
+    
+    @GetMapping("/getAll")
+    public Page<Event> getAllforOverview(
+    		 @RequestParam(defaultValue = "5") @Max(10) @Min(0) Integer size,
+             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
+    	
+    	// 創建分頁和排序條件
+        Pageable pageable = PageRequest.of( page, size,
+        			Sort.by("numberOfParticipants").descending()
+        );
+        
+    	  Page<Event> events = eventSvc.getAll(pageable);
+          for (Event event : events) {
+              event.getPhotoUrls(); // 確保 photoUrls 被填充
+          }
+          
         return events;
     }
     
@@ -116,9 +157,8 @@ public class EventController {
             @RequestParam(defaultValue = "5") @Max(10) @Min(0) Integer size,
             @RequestParam(defaultValue = "0") @Min(0) Integer page) {
         // 創建分頁和排序條件
-        Pageable pageable = PageRequest.of( page, size
-        			//Sort.by("eventStartTime").descending()
-        );
+        Pageable pageable = PageRequest.of( page, size);
+        
         // 處理空字符串
         eventName = (eventName != null && eventName.trim().isEmpty()) ? null : eventName;
         category = (category != null && category.trim().isEmpty()) ? null : category;
@@ -181,4 +221,24 @@ public class EventController {
 		return "執行cancell event by organizer jpa方法";	
     }
     
+    //檢查使用者在特定活動的參與狀態
+    @GetMapping("/check/eventMemberStatus")
+    public ResponseEntity<?> checkParticipationStatus(@RequestParam(required = true) String eventId, HttpSession session) {
+        String memberId = (String) session.getAttribute("loginMember");
+        
+        if (memberId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入");
+        }
+        
+        Map<String, Object> response = new HashMap<>();
+        //若使用者已參加或已候補
+        if( eventSvc.checkMemberEventStatus(eventId, memberId) ) {
+             response.put( "participateStatus", "PARTICIPATING" );
+             return ResponseEntity.ok(response);
+        }else {
+        	//若使用者未參加也未候補
+        	 response.put("participateStatus", "NOT_PARTICIPATING");
+             return ResponseEntity.ok(response);
+        }
+    }
 }

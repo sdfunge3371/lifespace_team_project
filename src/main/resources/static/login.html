@@ -129,7 +129,9 @@
                 })
                 .then(data => {
                     alert("登入成功，歡迎 " + data.memberName);
-                    location.href = "../try.html";
+
+                    location.href = "/frontend_orders.html";
+
                 })
                 .catch(err => {
                     alert("登入失敗，請檢查帳號或密碼");

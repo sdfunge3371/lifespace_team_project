@@ -1,5 +1,6 @@
 package com.lifespace.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,4 +61,20 @@ public interface SpaceRepository extends JpaRepository<Space, String> {
     // for 睿寓: 計算空間的平均滿意度
     @Query("SELECT AVG(o.satisfaction) FROM Orders o WHERE o.space.spaceId = :spaceId AND o.commentContent IS NOT NULL")
     Double findAverageSatisfactionBySpaceId(@Param("spaceId") String spaceId);
+
+    // 關鍵字、開始結束時間的複合查詢
+    @Query("""
+            SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END
+            FROM Orders o
+            WHERE o.spaceId = :spaceId
+            AND (
+                (:startDateTime BETWEEN o.orderStart AND o.orderEnd)
+                OR (:endDateTime BETWEEN o.orderStart AND o.orderEnd)
+                OR (o.orderStart BETWEEN :startDateTime AND :endDateTime)
+            )
+    """)
+    boolean existsBySpaceIdAndOrderOverlap(@Param("spaceId") String spaceId,
+                                           @Param("startDateTime") LocalDateTime start,
+                                           @Param("endDateTime") LocalDateTime end);
+
 }

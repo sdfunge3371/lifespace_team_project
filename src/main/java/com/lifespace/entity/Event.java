@@ -1,6 +1,7 @@
 package com.lifespace.entity;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -188,5 +189,10 @@ public class Event implements java.io.Serializable {
 		this.eventStatus = eventStatus;
 	}
 		
+	
+	// 【04/13薇婷新增】將 Set<Orders> 轉為 List，方便在 CommentsService 取第一筆訂單
+	public List<Orders> getOrdersList() {
+	    return new ArrayList<>(orders);
+	}
 	    
 }

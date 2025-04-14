@@ -1,6 +1,7 @@
 package com.lifespace.dto;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class CommentsDTO {
 	private String commentId;
@@ -8,6 +9,11 @@ public class CommentsDTO {
     private Timestamp commentTime;
     private String memberName;
     private String eventMemberId;
+    private String imageUrl;
+    private String organizerName;
+    private Timestamp orderStart;
+    private Timestamp orderEnd;
+
 //    private String branchAddr;
     
 	public CommentsDTO() {
@@ -52,6 +58,39 @@ public class CommentsDTO {
 	public void setEventMemberId(String eventMemberId) {
 		this.eventMemberId = eventMemberId;
 	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getOrganizerName() {
+		return organizerName;
+	}
+
+	public void setOrganizerName(String organizerName) {
+		this.organizerName = organizerName;
+	}
+
+	public Timestamp getOrderStart() {
+		return orderStart;
+	}
+
+	public void setOrderStart(Timestamp orderStart) {
+		this.orderStart = orderStart;
+	}
+
+	public Timestamp getOrderEnd() {
+		return orderEnd;
+	}
+
+	public void setOrderEnd(Timestamp orderEnd) {
+		this.orderEnd = orderEnd;
+	}
+		
 
 //	public String getBranchAddr() {
 //		return branchAddr;

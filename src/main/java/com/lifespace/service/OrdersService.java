@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -112,6 +114,21 @@ public class OrdersService {
     public void autoCompleteOrdersByStartUp(){
         expiredOrdersToComplete();
 //        System.out.println("啟動Spring後, 自動更新未更新到的到期訂單");
+    }
+
+    public OrdersDTO getOrdersDTOByOrderId(String orderId) {
+        Orders orders = ordersRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("無此訂單"));
+        return OrdersMapper.toOrdersDTO(orders);
+    }
+
+    public void paidOrders(String orderId) {
+        Orders order = ordersRepository.findById(orderId).orElse(null);
+        if(order != null && order.getOrderStatus() != 1) {
+            order.setOrderStatus(1);
+            order.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
+            ordersRepository.save(order);
+        }
     }
 
     
@@ -255,5 +272,11 @@ public class OrdersService {
         return OrdersMapper.toOrdersDTO(order);
 
     }
+
+    // 查詢已預訂時段
+    public List<Orders> findReservedOrdersBySpaceIdAndDate(String spaceId, LocalDate date) {
+        return ordersRepository.findReservedOrdersBySpaceIdAndDate(spaceId, date);
+    }
+
 
 }

@@ -83,7 +83,7 @@ public class CommentsController {
     public List<OrdersDTO> getAllOrders() {
         return ordersSvc.getAllOrdersDTOs();
     }
-	
+
 	
 	
 	/**
@@ -95,12 +95,36 @@ public class CommentsController {
 	 * @param size 每頁筆數
 	 * @return 留言資料的 List<CommentsDTO>
 	 */	
+//	@GetMapping("/comments/page/{page}/{size}")
+//	public List<CommentsDTO> getCommentsPage(@PathVariable int page, @PathVariable int size) {
+//	    
+////		dto.setImageUrl(comments.getEventMember().getMember().getMemberImage());
+//
+//		
+//		return commentsService.getCommentsDTOPage(page, size);
+//	}
+	
+	
+	// 【留言分頁查詢 API】
+	// ✅ 提供前端 AJAX 呼叫，取得第幾頁（page）幾筆資料（size）的留言清單
+	// ✅ 會回傳 List<CommentsDTO>，前端會用這些資料顯示留言區內容
 	@GetMapping("/comments/page/{page}/{size}")
 	public List<CommentsDTO> getCommentsPage(@PathVariable int page, @PathVariable int size) {
 	    return commentsService.getCommentsDTOPage(page, size);
 	}
 	
-	// 有參加活動的會員才能 新增 本人的留言
+	
+	// ✅ 提供根據活動 ID 查詢留言（分頁）
+	@GetMapping("/comments/event/{eventId}/page/{page}/{size}")
+	public List<CommentsDTO> getCommentsForEventPage(
+	        @PathVariable String eventId,
+	        @PathVariable int page,
+	        @PathVariable int size) {
+	    return commentsService.getCommentsDTOByEventId(eventId, page, size);
+	}
+
+	
+	
 	@PostMapping("/comments")
 	public CommentsDTO insertComments(@RequestBody Comments comments, HttpSession session) {
 	    Object obj = session.getAttribute("eventMember");
@@ -110,22 +134,52 @@ public class CommentsController {
 	        throw new RuntimeException("尚未登入或未參加活動");
 	    }
 
-	    
-	    
 	    comments.setEventMember(eventMember);
 	    Comments saved = commentsService.addCommentsReturnSaved(comments);
 
-	    CommentsDTO dto = new CommentsDTO();
-	    dto.setCommentId(saved.getCommentId());
-	    dto.setCommentMessage(saved.getCommentMessage());
-	    dto.setCommentTime(saved.getCommentTime());
-	    dto.setEventMemberId(eventMember.getEventMemberId());
-	    String memberId = eventMember.getMember().getMemberId();
-	String memberName = eventMember.getMember().getMemberName();
-	dto.setMemberName("<a href=\"/members/" + memberId + "/profile\">" + memberName + "</a>");
-
-	    return dto;
+	    return commentsService.convertToDTO(saved); // 只呼叫一次轉換
 	}
+	
+	
+	// 載入「活動圖片＋活動名稱＋主辦人、留言板起訖時間」的資訊
+	@GetMapping("/comments/eventInfo/{eventId}")
+	public Map<String, Object> getEventInfo(@PathVariable String eventId) {
+	    return commentsService.getEventInfoFromComments(eventId);
+	}
+
+	
+	
+//	// 有參加活動的會員才能 新增 本人的留言
+//	@PostMapping("/comments")
+//	public CommentsDTO insertComments(@RequestBody Comments comments, HttpSession session) {
+//	    Object obj = session.getAttribute("eventMember");
+//	    EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+//
+//	    if (eventMember == null) {
+//	        throw new RuntimeException("尚未登入或未參加活動");
+//	    }
+//
+//	    
+//	    
+//	    comments.setEventMember(eventMember);
+//	    Comments saved = commentsService.addCommentsReturnSaved(comments);
+//
+//	    CommentsDTO dto = new CommentsDTO();
+//	    dto.setCommentId(saved.getCommentId());
+//	    dto.setCommentMessage(saved.getCommentMessage());
+//	    dto.setCommentTime(saved.getCommentTime());
+//	    dto.setEventMemberId(eventMember.getEventMemberId());
+//	    //String memberId = eventMember.getMember().getMemberId();
+//	   //String memberName = eventMember.getMember().getMemberName();
+//	   //dto.setMemberName("<a href=\"/members/" + memberId + "/profile\">" + memberName + "</a>");
+//		dto.setMemberName(comments.getEventMember().getMember().getMemberName());	
+//		//dto.setImageUrl(comments.getEventMember().getMember().getMemberImage()); // 或其他頭像欄位
+//  	//dto.setImageUrl(eventMember.getMember().getMemberImage());
+//		dto.setImageUrl("/member/image/" + member.getMemberId());
+//
+//
+//	    return dto;
+//	}
 
 	// 有參加活動的會員才能 編輯 本人的留言
 	@PutMapping("/comments/{commentId}")
