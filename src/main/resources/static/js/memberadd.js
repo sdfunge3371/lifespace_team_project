@@ -36,11 +36,11 @@ function previewImage(event) {
       body: formData
     })
     .then(response => {
-      if (!response.ok) throw new Error("新增失敗");
-      return response.json();
+      if (!response.ok) return response.text().then(msg => { throw new Error(msg); });
+      return response.text(); // 後端回傳 ResponseEntity<String>
     })
-    .then(data => {
-      alert("新增成功！會員編號：" + data.memberId);
+    .then(msg => {
+      alert("新增成功！" );
       // 可選擇跳回主頁或清空表單
       window.location.href = "./member.html";
     })

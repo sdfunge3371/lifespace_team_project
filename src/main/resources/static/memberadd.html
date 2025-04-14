@@ -90,13 +90,13 @@
                     <td>
                         <h2>會員資料新增</h2>
                         <h4>
-                            <a href="/springboottry/member.html">回首頁</a>
+                            <a href="./member.html">回首頁</a>
                         </h4>
                     </td>
                 </tr>
             </table>
 
-            <div>
+         <form id="memberForm" onsubmit="event.preventDefault(); submitForm();" enctype="multipart/form-data">
                 <label>會員姓名:</label><br>
                 <input type="text" id="memberName"><br>
                 <span id="errName" class="err-msg"></span><br>
@@ -130,9 +130,8 @@
                 <img id="preview" style="display: none; width: 100px; height: 100px;" /><br>
               
                 <button type="button" onclick="submitForm()">送出新增</button>
+            </form>
 
-
-            </div>
 
         </div>
 
