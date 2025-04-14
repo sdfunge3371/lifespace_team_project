@@ -1,13 +1,33 @@
 $(document).ready(function () {
 
-	// 日期選擇限制（先寫在最上面）
-	 const today = new Date().toISOString().slice(0, 16);
-	 $('#newsStartDate').attr('min', today);
+    // 取得當下時間（格式為 yyyy-MM-ddTHH:mm）
+    const now = new Date().toISOString().slice(0, 16);
 
-	 $('#newsStartDate').on('change', function () {
-	     const startDate = $(this).val();
-	     $('#newsEndDate').attr('min', startDate);
-	 });
+    // 表單送出時，自行檢查起始日是否小於 now
+    $('#yourFormId').on('submit', function (e) {
+        const start = $('#newsStartDate').val();
+
+        if (start && start < now) {
+            e.preventDefault(); // 阻止送出
+            $('#update-newsStartDate-error').text("起始時間不能早於現在！");
+            $('#newsStartDate').addClass('is-invalid'); // Bootstrap 樣式
+        } else {
+            $('#update-newsStartDate-error').text("");
+            $('#newsStartDate').removeClass('is-invalid');
+        }
+
+        // 可選：也一起檢查結束時間 > 起始時間
+        const end = $('#newsEndDate').val();
+        if (start && end && end < start) {
+            e.preventDefault();
+            $('#update-newsEndDate-error').text("結束時間不能早於起始時間！");
+            $('#newsEndDate').addClass('is-invalid');
+        } else {
+            $('#update-newsEndDate-error').text("");
+            $('#newsEndDate').removeClass('is-invalid');
+        }
+    });
+});
 	 
     // 先定義兩個 Promise 任務：載入分類與載入狀態
     const loadCategory = $.ajax({
@@ -83,7 +103,6 @@ $(document).ready(function () {
             alert("沒有帶入 newsId！");
         }
     });
-});
 
 $('#newsImg').on('change', function () {
   const file = this.files[0];
