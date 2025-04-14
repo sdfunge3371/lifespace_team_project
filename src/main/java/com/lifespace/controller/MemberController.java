@@ -3,15 +3,18 @@ package com.lifespace.controller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,10 +49,9 @@ public class MemberController {
 	private MemberRepository memberRepository;
 	@Autowired
 	private MailService mailService;
-//	@Autowired
-//	private StringRedisTemplate redisTemplate;
-    // 建立一個簡單的記憶體 Map 來暫存驗證碼（key: email, value: code）
-    private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
+	@Autowired
+	private RedisTemplate<String, String> redisTemplate;
+
 	
 	//-------------------------會員登入-----------------------------
 	@PostMapping("/member/login")
@@ -112,87 +114,59 @@ public class MemberController {
 	}
 	
 	
-	//------------------------------會員忘記密碼-先"檢查"郵件是否存在---------------------------
-	@GetMapping("/member/check-email")
-	public ResponseEntity<String> checkEmail(@RequestParam String email) {
-	    Optional<Member> member = memberRepository.findByEmail(email);
-	    if (member.isPresent()) {
-	        return ResponseEntity.ok("帳號存在");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("該 Email 尚未註冊");
-	    }
-	}
-
-	
-	
-	
-	//------------------------------會員忘記密碼-"發送"驗證亂碼---------------------------
+	//------------------------------會員忘記密碼-"發送"驗證連結到信箱---------------------------
     public MemberController(MailService mailService) {
         this.mailService = mailService;
     }
 	
 	@PostMapping("/member/forgot-password")
 	public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-	    String code = generateRandomCode();
 	    
-	   // 用redis的方法 
-	   // redisTemplate.opsForValue().set("RESET_CODE_" + email, code, Duration.ofMinutes(10)); //亂碼壽命十分鐘
+		//先檢查郵件是否存在
+		Optional<Member> member = memberRepository.findByEmail(email);
+		if(member.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email:不存在");
+		}
 
-	    // 將驗證碼存在後端 Map（不使用 Redis）
-        verificationCodes.put(email, code);
+	    // 1. 產生一次性 token
+	    String token = UUID.randomUUID().toString();
 	    
-	    mailService.sendVerificationCode(email, code);
-	    //System.out.println("寄送驗證碼到：" + toEmail + "，驗證碼為：" + code);
+	    // 2. 存到 Redis（10分鐘有效）
+	    redisTemplate.opsForValue().set("RESET_TOKEN_" + token, email, Duration.ofMinutes(10)); //亂碼壽命十分鐘
 
-	    return ResponseEntity.ok("驗證碼已發送");
-	}
+	    // 3. 建立重設密碼連結（token 放在 URL）
+	    String resetLink = "http://localhost:8080/html/setPassword.html?token=" + token;
 
-	//亂碼產生器
-	private String generateRandomCode() {
-		String chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 避免0O1l
-	    SecureRandom random = new SecureRandom();
-	    StringBuilder sb = new StringBuilder();
-	    for (int i = 0; i < 6; i++) {
-	        sb.append(chars.charAt(random.nextInt(chars.length())));
-	    }
-	    return sb.toString();
+	    // 4. 寄信（用原本的 mailService）
+	    mailService.sendResetLink(email, resetLink);
+
+	    return ResponseEntity.ok("已發送重設密碼連結");
 	}
 
 
 
-	//------------------------------會員忘記密碼-"核對"驗證亂碼---------------------------
-	@PostMapping("/member/verify-code")
-	public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String inputCode) {
-		// 用map
-		String storedCode = verificationCodes.get(email);
-		
-		// 用redis
-		//String storedCode = redisTemplate.opsForValue().get("RESET_CODE_" + email);
-
-	    if (storedCode != null && storedCode.equals(inputCode)) {
-	        return ResponseEntity.ok("驗證成功，可進入重設密碼頁面");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("驗證失敗或驗證碼過期");
-	    }
-	}
-	
-	
-	
-	//-----------------------------會員忘記密碼-"重設密碼"-------------------------------------
-	@PostMapping("/member/setPassword")
+	//------------------------------會員忘記密碼-"核對"token+"重設密碼"---------------------------
+	@PostMapping("/member/reset-password")
 	public ResponseEntity<String> resetPassword(
-	        @RequestParam String email,
+	        @RequestParam String token,
 	        @RequestParam String newPassword) {
+
+	    String email = redisTemplate.opsForValue().get("RESET_TOKEN_" + token);
+
+	    if (email == null) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("連結無效或已過期");
+	    }
 
 	    try {
 	        memberService.resetPassword(email, newPassword);
+	        redisTemplate.delete("RESET_TOKEN_" + token); // 用完刪除
 	        return ResponseEntity.ok("密碼更新成功");
-	    } catch (NoSuchElementException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("找不到該使用者");
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("密碼更新失敗");
 	    }
 	}
+	
+
 
 
 	

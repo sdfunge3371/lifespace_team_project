@@ -14,12 +14,11 @@ public class MailService {
     private JavaMailSender mailSender;
 
     //忘記密碼的驗證碼發送
-    public void sendVerificationCode(String toEmail, String code) {
+    public void sendResetLink(String toEmail, String resetLink) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
-        message.setSubject("重設密碼驗證碼");
-        message.setText("您的驗證碼是：" + code + "\n請在10分鐘內使用此驗證碼完成重設密碼流程。");
-
+        message.setSubject("重設密碼連結");
+        message.setText("請點擊以下連結在 10 分鐘內重設密碼：" + resetLink);
         mailSender.send(message);
     }
     
