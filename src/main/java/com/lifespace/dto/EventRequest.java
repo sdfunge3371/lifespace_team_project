@@ -13,6 +13,8 @@ import com.lifespace.constant.EventStatus;
 
 public class EventRequest {
 
+	private String orderId;
+	
 	private String organizerId;
 	
  	@NotBlank
@@ -130,6 +132,13 @@ public class EventRequest {
 	public void setPhotos(List<MultipartFile> photos) {
 		this.photos = photos;
 	}
-	    
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
 	    
 }

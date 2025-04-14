@@ -7,6 +7,20 @@
 
 		   //獲取表格活動類別
 		    fetchAllEventsCategory();
+			
+			// 取得 URL 中的 orderId 參數並填入表單欄位
+			const urlParams = new URLSearchParams(window.location.search);
+			const orderId = urlParams.get("orderId");
+			if (orderId) {
+			    const orderInput = document.getElementById("orderId");
+			    if (orderInput) {
+			        orderInput.value = orderId;
+			    }
+			} else {
+			    alert("無法取得訂單編號，請從訂單頁面建立活動");
+			    // 可選擇導回訂單頁
+			    // window.location.href = "frontend_orders.html";
+			}
 		        	
 		});
 		
@@ -158,6 +172,7 @@
 
             // 創建不包含photos欄位的eventRequest對象
             const eventRequest = {
+				orderId: document.getElementById('orderId').value,
                 organizerId: document.getElementById('memberId').value,
                 eventName: document.getElementById('eventName').value,
                 eventStartTime: new Date(document.getElementById('eventStartTime').value).toISOString(),
@@ -182,6 +197,7 @@
                 const response = await fetch('http://localhost:8080/lifespace/event/add', {
                     method: 'POST',
                     body: formData,
+					credentials: 'include'
                 });
 
                 if (response.ok) {

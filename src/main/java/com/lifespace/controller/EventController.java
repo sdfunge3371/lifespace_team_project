@@ -29,9 +29,11 @@ import com.lifespace.dto.EventRequest;
 import com.lifespace.dto.EventResponse;
 import com.lifespace.entity.Event;
 import com.lifespace.entity.EventCategory;
+import com.lifespace.entity.Orders;
 import com.lifespace.repository.EventRepository;
 import com.lifespace.service.EventPhotoService;
 import com.lifespace.service.EventService;
+import com.lifespace.service.OrdersService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Max;
@@ -47,18 +49,38 @@ public class EventController {
 	private EventService eventSvc;
 	
 	@Autowired
+	private OrdersService orderSvc;
+	
+	@Autowired
 	private EventPhotoService eventPhotoSvc;
 	
 	@Autowired
     private EventRepository eventRepository;
 	
 	@PostMapping("/add")
-    public String insert(
+    public  ResponseEntity<?> insert(
             @RequestPart("eventRequest") EventRequest eventRequest,
-            @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
+            HttpSession session) {
 
-        eventSvc.addEvent(eventRequest, photos);
-        return "執行 insert event jpa 方法";
+		String organizerId = (String) session.getAttribute("loginMember");
+
+	    if (organizerId == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入再建立活動");
+	    }
+
+	    eventRequest.setOrganizerId(organizerId);
+
+	    // 驗證活動時間是否在訂單時間範圍內
+	    Orders order = orderSvc.getOneOrder(eventRequest.getOrderId());
+	    Timestamp eventStart = eventRequest.getEventStartTime();
+	    Timestamp eventEnd = eventRequest.getEventEndTime();
+	    if (eventStart.before(order.getOrderStart()) || eventEnd.after(order.getOrderEnd())) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("活動時間需在訂單時間範圍內");
+	    }
+
+	    eventSvc.addEvent(eventRequest, photos);
+	    return ResponseEntity.ok("活動建立成功");
     }
     
 	@PutMapping("/updateStatus")
