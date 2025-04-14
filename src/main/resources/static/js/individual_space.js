@@ -1479,24 +1479,29 @@ function sendOrder(memberId) {
             return res.json();
         })
         .then(data => {
-            alert("預訂成功");
-            console.log("預定成功", data);
+            // 把 orderId 存進 sessionStorage
+            sessionStorage.setItem("currentOrderId", data.orderId);
 
-            fetch(`orders/ecpay-checkout/${data.orderId}`,{
-                method: "POST",
-            }).then(res => res.text())
-              .then(formHTML => {
-                  // 自動submmit加到畫面上的綠界form表單(用div包起來再加進畫面)
-                  const tempDiv = document.createElement('div');
-                  tempDiv.innerHTML = formHTML;
-                  document.body.appendChild(tempDiv);
-                  tempDiv.querySelector('form').submit();
-              })
-            // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
-            window.location.href = "/homepage.html";   // 或改成付款成功頁面
-        })
-        .catch(error => {
-            alert("預訂失敗");
-            console.error(error.message);
+            // 直接跳轉 loading 畫面
+            window.location.href = "/payment_loading.html";
+        //     alert("預訂成功");
+        //     console.log("預定成功", data);
+        //
+        //     fetch(`orders/ecpay-checkout/${data.orderId}`,{
+        //         method: "POST",
+        //     }).then(res => res.text())
+        //       .then(formHTML => {
+        //           // 自動submmit加到畫面上的綠界form表單(用div包起來再加進畫面)
+        //           const tempDiv = document.createElement('div');
+        //           tempDiv.innerHTML = formHTML;
+        //           document.body.appendChild(tempDiv);
+        //           tempDiv.querySelector('form').submit();
+        //       })
+        //     // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
+        //     window.location.href = "/homepage.html";   // 或改成付款成功頁面
+        // })
+        // .catch(error => {
+        //     alert("預訂失敗");
+        //     console.error(error.message);
         });
 }

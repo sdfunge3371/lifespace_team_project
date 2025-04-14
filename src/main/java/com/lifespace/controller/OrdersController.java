@@ -62,6 +62,7 @@ public class OrdersController {
     public ResponseEntity<?> getOrdersByLoginMember(HttpSession session) {
         String memberId = (String) session.getAttribute("loginMember");
 
+
         if (memberId == null) {
             return ResponseEntity.status(401).body("尚未登入會員");
         }
@@ -112,9 +113,11 @@ public class OrdersController {
             aio.setTradeDesc("LifeSpace 空間租借");
             aio.setItemName("空間租借費用");
             aio.setReturnURL("https://9ffc-118-168-96-165.ngrok-free.app/ecpay/return");
-            aio.setClientBackURL("http://localhost:8080/frontend_orders.html");
+            aio.setClientBackURL("http://localhost:8080/payment_success.html");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
+
+            System.out.println(tradeNo);
 
             String form = all.aioCheckOut(aio, null);
             return ResponseEntity.ok(form);
@@ -125,6 +128,7 @@ public class OrdersController {
         }
     }
 
+    @PostMapping("/ecpay/return")
     public ResponseEntity<String> handleEcpayReturn(HttpServletRequest request) {
         Map<String, String[]> paramsMap = request.getParameterMap();
         Map<String, String> ecpayParams = new HashMap<>();
@@ -164,42 +168,6 @@ public class OrdersController {
 
     }
 
-//    @PostMapping("/ecpay-checkout/{orderId}")
-//    public ResponseEntity<String> creatOrderWithEcpay(@RequestBody OrdersDTO ordersDTO, HttpSession session) {
-//        String memberId = (String) session.getAttribute("loginMember");
-//
-//        if (memberId == null) {
-//            return ResponseEntity.status(401).body("尚未登入會員");
-//        }
-//
-//        ordersDTO.setMemberId(memberId);
-//        OrdersDTO newOrder = ordersSvc.createOrder(ordersDTO);
-//
-//        try{
-//            AllInOne all = new AllInOne("");
-//            AioCheckOutOneTime aioOrders = new AioCheckOutOneTime();
-//            String ecpayTradeNo = newOrder.getOrderId() + "_" + System.currentTimeMillis();
-//
-//            aioOrders.setMerchantTradeNo(ecpayTradeNo);
-//            aioOrders.setMerchantTradeDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-//            aioOrders.setTotalAmount(newOrder.getAccountsPayable().toString());
-//            aioOrders.setTradeDesc("LifeSpace");
-//            aioOrders.setItemName("空間租借費用");
-//
-//            aioOrders.setIgnorePayment("WebATM#ATM#CVS#BARCODE"); //隱藏付款方式只顯示信用卡
-//
-//            aioOrders.setReturnURL("https://9ffc-118-168-96-165.ngrok-free.app/ecpay/erturn");
-//            aioOrders.setClientBackURL("http://localhost:8080/frontend_orders.html");
-//
-//            aioOrders.setNeedExtraPaidInfo("N"); //額外付款資訊
-//
-//            String form = all.aioCheckOut(aioOrders, null); //產生HTML form表單
-//            return  ResponseEntity.ok(form);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).body("有建立訂單, 但金流表單產生失敗");
-//        }
-//    }
     
     @PostMapping("/addComment")
     public String addSpaceComments(
