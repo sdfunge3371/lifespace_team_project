@@ -349,7 +349,7 @@
            if (event.photoUrls && event.photoUrls.length > 0) {
                photoUrl = 'http://localhost:8080' + event.photoUrls[0]; // 顯示第一張照片
            } else {
-               photoUrl = 'http://localhost:8080/default.jpg'; // 使用預設圖片
+               photoUrl = 'http://localhost:8080/images/default_for_event_and_space.jpg'; // 使用預設圖片
            }
            
            // 創建活動卡片

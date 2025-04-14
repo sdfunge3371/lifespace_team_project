@@ -83,7 +83,7 @@ $(document).ready(function () {
                         // 如果沒有圖片，使用默認圖片
                         carousel.append(`
             <div class="owl-carousel-item">
-                <img src="http://localhost:8080/default.jpg" alt="預設圖片">
+                <img src="http://localhost:8080/images/default_for_event_and_space.jpg" alt="預設圖片">
             </div>
         `);
                     }
