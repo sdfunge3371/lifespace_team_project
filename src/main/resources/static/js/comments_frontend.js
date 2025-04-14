@@ -96,7 +96,9 @@ function loadEventInfo() {
       $("#hostSpeaking").text("揪團者：" + (data.organizerName || "未知"));
       $("#eventStartTime").text("留言開始：" + (data.orderStart || ""));
       $("#eventEndTime").text("留言結束：" + (data.orderEnd || ""));
+	  $("#eventLocation").text("活動地點：" + (data.spaceLocation || "未提供"));
 
+	  
 	  // 活動圖片輪播處理
       const carousel = $(".myclass");
 	  if (Array.isArray(photoUrls) && photoUrls.length > 0) {

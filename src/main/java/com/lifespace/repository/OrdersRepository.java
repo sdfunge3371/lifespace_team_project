@@ -39,7 +39,10 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     @Query("SELECT o FROM Orders o WHERE o.space.spaceId = :spaceId AND FUNCTION('DATE', o.orderStart) = :date AND o.orderStatus = 1")
     List<Orders> findReservedOrdersBySpaceIdAndDate(@Param("spaceId") String spaceId, @Param("date") java.time.LocalDate date);
 
-
+    // 【0414薇婷新增】用活動id找舉辦人id
+    Optional<Orders> findByEventEventId(String eventId);
+    
+    
 }
 
 
