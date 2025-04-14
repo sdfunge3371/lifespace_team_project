@@ -793,6 +793,7 @@ function fetchSpace() {
         .catch(error => console.log(error));
 }
 
+let firstPhotoHtml = "";
 function insertPhotos(photos) {
     const indicatorsContainer = document.querySelector('.carousel-indicators');
     const innerContainer = document.querySelector('.carousel-inner');
@@ -802,6 +803,8 @@ function insertPhotos(photos) {
 
     photos.forEach((photoObj, index) => {
         const imgSrc = `data:image/jpeg;base64,${photoObj.photo}`;
+        if (!firstPhotoHtml)
+            firstPhotoHtml = imgSrc;
 
         // indicators
         const indicator = document.createElement('button');
@@ -1258,14 +1261,21 @@ function showReservation() {
     document.getElementById("equipmentCostText").textContent = "";
     document.getElementById("totalCostText").textContent = "";
     document.getElementById("rentalItemList").innerHTML = "";
+    document.querySelector(".image-placeholder").innerHTML = "";
 
     // 填入新數據
 
     // 直接從選購欄抓資料
+    // 抓空間名稱
     const spaceName = document.querySelector(".header-title").textContent;
 
-    // 抓費率
+    // 抓第一張照片
+    console.log(firstPhotoHtml);
+    const imageContainer = document.querySelector(".image-placeholder");
+    imageContainer.innerHTML = `<img src="${firstPhotoHtml}" class="reservation-photo">`
 
+
+    // 抓費率
     const rate = isDaily ? parseInt(document.getElementById("daily-price").textContent) : parseInt(document.getElementById("hourly-price").textContent);
 
     const rentTypeText = isDaily ? "日租" : "時租";

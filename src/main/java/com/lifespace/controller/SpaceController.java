@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -151,8 +150,8 @@ public class SpaceController {
 	// 檢查是否有登入會員，才可開始預訂
 	@GetMapping("/spaces/member/current")
 	public ResponseEntity<?> getCurrentMember(HttpSession session) {
-		String memberId = (String) session.getAttribute("loginMember");
-//		String memberId = "M001";
+//		String memberId = (String) session.getAttribute("loginMember");
+		String memberId = "M001";
 
 		if (memberId == null) {
 			return ResponseEntity.status(401).body("尚未登入會員");
