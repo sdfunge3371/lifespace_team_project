@@ -271,7 +271,7 @@ public class MemberController {
 		    }
 		    
 		    // 會員有資料，但沒上傳照片 → 回傳預設照片
-		    try (InputStream defaultStream = getClass().getResourceAsStream("/static/img/default.jpg")) {
+		    try (InputStream defaultStream = getClass().getResourceAsStream("/static/images/default.jpg")) {
 		        if (defaultStream != null) {
 		            byte[] defaultImage = defaultStream.readAllBytes();
 		            return ResponseEntity.ok(defaultImage);
@@ -293,42 +293,7 @@ public class MemberController {
 	    return memberService.searchMembers(dto);
 	}
 	
-	
-	
-	
 
-//	// 單一查詢Name功能
-//	@GetMapping("/member/name/{memberName}")
-//	public Member readName(@PathVariable String memberName) {
-//		Member member = memberService.findByNameMem(memberName).orElse(null);
-//		return member;
-//	}
-//
-//	// 單一查詢Phone功能
-//	@GetMapping("/member/phone/{memberPhone}")
-//	public Member readPhone(@PathVariable String memberPhone) {
-//		Member member = memberService.findByPhoneMem(memberPhone).orElse(null);
-//		return member;
-//	}
-//
-//	// 單一查詢Email功能
-//	@GetMapping("/member/email/{memberEmail}")
-//	public Member readEmail(@PathVariable String memberEmail) {
-//		Member member = memberService.findByEmailMem(memberEmail).orElse(null);
-//		return member;
-//	}
-//	
-//	//多樣查詢
-//	@GetMapping("/member/search")
-//	public List<Member> searchMembers(
-//	    @RequestParam(required = false) Integer accountStatus,
-//	    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
-//	    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate registrationTime
-//	) {
-//	    return memberService.searchMembers(accountStatus, birthday, registrationTime);
-//	}
-
-	
 	
 
 //	//------------------------真的刪除(寫著以防萬一)--------------------------------------
