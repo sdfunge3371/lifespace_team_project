@@ -985,7 +985,6 @@ function validateQuantity(input) {
         value = 0;
     }
 
-    // 确保值不超过最大可租借数量
     if (value > maxQuantity) {
         alert(`抱歉，目前該品項最多只能租借${maxQuantity}個`);
         value = maxQuantity;
@@ -1008,7 +1007,6 @@ function fetchComments() {
             console.log(data);
             insertHeadComments(data.content);
         });
-    // .catch(error => console.log("報錯：" + error));
 }
 
 function insertHeadComments(comments) {
@@ -1117,10 +1115,26 @@ function insertAllComments(comments) {
     comments.forEach(comment => {
         const {
             commentContent,
+            memberImage,
+            memberName,
             satisfaction,
             commentTime,
             photosUrls
         } = comment;
+
+        // 會員頭貼處理
+        let avatarImgSrc = "";
+
+        // 若會員沒有頭貼時，使用預設頭貼
+        if (memberImage == null) {
+            avatarImgSrc = `images/default.jpg`;
+
+        } else {
+            // 會員頭貼處理
+            avatarImgSrc = `data:image/jpeg;base64,${memberImage}`;
+        }
+
+        const avatarHtml = `<img src="${avatarImgSrc}" alt="評論照片" class="avatar-img">`;
 
         // 滿意度星星生成
         let starsHtml = "";
@@ -1146,23 +1160,20 @@ function insertAllComments(comments) {
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="d-flex">
                             <div class="avatar me-3">
-                                <i class="fas fa-user"></i>
+                                ${avatarHtml}
                             </div>
                             <div>
                                 <div class="d-flex align-items-center">
-                                    <h5 class="mb-0 me-2">匿名用戶</h5>
-                                    <small class="text-muted">${timeAgo}</small>
+                                    <h5 class="mb-0 me-2">${memberName}</h5>
+                                    <small class="text-muted">${timeString}</small>
                                 </div>
-                                <div class="star mt-1">
-                                    ${starsHtml}
-                                </div>
+                                <div class="star mt-1">${starsHtml}</div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-3">
-                        <p>${commentText}</p>
-                        <a href="#" class="text-dark text-decoration-none fw-medium">查看完整内容</a>
-                        <div class="comment-images mt-2">${imagesHtml}</div>
+                        <p>${commentContent}</p>
+                         ${photosHtml ? `<div class="mt-2 d-flex flex-wrap">${photosHtml}</div>` : ""}
                     </div>
                 `;
 
@@ -1174,25 +1185,30 @@ function insertAllComments(comments) {
 // 點擊「開始預訂」時
 document.querySelector(".pay-button").addEventListener("click", () => {
     // 登入攔截
-    // fetch("/spaces/member/current",  {
-    //     method: "GET",
-    //     credentials: "include"
-    // })
-    //     .then(res => {
-    //         if (!res.ok) {
-    //             throw new Error("尚未登入");
-    //         }
-    //         return res.json();
-    //     })
-    //     .then(member => {
-    //         // 通過驗證，執行原本預訂邏輯
-    //         showReservation();
-    //         })
-    //         .catch(err => {
-    //             alert("預訂前請先登入");
-    //     });
+    fetch("/spaces/member/current",  {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("尚未登入");
+            }
+            return res.json();
+        })
+        .then(member => {
+            console.log(member);
+            // 通過驗證，執行原本預訂邏輯
+            window.currentMemberId = member.memberId;
+            console.log(window.currentMemberId);
+            showReservation();
+            })
+            .catch(err => {
+                console.error(err.message);
+                alert("預訂前請先登入");
+                window.location.href = "/login.html";
+        });
 
-    showReservation();  // 啟動攔截器後，把這行刪掉
+    // showReservation();  // 啟動攔截器後，把這行刪掉
 })
 
 
@@ -1365,6 +1381,16 @@ function setupOrderConfirmModal() {
 
 // ============= POST: 送出訂單 =============
 document.querySelector('.payment-btn').addEventListener("click", function() {
+    const memberId = window.currentMemberId;
+    if (!memberId) {
+        alert("會員資料遺失，請重新登入");
+        return;
+    }
+
+    sendOrder(memberId);
+})
+
+function sendOrder(memberId) {
     // 取得spaceId
     const urlParams = new URLSearchParams(window.location.search);
     const spaceId = urlParams.get("spaceId");
@@ -1405,9 +1431,7 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
             rentalItemList.push({
                 rentalItemId: input.id,
                 rentalItemName: input.closest(".rental-item").querySelector(".equipment-name").textContent.replace(/\s\(\+\$\d+\)/, ""),
-                // rentalItemPrice: parseInt(input.dataset.price),
                 rentalItemQuantity: quantity,
-                // rentalTotalPrice: parseInt(input.dataset.price) * quantity
             });
         }
     })
@@ -1421,7 +1445,7 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
         totalPrice: spaceCost,
         accountsPayable: totalPrice,
         paymentDatetime: Date.now(),
-        memberId: "M001",   // TODO: 先寫死，之後串會員之後會再改
+        memberId: memberId,
         eventDTO: null,     // 活動要在付款之後才放上去 (利用修改的方式)
         rentalItemDetailsDTOList: rentalItemList,
         spaceFloor: spaceFloor
@@ -1445,6 +1469,7 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
             return res.json();
         })
         .then(data => {
+            alert("預訂成功");
             console.log("預定成功", data);
             //
             // fetch(`orders/ecpay-checkout/${data.orderId}`,{
@@ -1458,10 +1483,10 @@ document.querySelector('.payment-btn').addEventListener("click", function() {
             //       tempDiv.querySelector('form').submit();
             //   })
             // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
+            window.location.href = "/homepage.html";   // 或改成付款成功頁面
         })
         .catch(error => {
             alert("預訂失敗");
             console.error(error.message);
         });
-
-})
+}
