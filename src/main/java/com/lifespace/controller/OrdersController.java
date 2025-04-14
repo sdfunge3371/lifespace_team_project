@@ -105,7 +105,7 @@ public class OrdersController {
             AllInOne all = new AllInOne("");
             AioCheckOutOneTime aio = new AioCheckOutOneTime();
 
-            String tradeNo = order.getOrderId() + "_" + System.currentTimeMillis();
+            String tradeNo = order.getOrderId() + System.currentTimeMillis();
             aio.setMerchantTradeNo(tradeNo);
             aio.setMerchantTradeDate(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
             aio.setTotalAmount(order.getAccountsPayable().toString());
@@ -149,7 +149,7 @@ public class OrdersController {
 
             String rtnCode = ecpayParams.get("RtnCode");
             String tradeNo = ecpayParams.get("MerchantTradeNo");
-            String orderId = tradeNo.split("_")[0];
+            String orderId = tradeNo.substring(0, 5);;
 
             if ("1".equals(rtnCode)) {
                 ordersSvc.paidOrders(orderId);
@@ -161,6 +161,7 @@ public class OrdersController {
             System.out.println("回傳比對失敗");
             return ResponseEntity.ok("0|FAIL");
         }
+
     }
 
 //    @PostMapping("/ecpay-checkout/{orderId}")
