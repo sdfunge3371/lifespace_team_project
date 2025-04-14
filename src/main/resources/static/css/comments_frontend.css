@@ -80,3 +80,138 @@
   font-size: 0.95rem;
   color: #555;
 }
+
+
+
+
+/* index */
+.mic-button {
+    position: fixed;
+    top: 70%;
+    /* 將頂部位置設定為 50% */
+    right: 20px;
+    transform: translateY(-50%);
+    /* 使用 transform 將按鈕垂直置中 */
+    z-index: 1000;
+}
+/* index結束 */
+
+body {
+  background-color: #f0f2f5;
+  padding: 2rem;
+  font-family: "Microsoft JhengHei", sans-serif;
+}
+
+.comment-box {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.comment-box:hover .options-btn {
+  visibility: visible;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.comment-meta {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.comment-time {
+  color: #888;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+.comment-message {
+  font-size: 1rem;
+  white-space: pre-wrap;
+}
+
+.options-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  visibility: hidden;
+  cursor: pointer;
+}
+
+.tooltip-text {
+  position: absolute;
+  top: -26px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.options-btn:hover + .tooltip-text {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dropdown-menu {
+  z-index: 1000;
+}
+
+.reply-btn {
+  font-size: 0.8rem;
+  color: #1877f2;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+#newCommentInput {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+#newCommentInput:focus {
+  border-color: #1877f2;
+}
+
+.edit-input {
+  width: 100%;
+  border: none;
+  background: #f0f2f5;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+#noCommentMessage {
+  text-align: center;
+  color: #888;
+  margin-bottom: 1rem;
+  display: none;
+}
