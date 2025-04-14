@@ -13,6 +13,8 @@ public class CommentsDTO {
     private String organizerName;
     private Timestamp orderStart;
     private Timestamp orderEnd;
+    private String spaceLocation;
+    
 
 //    private String branchAddr;
     
@@ -90,6 +92,21 @@ public class CommentsDTO {
 	public void setOrderEnd(Timestamp orderEnd) {
 		this.orderEnd = orderEnd;
 	}
+
+	public String getSpaceLocation() {
+		return spaceLocation;
+	}
+
+	public void setSpaceLocation(String spaceLocation) {
+		this.spaceLocation = spaceLocation;
+	}
+
+	
+	
+	
+//	public void setSpaceLocation(String spaceName) {
+//		
+//	}
 		
 
 //	public String getBranchAddr() {

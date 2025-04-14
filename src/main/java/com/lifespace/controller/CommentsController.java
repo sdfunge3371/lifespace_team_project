@@ -141,7 +141,7 @@ public class CommentsController {
 	}
 	
 	
-	// 載入「活動圖片＋活動名稱＋主辦人、留言板起訖時間」的資訊
+	// 載入「活動圖片＋活動名稱＋主辦人＋留言板起訖時間＋活動地點」的資訊
 	@GetMapping("/comments/eventInfo/{eventId}")
 	public Map<String, Object> getEventInfo(@PathVariable String eventId) {
 	    return commentsService.getEventInfoFromComments(eventId);

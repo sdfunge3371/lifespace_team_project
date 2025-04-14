@@ -23,6 +23,9 @@ import com.lifespace.entity.EventPhoto;
 import com.lifespace.entity.Member;
 import com.lifespace.entity.Orders;
 import com.lifespace.repository.CommentsRepository;
+import com.lifespace.repository.EventMemberRepository;
+import com.lifespace.repository.EventPhotoRepository;
+import com.lifespace.repository.OrdersRepository;
 
 
 @Service("commentsService")
@@ -33,6 +36,15 @@ public class CommentsService {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private OrdersRepository ordersRepository;
+	
+	@Autowired
+	private EventMemberRepository eventMemberRepository;
+	
+	@Autowired
+	private EventPhotoRepository eventPhotoRepository;
 	
 	
 	public void addComments(Comments comments) {
@@ -119,21 +131,49 @@ public class CommentsService {
 */
 
         // 取得主辦人姓名（從第一筆訂單）
-        List<Orders> orders = event.getOrdersList(); // 使用自己寫的 getOrdersList()
-        if (!orders.isEmpty()) {
-            Orders first = orders.get(0);
-            data.put("orderStart", first.getOrderStart());
-            data.put("orderEnd", first.getOrderEnd());
+        Orders orders = ordersRepository.findByEventEventId(eventId).orElse(null);
+        String holderName = orders.getMember().getMemberName();
+        data.put("holderName", holderName);
+        
+        // 找到參加活動者的會員
+        List<EventMember> eventMembers = eventMemberRepository.findByEvent_EventId(eventId);
+        
+        List<Map<String, Object>> memberInfos = new ArrayList<>();
+        	
 
-            Member organizer = first.getMember();
-            String organizerName = (organizer != null) ? organizer.getMemberName() : "未知主辦人";
-            data.put("organizerName", organizerName);
-        } else {
-            data.put("organizerName", "未指定");
-            data.put("orderStart", null);
-            data.put("orderEnd", null);
+        
+        for(EventMember eventMember : eventMembers) {
+        	Map<String, Object> memberInfo = new HashMap<>();
+        	memberInfo.put("memberName", eventMember.getMember().getMemberName());
+        	memberInfo.put("memberImage", eventMember.getMember().getMemberImage());
+        	memberInfos.add(memberInfo);
+        	
         }
-
+        
+        data.put("eventMembers", memberInfos);
+        
+        // 找活動照片
+        List<EventPhoto> photos = eventPhotoRepository.findByEventEventId(eventId);
+        data.put("eventPhotos", photos);
+        
+        
+//        List<Orders> orders = event.getOrdersList(); // 使用自己寫的 getOrdersList()
+//        if (!orders.isEmpty()) {
+//            Orders first = orders.get(0);
+//            data.put("orderStart", first.getOrderStart());
+//            data.put("orderEnd", first.getOrderEnd());
+//
+//            Member organizer = first.getMember();
+//            String organizerName = (organizer != null) ? organizer.getMemberName() : "未知主辦人";
+//            data.put("organizerName", organizerName);
+//        } else {
+//            data.put("organizerName", "未指定");
+//            data.put("orderStart", null);
+//            data.put("orderEnd", null);
+//        }
+//
+//        data.put("spaceLocation", first.getSpaceLocation());
+        
         return data;
     }
 	
@@ -211,17 +251,21 @@ public class CommentsService {
 	                    dto.setImageUrl("/member/image/" + member.getMemberId());
 	                }
 
-	                // 👇 主辦人與留言時間補充
-	                EventMember em = comments.getEventMember();
-	                Event event = em.getEvent();
-	                if (event != null && !event.getOrdersList().isEmpty()) {
-	                    Orders first = event.getOrdersList().get(0);
-	                    dto.setOrderStart(first.getOrderStart());
-	                    dto.setOrderEnd(first.getOrderEnd());
-
-	                    Member organizer = first.getMember();
-	                    dto.setOrganizerName(organizer != null ? organizer.getMemberName() : "未知主辦人");
-	                }
+//	                // 👇 主辦人與留言時間補充
+//	                EventMember em = comments.getEventMember();
+//	                Event event = em.getEvent();
+//	                if (event != null && !event.getOrdersList().isEmpty()) {
+//	                    Orders first = event.getOrdersList().get(0);
+//	                    dto.setOrderStart(first.getOrderStart());
+//	                    dto.setOrderEnd(first.getOrderEnd());
+////	                    dto.setSpaceLocation(first.getSpace().getSpaceName()); // 記得 Event → Orders → Space → SpaceName
+//
+//
+//	                    Member organizer = first.getMember();
+//	                    dto.setOrganizerName(organizer != null ? organizer.getMemberName() : "未知主辦人");
+//	                    
+////	                    dto.setSpaceLocation(first.getSpace().getSpaceName()); // 新增這行來取得空間地點名稱
+//	                }
 	                
 	                
 //	                Member member = comments.getEventMember().getMember();
