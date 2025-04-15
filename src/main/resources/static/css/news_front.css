@@ -38,6 +38,7 @@
     border: 1px solid #ddd;
     margin-bottom: 15px;
     padding: 10px;
+    text-align: center;
   }
 
   #newsTable tbody td {
@@ -46,6 +47,7 @@
     padding: 5px 10px;
     border: none;
     border-bottom: 1px solid #eee;
+    text-align: center;
   }
 
   /* 自訂每個欄位前的 label（可選） */
@@ -55,6 +57,7 @@
     display: inline-block;
     width: 100px;
     color: #333;
+   
   }
 
   /* 內容欄擴大使用空間 */
