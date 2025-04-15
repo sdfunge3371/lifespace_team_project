@@ -504,8 +504,18 @@ body {
     font-size: 20px;
 }
 
-.favorite-btn.active {
-    color: #ff6b6b;
+.favorite-btn:hover i {
+    transform: scale(1.15);
+    transition: transform 0.2s;
+}
+
+
+.favorite-btn i.fas.fa-heart {
+    color: #ff6b6b; /* 實心愛心 = 已收藏 */
+}
+
+.favorite-btn i.far.fa-heart {
+    color: #ccc; /* 空心愛心 = 未收藏 */
 }
 
 .people-count {

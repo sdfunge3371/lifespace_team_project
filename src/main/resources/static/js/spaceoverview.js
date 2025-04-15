@@ -88,8 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    fetchSpaces();
+    fetchFavoriteSpaces();
     fetchSpaceUsages();
+    fetchSpaces();
     setupEventListeners();
 
     // 取得目前位置
@@ -155,6 +156,8 @@ function renderSpaces(spacesToRender) {
         spaceCard.dataset.id = space.spaceId;
         spaceCard.dataset.branchId = space.branchId;
 
+        // 偵測該空間是否已加入該會員的最愛清單
+        const isFavorite = favoriteSpaceIds.includes(space.spaceId);
 
         // 處理目前的距離
         let distanceText = '';
@@ -170,7 +173,7 @@ function renderSpaces(spacesToRender) {
                 <div class="space-title">
                     <span>${space.name}</span>
                     <button class="favorite-btn" data-id="${space.spaceId}">
-                        <i class="far fa-heart"></i>
+                        <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
                     </button>
                 </div>
                 <div class="space-location">
@@ -268,6 +271,21 @@ function renderUsages(usages) {
             applyFilters();
         });
     });
+}
+
+let favoriteSpaceIds = [];
+function fetchFavoriteSpaces() {
+    fetch("/favorite-space", {
+        method: "GET",
+        credentials: 'include'
+    })
+        .then(res => {
+            return res.json();
+        })
+        .then (data => {
+            favoriteSpaceIds = data.map(item => item.spaceId);
+        })
+        .catch(error => console.error("載入最愛失敗", error));
 }
 
 // ============= 地圖相關 =============
