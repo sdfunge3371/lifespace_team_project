@@ -1,0 +1,168 @@
+/* -------------- 登入 ----------------------------------- */
+/* 設定畫面全螢幕布局，讓內容在中央 */
+main {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    height: 300px; /* 讓 main 填滿整個視窗高度 */
+}
+div.card{
+    background-color: #a3d2d9; /* 設定卡片背景為白色 */
+    padding: 30px; /* 內邊距，讓內容不會太擠 */
+    margin-top: 300px;
+    border-radius: 10px; /* 圓角讓外觀更柔和 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 添加陰影讓卡片更有層次感 */
+    text-align: center; /* 讓內部文字都置中 */
+    width: 350px; /* 設定適當的寬度 */
+}
+.card h3{
+    margin-bottom: 30px;
+}
+
+/* 輸入框樣式 */
+.login_input input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 按鈕樣式 */
+.login_input button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login_input button:hover {
+    background-color: #0056b3;
+}
+
+/* 其他連結樣式 */
+.others{
+    margin-top: 20px;
+}
+.others a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 10px;
+}
+
+.others a:hover {
+    text-decoration: underline;
+}
+
+/* ------------忘記密碼-------------------------------- */
+/* 讓所有內容都在白色的卡片內 */
+.card_password {
+    background-color: #ffffff; /* 設定卡片背景為白色 */
+    padding: 30px; /* 內邊距，讓內容不會太擠 */
+    border-radius: 10px; /* 圓角讓外觀更柔和 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 添加陰影讓卡片更有層次感 */
+    text-align: center; /* 讓內部文字都置中 */
+    width: 350px; /* 設定適當的寬度 */
+}
+
+/* 讓標題和輸入框有間距 */
+.password_title h3 {
+    margin-bottom: 10px;
+}
+
+.password_title p {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* 輸入框樣式 */
+.password_input input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 按鈕樣式 */
+.password_input button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.password_input button:hover {
+    background-color: #0056b3;
+}
+
+/* 返回連結樣式 */
+.password_input a {
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.password_input a:hover {
+    text-decoration: underline;
+}
+
+/* ------------忘記密碼(重新設定密碼)-------------------------------- */
+.card_setpassword{
+    background-color: #ffffff; /* 設定卡片背景為白色 */
+    padding: 30px; /* 內邊距，讓內容不會太擠 */
+    border-radius: 10px; /* 圓角讓外觀更柔和 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 添加陰影讓卡片更有層次感 */
+    text-align: center; /* 讓內部文字都置中 */
+    width: 350px; /* 設定適當的寬度 */
+}
+/* 讓標題和輸入框有間距 */
+.card_setpassword h3{
+    margin-bottom: 30px;
+}       
+/* 輸入框樣式 */
+.setPassword_input input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+ 
+/* 按鈕樣式 */
+.setPassword_input button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.setPassword_input button:hover {
+    background-color: #0056b3;
+}
+
+/* 返回連結樣式 */
+.setPassword_input a{
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.setPassword_input a:hover{
+    text-decoration: underline;
+}
+
+
+
