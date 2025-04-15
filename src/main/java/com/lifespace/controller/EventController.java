@@ -31,6 +31,7 @@ import com.lifespace.entity.Event;
 import com.lifespace.entity.EventCategory;
 import com.lifespace.entity.Orders;
 import com.lifespace.repository.EventRepository;
+import com.lifespace.repository.OrdersRepository;
 import com.lifespace.service.EventPhotoService;
 import com.lifespace.service.EventService;
 import com.lifespace.service.OrdersService;
@@ -57,6 +58,9 @@ public class EventController {
 	@Autowired
     private EventRepository eventRepository;
 	
+	@Autowired
+    private OrdersRepository ordersRepository;
+	
 	@PostMapping("/add")
     public  ResponseEntity<?> insert(
             @RequestPart("eventRequest") EventRequest eventRequest,
@@ -72,7 +76,7 @@ public class EventController {
 	    eventRequest.setOrganizerId(organizerId);
 
 	    // 驗證活動時間是否在訂單時間範圍內
-	    Orders order = orderSvc.getOneOrder(eventRequest.getOrderId());
+	    Orders order = ordersRepository.findById(eventRequest.getOrderId()).orElse(null);
 	    Timestamp eventStart = eventRequest.getEventStartTime();
 	    Timestamp eventEnd = eventRequest.getEventEndTime();
 	    if (eventStart.before(order.getOrderStart()) || eventEnd.after(order.getOrderEnd())) {
