@@ -58,7 +58,7 @@ $(document).ready(function() {
 
     // 新增租借品項按鈕事件
     $('#addRentalItemBtn').on('click', function() {
-        window.location.href = '/add-rental-item.html';
+        window.location.href = '/add_rental_item.html';
     });
 
     // 上下頁切換
@@ -81,7 +81,7 @@ $(document).ready(function() {
     // 載入所有租借品項數據
     function loadAllRentalItems() {
         $.ajax({
-            url: '/rental-item/getAll',
+            url: '/rental_item/getAll',
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -100,7 +100,7 @@ $(document).ready(function() {
     // 根據狀態載入租借品項
     function loadRentalItemsByStatus(status) {
         $.ajax({
-            url: `/rental-item/getByStatus/${status}`,
+            url: `/rental_item/getByStatus/${status}`,
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -119,7 +119,7 @@ $(document).ready(function() {
     // 根據租借品項編號搜尋
     function searchRentalItemsByRentalItemId(rentalItemId) {
         $.ajax({
-            url: `/rental-item/getByRentalItemId/${rentalItemId}`,
+            url: `/rental_item/getByRentalItemId/${rentalItemId}`,
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -138,7 +138,7 @@ $(document).ready(function() {
     // 根據租借品項名稱搜尋
     function searchRentalItemsByRentalItemName(rentalItemName) {
         $.ajax({
-            url: `/rental-item/getByRentalItemName/${rentalItemName}`,
+            url: `/rental_item/getByRentalItemName/${rentalItemName}`,
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -198,7 +198,7 @@ $(document).ready(function() {
         // 綁定編輯按鈕事件
         $('.edit-btn').on('click', function() {
             const rentalItemId = $(this).data('id');
-            window.location.href = `/edit-rental-item.html?id=${rentalItemId}`;
+            window.location.href = `/edit_rental_item.html?id=${rentalItemId}`;
         });
 
         // 綁定狀態切換按鈕事件
@@ -229,7 +229,7 @@ $(document).ready(function() {
     // 更新租借品項狀態（上下架）
     function updateRentalItemStatus(rentalItemId) {
         $.ajax({
-            url: `/rental-item/updateStatus/${rentalItemId}`,
+            url: `/rental_item/updateStatus/${rentalItemId}`,
             type: 'POST',
             success: function(response) {
                 alert(response);

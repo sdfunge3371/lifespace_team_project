@@ -58,7 +58,7 @@ $(document).ready(function() {
 
     // 新增分點按鈕事件
     $('#addBranchBtn').on('click', function() {
-        window.location.href = '/add-branch.html';
+        window.location.href = '/add_branch.html';
     });
 
     // 上下頁切換
@@ -208,7 +208,7 @@ $(document).ready(function() {
         // 綁定編輯按鈕事件
         $('.edit-btn').on('click', function() {
             const branchId = $(this).data('id');
-            window.location.href = `/edit-branch.html?id=${branchId}`;
+            window.location.href = `/edit_branch.html?id=${branchId}`;
         });
 
         // 綁定狀態切換按鈕事件
