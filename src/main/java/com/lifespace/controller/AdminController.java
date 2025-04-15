@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lifespace.SessionUtils;
 import com.lifespace.dto.AdminDTO;
 import com.lifespace.entity.Admin;
+import com.lifespace.entity.Member;
 import com.lifespace.repository.AdminRepository;
 import com.lifespace.service.AdminService;
 
@@ -59,6 +61,29 @@ public class AdminController {
     	}
     	
     }
+    
+  //-----------------------取得登入管理員資訊（從 Session 抓）------------------------------
+  		@GetMapping("/admin/account")
+  		public ResponseEntity<?> getProfile(HttpSession session){
+  			String adminId = SessionUtils.getLoginAdminId(session); // 統一從工具類拿
+  			
+  			if(adminId == null) {
+  				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
+  			}
+  			
+  			Optional<Admin> adminOpt = adminService.findByIdAdm(adminId);
+  			if(adminOpt.isPresent()) {
+  				Admin admin = adminOpt.get();
+  				Map<String, Object> response = new HashMap<>();
+  				response.put("adminId", admin.getAdminId());
+  				response.put("adminName", admin.getAdminName());
+  				response.put("email", admin.getEmail());
+  				return ResponseEntity.ok(response);
+  			} else {
+  				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("管理員不存在");
+  			}
+  			
+  		}
     
     
     
