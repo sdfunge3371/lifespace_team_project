@@ -36,6 +36,7 @@ public class SpaceService {
 
     @Autowired
     private SpaceUsageRepository spaceUsageRepository;
+
     @Autowired
     private OrdersRepository ordersRepository;
 
@@ -93,6 +94,7 @@ public class SpaceService {
 		for (MultipartFile file : files) {
 			SpacePhoto photo = new SpacePhoto();
 			photo.setPhoto(file.getBytes());
+			photo.setFilename(file.getOriginalFilename());   // 用來比對同一個spaceId下的同一張圖是否已經存入 (originalFilename: 原始檔名 (xxx.png, xxx.jpg, ......))
 			photo.setSpace(s); // 關聯回 Space
 			photos.add(photo);
 		}
@@ -152,10 +154,6 @@ public class SpaceService {
 
 		// 取得現有照片且未被刪除的
 		Set<SpacePhoto> originalPhotos = s.getSpacePhotos();
-		for (var photo : originalPhotos) {
-			System.out.print(photo.getSpacePhotoId() + " ");
-		}
-		System.out.println();
 		originalPhotos.removeIf(photo -> !keptPhotoIds.contains(photo.getSpacePhotoId()));
 
 		// 加入新照片
@@ -164,6 +162,7 @@ public class SpaceService {
 				if (!file.isEmpty()) {
 					SpacePhoto photo = new SpacePhoto();
 					photo.setPhoto(file.getBytes());
+					photo.setFilename(file.getOriginalFilename());	// 用來比對同一個spaceId下的同一張圖是否已經存入
 					photo.setSpace(s);
 					originalPhotos.add(photo);		// 將新加入的photo直接丟進originalPhoto中，作為修改後的照片陣列
 				}
@@ -207,17 +206,11 @@ public class SpaceService {
 
 	// 計算個別空間的平均滿意度
 	public void updateSpaceRating(String spaceId) {
-		System.out.println("test");
 		Double avgRating = spaceRepository.findAverageSatisfactionBySpaceId(spaceId);
 
 		if (avgRating == null) {
 			avgRating = 0.0;
 		}
-
-//		// 四捨五入到小數點第一位
-//		avgRating = BigDecimal.valueOf(avgRating)
-//				.setScale(1, RoundingMode.HALF_UP)
-//				.doubleValue();
 
 		Space s = spaceRepository.findById(spaceId).orElse(null);
 
