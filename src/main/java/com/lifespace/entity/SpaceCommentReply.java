@@ -19,11 +19,13 @@ public class SpaceCommentReply implements java.io.Serializable {
 
 	 @Id
 	 @Column(name="space_comment_reply_id")
+	 @GeneratedValue(generator = "space_comment_reply_id")
+	 @GenericGenerator(name = "space_comment_reply_id", strategy = "com.lifespace.util.SpaceCommentReplyCustomStringIdGenerator")
 	 private String spaceCommentReplyId;
 	 
 	 @OneToOne
      @JoinColumn(name = "order_id", referencedColumnName = "order_id") 
-	 private Orders order;
+	 private Orders orders;
 
 	 @Column(name="comment_reply_content")
 	 private String commentReplyContent;
@@ -39,12 +41,12 @@ public class SpaceCommentReply implements java.io.Serializable {
 		this.spaceCommentReplyId = spaceCommentReplyId;
 	}
 
-	public Orders getOrder() {
-		return order;
+	public Orders getOrders() {
+		return orders;
 	}
 
-	public void setOrder(Orders order) {
-		this.order = order;
+	public void setOrders(Orders orders) {
+		this.orders = orders;
 	}
 
 	public String getCommentReplyContent() {

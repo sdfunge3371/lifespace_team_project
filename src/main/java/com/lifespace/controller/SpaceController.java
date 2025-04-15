@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lifespace.dto.SpaceCommentReplyRequestDTO;
 import com.lifespace.dto.SpaceCommentResponse;
 import com.lifespace.dto.SpaceRequest;
 import com.lifespace.entity.Space;
@@ -225,5 +226,12 @@ public class SpaceController {
 	        
 	        return ResponseEntity.ok(result);
 	    }
+	
+		//管理員回覆空間評論
+		@PostMapping("/spaces/comments/reply")
+		public ResponseEntity<?> replyToComment(@RequestBody @Valid SpaceCommentReplyRequestDTO replyDto) {
+		    spaceService.addSpaceCommentReply(replyDto);
+		    return ResponseEntity.ok().body(Map.of("message", "回覆成功"));
+		}
 
 }

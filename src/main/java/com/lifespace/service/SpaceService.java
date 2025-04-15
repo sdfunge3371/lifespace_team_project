@@ -3,6 +3,7 @@ package com.lifespace.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,11 +13,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.lifespace.dto.SpaceCommentReplyRequestDTO;
 import com.lifespace.dto.SpaceCommentResponse;
 import com.lifespace.dto.SpaceEquipmentRequest;
 import com.lifespace.dto.SpaceRequest;
 import com.lifespace.entity.*;
 import com.lifespace.repository.OrdersRepository;
+import com.lifespace.repository.SpaceCommentReplyRepository;
 import com.lifespace.repository.SpaceUsageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +42,9 @@ public class SpaceService {
 
     @Autowired
     private OrdersRepository ordersRepository;
+    
+    @Autowired
+    private SpaceCommentReplyRepository spaceCommentReplyRepo;
 
 	public List<Space> getAllSpaces() {  // 取得所有空間
 		List<Space> allSpaces = spaceRepository.findAll();
@@ -325,5 +331,33 @@ public class SpaceService {
 						space.getSpaceId(), startDateTime, endDateTime))
 				.collect(Collectors.toList());
 	}
+	
+	//管理員新增回覆空間評論
+    public void addSpaceCommentReply(SpaceCommentReplyRequestDTO replyRequest) {
+    	
+    	Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    	
+    	String orderId = replyRequest.getOrderId();
+    	String content = replyRequest.getCommentReplyContent();
+    	
+    	SpaceCommentReply spaceComment = spaceCommentReplyRepo.findByOrdersOrderId(orderId)
+    														.orElse(null);
+    	
+    	SpaceCommentReply reply = new  SpaceCommentReply();
+    	
+    	if (spaceComment == null) {
+    		//新增評論回覆
+    		reply.setOrders(ordersRepository.findById(orderId).orElse(null));
+    		reply.setCommentReplyContent(content);
+    		spaceComment.setCommentReplyContent(content);
+    		spaceComment.setCreatedTime(currentTime);
+    		spaceCommentReplyRepo.save(reply);
+		}else {
+			//更新評論回覆
+			spaceComment.setCommentReplyContent(content);
+			spaceComment.setCreatedTime(currentTime);
+			spaceCommentReplyRepo.save(spaceComment);
+		}	
+    }
 
 }

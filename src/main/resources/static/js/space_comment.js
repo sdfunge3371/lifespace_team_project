@@ -132,93 +132,136 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 顯示查詢結果
-            function displayResults(data) {
-                if (!data || !data.content || data.content.length === 0) {
-                    resultsContainer.innerHTML = '<div class="no-results">沒有找到符合條件的評論</div>';
-                    paginationContainer.innerHTML = '';
-                    return;
-                }
+			function displayResults(data) {
+			    if (!data || !data.content || data.content.length === 0) {
+			        resultsContainer.innerHTML = '<div class="no-results">沒有找到符合條件的評論</div>';
+			        paginationContainer.innerHTML = '';
+			        return;
+			    }
 
-                // 更新分頁資訊
-                totalPages = data.totalPages;
+			    totalPages = data.totalPages;
 
-                // 構建表格
-                let tableHtml = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>空間名稱</th>
-                                <th>空間ID</th>
-                                <th>分店ID</th>
-                                <th>評論內容</th>
-                                <th>滿意度</th>
-                                <th>評論時間</th>
-                                <th>照片</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+			    let tableHtml = `
+			        <table>
+			            <thead>
+			                <tr>
+			                    <th>空間名稱</th>
+			                    <th>空間ID</th>
+			                    <th>分店ID</th>
+			                    <th>評論內容</th>
+			                    <th>滿意度</th>
+			                    <th>評論時間</th>
+			                    <th>照片</th>
+			                    <th>回覆評論</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			    `;
 
-                data.content.forEach(comment => {
-                    // 格式化日期
-                    const commentDate = new Date(comment.commentTime);
-                    const formattedDate = `${commentDate.getFullYear()}-${padZero(commentDate.getMonth() + 1)}-${padZero(commentDate.getDate())} ${padZero(commentDate.getHours())}:${padZero(commentDate.getMinutes())}`;
+			    data.content.forEach(comment => {
+			        const commentDate = new Date(comment.commentTime);
+			        const formattedDate = `${commentDate.getFullYear()}-${padZero(commentDate.getMonth() + 1)}-${padZero(commentDate.getDate())} ${padZero(commentDate.getHours())}:${padZero(commentDate.getMinutes())}`;
 
-                    // 產生星星評分
-                    const satisfaction = comment.satisfaction || 0;
-                    let starsHtml = '';
-                    for (let i = 0; i < 5; i++) {
-                        if (i < satisfaction) {
-                            starsHtml += '<span class="star">★</span>';
-                        } else {
-                            starsHtml += '<span class="star" style="color: #ccc;">★</span>';
-                        }
-                    }
+			        const satisfaction = comment.satisfaction || 0;
+			        let starsHtml = '';
+			        for (let i = 0; i < 5; i++) {
+			            starsHtml += `<span class="star" style="color: ${i < satisfaction ? '' : '#ccc'};">★</span>`;
+			        }
 
-                    // 處理照片
-                    let photosHtml = '';
-                    if (comment.photosUrls && comment.photosUrls.length > 0) {
-                        photosHtml = '<div class="photos">';
-                        comment.photosUrls.forEach(photoUrl => {
-                            if (photoUrl && photoUrl.trim() !== '') {
-                                photosHtml += `<img src="${photoUrl}" class="photo-thumbnail" onclick="openModal('${photoUrl}')">`;
-                            }
-                        });
-                        photosHtml += '</div>';
-                    } else {
-                        photosHtml = '無照片';
-                    }
+			        let photosHtml = '無照片';
+			        if (comment.photosUrls && comment.photosUrls.length > 0) {
+			            photosHtml = '<div class="photos">';
+			            comment.photosUrls.forEach(photoUrl => {
+			                if (photoUrl && photoUrl.trim() !== '') {
+			                    photosHtml += `<img src="${photoUrl}" class="photo-thumbnail" onclick="openModal('${photoUrl}')">`;
+			                }
+			            });
+			            photosHtml += '</div>';
+			        }
 
-                    tableHtml += `
-                        <tr>
-                            <td>${comment.spaceName || '-'}</td>
-                            <td>${comment.spaceId || '-'}</td>
-                            <td>${comment.branchId || '-'}</td>
-                            <td>${comment.commentContent || '-'}</td>
-                            <td><div class="satisfaction">${starsHtml} (${satisfaction})</div></td>
-                            <td>${formattedDate}</td>
-                            <td>${photosHtml}</td>
-                        </tr>
-                    `;
-                });
+			        const replyBoxId = `reply-box-${comment.orderId}`;
+			        const replyContent = comment.commentReply || '';
 
-                tableHtml += `
-                        </tbody>
-                    </table>
-                `;
+			        tableHtml += `
+			            <tr>
+			                <td>${comment.spaceName || '-'}</td>
+			                <td>${comment.spaceId || '-'}</td>
+			                <td>${comment.branchId || '-'}</td>
+			                <td>${comment.commentContent || '-'}</td>
+			                <td><div class="satisfaction">${starsHtml} (${satisfaction})</div></td>
+			                <td>${formattedDate}</td>
+			                <td>${photosHtml}</td>
+			                <td>
+			                    <button class="reply-toggle-btn" data-id="${comment.orderId}">回覆</button>
+			                    <div class="reply-box" id="${replyBoxId}" style="display:none; margin-top:10px;">
+			                        <textarea class="reply-input" rows="3" style="width: 100%;">${replyContent}</textarea>
+			                        <button class="reply-submit-btn" data-id="${comment.orderId}">送出</button>
+			                    </div>
+			                </td>
+			            </tr>
+			        `;
+			    });
 
-                resultsContainer.innerHTML = tableHtml;
+			    tableHtml += `
+			            </tbody>
+			        </table>
+			    `;
 
-                // 建立分頁按鈕
-                createPagination();
+			    resultsContainer.innerHTML = tableHtml;
+			    createPagination();
 
-                // 綁定照片點擊事件
-                document.querySelectorAll('.photo-thumbnail').forEach(img => {
-                    img.addEventListener('click', function () {
-                        openModal(this.src);
-                    });
-                });
-            }
+			    // 綁定圖片點擊事件
+			    document.querySelectorAll('.photo-thumbnail').forEach(img => {
+			        img.addEventListener('click', function () {
+			            openModal(this.src);
+			        });
+			    });
+
+			    // 綁定回覆區塊切換
+			    document.querySelectorAll('.reply-toggle-btn').forEach(button => {
+			        button.addEventListener('click', function () {
+			            const orderId = this.dataset.id;
+			            const box = document.getElementById(`reply-box-${orderId}`);
+			            if (box) {
+			                box.style.display = box.style.display === 'none' ? 'block' : 'none';
+			            }
+			        });
+			    });
+
+			    // 綁定送出回覆事件
+			    document.querySelectorAll('.reply-submit-btn').forEach(button => {
+			        button.addEventListener('click', function () {
+			            const orderId = this.dataset.id;
+			            const box = document.getElementById(`reply-box-${orderId}`);
+			            const input = box.querySelector('.reply-input');
+			            const replyContent = input.value.trim();
+
+			            fetch('http://localhost:8080/spaces/comments/reply', {
+			                method: 'POST',
+			                headers: {
+			                    'Content-Type': 'application/json'
+			                },
+			                body: JSON.stringify({
+			                    orderId: orderId,
+			                    commentReplyContent: replyContent
+			                })
+			            })
+			            .then(response => {
+			                if (!response.ok) throw new Error("無法儲存回覆");
+			                return response.json();
+			            })
+			            .then(() => {
+			                alert('回覆已送出');
+			                fetchComments(); // 重新載入
+			            })
+			            .catch(error => {
+			                console.error(error);
+			                alert('回覆失敗');
+			            });
+			        });
+			    });
+			}
+
 
             // 建立分頁按鈕
             function createPagination() {
