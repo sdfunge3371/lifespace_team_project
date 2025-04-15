@@ -330,10 +330,15 @@ $("#newCommentInput").on("keydown", function (e) {
       url: `/events/${eventId}/comments`,
       method: "POST",
       contentType: "application/json",
-      data: JSON.stringify({
-        commentMessage: msg,
-        eventMember: { eventMemberId: currentMemberId } // 使用 session 抓到的 memberId
-      }),
+	  
+	  data: JSON.stringify({
+	    commentMessage: msg,
+	    eventMemberId: currentMemberId
+	  }),
+//      data: JSON.stringify({
+//        commentMessage: msg,
+//        eventMember: { eventMemberId: currentMemberId } // 使用 session 抓到的 memberId
+//      }),
       success: function (newComment) {
         $("#newCommentInput").val('');
         const box = renderComment(newComment, true);
