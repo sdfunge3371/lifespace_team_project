@@ -81,7 +81,7 @@ $(document).ready(function() {
     // 載入所有租借品項數據
     function loadAllRentalItems() {
         $.ajax({
-            url: '/rental_item/getAll',
+            url: '/rental-item/getAll',
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -100,7 +100,7 @@ $(document).ready(function() {
     // 根據狀態載入租借品項
     function loadRentalItemsByStatus(status) {
         $.ajax({
-            url: `/rental_item/getByStatus/${status}`,
+            url: `/rental-item/getByStatus/${status}`,
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -119,7 +119,7 @@ $(document).ready(function() {
     // 根據租借品項編號搜尋
     function searchRentalItemsByRentalItemId(rentalItemId) {
         $.ajax({
-            url: `/rental_item/getByRentalItemId/${rentalItemId}`,
+            url: `/rental-item/getByRentalItemId/${rentalItemId}`,
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -138,7 +138,7 @@ $(document).ready(function() {
     // 根據租借品項名稱搜尋
     function searchRentalItemsByRentalItemName(rentalItemName) {
         $.ajax({
-            url: `/rental_item/getByRentalItemName/${rentalItemName}`,
+            url: `/rental-item/getByRentalItemName/${rentalItemName}`,
             type: 'GET',
             success: function(data) {
                 allRentalItems = data;
@@ -229,7 +229,7 @@ $(document).ready(function() {
     // 更新租借品項狀態（上下架）
     function updateRentalItemStatus(rentalItemId) {
         $.ajax({
-            url: `/rental_item/updateStatus/${rentalItemId}`,
+            url: `/rental-item/updateStatus/${rentalItemId}`,
             type: 'POST',
             success: function(response) {
                 alert(response);

@@ -51,7 +51,7 @@ $(document).ready(function() {
         
         // 發送 AJAX 請求
         $.ajax({
-            url: `/rental_item/update/${rentalItemId}`,
+            url: `/rental-item/update/${rentalItemId}`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
@@ -90,7 +90,7 @@ $(document).ready(function() {
     // 載入租借品項資料函數
     function loadRentalItemData(id) {
         $.ajax({
-            url: `/rental_item/getByRentalItemId/${id}`,
+            url: `/rental-item/getByRentalItemId/${id}`,
             type: 'GET',
             success: function(data) {
                 if (data && data.length > 0) {
