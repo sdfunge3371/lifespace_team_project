@@ -25,31 +25,33 @@ public interface SpaceRepository extends JpaRepository<Space, String> {
     List<Space> findBySpaceNameContainingIgnoreCase(String keyword);
 
 
-    //依照條件篩選空間評論
-    @Query(value = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, m.member_name AS member_name, "+
+  //依照條件篩選空間評論
+    @Query(value = "SELECT o.order_id, o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, m.member_name AS member_name, "+
     		"m.member_image AS member_image, o.comment_content, o.satisfaction, o.comment_time, " +
-            "GROUP_CONCAT(sp.space_photo) AS photos_urls " +
+            "GROUP_CONCAT(sp.space_photo) AS photos_urls, sc.comment_reply_content AS comment_reply " +
             "FROM orders o " +
             "LEFT JOIN space_comment_photo sp ON sp.order_id = o.order_id " +
             "LEFT JOIN space s ON s.space_id = o.space_id " +
             "LEFT JOIN member m ON m.member_id = o.member_id " +
+            "LEFT JOIN space_comment_reply sc ON sc.order_id = o.order_id " +
             "WHERE (:spaceId IS NULL OR o.space_id = :spaceId ) " +
             "AND (:spaceName IS NULL OR s.space_name LIKE CONCAT('%', :spaceName, '%') ) " +
             "AND (:branchId IS NULL OR s.branch_id = :branchId ) " +
             "AND ( o.comment_content IS NOT NULL ) " +
-            "GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time, m.member_name, m.member_image",
-            countQuery = "SELECT o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, m.member_name AS member_name, "+
+            "GROUP BY o.order_id, o.space_id, o.comment_content, o.satisfaction, o.comment_time, m.member_name, m.member_image, sc.comment_reply_content",
+            countQuery = "SELECT o.order_id, o.space_id, s.space_name AS space_name, s.branch_id AS branch_id, m.member_name AS member_name, "+
             		"m.member_image AS member_image, o.comment_content, o.satisfaction, o.comment_time, " +
-                    "GROUP_CONCAT(sp.space_photo) AS photos_urls " +
+                    "GROUP_CONCAT(sp.space_photo) AS photos_urls, sc.comment_reply_content " +
                     "FROM orders o " +
                     "LEFT JOIN space_comment_photo sp ON sp.order_id = o.order_id " +
                     "LEFT JOIN space s ON s.space_id = o.space_id " +
                     "LEFT JOIN member m ON m.member_id = o.member_id " +
+                    "LEFT JOIN space_comment_reply sc ON sc.order_id = o.order_id " +
                     "WHERE (:spaceId IS NULL OR o.space_id = :spaceId ) " +
                     "AND (:spaceName IS NULL OR s.space_name LIKE CONCAT('%', :spaceName, '%') ) " +
                     "AND (:branchId IS NULL OR s.branch_id = :branchId ) " +
                     "AND ( o.comment_content IS NOT NULL ) " +
-                    "GROUP BY o.space_id, o.comment_content, o.satisfaction, o.comment_time, m.member_name, m.member_image",
+                    "GROUP BY o.order_id, o.space_id, o.comment_content, o.satisfaction, o.comment_time, m.member_name, m.member_image, sc.comment_reply_content",
             nativeQuery = true)
     Page<SpaceCommentResponse> findSpaceCommentsByConditions(
             @Param("spaceId") String spaceId,

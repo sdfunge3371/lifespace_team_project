@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpaceCommentResponse {
-			
+	
+	private String orderId;
+	
 	private String spaceId;
 	
 	private String spaceName;
@@ -23,6 +25,8 @@ public class SpaceCommentResponse {
 	private Timestamp commentTime;
 	  
 	private List<String> photosUrls;
+	
+	private String commentReply;
 
 	public String getSpaceId() {
 		return spaceId;
@@ -96,8 +100,9 @@ public class SpaceCommentResponse {
 		this.photosUrls = photosUrls;
 	}
 
-	public SpaceCommentResponse(String spaceId, String spaceName, String branchId, String memberName,
-				byte[] memberImage, String commentContent, Integer satisfaction, Timestamp commentTime, String photosUrls) {
+	public SpaceCommentResponse(String orderId, String spaceId, String spaceName, String branchId, String memberName,
+				byte[] memberImage, String commentContent, Integer satisfaction, Timestamp commentTime, String photosUrls, String commentReply ) {
+		this.orderId = orderId;
 		this.spaceId = spaceId;
 		this.spaceName = spaceName;
 		this.branchId = branchId;
@@ -111,6 +116,24 @@ public class SpaceCommentResponse {
         if (photosUrls != null) {
             this.photosUrls = Arrays.asList(photosUrls.split(","));
         }
+        
+        this.commentReply = commentReply;
 	}
 
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getCommentReply() {
+		return commentReply;
+	}
+
+	public void setCommentReply(String commentReply) {
+		this.commentReply = commentReply;
+	}
+	
 }
