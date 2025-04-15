@@ -228,7 +228,7 @@
             method: 'GET',
             credentials: 'include', // 會員 cookie用
             success: function (orders) {
-                // console.log("取得的訂單資料：", orders);
+                console.log("取得的訂單資料：", orders);
                 $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
 
                 orders.forEach(orders => {
@@ -269,27 +269,27 @@
                                 </div>
                                 ` : ''}
                                 <div class="actions">
-                                    ${orders.orderStatus === 1 ? `
+                                    ${orders.orderStatus == 1 ? `
                                         ${orders.eventDTO ? `
                                             <a class="action-button message-button" href="group_message.html?eventId=${orders.eventDTO.eventId}">留言板</a>
                                         ` : `
                                             <button class="action-button group-button">揪團去</button>
                                         `}
                                         <button class="action-button cancel" data-order-id="${orders.orderId}">取消訂單</button>
-                                    ` : orders.orderStatus === 2 ? `
+                                    ` : orders.orderStatus == 2 ? `
                                         <button class="action-button review">評價</button>
                                     ` : ''}
                                 </div>
                             </div>
                         </div>
                         `;
-
-                    if (orders.orderStatus === 1) {
+                    console.log("訂單狀態", orders.orderId, typeof orders.orderStatus, orders.orderStatus);
+                    if (orders.orderStatus == 1) {
                         $('#space-orders').append(cardHtml);
 
-                    } else if (orders.orderStatus === 2) {
+                    } else if (orders.orderStatus == 2) {
                         $('#history-orders').append(cardHtml);
-                    } else if (orders.orderStatus === 0) {
+                    } else if (orders.orderStatus == 0) {
                         $('#cancel-orders').append(cardHtml);
                     }
 
@@ -297,19 +297,19 @@
 
                     //判斷訂單區塊是否有訂單
 
-                    if ($('#space-orders .order-container').length === 0) {
+                    if ($('#space-orders .order-container').length == 0) {
                         $('#space-orders .empty-state').removeClass('d-none');
                     } else {
                         $('#space-orders .empty-state').addClass('d-none');
                     }
 
-                    if ($('#history-orders .order-container').length === 0) {
+                    if ($('#history-orders .order-container').length == 0) {
                         $('#history-orders .empty-state').removeClass('d-none');
                     } else {
                         $('#history-orders .empty-state').addClass('d-none');
                     }
 
-                    if ($('#cancel-orders .order-container').length === 0) {
+                    if ($('#cancel-orders .order-container').length == 0) {
                         $('#cancel-orders .empty-state').removeClass('d-none');
                     } else {
                         $('#cancel-orders .empty-state').addClass('d-none');

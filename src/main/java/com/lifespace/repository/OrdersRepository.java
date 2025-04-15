@@ -26,10 +26,11 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     List<Orders> findAll();
 
     @EntityGraph(attributePaths = {"branch", "member", "rentalItemDetails", "rentalItemDetails.rentalItem", "event"})
-    List<Orders> findByMember_MemberIdAndMember_AccountStatus(String memberId, Integer accountStatus);
+    List<Orders> findByMember_MemberId(String memberId);
 
 
-
+    @Query("SELECT o FROM Orders o WHERE o.memberId = :memberId")
+    List<Orders> findAllByMemberId(@Param("memberId") String memberId);
 
 
     //用舉辦人id以及活動id查詢訂單，作為舉辦者取消活動用

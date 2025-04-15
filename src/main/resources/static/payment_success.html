@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>付款完成</title>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            margin: 100px auto;
+        }
+        .animation-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .success-icon {
+            width: 120px;
+            height: 120px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            width: 48%;
+            padding: 12px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #00b98e;
+            color: #fff;
+        }
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="modal-content">
+    <div class="animation-container">
+        <dotlottie-player
+                class="success-icon"
+                src="https://lottie.host/e210d343-23be-4a39-8bf8-5b16178374d1/ZNZKiPtOuz.lottie"
+                background="transparent"
+                speed="1"
+                loop autoplay>
+        </dotlottie-player>
+    </div>
+    <div class="title">付款已完成</div>
+    <div class="buttons">
+         <button class="button btn-primary" onclick="location.href='/event_create.html'">揪團去</button>
+         <button class="button btn-secondary" onclick="location.href='/frontend_orders.html'">查看我的訂單</button>
+    </div>
+</div>
+
+<script>
+    sessionStorage.removeItem("currentOrderId");
+</script>
+</body>
+</html>

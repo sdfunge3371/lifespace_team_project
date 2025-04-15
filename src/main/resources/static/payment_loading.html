@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>付款處理中</title>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.js"></script>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading-icon {
+      width: 200px;
+      height: 200px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+    <div class="modal-content">
+        <dotlottie-player
+            class="loading-icon"
+            src="https://lottie.host/384bf4d9-cfaf-4152-b268-90f0007837c1/Qtytg47TEf.lottie"
+            background="transparent"
+            speed="0.5"
+            loop autoplay>
+        </dotlottie-player>
+    <div class="title">付款處理中...</div>
+</div>
+
+<script>
+    const orderId = sessionStorage.getItem("currentOrderId");
+
+        if (!orderId) {
+        alert("找不到訂單編號，請重新預訂");
+
+        window.location.href = "/frontend_orders.html";  // 失敗跳回訂單頁面
+
+        }else{
+          fetch(`orders/ecpay-checkout/${orderId}`,{
+          method: "POST",
+        }).then(res => res.text())
+          .then(formHTML => {
+           const tempDiv = document.createElement('div'); // 自動submmit加到畫面上的綠界form表單(用div包起來再加進畫面)
+           tempDiv.innerHTML = formHTML;
+           document.body.appendChild(tempDiv);
+
+           setTimeout(() => {
+              tempDiv.querySelector('form').submit();
+
+           }, 8000);
+
+        }).catch(error => {
+           console.error("付款失敗", error);
+           alert("付款失敗，請稍後再試");
+        });
+         // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
+    }
+</script>
+</body>
+</html>

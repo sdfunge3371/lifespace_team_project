@@ -58,15 +58,6 @@ public class OrdersService {
         ordersRepository.save(orders);
     }
 
-    public Orders getOneOrder(String orderId) {
-
-        Optional<Orders> optional = ordersRepository.findById(orderId);
-        return optional.orElse(null);
-    }
-
-    public List<Orders> getAllOrders() {
-          return ordersRepository.findAll();
-        }
 
     public List<OrdersDTO> getAllOrdersDTOs() {
 
@@ -77,7 +68,12 @@ public class OrdersService {
     }
 
     public List<OrdersDTO> getAllOrdersByMemberId(String memberId) {
-        List<Orders> ordersList = ordersRepository.findByMember_MemberIdAndMember_AccountStatus(memberId, 1);
+        List<Orders> ordersList = ordersRepository.findAllByMemberId(memberId);
+        System.out.println("目前查詢 memberId: " + memberId);
+        for (Orders o : ordersList) {
+            System.out.println("訂單：" + o.getOrderId() + " / 狀態：" + o.getOrderStatus());
+        }
+
         return  ordersList
                 .stream()
                 .map(OrdersMapper::toOrdersDTO)
