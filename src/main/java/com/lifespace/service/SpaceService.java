@@ -336,28 +336,27 @@ public class SpaceService {
     public void addSpaceCommentReply(SpaceCommentReplyRequestDTO replyRequest) {
     	
     	Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-    	
-    	String orderId = replyRequest.getOrderId();
-    	String content = replyRequest.getCommentReplyContent();
-    	
-    	SpaceCommentReply spaceComment = spaceCommentReplyRepo.findByOrdersOrderId(orderId)
-    														.orElse(null);
-    	
-    	SpaceCommentReply reply = new  SpaceCommentReply();
-    	
-    	if (spaceComment == null) {
-    		//新增評論回覆
-    		reply.setOrders(ordersRepository.findById(orderId).orElse(null));
-    		reply.setCommentReplyContent(content);
-    		spaceComment.setCommentReplyContent(content);
-    		spaceComment.setCreatedTime(currentTime);
-    		spaceCommentReplyRepo.save(reply);
-		}else {
-			//更新評論回覆
-			spaceComment.setCommentReplyContent(content);
-			spaceComment.setCreatedTime(currentTime);
-			spaceCommentReplyRepo.save(spaceComment);
-		}	
+
+        String orderId = replyRequest.getOrderId();
+        String content = replyRequest.getCommentReplyContent();
+
+        // 嘗試取得已存在的評論回覆
+        SpaceCommentReply existingReply = spaceCommentReplyRepo.findByOrdersOrderId(orderId).orElse(null);
+
+        if (existingReply == null) {
+            // 新增評論回覆
+            SpaceCommentReply newReply = new SpaceCommentReply();
+            newReply.setOrders(ordersRepository.findById(orderId).orElseThrow(() -> 
+                new ResourceNotFoundException("找不到訂單 ID：" + orderId)));
+            newReply.setCommentReplyContent(content);
+            newReply.setCreatedTime(currentTime);
+            spaceCommentReplyRepo.save(newReply);
+        } else {
+            // 更新評論回覆
+            existingReply.setCommentReplyContent(content);
+            existingReply.setCreatedTime(currentTime);
+            spaceCommentReplyRepo.save(existingReply);
+        }
     }
 
 }
