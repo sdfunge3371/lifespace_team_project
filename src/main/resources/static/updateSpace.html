@@ -1079,7 +1079,7 @@
         }
 
         // 確認對話框
-        const confirmDelete = confirm(`確定要刪除選取的 ${selectedOptions.length} 個空間用途嗎？\n(注意：此操作會將用途標記為已刪除，但不會影響已使用此用途的現有空間記錄)`);
+        const confirmDelete = confirm(`確定要刪除選取的 ${selectedOptions.length} 個空間用途嗎？\n注意：其他空間若有包含那些用途也會一併刪除`);
 
         if (!confirmDelete) {   // 否：不執行
             return;

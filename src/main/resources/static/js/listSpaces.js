@@ -162,9 +162,23 @@ function showRowData(space) {
         ? space.spaceEquipments.map(eq => escapeHtml(eq.spaceEquipName)).join(', ')
         : '無';   	// 設備A, 設備B, ...
 
-    const usageNames = (space.spaceUsageMaps && space.spaceUsageMaps.length > 0)
-        ? space.spaceUsageMaps.map(map => escapeHtml(map.spaceUsage?.spaceUsageName || '未知')).join(', ') // Added check for nested spaceUsage
-        : '無';		// 用途A, 用途B, ...
+    // const usageNames = (space.spaceUsageMaps && space.spaceUsageMaps.length > 0)
+    //     ? space.spaceUsageMaps.map(map => escapeHtml(map.spaceUsage?.spaceUsageName || '未知')).join(', ') // Added check for nested spaceUsage
+    //     : '無';		// 用途A, 用途B, ...
+
+    let availableUsageNames = [];
+    let usageNames = "";
+    if (space.spaceUsageMaps && space.spaceUsageMaps.length > 0) {
+        for (const map of space.spaceUsageMaps) {
+            console.log(map);
+            if (map.spaceUsage.spaceUsageStatus === "AVAILABLE")
+                availableUsageNames.push(map.spaceUsage?.spaceUsageName || '未知');
+        }
+        usageNames = availableUsageNames.join(", ");
+    } else {
+        usageNames = "無";
+    }
+
 
     const photoCount = (space.spacePhotos && Array.isArray(space.spacePhotos))
         ? space.spacePhotos.length
