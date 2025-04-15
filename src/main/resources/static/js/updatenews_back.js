@@ -28,7 +28,32 @@ $(document).ready(function () {
         }
     });
 });
-	 
+	
+
+// 管理員登入
+let adminId = '';  // 假設登入者 ID
+
+$.ajax({
+	url: "http://localhost:8080/admin/faq/profile", 
+	method: "GET",
+	xhrFields: {
+		withCredentials: true // 等同於 fetch 的 credentials: "include"
+	},
+	success: function(response) {
+		adminId = response.adminId;
+		console.log("登入的管理員ID：", adminId);
+
+	},
+	error: function(xhr) {
+		if (xhr.status === 401) {
+			alert("尚未登入，請先登入");
+			window.location.href = "/loginAdmin.html";
+		} else {
+			console.error("無法取得會員資料", xhr);
+		}
+	}
+});
+ 
     // 先定義兩個 Promise 任務：載入分類與載入狀態
     const loadCategory = $.ajax({
         url: '/admin/newsCategory/query',

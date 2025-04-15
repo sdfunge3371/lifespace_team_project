@@ -105,9 +105,6 @@ $(document).ready(function () {
 	        }
 	    });
 
-
-
-	
 		
 
 	    // 開啟新增 modal
