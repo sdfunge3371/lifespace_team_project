@@ -14,7 +14,7 @@ $(document).ready(function() {
 let adminId = '';  // 假設登入者 ID
 
 $.ajax({
-	url: "http://localhost:8080/admin/faq/profile", 
+	url: "http://localhost:8080/admin/news/profile", 
 	method: "GET",
 	xhrFields: {
 		withCredentials: true // 等同於 fetch 的 credentials: "include"
