@@ -2,16 +2,13 @@ package com.lifespace.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,6 +16,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,8 +66,21 @@ public class MemberController {
 		if(memberOpt.isPresent()) {
 			//登入成功，根據需要回傳相關的會員資訊(絕對不能放密碼)
 			Member member = memberOpt.get();
-			//把資料放到session儲存
+			
+			//告訴spring security會員已登入
+			Authentication auth = new UsernamePasswordAuthenticationToken(
+			        member.getEmail(), null, List.of(new SimpleGrantedAuthority("ROLE_MEMBER")));
+			SecurityContextHolder.getContext().setAuthentication(auth);
+			
+			// Spring Security的session認證狀態
+			session.setAttribute(
+			    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+			    SecurityContextHolder.getContext()
+			);
+			
+			//自己寫的session，儲存會員資料
 			session.setAttribute("loginMember",member.getMemberId());
+
 			//避免洩漏敏感資訊，這裡回傳部分資料
 			Map<String, Object> response = new HashMap<>();
 			response.put("memberId", member.getMemberId());
