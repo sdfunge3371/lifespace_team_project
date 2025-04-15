@@ -104,6 +104,93 @@ public class MemberController {
 			}
 			
 		}
+		
+		//-----------------------取得會員帳號資料修改（從 Session 抓）------------------------------
+		@GetMapping("/member/profile")
+		public ResponseEntity<MemberDTO> getLoginMemberInfo(HttpSession session) {
+		    String memberId = SessionUtils.getLoginMemberId(session);
+		    if (memberId == null) {
+		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		    }
+		    
+		    Member member = memberRepository.findById(memberId).orElse(null);
+		    MemberDTO dto = new MemberDTO();
+		    dto.setMemberId(member.getMemberId());
+		    dto.setMemberName(member.getMemberName());
+		    dto.setPhone(member.getPhone());
+		    dto.setEmail(member.getEmail());
+		    dto.setBirthday(member.getBirthday());
+
+		    return ResponseEntity.ok(dto);
+		}
+		
+		//顯示會員的大頭貼
+		@GetMapping(value = "/member/image", produces = MediaType.IMAGE_JPEG_VALUE)
+		public ResponseEntity<byte[]> getMyImage(HttpSession session) {
+		    String memberId = SessionUtils.getLoginMemberId(session);
+		    if (memberId == null) {
+		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		    }
+
+		    Optional<Member> memberOpt = memberRepository.findById(memberId);
+		    
+		    if (memberOpt.isPresent() && memberOpt.get().getMemberImage() != null) {
+		        byte[] imageData = memberOpt.get().getMemberImage();
+		        return ResponseEntity.ok().body(imageData);
+		    }
+
+		    // 回傳預設大頭貼
+		    try (InputStream defaultStream = getClass().getResourceAsStream("/static/img/default.jpg")) {
+		        if (defaultStream != null) {
+		            byte[] defaultImage = defaultStream.readAllBytes();
+		            return ResponseEntity.ok(defaultImage);
+		        }
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		    }
+
+		    return ResponseEntity.notFound().build();
+		}
+		
+		
+		//回傳會員修改後的資料
+		@PostMapping(value = "/member/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+		public ResponseEntity<String> updateMyProfile(
+		        @RequestParam("memberName") String memberName,
+		        @RequestParam("email") String email,
+		        @RequestParam("phone") String phone,
+		        @RequestParam("birthday") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
+		        @RequestPart(value = "memberImage", required = false) MultipartFile memberImage,
+		        HttpSession session) {
+
+		    String memberId = SessionUtils.getLoginMemberId(session);
+		    if (memberId == null) {
+		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
+		    }
+
+		    Member member = memberRepository.findById(memberId).orElse(null);
+		    if (member == null) {
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("找不到會員");
+		    }
+
+		    // 更新資料
+		    member.setMemberName(memberName);
+		    member.setEmail(email);
+		    member.setPhone(phone);
+		    member.setBirthday(birthday);
+		    if (memberImage != null && !memberImage.isEmpty()) {
+		        try {
+		            member.setMemberImage(memberImage.getBytes());
+		        } catch (IOException e) {
+		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("圖片讀取失敗");
+		        }
+		    }
+
+		    memberRepository.save(member);
+		    return ResponseEntity.ok("更新成功");
+		}
+
 	
 	
 	//-------------------------------會員登出功能------------------------------------

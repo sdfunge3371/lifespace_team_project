@@ -35,9 +35,9 @@ main {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 100vh;
+	height: 900px;
+	background-color: #EFFDF5 ;
 }
-
 .card {
 	background-color: white;
 	padding: 40px;
@@ -88,7 +88,7 @@ p.description {
 }
 
 .input-field {
-	width: 60%;
+	width: 100%;
 	padding: 5px;
 	margin-top: 5px;
 	border: 1px solid #ccc;
@@ -112,134 +112,152 @@ p.description {
 
 <body>
 
-	 <!-- Header Navbar Start -->
-        <div class="container-fluid nav-bar bg-transparent">
-            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
-                <a href="homepage.html" class="navbar-brand d-flex align-items-center text-center">
-                    <div class="icon p-2 me-2">
-                        <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
-                    </div>
-                    <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
-                </a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto">
-                        <a href="spaceoverview.html" class="nav-item nav-link">瀏覽空間</a>
-                        <a href="event_overview.html" class="nav-item nav-link">參與活動</a>     
-                        <a href="frontend_news.html" class="nav-item nav-link">最新消息</a>
-                        <a href="frontend_faq.html" class="nav-item nav-link">常見問題</a>
-                    </div>
-                    <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i
-                                class="bi bi-person-circle">會員資料</i></a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="myAccount.html" class="dropdown-item">我的帳號</a>
-                            <a href="events_for_user.html" class="dropdown-item">我的活動管理</a>
-                            <a href="frontend_orders.html" class="dropdown-item">我的訂單管理</a>
-                            <a href="#" class="dropdown-item">我的最愛</a>
-                            <a href="#" class="dropdown-item">登出</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <!-- Header Navbar End -->
+	<!-- Header Navbar Start -->
+	<div class="container-fluid nav-bar bg-transparent">
+		<nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+			<a href="homepage.html"
+				class="navbar-brand d-flex align-items-center text-center">
+				<div class="icon p-2 me-2">
+					<img class="img-fluid" src="images/img.bootstrap/LifeSpace.png"
+						alt="Icon" style="width: 30px; height: 30px;">
+				</div> <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png"
+				alt="Icon" style="width: 200px; height: 60px;">
+			</a>
+			<button type="button" class="navbar-toggler"
+				data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<div class="navbar-nav ms-auto">
+					<a href="spaceoverview.html" class="nav-item nav-link">瀏覽空間</a> <a
+						href="event_overview.html" class="nav-item nav-link">參與活動</a> <a
+						href="frontend_news.html" class="nav-item nav-link">最新消息</a> <a
+						href="frontend_faq.html" class="nav-item nav-link">常見問題</a>
+				</div>
+				<!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
+				<div class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle"
+						data-bs-toggle="dropdown"> <i class="bi bi-person-circle">會員資料</i></a>
+					<div class="dropdown-menu rounded-0 m-0">
+						<a href="myAccount.html" class="dropdown-item">我的帳號</a> <a
+							href="events_for_user.html" class="dropdown-item">我的活動管理</a> <a
+							href="frontend_orders.html" class="dropdown-item">我的訂單管理</a> <a
+							href="#" class="dropdown-item">我的最愛</a> <a href="#"
+							class="dropdown-item">登出</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<!-- Header Navbar End -->
 
 
 	<main>
-  <div class="card">
-    <h2>我的帳號</h2>
-    <p class="description">請於此修改您的帳號資料</p>
+		<div class="card">
+			<h2>我的帳號</h2>
+			<p class="description">請於此修改您的帳號資料</p>
 
-    <!-- 大頭貼 -->
-    <div class="info-block">
-      <div class="info-row">
-        <span class="info-label">大頭貼</span>
-        <input type="file" class="input-field" id="imageInput">
-        <img class="avatar" src="http://localhost:8080/member/image" id="previewImage" />
-      </div>
-    </div>
+			<!-- 大頭貼 -->
+			<div class="info-block">
+				<div class="info-row">
+					<span class="info-label">大頭貼</span> <input type="file"
+						class="input-field" id="imageInput"> <img class="avatar" src="http://localhost:8080/member/image" id="previewImage" />
+				</div>
+			</div>
 
-    <!-- 帳號名稱 -->
-    <div class="info-block">
-      <div class="info-row">
-        <span class="info-label">帳號名稱</span>
-        <input type="text" class="input-field" id="memberName" readonly>
-      </div>
-    </div>
+			<!-- 帳號名稱 -->
+			<div class="info-block">
+				<div class="info-row">
+					<span class="info-label">帳號名稱</span> <input type="text" class="input-field" id="memberName">
+				</div>
+			</div>
 
-    <!-- 生日 -->
-    <div class="info-block">
-      <div class="info-row">
-        <span class="info-label">生日</span>
-        <input type="date" class="input-field" id="birthday" readonly>
-      </div>
-    </div>
+			<!-- 生日 -->
+			<div class="info-block">
+				<div class="info-row">
+					<span class="info-label">生日</span> <input type="date" class="input-field" id="birthday">
+				</div>
+			</div>
 
-    <!-- 電話 -->
-    <div class="info-block">
-      <div class="info-row">
-        <span class="info-label">電話</span>
-        <input type="tel" class="input-field" id="phone" readonly>
-      </div>
-    </div>
+			<!-- 電話 -->
+			<div class="info-block">
+				<div class="info-row">
+					<span class="info-label">電話</span> <input type="tel" class="input-field" id="phone">
+				</div>
+			</div>
 
-    <!-- 電子信箱 -->
-    <div class="info-block">
-      <div class="info-row">
-        <span class="info-label">電子信箱</span>
-        <input type="email" class="input-field" id="email" readonly>
-      </div>
-    </div>
+			<!-- 電子信箱 -->
+			<div class="info-block">
+				<div class="info-row">
+					<span class="info-label">電子信箱</span> <input type="email" class="input-field" id="email">
+				</div>
+			</div>
 
-    <!-- 儲存按鈕 -->
-    <div style="text-align: center; margin-top: 20px;">
-      <button class="btn btn-primary" onclick="submitMemberUpdate()">儲存所有修改</button>
-    </div>
-  </div>
-</main>
-	
+			<!-- 儲存按鈕 -->
+			<div style="text-align: center; margin-top: 20px;">
+				<button class="btn btn-primary" onclick="submitMemberUpdate()">儲存所有修改</button>
+			</div>
+		</div>
+	</main>
 
 
 
 
-<!-- Footer Start -->
-        <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-            <div class="container py-5">
-                <div class="row g-5 align-items-center">
-                    <div class="col-lg-4 col-md-4">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon p-2 me-2">
-                                <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
-                            </div>
-                            <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
-                        </div>
-                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
-                    </div>
 
-                    <div class="col-lg-8 col-md-8 ">
-                        <div class="slogan-container p-4 rounded" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
-                            <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>
-                            <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Footer End -->
+	<!-- Footer Start -->
+	<div
+		class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn"
+		data-wow-delay="0.1s">
+		<div class="container py-5">
+			<div class="row g-5 align-items-center">
+				<div class="col-lg-4 col-md-4">
+					<div class="d-flex align-items-center mb-4">
+						<div class="icon p-2 me-2">
+							<img class="img-fluid" src="images/img.bootstrap/LifeSpace.png"
+								alt="Icon" style="width: 30px; height: 30px;">
+						</div>
+						<img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png"
+							alt="Icon" style="width: 200px; height: 60px;">
+					</div>
+					<p class="mb-2">
+						<i class="fa fa-envelope me-3"></i>lifespace105@gmail.com
+					</p>
+				</div>
+
+				<div class="col-lg-8 col-md-8 ">
+					<div class="slogan-container p-4 rounded"
+						style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
+						<h4 class="text-primary mb-3"
+							style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>
+						<p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Footer End -->
 
 
 
 	<script>
 	
+	//把日期格式化成yyy-mm-dd
+	 function formatDate(dateString){
+	   const date = new Date(dateString);
+	   if(isNaN(date)) return'';
+	   const yyyy = date.getFullYear();
+	   const mm = String(date.getMonth()+1).padStart(2,'0'); //月份要補0
+	   const dd = String(date.getDate()).padStart(2,'0'); //日期也要補0
+	   return `${yyyy}-${mm}-${dd}`;
+	  }
+	
+
+	
 	//顯示會員一開始的資訊
 	document.addEventListener("DOMContentLoaded", function () {
 	    fetch("http://localhost:8080/member/profile", {
 	        method: "GET",
-	        credentials: "include"  // ⬅️ 重點！這會帶上 session cookie
+	        credentials: "include"  // 帶上 session cookie
 	    })
 	    .then(response => {
 	        if (response.status === 401) {
@@ -251,10 +269,10 @@ p.description {
 	    .then(member => {
 	        // 將資料渲染進表單中
 	        document.querySelector('input[type="text"]').value = member.memberName;
-	        document.querySelector('input[type="date"]').value = member.birthday;
+	        document.querySelector('input[type="date"]').value = formatDate(member.birthday);
 	        document.querySelector('input[type="tel"]').value = member.phone;
 	        document.querySelector('input[type="email"]').value = member.email;
-
+	        
 	        // 顯示大頭貼（假設你有圖片的URL）
 	        document.querySelector('.avatar').src = "http://localhost:8080/member/image/" + member.memberId;
 	    })
@@ -264,23 +282,27 @@ p.description {
 	});
 	
 	
-	//修改會員資料
-	document.querySelectorAll('.edit-btn').forEach((btn, index) => {
-    btn.addEventListener("click", function () {
-        const input = this.parentElement.querySelector('.input-field');
+	
+	// 預覽大頭貼
+	 document.addEventListener("DOMContentLoaded", function () {
+	   const imageInput = document.getElementById("imageInput");
+	   const previewImage = document.getElementById("previewImage");
 
-        if (btn.textContent === "編輯") {
-            input.removeAttribute("readonly");
-            input.focus();
-            btn.textContent = "確定";
-        } else {
-            btn.textContent = "編輯";
-            input.setAttribute("readonly", true);
-        }
-    });
-});
+	   imageInput.addEventListener("change", function () {
+	     const file = this.files[0];
+	     if (file) {
+	       const reader = new FileReader();
+	       reader.onload = function (e) {
+	         previewImage.src = e.target.result;
+	       };
+	       reader.readAsDataURL(file);
+	     }
+	   });
+	 });
+	
 
-// 送出所有資料
+
+// 送出會員資料
 function submitMemberUpdate() {
     const formData = new FormData();
     formData.append("memberName", document.querySelector('input[type="text"]').value);
