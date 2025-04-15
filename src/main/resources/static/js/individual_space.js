@@ -1461,11 +1461,12 @@ function sendOrder(memberId) {
         spaceFloor: spaceFloor
     };
 
-    fetch("/orders", {
+    fetch("/orders/createOrders", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: "include",  // ← 很重要
         body: JSON.stringify(ordersDTO)
     })
         .then(res => {

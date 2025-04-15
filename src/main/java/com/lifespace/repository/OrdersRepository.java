@@ -29,7 +29,7 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     List<Orders> findByMember_MemberId(String memberId);
 
 
-    @Query("SELECT o FROM Orders o WHERE o.memberId = :memberId")
+    @Query("SELECT o FROM Orders o WHERE o.member.memberId = :memberId And o.member.accountStatus = 1")
     List<Orders> findAllByMemberId(@Param("memberId") String memberId);
 
 
