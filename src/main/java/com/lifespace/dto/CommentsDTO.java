@@ -3,6 +3,9 @@ package com.lifespace.dto;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import com.lifespace.entity.Comments;
+import com.lifespace.entity.EventMember;
+
 public class CommentsDTO {
 	private String commentId;
     private String commentMessage;
@@ -14,6 +17,9 @@ public class CommentsDTO {
     private LocalDateTime orderStart;
     private LocalDateTime orderEnd;
     private String spaceLocation;
+    private String eventId;
+    private EventMember eventMember;
+    
     
 
 //    private String branchAddr;
@@ -99,6 +105,30 @@ public class CommentsDTO {
 
 	public void setSpaceLocation(String spaceLocation) {
 		this.spaceLocation = spaceLocation;
+	}
+
+	public String getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
+	}
+
+	public EventMember getEventMember() {
+		return eventMember;
+	}
+
+	public void setEventMember(EventMember eventMember) {
+		this.eventMember = eventMember;
+	}
+
+	// 將 DTO 轉成 Entity，用於儲存留言時使用
+	public Comments toEntity() {
+	    Comments entity = new Comments();
+	    entity.setCommentMessage(this.commentMessage);
+	    entity.setEventMember(this.eventMember);
+	    return entity;
 	}
 
 	
