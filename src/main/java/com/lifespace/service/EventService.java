@@ -129,6 +129,11 @@ public class EventService {
 		}
         
         //因為是一筆訂單對應活動，該筆訂單(EventRequest是否要加入order_id?)也要加上新建的event_id
+        String orderId = eventRequest.getOrderId();
+        Orders eventOrder = ordersRepository.findById(orderId).orElse(null);
+        eventOrder.setEvent_id(eventId);
+        ordersRepository.save(eventOrder);
+	
 	}
 
 	//獲取所有活動類別
