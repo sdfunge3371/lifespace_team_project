@@ -104,10 +104,11 @@ function renderFavoriteSpaces(favoriteSpaces) {
         
         // 組合完整地址
         const location = `${space.branchAddr || ''}${space.spaceFloor ? space.spaceFloor + '樓' : ''}`;
-        
+        console.log(space.spacePhoto);
+
         spaceCard.innerHTML = `
             <div class="space-image">    
-                <img src="data:image/jpeg;base64,${arrayBufferToBase64(space.spacePhoto)}" alt="空間圖片" onerror="this.src='default.jpg'">
+                <img src="data:image/jpeg;base64,${space.spacePhoto}" alt="空間圖片">
             </div>
             <div class="space-info">
                 <div class="space-title">
@@ -195,19 +196,19 @@ function updateSpaceOverviewFavoriteStatus(spaceId, isFavorite) {
 }
 
 // ArrayBuffer 轉 Base64 (用於顯示圖片)
-function arrayBufferToBase64(buffer) {
-    if (!buffer) return '';
-    
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    
-    return window.btoa(binary);
-}
+// function arrayBufferToBase64(buffer) {
+//     if (!buffer) return '';
+//
+//     let binary = '';
+//     const bytes = new Uint8Array(buffer);
+//     const len = bytes.byteLength;
+//
+//     for (let i = 0; i < len; i++) {
+//         binary += String.fromCharCode(bytes[i]);
+//     }
+//
+//     return window.btoa(binary);
+// }
 
 // 添加淡出動畫樣式
 const style = document.createElement('style');
