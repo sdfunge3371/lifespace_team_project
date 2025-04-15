@@ -97,50 +97,62 @@ public class NewsService {
 	}
 
 	// -------------------新增的驗證訊息-------------------
-	public ResponseEntity<?> addNewsError(AddNewsDTO addNewsParam, BindingResult bindingResult, byte[] newsImgBytes) {
-		if (bindingResult.hasErrors()) {
-			Map<String, String> errors = new HashMap<>();
+	public ResponseEntity<?> addNewsError(AddNewsDTO addNewsParam,
+	                                      BindingResult bindingResult,
+	                                      byte[] newsImgBytes,
+	                                      String adminId) { // 由 Controller 傳入登入中的 adminId
+	    if (bindingResult.hasErrors()) {
+	        Map<String, String> errors = new HashMap<>();
 
-			// 把錯誤欄位與錯誤訊息逐一存進 map
-			bindingResult.getFieldErrors().forEach(error -> {
-				errors.put(error.getField(), error.getDefaultMessage());
-			});
+	        // 把錯誤欄位與錯誤訊息逐一存進 map
+	        bindingResult.getFieldErrors().forEach(error -> {
+	            errors.put(error.getField(), error.getDefaultMessage());
+	        });
 
-			return ResponseEntity.badRequest().body(errors);// 回傳錯誤 map (400 Bad Request)
-		} else {
-			// 沒錯誤才真的寫進資料庫
-			insertNews(addNewsParam, newsImgBytes);
+	        return ResponseEntity.badRequest().body(errors); // 回傳錯誤 map (400 Bad Request)
+	    } else {
+	        // 沒錯誤才真的寫進資料庫
+	        insertNews(addNewsParam, newsImgBytes, adminId); // 傳入 adminId
 
-			return ResponseEntity.ok(Map.of("redirect", "/backend_news.html")); // 導回首頁
-		}
+	        return ResponseEntity.ok(Map.of("redirect", "/backend_news.html")); // 導回首頁
+	    }
 	}
+
 
 	// 新增NEWS進資料庫
-	public void insertNews(AddNewsDTO addNewsParam, byte[] newsImgBytes) {
-		News news = new News(); // 建立新的實體物件（Entity）
-		news.setNewsTitle(addNewsParam.getNewsTitle());
-		news.setNewsContent(addNewsParam.getNewsContent());
-		// LocalDateTime → Timestamp
-		news.setNewsStartDate(Timestamp.valueOf(addNewsParam.getNewsStartDate()));
-		news.setNewsEndDate(Timestamp.valueOf(addNewsParam.getNewsEndDate()));
-		news.setNewsImg(newsImgBytes); // 圖片手動設入
-		news.setCreatedTime(Timestamp.valueOf(LocalDateTime.now()));
+	public void insertNews(AddNewsDTO addNewsParam, byte[] newsImgBytes, String adminId) { 
+	    News news = new News(); // 建立新的實體物件（Entity）
 
-		// 分類對應
-		NewsCategory categoryVO = new NewsCategory();
-		categoryVO.setNewsCategoryId(addNewsParam.getNewsCategoryId());
-		news.setNewsCategory(categoryVO);
+	    // 設定標題與內容
+	    news.setNewsTitle(addNewsParam.getNewsTitle());
+	    news.setNewsContent(addNewsParam.getNewsContent());
 
-		// 狀態對應
-		NewsStatus statusVO = new NewsStatus();
-		statusVO.setNewsStatusId(addNewsParam.getNewsStatusId());
-		news.setNewsStatus(statusVO);
+	    // LocalDateTime → Timestamp（資料庫欄位是 Timestamp 格式）
+	    news.setNewsStartDate(Timestamp.valueOf(addNewsParam.getNewsStartDate()));
+	    news.setNewsEndDate(Timestamp.valueOf(addNewsParam.getNewsEndDate()));
 
-		// 串接管理者
-		news.setAdminId("A001");
-		repository.save(news);
+	    // 圖片手動設入（若前端沒上傳會是 null）
+	    news.setNewsImg(newsImgBytes);
 
+	    // 設定建立時間為現在時間
+	    news.setCreatedTime(Timestamp.valueOf(LocalDateTime.now()));
+
+	    // 分類對應（只設定 ID，JPA 自動關聯）
+	    NewsCategory categoryVO = new NewsCategory();
+	    categoryVO.setNewsCategoryId(addNewsParam.getNewsCategoryId());
+	    news.setNewsCategory(categoryVO);
+
+	    // 狀態對應（只設定 ID，JPA 自動關聯）
+	    NewsStatus statusVO = new NewsStatus();
+	    statusVO.setNewsStatusId(addNewsParam.getNewsStatusId());
+	    news.setNewsStatus(statusVO);
+
+	    // 串接管理者：由 Controller 傳入 session 中的 adminId
+	    news.setAdminId(adminId); // 動態帶入
+
+	    repository.save(news); // 存進資料庫
 	}
+
 
 	// -------------------修改時依ID抓整個欄位-------------------
 	public NewsDTO findById(String newsId) {
