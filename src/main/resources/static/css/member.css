@@ -43,7 +43,7 @@ h2 {
 	gap: 10px;
 	margin-bottom: 20px;
 	margin-top: 20px;
-	width: 80%;
+	width: 70%;
 	padding-bottom: 10px;
 	padding-top: 5px;
 	padding-left: 50px;
@@ -120,10 +120,19 @@ h2 {
 .search-btn button:hover {
 	opacity: 0.8;
 }
+.btn {
+  display: flex;      /* 讓 .btn 裡的東西橫向排 */
+  justify-content: center; /* 中間對齊 */
+  gap: 10px;          /* 兩個按鈕中間空隙 */
+  margin-top: 20px;
+}
+
+
 
 table {
 	border-collapse: collapse;
 	margin-top: 20px;
+	width:100%;
 }
 
 th, td {
