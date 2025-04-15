@@ -200,16 +200,44 @@ function renderSpaces(spacesToRender) {
             }
         });
 
-        // 加入最愛
+        // 加入/移除最愛
         spaceCard.querySelector('.favorite-btn').addEventListener('click', (event) => {
             event.stopPropagation();
+
             const icon = event.currentTarget.querySelector('i');
-            icon.classList.toggle('far');
-            icon.classList.toggle('fas');
-            event.currentTarget.classList.toggle('active');
+            const button = event.currentTarget;
+            const spaceId = button.dataset.id;
+            const isFavorite = icon.classList.contains("fas");  // 是否已加入最愛
 
-            // TODO: 存到最愛清單
-
+            if (!isFavorite) {
+                // 加入最愛
+                fetch(`/favorite-space/${spaceId}`, {
+                    method: "POST",
+                    credentials: "include"
+                }).then(res => {
+                    icon.classList.remove("far");
+                    icon.classList.add("fas");
+                    button.classList.add("active");
+                }).catch(error => {
+                    alert("加入最愛失敗");
+                    console.log("加入最愛失敗：", error);
+                    }
+                )
+            } else {
+                // 移除最愛
+                fetch(`/favorite-space/${spaceId}`, {
+                    method: "DELETE",
+                    credentials: "include"
+                }).then(res => {
+                    icon.classList.remove("fas");
+                    icon.classList.add("far");
+                    button.classList.remove("active");
+                }).catch(error => {
+                        alert("移除最愛失敗");
+                        console.log("移除最愛失敗：", error);
+                    }
+                )
+            }
         });
 
         // 點擊卡片後，跳轉到個別空間頁面
