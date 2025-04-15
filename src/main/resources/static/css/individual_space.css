@@ -42,6 +42,7 @@ main.main {
     height: 550px; /* ✅ 固定 Carousel 的高度，可依需要調整 */
     overflow: hidden;
     margin-bottom: 15px;
+    border-radius: 10px;
 }
 
 .carousel-item img {

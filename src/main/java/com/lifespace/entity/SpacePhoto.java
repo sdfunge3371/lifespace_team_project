@@ -29,6 +29,9 @@ public class SpacePhoto implements Serializable {
     @UpdateTimestamp
     private Timestamp createdTime;
 
+    @Column(name = "filename")
+    private String filename;   // 用來辨識同一 spaceId 下的同一張圖是否已存
+
     public Integer getSpacePhotoId() {
         return spacePhotoId;
     }
@@ -59,5 +62,13 @@ public class SpacePhoto implements Serializable {
 
     public void setCreatedTime(Timestamp createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

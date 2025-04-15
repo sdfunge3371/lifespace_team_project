@@ -293,7 +293,7 @@ function getCachedLocation() {
             return location;
         }
     } catch (error) {
-        console.warn('無法解析緩存的位置數據:', error);
+        console.warn('無法解析位置數據:', error);
     }
 
     // 緩存過期或無效，清除它
@@ -452,7 +452,7 @@ function initMap() {
 
         // 更新分點地圖標記
         if (branches && branches.length > 0) {
-            updateBranchMarkers(branches);
+            updateMapMarkers(branches);
         }
 
 
@@ -554,7 +554,7 @@ function updateMapMarkers(branchesList) {
             <div style="min-width: 150px;">
                 <h4 style="margin: 5px 0;">${branch.name || '未命名分店'}</h4>
                 <p style="margin: 5px 0;">${branch.address || '未命名分店'}</p>
-                <p style="margin: 5px 0;">包含 ${spacesCount} 個空間</p>
+<!--                <p style="margin: 5px 0;">包含 ${spacesCount} 個空間</p>-->
                 <button id="filter-branch-btn" 
                     style="background-color: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-top: 5px;">
                     查看此分店空間
@@ -569,6 +569,8 @@ function updateMapMarkers(branchesList) {
 
 
         // 點擊座標時觸發
+        let isFilterClickBound = false;
+
         markerElement.addEventListener("mouseenter", () => {
             if (activeInfoWindow) {
                 activeInfoWindow.close();
@@ -576,18 +578,18 @@ function updateMapMarkers(branchesList) {
             infoWindow.open({ map: map, anchor: markerElement });
             activeInfoWindow = infoWindow;
 
-            // 添加按鈕點擊事件
-            setTimeout(() => {
-                const filterBtn = document.getElementById('filter-branch-btn');
-                if (filterBtn) {
-                    filterBtn.addEventListener('click', () => {
-                        // 篩選出該分店的空間
-                        filterSpacesByBranch(branch.branchId, branch.spaces);
-                        // 關閉資訊視窗
-                        infoWindow.close();
-                    });
-                }
-            }, 100);
+            if (!isFilterClickBound) {
+                setTimeout(() => {
+                    const filterBtn = document.getElementById('filter-branch-btn');
+                    if (filterBtn) {
+                        filterBtn.addEventListener('click', () => {
+                            filterSpacesByBranch(branch.branchId, branch.spaces);
+                            infoWindow.close();
+                        });
+                        isFilterClickBound = true;  // 設定為已綁定
+                    }
+                }, 100);
+            }
         });
 
         // 儲存座標、資訊彈窗、spaceId

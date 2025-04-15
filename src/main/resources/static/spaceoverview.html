@@ -42,6 +42,7 @@
         // 透過後端取得Google Maps API key
         $.get("/api/config/google-maps-key", function(response) {
             const apiKey = response.key;
+            console.log(apiKey);
             const script = document.createElement("script");
             script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=marker&callback=initMap`;
             script.async = true;
@@ -90,7 +91,7 @@
                             <a href="myAccount.html" class="dropdown-item">我的帳號</a>
                             <a href="events_for_user.html" class="dropdown-item">我的活動管理</a>
                             <a href="frontend_orders.html" class="dropdown-item">我的訂單管理</a>
-                            <a href="#" class="dropdown-item">我的最愛</a>
+                            <a href="favorite_space.html" class="dropdown-item">我的最愛</a>
                             <a href="#" class="dropdown-item">登出</a>
                         </div>
                     </div>
@@ -283,9 +284,9 @@
 
 
         <!-- 人工回復聊天按鈕 -->
-        <!--        <div class="chat-icon" id="chatButton">-->
-        <!--            <img src="images/img.bootstrap/support.webp" alt="客服聊天">-->
-        <!--        </div>-->
+        <div class="chat-icon" id="chatButton">
+            <img src="images/img.bootstrap/support.webp" alt="客服聊天">
+        </div>
     </div>
 
     <script src="js/spaceoverview.js"></script>
