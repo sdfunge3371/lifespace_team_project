@@ -444,6 +444,8 @@
     </form>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script>
     // ======== Configuration ========
     // 絕對路徑 (fetch)
@@ -1131,6 +1133,30 @@
 
     // ======== Initialization (載入網頁時要做的事情) ========
     document.addEventListener('DOMContentLoaded', async () => {
+        // 登入攔截
+        let adminId = '';  // 假設登入者 ID
+
+        $.ajax({
+            url: "http://localhost:8080/admin/faq/profile",
+            method: "GET",
+            xhrFields: {
+                withCredentials: true // 等同於 fetch 的 credentials: "include"
+            },
+            success: function (response) {
+                adminId = response.adminId;
+                console.log("登入的管理員ID：", adminId);
+
+            },
+            error: function (xhr) {
+                if (xhr.status === 401) {
+                    alert("尚未登入，請先登入");
+                    window.location.href = "/loginAdmin.html";
+                } else {
+                    console.error("無法取得會員資料", xhr);
+                }
+            }
+        });
+
         // 空間設備
         equipmentModal = document.getElementById('equipmentModal');
         addEquipmentBtn = document.getElementById('addEquipmentBtn');
