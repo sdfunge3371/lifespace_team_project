@@ -397,154 +397,200 @@
         });
     });
         //
-        //     // 評價相關的 jQuery 代碼
-        //     $(document).ready(function () {
-        //         // 儲存當前評價的訂單和上傳的照片
-        //         var currentReviewOrder = null;
-        //         var uploadedPhotos = [];
-        //
-        //         // 點擊評價按鈕
-        //         $(document).on("click", ".action-button.review", function () {
-        //             currentReviewOrder = $(this).closest(".order-container");
-        //             $(".review-dialog").css("display", "flex").fadeIn();
-        //
-        //             // 重置評價表單
-        //             $("input[name='rating']").prop("checked", false);
-        //             $(".review-text").val("");
-        //             $("#photoPreview").empty();
-        //             uploadedPhotos = [];
-        //         });
-        //
-        //         // 點擊取消評價按鈕
-        //         $(".review-cancel-btn").click(function () {
-        //             $(".review-dialog").fadeOut();
-        //             currentReviewOrder = null;
-        //         });
-        //
-        //         // 照片上傳處理
-        //         $("#photoUpload").change(function (e) {
-        //             handleFiles(e.target.files);
-        //         });
-        //
-        //         // 拖放照片功能 - 使用jQuery實現
-        //         var $dropArea = $("#dropArea");
-        //
-        //         $dropArea.on('dragenter dragover', function (e) {
-        //             e.preventDefault();
-        //             e.stopPropagation();
-        //             $(this).addClass('highlight');
-        //         });
-        //
-        //         $dropArea.on('dragleave drop', function (e) {
-        //             e.preventDefault();
-        //             e.stopPropagation();
-        //             $(this).removeClass('highlight');
-        //         });
-        //
-        //         $dropArea.on('drop', function (e) {
-        //             e.preventDefault();
-        //             var files = e.originalEvent.dataTransfer.files;
-        //             handleFiles(files);
-        //         });
-        //
-        //         // 處理上傳的照片文件
-        //         function handleFiles(files) {
-        //             if (uploadedPhotos.length >= 5) {
-        //                 alert("最多只能上傳5張照片");
-        //                 return;
-        //             }
-        //
-        //             // 將FileList轉換為Array
-        //             var filesArray = $.makeArray(files);
-        //
-        //             // 限制最多5張照片
-        //             var remainingSlots = 5 - uploadedPhotos.length;
-        //             var filesToProcess = filesArray.slice(0, remainingSlots);
-        //
-        //             $.each(filesToProcess, function (index, file) {
-        //                 if (!file.type.match('image.*')) {
-        //                     alert("請只上傳圖片檔案");
-        //                     return;
-        //                 }
-        //
-        //                 var reader = new FileReader();
-        //                 reader.onload = function (e) {
-        //                     uploadedPhotos.push({
-        //                         file: file,
-        //                         dataUrl: e.target.result
-        //                     });
-        //
-        //                     displayPhotos();
-        //                 };
-        //                 reader.readAsDataURL(file);
-        //             });
-        //         }
-        //
-        //         // 顯示已上傳的照片
-        //         function displayPhotos() {
-        //             var $photoPreview = $("#photoPreview");
-        //             $photoPreview.empty();
-        //
-        //             $.each(uploadedPhotos, function (index, photo) {
-        //                 var $photoItem = $('<div class="photo-item"></div>');
-        //                 var $img = $('<img>').attr('src', photo.dataUrl);
-        //                 var $removeBtn = $('<button class="remove-photo">×</button>');
-        //
-        //                 $removeBtn.on('click', function () {
-        //                     uploadedPhotos.splice(index, 1);
-        //                     displayPhotos();
-        //                 });
-        //
-        //                 $photoItem.append($img, $removeBtn);
-        //                 $photoPreview.append($photoItem);
-        //             });
-        //         }
-        //
-        //         // 點擊提交評價按鈕
-        //         $(".review-submit-btn").click(function () {
-        //             // 獲取評分
-        //             var rating = $("input[name='rating']:checked").val();
-        //             // 獲取評論文字
-        //             var reviewText = $(".review-text").val().trim();
-        //
-        //             // 驗證
-        //             if (!rating) {
-        //                 alert("請為此次體驗評分");
-        //                 return;
-        //             }
-        //
-        //             if (!reviewText) {
-        //                 alert("請分享您的使用體驗");
-        //                 return;
-        //             }
-        //
-        //             if (currentReviewOrder) {
-        //                 // 關閉評價對話框
-        //                 $(".review-dialog").fadeOut();
-        //
-        //                 // 處理評價提交邏輯
-        //                 setTimeout(function () {
-        //                     // 在訂單編號後添加已評價標籤
-        //                     var $orderNumberElem = currentReviewOrder.find(".order-info p:first-child");
-        //                     if ($orderNumberElem.find(".reviewed-tag").length === 0) {
-        //                         $orderNumberElem.append('<span class="reviewed-tag">已評價</span>');
-        //                     }
-        //
-        //                     // 禁用評價按鈕
-        //                     currentReviewOrder.find(".action-button.review").prop("disabled", true);
-        //
-        //                     // 顯示評價成功訊息
-        //                     setTimeout(function () {
-        //                         alert("評價提交成功！感謝您的反饋。");
-        //                     }, 300);
-        //
-        //                     currentReviewOrder = null;
-        //                     uploadedPhotos = [];
-        //                 }, 400);
-        //             }
-        //         });
-        //     });
-        // });
+        //處理評價相關的 jQuery 代碼
+             $(document).ready(function () {
+                 // 儲存當前評價的訂單和上傳的照片
+                 var currentReviewOrder = null;
+                 var uploadedPhotos = [];
+        
+                 // 點擊評價按鈕
+                 $(document).on("click", ".action-button.review", function () {
+                     currentReviewOrder = $(this).closest(".order-container");
+                     $(".review-dialog").css("display", "flex").fadeIn();
+        
+                     // 重置評價表單
+                     $("input[name='rating']").prop("checked", false);
+                     $(".review-text").val("");
+                     $("#photoPreview").empty();
+                     uploadedPhotos = [];
+                 });
+        
+                 // 點擊取消評價按鈕
+                 $(".review-cancel-btn").click(function () {
+                     $(".review-dialog").fadeOut();
+                     currentReviewOrder = null;
+                 });
+        
+                 // 照片上傳處理
+                $("#photoUpload").change(function (e) {
+                     handleFiles(e.target.files);
+                 });
+        
+                 // 拖放照片功能 - 使用jQuery實現
+                 var $dropArea = $("#dropArea");
+        
+                 $dropArea.on('dragenter dragover', function (e) {
+                    e.preventDefault();
+                     e.stopPropagation();
+                     $(this).addClass('highlight');
+                 });
+        
+                 $dropArea.on('dragleave drop', function (e) {
+                     e.preventDefault();
+                     e.stopPropagation();
+                     $(this).removeClass('highlight');
+                 });
+        
+                 $dropArea.on('drop', function (e) {
+                     e.preventDefault();
+                     var files = e.originalEvent.dataTransfer.files;
+                     handleFiles(files);
+                 });
+        
+                 // 處理上傳的照片文件
+                function handleFiles(files) {
+                     if (uploadedPhotos.length >= 5) {
+                         alert("最多只能上傳5張照片");
+                         return;
+                     }
+        
+                     // 將FileList轉換為Array
+                     var filesArray = $.makeArray(files);
+        
+                     // 限制最多5張照片
+                     var remainingSlots = 5 - uploadedPhotos.length;
+                     var filesToProcess = filesArray.slice(0, remainingSlots);
+        
+                     $.each(filesToProcess, function (index, file) {
+                         if (!file.type.match('image.*')) {
+                             alert("請只上傳圖片檔案");
+                             return;
+                         }
+        
+                         var reader = new FileReader();
+                         reader.onload = function (e) {
+                             uploadedPhotos.push({
+                                 file: file,
+                                 dataUrl: e.target.result
+                             });
+        
+                             displayPhotos();
+                         };
+                         reader.readAsDataURL(file);
+                     });
+                 }
+        
+                 // 顯示已上傳的照片
+                 function displayPhotos() {
+                     var $photoPreview = $("#photoPreview");
+                     $photoPreview.empty();
+        
+                     $.each(uploadedPhotos, function (index, photo) {
+                         var $photoItem = $('<div class="photo-item"></div>');
+                         var $img = $('<img>').attr('src', photo.dataUrl);
+                         var $removeBtn = $('<button class="remove-photo">×</button>');
+        
+                         $removeBtn.on('click', function () {
+                             uploadedPhotos.splice(index, 1);
+                             displayPhotos();
+                         });
+        
+                         $photoItem.append($img, $removeBtn);
+                         $photoPreview.append($photoItem);
+                    });
+                 }
+        
+                 // 點擊提交評價按鈕
+                 $(".review-submit-btn").click(function () {
+                     // 獲取評分
+                     var rating = $("input[name='rating']:checked").val();
+                     // 獲取評論文字
+                     var reviewText = $(".review-text").val().trim();
+        
+                     // 驗證
+                     if (!rating) {
+                         alert("請為此次體驗評分");
+                         return;
+                     }
+        
+                     if (!reviewText) {
+                         alert("請分享您的使用體驗");
+                         return;
+                     }
+        
+                     
+                     var orderId = currentReviewOrder.find("p:first").text().split("：")[1].trim();
+
+                     // 準備表單資料
+                     var formData = new FormData();
+                     var commentData = {
+                         orderId: orderId,
+                         rating: parseInt(rating),
+                         comments: reviewText
+                     };
+                     formData.append("eventRequest", new Blob([JSON.stringify(commentData)], { type: "application/json" }));
+
+                     // 加入照片檔案
+                     uploadedPhotos.forEach(function (photo, index) {
+                         formData.append("photos", photo.file);
+                     });
+
+
+                     fetch("/orders/addComment", {
+                    	    method: "POST",
+                    	    body: formData
+                    	})
+                    	.then(response => {
+                    	    if (response.ok) {
+                    	        // 顯示成功提示
+                    	        alert("評價提交成功！感謝您的回饋。");
+
+                    	        //更新畫面
+                    	        if (currentReviewOrder) {
+                    	            // 加上「已評價」標籤
+                    	            var $orderNumberElem = currentReviewOrder.find(".order-info p:first-child");
+                    	            if ($orderNumberElem.find(".reviewed-tag").length === 0) {
+                    	                $orderNumberElem.append('<span class="reviewed-tag ms-2 text-success">已評價</span>');
+                    	            }
+
+                    	            // 移除「評價」按鈕
+                    	            //currentReviewOrder.find(".action-button.review").remove();
+                    	         // 停用「評價」按鈕
+                    	           currentReviewOrder.find(".action-button.review").prop("disabled", true);
+                    	        }
+
+                    	        //關閉 dialog
+                    	        $(".review-dialog").fadeOut();
+                    	        currentReviewOrder = null;
+                    	        uploadedPhotos = [];
+                    	    } else {
+                    	        return response.text().then(text => { throw new Error(text); });
+                    	    }
+                    	})
+                    	.catch(error => {
+                    		 if (error.message.includes("已經提交過評論")) {
+                    		        alert("此訂單已經評價過，無法重複評論！");
+                    		    } else {
+                    		        alert("提交失敗：" + error.message);
+                    		    }
+                    		 $(".review-dialog").fadeOut();
+                 	        currentReviewOrder = null;
+                 	        uploadedPhotos = [];
+                    	});
+                     
+                     
+                 });
+                 
+                 
+              // 點擊「揪團去」按鈕導向活動建立頁面
+                 $(document).on("click", ".group-button", function () {
+                     const $orderContainer = $(this).closest(".order-container");
+                     const orderId = $orderContainer.find("p:contains('訂單編號')").text().split("：")[1].trim();
+
+                   	window.location.href = `event_create.html?orderId=${orderId}`;
+                  
+                 })               
+         });
 
 
     </script>
