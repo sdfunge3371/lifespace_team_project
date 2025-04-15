@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.lifespace.SessionUtils;
 import com.lifespace.dto.CommentsDTO;
 import com.lifespace.entity.Comments;
 import com.lifespace.entity.Event;
@@ -30,6 +31,8 @@ import com.lifespace.repository.CommentsRepository;
 import com.lifespace.repository.EventMemberRepository;
 import com.lifespace.repository.EventPhotoRepository;
 import com.lifespace.repository.OrdersRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @Service("commentsService")
@@ -240,7 +243,35 @@ public class CommentsService {
     }
 	
     
+    
+    
+    
+    public String findEventMemberId(String memberId, String eventId) {
+        EventMember eventMember = eventMemberRepository.findByMemberMemberIdAndEventEventId(memberId, eventId);
+        return eventMember != null ? eventMember.getEventMemberId() : null;
+    }
+    
+    
+    
+    /**
+     * 根據目前登入會員 (從 session 拿) 及活動 ID，查出對應的 event_member_id
+     */
+    public String findEventMemberIdBySessionMemberAndEvent(String eventId, HttpSession session) {
+        String memberId = SessionUtils.getLoginMemberId(session); // 從 session 拿 memberId
 
+        if (memberId == null || eventId == null) {
+            return null;
+        }
+
+        EventMember eventMember = eventMemberRepository.findByMemberMemberIdAndEventEventId(memberId, eventId);
+        if (eventMember == null) {
+            return null; // 表示此會員沒有參加這個活動
+        }
+
+        return eventMember.getEventMemberId();
+    }
+
+    
 
 
 	// 讓 Controller 拿到儲存後的留言資訊（包含 commentId 與 commentTime）

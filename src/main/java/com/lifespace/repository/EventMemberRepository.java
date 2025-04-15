@@ -25,6 +25,10 @@ public interface EventMemberRepository extends JpaRepository<EventMember,String>
 		//根據活動id查詢活動，為了取消活動用
 		List<EventMember> findByEvent_EventId(String eventId);
 		
+		// 根據會員ID與活動ID，查詢該會員是否已參加此活動
+		EventMember findByMemberMemberIdAndEventEventId(String memberId, String eventId);
+
+		
 		//根據條件查詢活動，為了使用者活動頁面一覽分類用
 		
 		@Query(value = "SELECT " +

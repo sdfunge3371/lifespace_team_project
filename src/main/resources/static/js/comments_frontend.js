@@ -97,7 +97,11 @@ $(document).ready(function () {
   getLoginMemberId()
     .then(memberId => {
       currentMemberId = memberId;
+	  
+	  
+	  console.log("送出留言時的 memberId：", currentMemberId);
 
+	  
       // 2. 成功後才開始載入資料（避免留言錯亂）
       loadEventInfo(); // 載入活動圖片／主辦人／時間
       loadComments(); // 載入留言串
@@ -121,10 +125,10 @@ function loadEventInfo() {
 //	  const photoBase64List = data.eventPhotos || [];
 
 		
-      $("#eventName").text(data.eventName || "未命名活動");
+      $("#eventName").text(data.eventName || "未建立的活動");
       $("#holderName").text("活動舉辦人：" + (data.holderName || "未知"));
-      $("#orderStart").text("留言版開放時間：" + (data.orderStart || ""));
-      $("#orderEnd").text("留言版關閉時間：" + (data.orderEnd || ""));
+      $("#orderStart").text("留言版開放時間：" + (data.orderStart || "未知"));
+      $("#orderEnd").text("留言版關閉時間：" + (data.orderEnd || "未知"));
 	  $("#spaceLocation").text("活動地點：" + (data.spaceLocation || "未提供地點"));
 
 	  
@@ -323,7 +327,7 @@ $("#newCommentInput").on("keydown", function (e) {
     if (!msg) return;
 
     $.ajax({
-      url: "/comments",
+      url: `/events/${eventId}/comments`,
       method: "POST",
       contentType: "application/json",
       data: JSON.stringify({

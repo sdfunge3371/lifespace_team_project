@@ -125,20 +125,90 @@ public class CommentsController {
 
 	
 	
-	@PostMapping("/comments")
-	public CommentsDTO insertComments(@RequestBody Comments comments, HttpSession session) {
-	    Object obj = session.getAttribute("eventMember");
-	    EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+//	@PostMapping("/comments")
+//	public CommentsDTO insertComments(@RequestBody Comments comments, HttpSession session) {
+//	    Object obj = session.getAttribute("eventMember");
+//	    EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+//
+//	    if (eventMember == null) {
+//	        throw new RuntimeException("尚未登入或未參加活動");
+//	    }
+//
+//	    comments.setEventMember(eventMember);
+//	    Comments saved = commentsService.addCommentsReturnSaved(comments);
+//
+//	    return commentsService.convertToDTO(saved); // 只呼叫一次轉換
+//	}
+	
+	
+//	@PostMapping("/comments")
+//	public ResponseEntity<?> insertComments(@RequestBody CommentsDTO dto, HttpSession session) {
+////	    String memberId = SessionUtils.getLoginMemberId(session); // 從 session 拿登入會員 ID
+//	    String eventId = dto.getEventId(); // 前端也要傳活動 ID
+//
+//	    if (memberId == null || eventId == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入並選擇活動");
+//	    }
+//
+////	    String eventMemberId = commentsService.findEventMemberId(memberId, eventId);
+//	    String eventMemberId = commentsService.findEventMemberIdBySessionMemberAndEvent(eventId, session);
+//
+//	    if (eventMemberId == null) {
+//	        return ResponseEntity.badRequest().body("尚未參加此活動，無法留言");
+//	    }
+//
+//	    dto.setEventMember(new EventMember(eventMemberId)); // 指定留言對應的活動會員
+//	    CommentsDTO saved = commentsService.insert(dto);    // 呼叫 Service 新增留言
+//
+//	    return ResponseEntity.ok(saved); // 回傳新增後留言資料（前端用來渲染）
+//	}
 
-	    if (eventMember == null) {
-	        throw new RuntimeException("尚未登入或未參加活動");
+	
+	
+	
+	/**
+	 * 新增留言（需登入、且為該活動參加者）
+	 *
+	 * 流程：
+	 * 1. 前端傳入活動 ID（eventId）
+	 * 2. 從 session 取得登入會員的 memberId
+	 * 3. 根據 eventId + memberId 查詢 eventMemberId（驗證是否參與活動）
+	 * 4. 設定至 DTO 中，轉為 Entity 進行新增留言
+	 * 5. 新增成功後轉為 DTO 回傳前端
+	 * 注意：這邊用 commentsService.findEventMemberId() 查出對應關係。
+	 */
+	@PostMapping("/events/{eventId}/comments")
+	public ResponseEntity<?> insertComments(@RequestBody CommentsDTO dto, HttpSession session) {
+	    String eventId = dto.getEventId(); // 從前端拿活動 ID
+
+	    if (eventId == null) {
+	        return ResponseEntity.badRequest().body("活動編號不可為空");
 	    }
 
-	    comments.setEventMember(eventMember);
-	    Comments saved = commentsService.addCommentsReturnSaved(comments);
+		// 這一段是為了建立留言時綁定會員與活動的中介關聯（EventMember）
+		// 由於前端只有拿到 eventId，後端必須透過 session 找出 memberId，再找出對應的 eventMemberId
+		// 此方法會自動驗證該會員是否真的有參加該活動，否則回傳錯誤
+	    // 改成由 Service 處理 session + memberId + eventId 查 eventMemberId
+	    String eventMemberId = commentsService.findEventMemberIdBySessionMemberAndEvent(eventId, session);
+	    if (eventMemberId == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入或尚未參加此活動，無法留言");
+	    }
 
-	    return commentsService.convertToDTO(saved); // 只呼叫一次轉換
+	    // 設定 eventMemberId 至 DTO，準備轉換為 Entity
+	    dto.setEventMemberId(eventMemberId);
+//	    dto.setEventMember(new EventMember(eventMemberId)); // 指定留言對應的活動會員
+//	    CommentsDTO saved = commentsService.insert(dto);    // 呼叫 Service 新增留言
+	    
+	    // 將 DTO 轉 Entity 新增留言，並取得儲存後的留言資料
+	    Comments savedComment = commentsService.addCommentsReturnSaved(dto.toEntity());
+	    // 將新增成功的留言轉為 DTO 回傳給前端渲染
+	    CommentsDTO saved = commentsService.convertToDTO(savedComment);
+
+
+	    return ResponseEntity.ok(saved); // 回傳新增後留言資料（前端用來渲染）
 	}
+
+	
 	
 	
 	// 載入「活動圖片＋活動名稱＋主辦人＋留言板起訖時間＋活動地點」的資訊
