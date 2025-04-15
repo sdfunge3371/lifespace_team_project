@@ -1,8 +1,11 @@
 package com.lifespace.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lifespace.SessionUtils;
 import com.lifespace.dto.FaqAddDTO;
 import com.lifespace.dto.FaqDTO;
 import com.lifespace.dto.FaqUpdateDTO;
+import com.lifespace.dto.MemberDTO;
+import com.lifespace.entity.Member;
 import com.lifespace.service.FaqService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 //會回傳 JSON
 @RestController
@@ -26,10 +33,24 @@ public class FaqAdminController {
 	@Autowired
 	private FaqService faqSvc;
 	
+	//---檢查是否登入管理員---
+	@GetMapping("profile")
+	public ResponseEntity<?> getLoginAdminInfo(HttpSession session) {
+	    String adminId = SessionUtils.getLoginAdminId(session);// 從工具類(SessionUtil)拿
+	    if (adminId == null) {
+	        return ResponseEntity.status(401).body("尚未登入管理員");
+	    }
+		Map<String, String> res = new HashMap<>();
+		res.put("adminId", adminId);  
+		return ResponseEntity.ok(res);
+	}
+	
+	
 	// 後台取得FAQ
 	@GetMapping("query")
 	public List<FaqDTO> getAll() {
 		//呼叫 Service 從DB撈資料、轉DTO
+//		System.out.println("後端收到 FAQ 查詢請求");
 		return faqSvc.getAll();
 	}
 	
