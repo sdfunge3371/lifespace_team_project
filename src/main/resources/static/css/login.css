@@ -1,10 +1,13 @@
 /* -------------- 登入 ----------------------------------- */
 /* 設定畫面全螢幕布局，讓內容在中央 */
+body {
+	background-color: #EFFDF5 ;
+}
 main {
     display: flex;
     justify-content: center; /* 水平居中 */
     align-items: center; /* 垂直居中 */
-    height: 500px; /* 讓 main 填滿整個視窗高度 */
+    height: 300px; /* 讓 main 填滿整個視窗高度 */
 }
 div.card{
     background-color: #ffffff; /* 設定卡片背景為白色 */
