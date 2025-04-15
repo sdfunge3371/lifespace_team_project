@@ -1,5 +1,9 @@
 package com.lifespace.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -130,18 +134,54 @@ public class CommentsService {
         data.put("photoUrls", photoUrls);
 */
 
-        // 取得主辦人姓名（從第一筆訂單）
+        // 取得主辦人姓名、地址
         Orders orders = ordersRepository.findByEventEventId(eventId).orElse(null);
-        String holderName = orders.getMember().getMemberName();
-        data.put("holderName", holderName);
+        
+//待刪除開始~       
+//        if (orders != null) {
+//            System.out.println("✔ Order Start: " + orders.getOrderStart());
+//            System.out.println("✔ Order End: " + orders.getOrderEnd());
+//        } else {
+//            System.out.println("⚠ 查無 orders 資料");
+//        }
+//
+//        
+//        String holderName = orders.getMember().getMemberName();
+//        data.put("holderName", holderName);
+//        String branchId = orders.getBranch().getBranchAddr();
+//        data.put("spaceLocation", branchId);
+//        
+//        
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        if (orders != null) {
+//            data.put("orderStart", orders.getOrderStart() != null ? orders.getOrderStart().format(formatter) : "");
+//            data.put("orderEnd", orders.getOrderEnd() != null ? orders.getOrderEnd().format(formatter) : "");
+//        }
+
+        
+//        Orders orders = ordersRepository.findByEventEventId(eventId).orElse(null);
+//待刪除結束
+        
+        if (orders != null) {
+            String holderName = orders.getMember().getMemberName();
+            data.put("holderName", holderName);
+
+            // 留言板開放時間／結束時間
+            data.put("orderStart", orders.getOrderStart());
+            data.put("orderEnd", orders.getOrderEnd());
+
+            String branchId = orders.getBranch().getBranchAddr();
+            data.put("spaceLocation", branchId);
+        }
+
+        
+        
         
         // 找到參加活動者的會員
         List<EventMember> eventMembers = eventMemberRepository.findByEvent_EventId(eventId);
         
         List<Map<String, Object>> memberInfos = new ArrayList<>();
-        	
-
-        
+    
         for(EventMember eventMember : eventMembers) {
         	Map<String, Object> memberInfo = new HashMap<>();
         	memberInfo.put("memberName", eventMember.getMember().getMemberName());
@@ -153,8 +193,30 @@ public class CommentsService {
         data.put("eventMembers", memberInfos);
         
         // 找活動照片
+//        List<EventPhoto> photos = eventPhotoRepository.findByEventEventId(eventId);
+//        data.put("eventPhotos", photos);
+        
+        
+        
+        
         List<EventPhoto> photos = eventPhotoRepository.findByEventEventId(eventId);
-        data.put("eventPhotos", photos);
+        
+        // 把每一張照片讀出來並轉成 base64，然後只回傳 base64 字串陣列（或物件）
+        List<String> photoBase64List = new ArrayList<>();
+        for (EventPhoto photo : photos) {
+            String path = photo.getPhoto(); // 假設 photo 欄位是檔案路徑
+            try {
+                byte[] fileContent = Files.readAllBytes(Paths.get(path));
+                String base64 = Base64.getEncoder().encodeToString(fileContent);
+                photoBase64List.add(base64);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // 可選：photoBase64List.add("error")
+            }
+        }
+
+        data.put("eventPhotos", photoBase64List);
+
         
         
 //        List<Orders> orders = event.getOrdersList(); // 使用自己寫的 getOrdersList()
