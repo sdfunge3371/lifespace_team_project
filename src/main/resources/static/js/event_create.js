@@ -213,7 +213,11 @@
                     
                     // 更新計數器
                     document.getElementById('photo-counter').textContent = '已選擇 0/3 張圖片';
-                } else {
+					
+					alert("活動建立成功！");
+					 //導向活動管理頁面
+					window.location.href = "events_for_user.html";
+				} else {
                     const errorText = await response.text();
                     console.error('伺服器回應:', response.status, errorText);
                     alert('新增活動失敗: ' + response.status + ' ' + errorText);

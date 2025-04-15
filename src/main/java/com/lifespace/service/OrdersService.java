@@ -136,6 +136,10 @@ public class OrdersService {
     	Orders orders = ordersRepository.findById(orderId)
                  .orElseThrow(() -> new IllegalArgumentException("訂單編號: " + orderId + "不存在"));
     	
+    	 if (orders.getCommentTime() != null) {
+    	        throw new IllegalStateException("該訂單已經提交過評論，無法重複評論");
+    	    }
+    	 
     	Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     	
     	orders.setCommentContent(commentRequest.getComments());
