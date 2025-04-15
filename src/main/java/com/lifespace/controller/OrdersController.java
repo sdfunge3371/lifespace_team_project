@@ -8,6 +8,7 @@ import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
 import com.lifespace.ecpay.payment.integration.ecpayOperator.EcpayFunction;
 import com.lifespace.entity.Orders;
 import com.lifespace.service.OrdersService;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -108,7 +112,7 @@ public class OrdersController {
             aio.setTotalAmount(order.getAccountsPayable().toString());
             aio.setTradeDesc("LifeSpace 空間租借");
             aio.setItemName("空間租借費用");
-            aio.setReturnURL("https://1c22-1-164-244-104.ngrok-free.app/orders/ecpay/return");
+            aio.setReturnURL("https://1c22-1-164-244-104.ngrok-free.app/ecpay/return");
             aio.setClientBackURL("http://localhost:8080/payment_success.html");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
@@ -134,73 +138,52 @@ public class OrdersController {
             }
         });
 
-        System.out.println("====== 綠界回傳參數 ======");
-        ecpayParams.forEach((k, v) -> System.out.println(k + " = " + v));
-        System.out.println("====== End ======");
+        //回傳的CheckMacValue
+        String CheckMacValue = ecpayParams.get("CheckMacValue");
 
-        // 保存並移除 CheckMacValue
-        String backCheckMacValue = ecpayParams.get("CheckMacValue");
-        ecpayParams.remove("CheckMacValue");
-
-        // 準備比對用的Map
-        Map<String, String> newEcpayParams = new TreeMap<>();
-        for (Map.Entry<String, String> entry : ecpayParams.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (key != null && value != null && !value.trim().isEmpty()) {
-                newEcpayParams.put(key, value);
-            }
-        }
-
-        // 如果 EncryptType 沒有回傳，手動補上（防止比對失敗）
-        newEcpayParams.putIfAbsent("EncryptType", "1");
-
-        System.out.println("newEcpayParams = " + newEcpayParams);
-
-        // 金鑰設定
+        //用EcpayFunction計算CheckMacValue
         String HashKey = "pwFHCqoQZGmho4w6";
         String HashIV = "EkRm7iFT261dpevs";
 
-        try {
-            // 重新產生 CheckMacValue
-            String localCheckMacValue = EcpayFunction.genCheckMacValue(HashKey, HashIV, newEcpayParams);
+        String localCheckMacValue = EcpayFunction.genCheckMacValue(HashKey, HashIV, ecpayParams);
 
-            // 比對 CheckMacValue
-            if (backCheckMacValue != null && backCheckMacValue.equalsIgnoreCase(localCheckMacValue)) {
-                System.out.println("回傳比對成功");
+        //比對兩個CheckMacValue是否一致
+        if (CheckMacValue != null && CheckMacValue.equalsIgnoreCase(localCheckMacValue)) {
+            System.out.println("回傳比對成功");
 
-                String rtnCode = newEcpayParams.get("RtnCode");
-                String tradeNo = newEcpayParams.get("MerchantTradeNo");
-                String orderId = tradeNo.substring(0, 5); // 假設訂單編號是前5碼
+            String rtnCode = ecpayParams.get("RtnCode");
+            String tradeNo = ecpayParams.get("MerchantTradeNo");
+            String orderId = tradeNo.substring(0, 5);;
 
-                if ("1".equals(rtnCode)) {
-                    ordersSvc.paidOrders(orderId);
-                    System.out.println("更新訂單狀態為已付款：" + orderId);
-                } else {
-                    System.out.println("付款失敗，訂單不更新：" + orderId + "，原因：" + newEcpayParams.get("RtnMsg"));
-                }
-
-                return ResponseEntity.ok("1|OK");
-            } else {
-                System.out.println("回傳比對失敗");
-                return ResponseEntity.ok("0|FAIL");
+            if ("1".equals(rtnCode)) {
+                ordersSvc.paidOrders(orderId);
+                System.out.println("更新訂單狀態為已付款" + orderId);
             }
+            return ResponseEntity.ok("1|OK");
 
-        } catch (Exception e) {
-            System.err.println(" CheckMacValue 計算失敗：" + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("CheckMacValue 計算錯誤：" + e.getMessage());
+        }else {
+            System.out.println("回傳比對失敗");
+            return ResponseEntity.ok("0|FAIL");
         }
+
     }
 
     
     @PostMapping("/addComment")
-    public String addSpaceComments(
+    public ResponseEntity<String> addSpaceComments(
             @RequestPart("eventRequest") SpaceCommentRequest commentRequest,
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
 
-    	ordersSvc.addSpaceComments(commentRequest, photos);
-        return "執行 insert sapce comment jpa 方法";
+        try {
+            ordersSvc.addSpaceComments(commentRequest, photos);
+            return ResponseEntity.ok("新增評論成功");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("系統錯誤：" + e.getMessage());
+        }
     }
 
 
