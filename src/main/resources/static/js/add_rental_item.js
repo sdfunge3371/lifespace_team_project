@@ -25,7 +25,7 @@ $(document).ready(function() {
         
         // 發送 AJAX 請求
         $.ajax({
-            url: '/rental_item/add',
+            url: '/rental-item/add',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
