@@ -55,14 +55,30 @@
 //		method: "GET",
 //		credentials: "include" // 記得加這個，才會帶 session cookie
 //	})
+
+
+function getLoginMemberId() {
+  return fetch("/comments/loginMember", {
+    method: "GET",
+    credentials: "include" // 讓 session cookie 自動帶過去
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("尚未登入");
+    }
+    return response.text(); // 回傳 memberId 字串
+  });
+}
+
 	
 	
 // 從網址上取得 ?eventId=XXX 的參數
 const urlParams = new URLSearchParams(window.location.search);
 const eventId = urlParams.get("eventId");
 
-// 當前登入會員 ID（之後從 session 拿，這裡暫時寫死）
-const currentMemberId = 'EM001';
+// 當前登入會員 ID（從 session 拿)
+//const currentMemberId = 'EM001'; //這裡暫時寫死
+let currentMemberId = null; // 動態取用
 
 // 初始化留言相關變數
 let page = 0;
@@ -77,11 +93,22 @@ $(document).ready(function () {
     return;
   }
 
-  // 載入活動資料與留言
-  loadEventInfo(); // 載入活動圖片／主辦人／時間
-  loadComments(); // 載入留言串
-  setupInfiniteScroll(); // 滾動載入更多留言
+  // 1. 先從 Session 抓目前登入的會員 ID（eventMemberId）
+  getLoginMemberId()
+    .then(memberId => {
+      currentMemberId = memberId;
+
+      // 2. 成功後才開始載入資料（避免留言錯亂）
+      loadEventInfo(); // 載入活動圖片／主辦人／時間
+      loadComments(); // 載入留言串
+      setupInfiniteScroll(); // 滾動載入更多留言
+    })
+    .catch(err => {
+      alert("尚未登入或未參加活動，請先登入");
+      console.warn(err);
+    });
 });
+
 
 // 載入活動資訊（圖片輪播、主辦人、時間）
 function loadEventInfo() {
@@ -90,24 +117,43 @@ function loadEventInfo() {
     method: "GET",
     success: function (data) {
 		
-      const photoUrls = data.photoUrls || [];
+//      const photoUrls = data.photoUrls || [];
+//	  const photoBase64List = data.eventPhotos || [];
+
 		
       $("#eventName").text(data.eventName || "未命名活動");
-      $("#hostSpeaking").text("揪團者：" + (data.organizerName || "未知"));
-      $("#eventStartTime").text("留言開始：" + (data.orderStart || ""));
-      $("#eventEndTime").text("留言結束：" + (data.orderEnd || ""));
-	  $("#eventLocation").text("活動地點：" + (data.spaceLocation || "未提供"));
+      $("#holderName").text("活動舉辦人：" + (data.holderName || "未知"));
+      $("#orderStart").text("留言版開放時間：" + (data.orderStart || ""));
+      $("#orderEnd").text("留言版關閉時間：" + (data.orderEnd || ""));
+	  $("#spaceLocation").text("活動地點：" + (data.spaceLocation || "未提供地點"));
 
 	  
 	  // 活動圖片輪播處理
-      const carousel = $(".myclass");
-	  if (Array.isArray(photoUrls) && photoUrls.length > 0) {
-	      photoUrls.forEach(base64 => {
-	          const imageSrc = `data:image/jpeg;base64,${base64}`;
-	          carousel.append(`<div><img src="${imageSrc}" alt="活動圖片"></div>`);
-	      });
-	      
-	  }
+//      const carousel = $(".myclass");
+//	  if (Array.isArray(photoUrls) && photoUrls.length > 0) {
+//	      photoUrls.forEach(base64 => {
+//	          const imageSrc = `data:image/jpeg;base64,${base64}`;
+//	          carousel.append(`<div><img src="${imageSrc}" alt="活動圖片"></div>`);
+//	      });
+//	      
+//	  }
+	  
+//	  const carousel = $(".myclass");
+//	  if (Array.isArray(photoBase64List) && photoBase64List.length > 0) {
+//	      photoBase64List.forEach(base64 => {
+//	          const imageSrc = `data:image/jpeg;base64,${base64}`;
+//	          carousel.append(`<div><img src="${imageSrc}" alt="活動圖片"></div>`);
+//	      });
+//	  }
+	  
+	  // append base64 圖片
+	  const carousel = $(".myclass");
+	        carousel.empty(); // 清空舊內容
+	        data.eventPhotos.forEach(base64 => {
+	          const img = `<div><img src="data:image/jpeg;base64,${base64}" class="carousel-image"></div>`;
+	          carousel.append(img);
+	        });
+
 
 	  
 	  
@@ -282,7 +328,7 @@ $("#newCommentInput").on("keydown", function (e) {
       contentType: "application/json",
       data: JSON.stringify({
         commentMessage: msg,
-        eventMember: { eventMemberId: currentMemberId }
+        eventMember: { eventMemberId: currentMemberId } // 使用 session 抓到的 memberId
       }),
       success: function (newComment) {
         $("#newCommentInput").val('');

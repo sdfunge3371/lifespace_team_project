@@ -11,8 +11,8 @@ public class CommentsDTO {
     private String eventMemberId;
     private String imageUrl;
     private String organizerName;
-    private Timestamp orderStart;
-    private Timestamp orderEnd;
+    private LocalDateTime orderStart;
+    private LocalDateTime orderEnd;
     private String spaceLocation;
     
 
@@ -77,19 +77,19 @@ public class CommentsDTO {
 		this.organizerName = organizerName;
 	}
 
-	public Timestamp getOrderStart() {
+	public LocalDateTime getOrderStart() {
 		return orderStart;
 	}
 
-	public void setOrderStart(Timestamp orderStart) {
+	public void setOrderStart(LocalDateTime orderStart) {
 		this.orderStart = orderStart;
 	}
 
-	public Timestamp getOrderEnd() {
+	public LocalDateTime getOrderEnd() {
 		return orderEnd;
 	}
 
-	public void setOrderEnd(Timestamp orderEnd) {
+	public void setOrderEnd(LocalDateTime orderEnd) {
 		this.orderEnd = orderEnd;
 	}
 

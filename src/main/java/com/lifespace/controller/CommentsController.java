@@ -148,6 +148,17 @@ public class CommentsController {
 	}
 
 	
+	@GetMapping("/comments/loginMember")
+	public ResponseEntity<?> getLoginMemberId(HttpSession session) {
+	    String memberId = SessionUtils.getLoginMemberId(session); // 從工具類取得會員ID，session.getAttribute("loginMember")
+	    if (memberId == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入或參加活動");
+	    }
+	    return ResponseEntity.ok(memberId);
+	}
+
+	
+	
 	
 //	// 有參加活動的會員才能 新增 本人的留言
 //	@PostMapping("/comments")
