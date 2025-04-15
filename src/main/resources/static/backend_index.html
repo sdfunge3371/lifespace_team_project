@@ -224,7 +224,7 @@
         <!-- 右上角 管理員資訊 -->
         <div class="admin-info">  
             <img src="/images/laugth.jpg" alt="Admin Avatar" class="rounded-circle" width="40" height="40">
-            <span class="ms-2 fw-semibold">Hi，歡迎 <span style="color:#007bff">管理員mia</span> 👋</span>
+            <span id="adminWelcome" class="ms-2 fw-semibold">Hi，歡迎 <span style="color:#007bff">管理員mia</span> 👋</span>
         </div>
 
         <!-- 歡迎橫幅 -->
@@ -300,6 +300,33 @@
   <script src="/js/sidebar2.js"></script>
 
   <script>
+  
+  //-----------------顯示管理者的登入----------------------
+  document.addEventListener("DOMContentLoaded", function(){
+	  fetch("http://localhost:8080/admin/account",{
+		  method: "GET",
+		  credentials: "include"
+	  })
+	  .then(res =>{
+		  if (res.status === 401) {
+		      document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:red">未登入</span> 👋`;
+		      return;
+	  }
+		  return res.json();
+	  })
+	   .then(admin => {
+    if (!admin) return;
+    const name = admin.adminName || "管理員";
+    document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:#007bff">管理員${name}</span> 👋`;
+  })
+  .catch(err => {
+	    console.error("取得管理員資訊失敗：", err);
+	    document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:red">錯誤</span> 👋`;
+	  });
+  });
+  
+  
+  
 
 
     // 初始化輪播
