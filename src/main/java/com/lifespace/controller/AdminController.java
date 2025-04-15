@@ -1,8 +1,12 @@
 package com.lifespace.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +22,8 @@ import com.lifespace.entity.Admin;
 import com.lifespace.repository.AdminRepository;
 import com.lifespace.service.AdminService;
 
+import jakarta.servlet.http.HttpSession;
+
 
 @RestController
 public class AdminController {
@@ -26,6 +32,36 @@ public class AdminController {
     private AdminService adminService;
     @Autowired
     private AdminRepository adminRepository;
+    
+    
+  //-------------------------管理員登入-----------------------------
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> login(@RequestBody Map<String,String> loginRequest, HttpSession session){
+    	String email = loginRequest.get("email");
+    	String password = loginRequest.get("password");
+    	
+    	Optional<Admin> adminOpt = adminService.login(email, password);
+    	
+    	if(adminOpt.isPresent()) {
+    		//登入成功
+    		Admin admin = adminOpt.get();
+    		//把資料放在session儲存
+    		session.setAttribute("loginAdmin",admin.getAdminId());
+    		//避免洩漏敏感資訊，這裡回傳部分資料
+    		Map<String, Object> response = new HashMap<>();
+    		response.put("adminId",admin.getAdminId());
+    		response.put("adminName",admin.getAdminName());
+    		response.put("email",admin.getEmail());
+    		return ResponseEntity.ok(response);
+    	} else {
+    		//登入失敗
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("帳號或密碼錯誤");
+    	}
+    	
+    }
+    
+    
+    
     
 	//新增功能
     @PostMapping(value = "/admin", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

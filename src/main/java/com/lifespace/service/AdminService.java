@@ -28,6 +28,19 @@ public class AdminService {
     private EntityManager entityManager;
 	
 	
+	//-------------------------------管理員登入-------------------------------
+	
+		//雜湊
+		public Optional<Admin> login(String mail, String rawPassword){
+			Optional<Admin> adminOpt = adminRepository.findByEmail(mail);
+			if(adminOpt.isPresent()) {
+				Admin admin = adminOpt.get();
+				if(passwordEncoder.matches(rawPassword, admin.getPassword())) {
+					return Optional.of(admin);  //密碼驗證通過
+				}
+			}
+			return Optional.empty();
+		}
 
 	
 	
