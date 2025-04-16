@@ -1,5 +1,6 @@
 package com.lifespace.service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,10 +12,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 
 import com.lifespace.dto.AddNewsDTO;
@@ -232,6 +235,29 @@ public class NewsService {
 		}
 
 	}
+	
+	
+	 // ---------從 resources 資料夾中讀取圖片並儲存到指定 News(補圖或測試用上傳單張)---------
+   public String insertNewsImageFromResource(String newsId, String filename) {
+       try {
+           Optional<News> optional = repository.findById(newsId);
+           if (optional.isEmpty()) return "找不到 News ID：" + newsId;
+
+           News news = optional.get();
+
+           // 讀取圖片：從 /resources/static/image/newsPhoto/ 中抓
+           ClassPathResource resource = new ClassPathResource("static/images/newsPhoto/" + filename);
+           byte[] imageBytes = StreamUtils.copyToByteArray(resource.getInputStream());
+
+           news.setNewsImg(imageBytes);
+           repository.save(news);
+           return "圖片寫入成功：" + newsId;
+
+       } catch (IOException e) {
+           e.printStackTrace();
+           return "讀取圖片失敗：" + filename;
+       }
+   }   
 	
 	// ---------------排程任務：更新狀態---------------
 	public void updateNewsStatusAutomatically() {
