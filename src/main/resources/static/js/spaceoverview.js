@@ -103,7 +103,6 @@ function fetchSpaces() {
     fetch('/spaces')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             spaces = data.map(space => ({
                 spaceId: space.spaceId,
                 name: space.spaceName,
@@ -218,6 +217,7 @@ function renderSpaces(spacesToRender) {
                     icon.classList.remove("far");
                     icon.classList.add("fas");
                     button.classList.add("active");
+                    showToast(`已將「${space.name}」加入最愛`);
                 }).catch(error => {
                     alert("加入最愛失敗");
                     console.log("加入最愛失敗：", error);
@@ -232,6 +232,7 @@ function renderSpaces(spacesToRender) {
                     icon.classList.remove("fas");
                     icon.classList.add("far");
                     button.classList.remove("active");
+                    showToast(`已將「${space.name}」移除最愛`);
                 }).catch(error => {
                         alert("移除最愛失敗");
                         console.log("移除最愛失敗：", error);
@@ -245,6 +246,7 @@ function renderSpaces(spacesToRender) {
             window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
         });
     });
+    checkLoginAndToggleHearts();
 }
 
 function getFirstPhoto(photo) {
@@ -302,6 +304,25 @@ function renderUsages(usages) {
 }
 
 let favoriteSpaceIds = [];
+
+function checkLoginAndToggleHearts() {
+    fetch("/member/profile", {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(res => {
+            if (res.status === 401) {
+                // 尚未登入，隱藏所有愛心按鈕
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            }
+        })
+        .catch(err => {
+            console.error("檢查登入失敗", err);
+        });
+}
+
 function fetchFavoriteSpaces() {
     fetch("/favorite-space", {
         method: "GET",
@@ -940,3 +961,16 @@ document.querySelector(".search-input").addEventListener("keydown", function (e)
         document.querySelector(".search-button").click();
     }
 });
+
+function showToast(message) {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement("div");
+    toast.className = 'toast';
+    toast.textContent = message;
+
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}

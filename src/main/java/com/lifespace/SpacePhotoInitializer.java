@@ -81,8 +81,6 @@ public class SpacePhotoInitializer implements CommandLineRunner {
 
                         spacePhotoRepository.save(photo);
 
-                        System.out.println("已儲存 " + filename + " 至 " + spaceId);
-
                     } catch (Exception e) {
                         System.err.println("無法處理檔案: " + path.getFileName() + " → " + e.getMessage());
                     }

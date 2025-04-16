@@ -104,7 +104,6 @@ function renderFavoriteSpaces(favoriteSpaces) {
         
         // 組合完整地址
         const location = `${space.branchAddr || ''}${space.spaceFloor ? space.spaceFloor + '樓' : ''}`;
-        console.log(space.spacePhoto);
 
         spaceCard.innerHTML = `
             <div class="space-image">    
@@ -140,7 +139,7 @@ function renderFavoriteSpaces(favoriteSpaces) {
         const favoriteBtn = spaceCard.querySelector('.favorite-btn');
         favoriteBtn.addEventListener('click', function(event) {
             event.stopPropagation(); // 阻止冒泡，避免觸發卡片點擊
-            toggleFavorite(space.spaceId, this);
+            toggleFavorite(space.spaceId, space.spaceName, this);
         });
         
         // 綁定卡片點擊事件，跳轉到空間詳情頁
@@ -151,7 +150,7 @@ function renderFavoriteSpaces(favoriteSpaces) {
 }
 
 // 切換收藏狀態
-function toggleFavorite(spaceId, btnElement) {
+function toggleFavorite(spaceId, spaceName, btnElement) {
     // 移除收藏
     fetch(`/favorite-space/${spaceId}`, {
         method: "DELETE",
@@ -178,6 +177,8 @@ function toggleFavorite(spaceId, btnElement) {
                 document.getElementById('favorite-container').style.display = 'none';
             }
         }, 300);
+
+        showToast(`已將「${spaceName}」移除最愛`);
         
         // 同步更新空間總覽頁面的收藏狀態（如果有的話）
         updateSpaceOverviewFavoriteStatus(spaceId, false);
@@ -185,6 +186,23 @@ function toggleFavorite(spaceId, btnElement) {
     .catch(error => {
         console.error('取消收藏失敗:', error);
     });
+}
+
+function showToast(message) {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement("div");
+    toast.className = 'toast';
+    toast.textContent = message;
+
+    toastContainer.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add('show'); // 等等我們會設計 `.toast.show`
+    });
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
 // 更新空間總覽頁面的收藏狀態（通過LocalStorage實現頁面間通信）
@@ -220,3 +238,4 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
+
