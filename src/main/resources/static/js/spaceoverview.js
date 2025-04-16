@@ -114,6 +114,7 @@ function fetchSpaces() {
                 rating: space.spaceRating,
                 capacity: space.spacePeople,
                 status: space.spaceStatus,
+                branchStatus: space.branchStatus,
                 usage: space.spaceUsageMaps.map(map => map.spaceUsage.spaceUsageName),
                 photo: space.spacePhotos.map(map => map.photo),
                 coordinates: [space.latitude, space.longitude], // 模擬座標，之後會利用google maps API抓出
@@ -146,7 +147,7 @@ function renderSpaces(spacesToRender) {
     // 利用迴圈一個一個生出資料
     spacesToRender.forEach(space => {
 
-        if (space.status === 0) {    // 如果是「未上架」，則不生成此空間資料
+        if (space.status === 0 || space.branchStatus === 0) {    // 如果是分點或空間「未上架」，則不生成此空間資料
             return;   // forEach需要用return以執行迴圈continue功能
         }
 
@@ -537,6 +538,11 @@ function extractBranchInfo(spacesData) {
     spacesData.forEach(space => {
         // 假設 space 有 branchId 和 branchAddr 屬性
         // 如果沒有 branchId, 則使用座標作為識別
+        if (space.branchStatus === 0) {
+            console.log("分點已下架");
+            return;
+        }
+
         const branchId = space.branchId || `loc_${space.coordinates[0]}_${space.coordinates[1]}`;
         const branchName = space.branchName;
         const branchAddr = space.branchAddr || space.location;

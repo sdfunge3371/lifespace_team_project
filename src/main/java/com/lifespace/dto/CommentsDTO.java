@@ -127,7 +127,13 @@ public class CommentsDTO {
 	public Comments toEntity() {
 	    Comments entity = new Comments();
 	    entity.setCommentMessage(this.commentMessage);
-	    entity.setEventMember(this.eventMember);
+
+		if (this.eventMemberId != null) {
+			EventMember eventMember = new EventMember();
+			eventMember.setEventMemberId(this.eventMemberId);
+			entity.setEventMember(eventMember);
+		}
+
 	    return entity;
 	}
 

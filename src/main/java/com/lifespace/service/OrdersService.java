@@ -4,6 +4,8 @@ package com.lifespace.service;
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.dto.RentalItemDetailsDTO;
 import com.lifespace.dto.SpaceCommentRequest;
+import com.lifespace.ecpay.payment.integration.AllInOne;
+import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
 import com.lifespace.entity.*;
 import com.lifespace.repository.OrdersRepository;
 import com.lifespace.repository.RentalItemRepository;
@@ -11,8 +13,11 @@ import com.lifespace.repository.SpaceCommentPhotoRepository;
 
 import com.lifespace.repository.SpaceRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +26,13 @@ import com.lifespace.mapper.OrdersMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("ordersService")
@@ -41,6 +46,9 @@ public class OrdersService {
 
     @Autowired
     private SpaceService spaceService;
+
+    @Autowired
+    private SpacePhotoService spacePhotoSvc;
     
     public void updateOrderStatusByOrderId(String orderId) {
 
@@ -118,12 +126,115 @@ public class OrdersService {
         return OrdersMapper.toOrdersDTO(orders);
     }
 
+    public OrdersDTO toOrdersDTOWithCoverPhoto(Orders orders) {
+        OrdersDTO dto = OrdersMapper.toOrdersDTO(orders);
+
+        // 抓第一張圖當封面
+        List<SpacePhoto> photos = spacePhotoSvc.getSpacePhotosBySpaceId(orders.getSpaceId());
+        if (!photos.isEmpty()) {
+            byte[] CoverPhoto = photos.get(0).getPhoto();
+            String base64 = Base64.getEncoder().encodeToString(CoverPhoto);
+            dto.setSpaceCoverPhoto("data:image/jpeg;base64," + base64);
+        }
+
+        return dto;
+    }
+
+
+    //綠界 送form表單
+    public ResponseEntity<String> checkoutWithEcpay(String orderId) {
+        OrdersDTO order = getOrdersDTOByOrderId(orderId);
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ecpay-查無訂單");
+        }
+
+        try {
+            //確認可以讀到綠界的EcpayPayment.xml
+            URL fileURL = getClass().getClassLoader().getResource("payment_conf.xml");
+            if (fileURL != null) {
+                System.out.println("有讀到payment_conf.xml：" + fileURL);
+            } else {
+                return ResponseEntity.status(500).body("沒讀到payment_conf.xml");
+            }
+
+            AllInOne all = new AllInOne("");
+            AioCheckOutOneTime aio = new AioCheckOutOneTime();
+
+            String tradeNo = order.getOrderId() + System.currentTimeMillis();
+            aio.setMerchantTradeNo(tradeNo);
+            aio.setMerchantTradeDate(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+            aio.setTotalAmount(order.getAccountsPayable().toString());
+            aio.setTradeDesc("LifeSpace 空間租借");
+            aio.setItemName("空間租借費用");
+            aio.setReturnURL(" https://93f0-1-164-231-100.ngrok-free.app/orders/ecpay/return");
+            aio.setClientBackURL("http://localhost:8080/payment_success.html");
+            aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
+            aio.setNeedExtraPaidInfo("N");
+
+            String form = all.aioCheckOut(aio, null);
+            return ResponseEntity.ok(form);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("訂單建立成功, 但金流表單建立失敗");
+        }
+    }
+
+    //綠界回傳驗證
+    public ResponseEntity<String> handleEcpayReturn(HttpServletRequest req) {
+        Map<String, String[]> paramsMap = req.getParameterMap();
+
+        //建立一個SDK需要的HashTable裝進綠界的回傳參數
+        Hashtable<String, String> ecpayParams = new Hashtable<>();
+        paramsMap.forEach((key, value) -> {
+            if (value.length > 0) {
+                ecpayParams.put(key, value[0]);
+            }
+        });
+
+        System.out.println("====== 綠界回傳參數 ======");
+        ecpayParams.forEach((k, v) -> System.out.println(k + " = " + v));
+        System.out.println("====== End ======");
+
+        try {
+            //初始化SDK後 建立一個AllInOne物件 使用驗證器排除CheckMacValue 再重新加密比對CheckMacValue
+            AllInOne all = new AllInOne("");
+            boolean isValid = all.compareCheckMacValue(ecpayParams);
+
+            if (isValid) {
+                System.out.println("CheckMacValue 比對成功");
+
+                String rtnCode = ecpayParams.get("RtnCode");
+                String tradeNo = ecpayParams.get("MerchantTradeNo");
+                //訂單編號還原
+                String orderId = tradeNo.substring(0, 5);
+
+                if ("1".equals(rtnCode)) {
+                    paidOrders(orderId);
+                    System.out.println("更新訂單狀態為已付款：" + orderId);
+                } else {
+                    System.out.println("付款失敗，不更新訂單：" + orderId);
+                }
+
+                return ResponseEntity.ok("1|OK");
+            } else {
+                System.out.println("CheckMacValue 比對失敗");
+                return ResponseEntity.ok("0|FAIL");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("比對失敗：" + e.getMessage());
+        }
+    }
+
+    //更改綠界付款完成後的訂單狀態
     public void paidOrders(String orderId) {
-        Orders order = ordersRepository.findById(orderId).orElse(null);
-        if(order != null && order.getOrderStatus() != 1) {
-            order.setOrderStatus(1);
-            order.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
-            ordersRepository.save(order);
+        Orders orders = ordersRepository.findById(orderId).orElse(null);
+        if(orders != null && orders.getOrderStatus() != 1) {
+            orders.setOrderStatus(1);
+            orders.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
+            ordersRepository.save(orders);
         }
     }
 
@@ -220,6 +331,7 @@ public class OrdersService {
         order.setAccountsPayable(ordersDTO.getAccountsPayable());
         order.setMemberId(ordersDTO.getMemberId());
         order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
+        order.setOrderStatus(0);
 
         // 建立Branch與Member的關聯，讓Mapper取得
         Branch branch = new Branch();

@@ -149,85 +149,87 @@
         }
 
 
-        async function addEvent() {
-            // 創建一個新的FormData對象
-            const formData = new FormData();
+		async function addEvent() {
+		    const formData = new FormData();
 
-            //照片最大數量
-            const MAX_PHOTOS = 3;
-            // 獲取照片輸入
-            // const photoInput = document.querySelector('input[type="file"][name="photos"]');
+		    // 附加照片
+		    if (uploadedPhotos && uploadedPhotos.length > 0) {
+		        for (let i = 0; i < uploadedPhotos.length; i++) {
+		            const file = uploadedPhotos[i];
+		            formData.append('photos', file);
+		        }
+		    }
 
-            // 檢查選擇的文件大小（偵錯用）
-            if (uploadedPhotos && uploadedPhotos.length > 0) {
-                for (let i = 0; i < uploadedPhotos.length; i++) {
-                    const file = uploadedPhotos[i];
-                    console.log(`文件 ${i + 1}: ${file.name}, 大小: ${file.size} bytes`);
+		    // 取得表單欄位
+		    const eventStartInput = document.getElementById('eventStartTime').value;
+		    const eventEndInput = document.getElementById('eventEndTime').value;
+		    const maxParticipantsInput = document.getElementById('maximumOfParticipants').value;
 
-                    // 添加照片到FormData
-                    formData.append('photos', file);
-                }
-                console.log(`所有文件總大小: ${uploadedPhotos.reduce((total, file) => total + file.size, 0)} bytes`);
-            }
+		    //基本輸入驗證
+		    if (!eventStartInput || isNaN(Date.parse(eventStartInput))) {
+		        alert("請輸入正確的活動開始時間");
+		        return;
+		    }
 
-            // 創建不包含photos欄位的eventRequest對象
-            const eventRequest = {
-				orderId: document.getElementById('orderId').value,
-                organizerId: document.getElementById('memberId').value,
-                eventName: document.getElementById('eventName').value,
-                eventStartTime: new Date(document.getElementById('eventStartTime').value).toISOString(),
-                eventEndTime: new Date(document.getElementById('eventEndTime').value).toISOString(),
-                eventCategory: document.getElementById('eventCategory').value,
-                maximumOfParticipants: document.getElementById('maximumOfParticipants').value,
-                eventStatus: "SCHEDULED",
-                eventBriefing: document.getElementById('eventBriefing').value,
-                remarks: document.getElementById('remarks').value,
-                hostSpeaking: document.getElementById('hostSpeaking').value
-            };
+		    if (!eventEndInput || isNaN(Date.parse(eventEndInput))) {
+		        alert("請輸入正確的活動結束時間");
+		        return;
+		    }
 
-            // 將eventRequest轉換為JSON字符串並添加到FormData
-            formData.append('eventRequest', new Blob([JSON.stringify(eventRequest)], {
-                type: 'application/json'
-            }));
+		    const maxParticipants = parseInt(maxParticipantsInput);
+		    if (!maxParticipants || maxParticipants <= 0) {
+		        alert("請輸入正確的活動人數上限（必須為正整數）");
+		        return;
+		    }
 
-            // 輸出整個FormData的內容（偵錯用）
-            console.log('FormData內容:', formData);
+		    const eventRequest = {
+		        orderId: document.getElementById('orderId').value,
+		        eventName: document.getElementById('eventName').value,
+		        eventStartTime: new Date(eventStartInput).toISOString(),
+		        eventEndTime: new Date(eventEndInput).toISOString(),
+		        eventCategory: document.getElementById('eventCategory').value,
+		        maximumOfParticipants: maxParticipants,
+		        eventStatus: "SCHEDULED",
+		        eventBriefing: document.getElementById('eventBriefing').value,
+		        remarks: document.getElementById('remarks').value,
+		        hostSpeaking: document.getElementById('hostSpeaking').value
+		    };
 
-            try {
-                const response = await fetch('http://localhost:8080/lifespace/event/add', {
-                    method: 'POST',
-                    body: formData,
-					credentials: 'include'
-                });
+		    formData.append('eventRequest', new Blob([JSON.stringify(eventRequest)], {
+		        type: 'application/json'
+		    }));
 
-                if (response.ok) {
-                    const data = await response.text();
-                    alert(data); // 顯示後端回傳的訊息
-                    document.getElementById('eventForm').reset();
-                    document.getElementById('photos').value = '';
-                 	// 清除預覽圖片區塊
-                    document.getElementById('photo-preview').innerHTML = '';
-                    
-                    // 清空已上傳照片陣列
-                    uploadedPhotos = [];
-                    
-                    // 更新計數器
-                    document.getElementById('photo-counter').textContent = '已選擇 0/3 張圖片';
+		    try {
+		        const response = await fetch('http://localhost:8080/lifespace/event/add', {
+		            method: 'POST',
+		            body: formData,
+		            credentials: 'include'
+		        });
+
+		        if (response.ok) {
+		            const data = await response.text();
+		            alert(data); // 顯示後端回傳訊息
+		            document.getElementById('eventForm').reset();
+		            document.getElementById('photos').value = '';
+		            document.getElementById('photo-preview').innerHTML = '';
+		            uploadedPhotos = [];
+		            document.getElementById('photo-counter').textContent = '已選擇 0/3 張圖片';
+		            //alert("活動建立成功！");
 					
-					alert("活動建立成功！");
-					 //導向活動管理頁面
-					window.location.href = "events_for_user.html";
-				} else {
-                    const errorText = await response.text();
-                    console.error('伺服器回應:', response.status, errorText);
-                    alert('新增活動失敗: ' + response.status + ' ' + errorText);
-                }
-            } catch (error) {
-                console.error('錯誤詳情:', error);
-                alert('發生錯誤，請稍後再試: ' + error.message);
-            }
-        }
+					//新增成功後，導向活動管理頁面
+		            window.location.href = "events_for_user.html";
+		        } else {
+		            const errorText = await response.text();
+		            console.error('伺服器回應:', response.status, errorText);
+		            alert('新增活動失敗: ' + errorText);
+		        }
+		    } catch (error) {
+		        console.error('錯誤詳情:', error);
+		        alert('發生錯誤，請稍後再試: ' + error.message);
+		    }
+		}
 
+		
         function formatDateAndTime(dateTime) {
             const date = new Date(dateTime);
             const datePart = date.toLocaleDateString();

@@ -187,8 +187,11 @@ function setActive(element, id) {
     const hourlyPrice = document.querySelector('.main-hourly-price');
     const dailyPrice = document.querySelector('.main-daily-price');
 
+    const dailyPriceText = document.getElementById('daily-price').textContent;
+    const hourlyPriceText = document.getElementById('hourly-price').textContent;
     const durationRow = document.getElementById('durationRow');
     const rate = document.getElementById('rate');  // 費率那一行
+    rate.innerHTML = `$ <span class="rate-span">${dailyPriceText}</span>/d`;
 
     // 切換時、日租時，清空日期、開始時間、結束時間的欄位，並收合所有下拉式清單
     resetTimeSelections();
@@ -206,8 +209,8 @@ function setActive(element, id) {
         // 隱藏使用時間
         durationRow.style.display = 'none';
         // 費率文字改成日租 (抓取上面 .main-daily-price 裡的值)
-        const dailyPricetext = document.getElementById('daily-price').textContent;
-        rate.innerHTML = `$ <span class="rate-span">${dailyPricetext}</span>/d`;
+
+        rate.innerHTML = `$ <span class="rate-span">${dailyPriceText}</span>/d`;
         renderCalendar(currentDate.getFullYear(), currentDate.getMonth());  // 重新渲染日曆
     } else {
         // 大字費率顯示時租
@@ -217,8 +220,7 @@ function setActive(element, id) {
         // 顯示使用時間
         durationRow.style.display = 'flex';
         // 費率文字改成時租 (抓取上面 .main-hourly-price 裡的值)
-        const hourlyPricetext = document.getElementById('hourly-price').textContent;
-        rate.innerHTML = `$ <span class="rate-span">${hourlyPricetext}</span>/hr`;
+        rate.innerHTML = `$ <span class="rate-span">${hourlyPriceText}</span>/hr`;
         renderCalendar(currentDate.getFullYear(), currentDate.getMonth());  // 重新渲染日曆
     }
 
@@ -1009,6 +1011,7 @@ function insertAsideInfo(name, hourly, daily) {
     document.querySelector('.header-title').textContent = name;
     document.querySelector('.main-hourly-price').innerHTML = `$<span id="hourly-price">${hourly}</span>/hr`;
     document.querySelector('.main-daily-price').innerHTML = `$<span id="daily-price">${daily}</span>/d`;
+    document.querySelector('#rate').innerHTML = `$ <span class="rate-span">${hourly}</span>/hr`;
 
 }
 
