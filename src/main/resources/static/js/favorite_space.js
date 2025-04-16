@@ -98,6 +98,7 @@ function renderFavoriteSpaces(favoriteSpaces) {
     
     // 生成空間卡片
     favoriteSpaces.forEach(space => {
+        console.log(space);
         const spaceCard = document.createElement('div');
         spaceCard.className = 'space-card';
         spaceCard.dataset.id = space.spaceId;

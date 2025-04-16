@@ -109,6 +109,7 @@ $(document).ready(function () {
     })
     .catch(err => {
       alert("尚未登入或未參加活動，請先登入");
+      window.location.href = "/login.html";
       console.warn(err);
     });
 });
@@ -325,21 +326,22 @@ $("#newCommentInput").on("keydown", function (e) {
   if (e.key === "Enter") {
     const msg = $(this).val().trim();
     if (!msg) return;
-
     $.ajax({
       url: `/events/${eventId}/comments`,
       method: "POST",
       contentType: "application/json",
-	  
+
 	  data: JSON.stringify({
 	    commentMessage: msg,
-	    eventMemberId: currentMemberId
+	    eventMemberId: currentMemberId,
+        eventId: eventId
 	  }),
 //      data: JSON.stringify({
 //        commentMessage: msg,
 //        eventMember: { eventMemberId: currentMemberId } // 使用 session 抓到的 memberId
 //      }),
       success: function (newComment) {
+        console.log(newComment);
         $("#newCommentInput").val('');
         const box = renderComment(newComment, true);
         $("#commentsContainer").append(box); // 把留言插入列表底部

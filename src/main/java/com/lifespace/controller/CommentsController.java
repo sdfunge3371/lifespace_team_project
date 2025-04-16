@@ -180,6 +180,7 @@ public class CommentsController {
 	@PostMapping("/events/{eventId}/comments")
 	public ResponseEntity<?> insertComments(@RequestBody CommentsDTO dto, HttpSession session) {
 	    String eventId = dto.getEventId(); // 從前端拿活動 ID
+//		String eventMemberId = dto.getEventMemberId();
 
 	    if (eventId == null) {
 	        return ResponseEntity.badRequest().body("活動編號不可為空");
@@ -195,15 +196,17 @@ public class CommentsController {
 	    }
 
 	    // 設定 eventMemberId 至 DTO，準備轉換為 Entity
-	    dto.setEventMemberId(eventMemberId);
+//	    dto.setEventMemberId(eventMemberId);
 //	    dto.setEventMember(new EventMember(eventMemberId)); // 指定留言對應的活動會員
 //	    CommentsDTO saved = commentsService.insert(dto);    // 呼叫 Service 新增留言
-	    
+
 	    // 將 DTO 轉 Entity 新增留言，並取得儲存後的留言資料
+		System.out.println(eventMemberId);
+		dto.setEventMemberId(eventMemberId);
+
 	    Comments savedComment = commentsService.addCommentsReturnSaved(dto.toEntity());
 	    // 將新增成功的留言轉為 DTO 回傳給前端渲染
 	    CommentsDTO saved = commentsService.convertToDTO(savedComment);
-
 
 	    return ResponseEntity.ok(saved); // 回傳新增後留言資料（前端用來渲染）
 	}
