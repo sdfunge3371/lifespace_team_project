@@ -18,6 +18,8 @@ public class FavoriteSpaceDTO {
     private Integer spaceHourlyFee;
     private String spaceFloor;
     private byte[] spacePhoto;  // 第一張照片
+    private Integer spaceStatus;
+    private Integer branchStatus;
 
     public FavoriteSpaceDTO() {
     }
@@ -125,5 +127,21 @@ public class FavoriteSpaceDTO {
 
     public void setSpacePhoto(byte[] spacePhoto) {
         this.spacePhoto = spacePhoto;
+    }
+
+    public Integer getSpaceStatus() {
+        return spaceStatus;
+    }
+
+    public void setSpaceStatus(Integer spaceStatus) {
+        this.spaceStatus = spaceStatus;
+    }
+
+    public Integer getBranchStatus() {
+        return branchStatus;
+    }
+
+    public void setBranchStatus(Integer branchStatus) {
+        this.branchStatus = branchStatus;
     }
 }
