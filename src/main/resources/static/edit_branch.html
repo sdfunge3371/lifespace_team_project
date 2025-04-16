@@ -9,6 +9,7 @@
     <link href="/css/sidebar.css" rel="stylesheet">
     <link href="/css/branch.css" rel="stylesheet">
     <link href="/css/branch_form.css" rel="stylesheet">
+    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <!-- 側邊欄 -->
@@ -126,13 +127,13 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="latitude" class="form-label">地址緯度</label>
-                            <input type="number" step="0.0001" class="form-control" id="latitude" name="latitude" required>
+                            <input type="number" step="0.0001" class="form-control" id="latitude" name="latitude" disabled>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="longitude" class="form-label">地址經度</label>
-                            <input type="number" step="0.0001" class="form-control" id="longitude" name="longitude" required>
+                            <input type="number" step="0.0001" class="form-control" id="longitude" name="longitude" disabled>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -196,7 +197,7 @@
     </div>
 
     <!-- jQuery -->
-    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
 
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
