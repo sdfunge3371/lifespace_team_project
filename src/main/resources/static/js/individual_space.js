@@ -123,9 +123,11 @@ function checkFavoriteStatus() {
             if (isFavorite) {
                 heartIcon.classList.remove("fa-regular");
                 heartIcon.classList.add("fa-solid");
+                heartIcon.style.color = "#FF6B6B";
             } else {
                 heartIcon.classList.remove("fa-solid");
                 heartIcon.classList.add("fa-regular");
+                heartIcon.style.color = "#CCC";
             }
         })
         .catch(err => {
@@ -155,8 +157,10 @@ heartBtn.addEventListener('click', () => {
         }
         if (isAdding) {
             showToast(`已將「${spaceName}」加入最愛`);
+            heartIcon.style.color = "#FF6B6B";
         } else {
             showToast(`已將「${spaceName}」移除最愛`);
+            heartIcon.style.color = "#CCC";
         }
     }).catch(err => {
         console.error(err);

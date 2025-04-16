@@ -105,10 +105,18 @@ function renderFavoriteSpaces(favoriteSpaces) {
         
         // 組合完整地址
         const location = `${space.branchAddr || ''}${space.spaceFloor ? space.spaceFloor + '樓' : ''}`;
+        if (space.spaceStatus === 0 || space.branchStatus === 0) {
+            console.log(space.spaceName, "已下架");
+        }
 
         spaceCard.innerHTML = `
             <div class="space-image">    
                 <img src="data:image/jpeg;base64,${space.spacePhoto}" alt="空間圖片">
+                ${(space.spaceStatus === 0 || space.branchStatus === 0) ? `
+                    <div class="overlay">
+                        <span class="overlay-text">此空間暫停租借</span>
+                    </div>` 
+                : ''}
             </div>
             <div class="space-info">
                 <div class="space-title">
@@ -145,6 +153,10 @@ function renderFavoriteSpaces(favoriteSpaces) {
         
         // 綁定卡片點擊事件，跳轉到空間詳情頁
         spaceCard.addEventListener('click', function() {
+            if (space.spaceStatus === 0 || space.branchStatus === 0) {
+                alert("此空間暫停租借");
+                return;
+            }
             window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
         });
     });
