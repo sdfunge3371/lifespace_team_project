@@ -3,12 +3,8 @@ package com.lifespace.controller;
 
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.dto.SpaceCommentRequest;
-import com.lifespace.ecpay.payment.integration.AllInOne;
-import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
-import com.lifespace.ecpay.payment.integration.ecpayOperator.EcpayFunction;
 import com.lifespace.entity.Orders;
 import com.lifespace.service.OrdersService;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

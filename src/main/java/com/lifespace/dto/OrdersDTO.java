@@ -20,6 +20,7 @@ public class OrdersDTO {
     private String branchAddr;
     private Integer calculatedSpaceFee;
     private String spaceFloor;
+    private String spaceCoverPhoto;
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
@@ -163,6 +164,14 @@ public class OrdersDTO {
 
     public void setAccountsPayable(Integer accountsPayable) {
         this.accountsPayable = accountsPayable;
+    }
+
+    public String getSpaceCoverPhoto() {
+        return spaceCoverPhoto;
+    }
+
+    public void setSpaceCoverPhoto(String spaceCoverPhoto) {
+        this.spaceCoverPhoto = spaceCoverPhoto;
     }
 }
 

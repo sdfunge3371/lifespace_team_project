@@ -46,6 +46,9 @@ public class OrdersService {
 
     @Autowired
     private SpaceService spaceService;
+
+    @Autowired
+    private SpacePhotoService spacePhotoSvc;
     
     public void updateOrderStatusByOrderId(String orderId) {
 
@@ -123,16 +126,22 @@ public class OrdersService {
         return OrdersMapper.toOrdersDTO(orders);
     }
 
-    public void paidOrders(String orderId) {
-        Orders orders = ordersRepository.findById(orderId).orElse(null);
-        if(orders != null && orders.getOrderStatus() != 1) {
-            orders.setOrderStatus(1);
-            orders.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
-            ordersRepository.save(orders);
+    public OrdersDTO toOrdersDTOWithCoverPhoto(Orders orders) {
+        OrdersDTO dto = OrdersMapper.toOrdersDTO(orders);
+
+        // 抓第一張圖當封面
+        List<SpacePhoto> photos = spacePhotoSvc.getSpacePhotosBySpaceId(orders.getSpaceId());
+        if (!photos.isEmpty()) {
+            byte[] CoverPhoto = photos.get(0).getPhoto();
+            String base64 = Base64.getEncoder().encodeToString(CoverPhoto);
+            dto.setSpaceCoverPhoto("data:image/jpeg;base64," + base64);
         }
+
+        return dto;
     }
 
-    //綠界
+
+    //綠界 送form表單
     public ResponseEntity<String> checkoutWithEcpay(String orderId) {
         OrdersDTO order = getOrdersDTOByOrderId(orderId);
         if (order == null) {
@@ -171,6 +180,7 @@ public class OrdersService {
         }
     }
 
+    //綠界回傳驗證
     public ResponseEntity<String> handleEcpayReturn(HttpServletRequest req) {
         Map<String, String[]> paramsMap = req.getParameterMap();
 
@@ -215,6 +225,16 @@ public class OrdersService {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("比對失敗：" + e.getMessage());
+        }
+    }
+
+    //更改綠界付款完成後的訂單狀態
+    public void paidOrders(String orderId) {
+        Orders orders = ordersRepository.findById(orderId).orElse(null);
+        if(orders != null && orders.getOrderStatus() != 1) {
+            orders.setOrderStatus(1);
+            orders.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
+            ordersRepository.save(orders);
         }
     }
 
