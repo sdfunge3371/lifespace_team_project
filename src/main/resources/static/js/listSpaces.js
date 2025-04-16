@@ -202,7 +202,7 @@ function showRowData(space) {
     // 在Table row裡塞進以下HTML
     tr.innerHTML = `
                         <td>${escapeHtml(space.spaceId)}</td>
-                        <td>${escapeHtml(space.branchId)}</td>
+                        <td>${escapeHtml(space.branchId)}(${escapeHtml(space.branchName)})</td>
                         <td>${escapeHtml(space.spaceName)}</td>
                         <td>${escapeHtml(space.spacePeople)} 人</td>
                         <td>${escapeHtml(space.spaceSize)} 坪</td>
@@ -211,6 +211,7 @@ function showRowData(space) {
                         <td title="${escapeHtml(space.spaceDesc)}">${truncateText(escapeHtml(space.spaceDesc), 20)}</td>
                         <td>${escapeHtml(space.spaceRating.toFixed(1))}</td>
                         <td title="${escapeHtml(space.spaceAlert)}">${truncateText(escapeHtml(space.spaceAlert), 20)}</td>
+                        <td class="branch-status"></td>
                         <td>${escapeHtml(space.spaceStatusText)}</td>
                         <td title="${escapeHtml(space.spaceFloor)}">${truncateText(escapeHtml(space.branchAddr), 20) + truncateText(escapeHtml(space.spaceFloor), 20) + (space.spaceFloor ? "樓" : "")}</td>
                         <td title="${equipmentNames}">${truncateText(equipmentNames, 20)}</td>
@@ -231,7 +232,22 @@ function showRowData(space) {
     // escapeHtml(): 處理跳脫字元
     // truncateText(): 利用...處理過長的資料，20就是只顯示前20個字
     // *spaceFloor記得跟branch地址連結，合併成完整地址
+    handleBranchStatusText(tr, space.branchStatus);
+
     tableBody.appendChild(tr);
+}
+
+function handleBranchStatusText(tr, status) {
+    const branchStatusTd = tr.querySelector(".branch-status");
+    console.log(branchStatusTd);
+    if (status === 1) {
+        branchStatusTd.innerHTML = "可用";
+        branchStatusTd.style.color = "green";
+    } else {
+        branchStatusTd.innerHTML = "分點未上架";
+        branchStatusTd.style.color = "red";
+        branchStatusTd.style.fontWeight = 600;
+    }
 }
 
 // === Utility Functions ===
@@ -468,7 +484,7 @@ tableBody.addEventListener('click', function (e) {
                     button.textContent = newStatus === "1" ? '下架' : '上架';   // 更新按鈕文字
                     button.setAttribute('data-current-status', newStatus);  // 設定attribute，以在表格欄位中顯示正確的文字
 
-                    const statusCell = button.closest('tr').querySelector('td:nth-child(11)');
+                    const statusCell = button.closest('tr').querySelector('td:nth-child(12)');
                     statusCell.textContent = newStatus === "1" ? '上架中' : '未上架';   // 欄位更新狀態
 
                     // 同步更新 allSpacesData 的狀態

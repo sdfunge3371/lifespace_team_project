@@ -1,0 +1,291 @@
+* {
+    box-sizing: border-box;
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
+}
+
+body {
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    width: 150px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.form-control {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    border-color: #6AC0BD;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(106, 192, 189, 0.2);
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-input {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    accent-color: #6AC0BD;
+}
+
+/* Styles for Image Preview */
+#imagePreviewContainer .preview-item {
+    position: relative; /* Needed for absolute positioning of the delete button */
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+#imagePreviewContainer .preview-image {
+    display: block;
+    max-width: 100px; /* Adjust size as needed */
+    max-height: 100px; /* Adjust size as needed */
+    width: auto;
+    height: auto;
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+}
+
+#imagePreviewContainer .delete-btn {
+    position: absolute;
+    top: -5px; /* Position slightly outside the top-right */
+    right: -5px;
+    background-color: rgba(255, 0, 0, 0.7); /* Semi-transparent red */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Make it circular */
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    line-height: 18px; /* Center the 'X' vertically */
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+#imagePreviewContainer .delete-btn:hover {
+    background-color: rgba(255, 0, 0, 1); /* Solid red on hover */
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/*提交按鈕設定*/
+.submit-btn {
+    background-color: #6AC0BD;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background-color: #475757;
+}
+
+/*錯誤訊息*/
+#errorMessages {
+    color: #f44336;
+    margin-bottom: 15px;
+}
+
+#errorMessages ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* 新增空間設備彈窗 */
+dialog {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    min-width: 300px; /* Minimum width */
+    max-width: 90%; /* Maximum width relative to viewport */
+    margin: auto; /* Center horizontally and vertically (for browsers supporting it) */
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent backdrop */
+}
+
+dialog h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+}
+
+.modal-actions {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 8px 15px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#confirmAddEquipmentBtn {
+    background-color: #6AC0BD;
+    color: white;
+}
+
+#confirmAddEquipmentBtn:hover {
+    background-color: #475757;
+}
+
+#confirmAddUsageBtn {
+    background-color: #6AC0BD;
+    color: white;
+}
+
+#confirmAddUsageBtn:hover {
+    background-color: #475757;
+}
+
+/* Style for the Add Equipment Button */
+.btn-add-equipment {
+    background-color: #f0f0f0;
+    border: 1px dashed #ccc;
+    color: #555;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-add-equipment:hover {
+    background-color: #e9e9e9;
+    border-color: #aaa;
+}
+
+/* Styles for Displayed Equipment Items */
+#equipmentDisplayArea .equipment-item {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: flex; /* Align item text and delete button */
+    justify-content: space-between; /* Push delete button to the right */
+    align-items: center;
+    font-size: 15px;
+}
+
+#equipmentDisplayArea .equipment-item-text {
+    /* Takes up available space */
+    flex-grow: 1;
+    margin-right: 10px; /* Space before delete button */
+}
+
+#equipmentDisplayArea .equipment-item-delete {
+    background: none;
+    border: none;
+    color: #f44336; /* Red color for delete */
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0 5px;
+}
+
+#equipmentDisplayArea .equipment-item-delete:hover {
+    color: #d32f2f; /* Darker red on hover */
+}
+
+
+@media screen and (max-width: 768px) {
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    .form-control {
+        width: 100%;
+    }
+}
+
+.back-btn {
+    background-color: transparent;
+    color: #6AC0BD;
+    border: 1px solid #6AC0BD;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.back-btn:hover {
+    background-color: #6AC0BD;
+    color: white;
+}
