@@ -118,27 +118,7 @@ public class MemberController {
 		    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		
-//		public ResponseEntity<?> getProfile(HttpSession session){
-//			String memberId = SessionUtils.getLoginMemberId(session); // 統一從工具類拿
-//			
-//			if(memberId == null) {
-//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
-//			}
-//			
-//			Optional<Member> memberOpt = memberService.findByIdMem(memberId);
-//			if(memberOpt.isPresent()) {
-//				Member member = memberOpt.get();
-//				Map<String, Object> response = new HashMap<>();
-//				response.put("memberId", member.getMemberId());
-//				response.put("memberName", member.getMemberName());
-//				response.put("email", member.getEmail());
-//				return ResponseEntity.ok(response);
-//			} else {
-//				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("會員不存在");
-//			}
-//			
-//		}
-		
+
 		//-----------------------取得會員帳號資料修改（從 Session 抓）------------------------------
 		@GetMapping("/member/profile")
 		public ResponseEntity<MemberDTO> getLoginMemberInfo(HttpSession session) {
