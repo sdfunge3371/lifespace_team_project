@@ -30,6 +30,7 @@ public class OrdersMapper {
         dto.setOrderStatus(orders.getOrderStatus());
         dto.setBranchAddr(orders.getBranch().getBranchAddr());
         dto.setSpaceFloor(orders.getSpace().getSpaceFloor());
+        dto.setSpaceCoverPhotoURL("/space-photo/space/" + orders.getSpaceId() + "/cover");
 
         if(orders.getEvent() != null) {
             dto.setEventDTO(toEventDTO(orders.getEvent()));
@@ -40,10 +41,6 @@ public class OrdersMapper {
             );
         }
 
-//        if (orders.getBranch() != null && orders.getSpace().getSpaceFloor() != null) {
-//            dto.setBranchAddr(orders.getBranch().getBranchAddr());
-//            dto.setSpaceFloor(orders.getSpace().getSpaceFloor());
-//        }
 
         if (orders.getOrderStart() != null && orders.getOrderEnd() != null) {
             long spaceMillis = orders.getOrderEnd().getTime() - orders.getOrderStart().getTime();

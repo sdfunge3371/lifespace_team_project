@@ -82,6 +82,12 @@ public class OrdersController {
         return ResponseEntity.ok(newOrder);
     }
 
+//    @PostMapping("/create-auto")
+//    public ResponseEntity<OrdersDTO> createAutoOrder(@RequestBody OrdersDTO dto) {
+//        OrdersDTO created = ordersService.createOrder(dto);
+//        return ResponseEntity.ok(created);
+//    }
+
     @PostMapping("/ecpay-checkout/{orderId}")
     public ResponseEntity<String> checkoutWithEcpay(@PathVariable String orderId) {
         return ordersSvc.checkoutWithEcpay(orderId);

@@ -1,7 +1,5 @@
 package com.lifespace.dto;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,8 @@ public class OrdersDTO {
     private String branchAddr;
     private Integer calculatedSpaceFee;
     private String spaceFloor;
-    private String spaceCoverPhoto;
+    private String spaceCoverPhotoURL;
+    private boolean isDaily;
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
@@ -166,12 +165,20 @@ public class OrdersDTO {
         this.accountsPayable = accountsPayable;
     }
 
-    public String getSpaceCoverPhoto() {
-        return spaceCoverPhoto;
+    public String getSpaceCoverPhotoURL() {
+        return spaceCoverPhotoURL;
     }
 
-    public void setSpaceCoverPhoto(String spaceCoverPhoto) {
-        this.spaceCoverPhoto = spaceCoverPhoto;
+    public void setSpaceCoverPhotoURL(String spaceCoverPhotoURL) {
+        this.spaceCoverPhotoURL = spaceCoverPhotoURL;
+    }
+
+    public boolean getIsDaily() {
+        return isDaily;
+    }
+
+    public void setIsDaily(boolean isDaily) {
+        this.isDaily = isDaily;
     }
 }
 
