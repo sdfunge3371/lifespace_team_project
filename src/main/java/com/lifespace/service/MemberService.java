@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +32,18 @@ public class MemberService {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
     private EntityManager entityManager;
+	
+	// 新增M開頭的Id
+	public String generateNextMemberId() {
+		String lastId = memberRepository.findLatestMemberId(); // e.g. M015
+		if (lastId == null) {
+			return "M001"; // 資料庫沒有資料時
+		} else {
+			// 轉成數字 //去掉首字英文
+			int num = Integer.parseInt(lastId.substring(1));
+			return String.format("M%03d", num + 1); // M016
+		}
+	}
 	
 	//------------------會員登入-------------------------------
 	//不適用加密
@@ -90,17 +103,7 @@ public class MemberService {
 		return dto;
 	}
 
-	// 新增M開頭的Id
-	public String generateNextMemberId() {
-		String lastId = memberRepository.findLatestMemberId(); // e.g. M015
-		if (lastId == null) {
-			return "M001"; // 資料庫沒有資料時
-		} else {
-			// 轉成數字 //去掉首字英文
-			int num = Integer.parseInt(lastId.substring(1));
-			return String.format("M%03d", num + 1); // M016
-		}
-	}
+
 
 	// ------------------修改------------------------------
 		public boolean updateMem(String memberId, String memberName, String email, String phone, Integer accountStatus,
@@ -210,11 +213,6 @@ public class MemberService {
     }
 
 	
-	
-	
-	
-	
-	
 	// 全部查詢
 	public List<Member> findAllMem() {
 		return (List<Member>) memberRepository.findAll();
@@ -225,32 +223,33 @@ public class MemberService {
 		return memberRepository.findById(memberId);
 	}
 
-//	// 單筆查Name
-//	public Optional<Member> findByNameMem(String memberName) {
-//		return memberRepository.findByMemberName(memberName);
-//	}
-//
-//	// 單筆查Phone
-//	public Optional<Member> findByPhoneMem(String memberPhone) {
-//		return memberRepository.findByPhone(memberPhone);
-//	}
-//
-//	// 單筆查Email
-//	public Optional<Member> findByEmailMem(String memberEmail) {
-//		return memberRepository.findByEmail(memberEmail);
-//	}
-//	
-//	//動態查詢-多筆
-//	public List<Member> searchMembers(Integer status, LocalDate birthday, LocalDate regTime) {
-//	    return memberRepository.searchMembers(status, birthday, regTime);
-//	}
-
+	
+	
+	//------------這邊是為了第三方登入才寫的-------------------------
+    // 查找是否有這個 email 的會員
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+    
+    // 如果會員不存在，建立一筆新資料
+    public Member createGoogleMember(String email, String name) {
+        Member member = new Member();
+        String newId = generateNextMemberId();
+        member.setMemberId(newId);
+        //member.setMemberId(UUID.randomUUID().toString());  // 自動產生主鍵
+        member.setEmail(email);
+        member.setMemberName(name);
+        member.setAccountStatus(1);  // 設定為啟用會員狀態（自訂）
+        member.setPassword("GOOGLE_" + UUID.randomUUID());  //googlr第三方登入沒密碼，自己做一個預設密碼
+        return memberRepository.save(member);               //因為資料庫的密碼不可以null
+    }
+	
 	
 	
 
 	// ------------------單筆刪除---------------------------------
-	public void deleteByIdMem(String memberId) {
-		memberRepository.deleteById(memberId);
-	}
+//	public void deleteByIdMem(String memberId) {
+//		memberRepository.deleteById(memberId);
+//	}
 
 }
