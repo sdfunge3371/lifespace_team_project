@@ -47,8 +47,8 @@ function reflashNews(newsList) {
 	// 填入資料
 	let html = '';
 	newsList.forEach(news => {
-		const startDate = new Date(news.newsStartDate).toLocaleDateString('zh-TW');
-		const endDate = new Date(news.newsEndDate).toLocaleDateString('zh-TW');
+		const startDate = new Date(news.newsStartDate).toLocaleString('zh-TW');
+		const endDate = new Date(news.newsEndDate).toLocaleString('zh-TW');
 
 		let statusText = "";
 		const statusName = news.newsStatusName;
