@@ -26,12 +26,14 @@ public class FavoriteSpaceMapper {
             dto.setSpaceRating(favoriteSpace.getSpace().getSpaceRating());
             dto.setSpaceHourlyFee(favoriteSpace.getSpace().getSpaceHourlyFee());
             dto.setSpaceFloor(favoriteSpace.getSpace().getSpaceFloor());
-            
+            dto.setSpaceStatus(favoriteSpace.getSpace().getSpaceStatus());
+
             // 取得分店資訊
             if (favoriteSpace.getSpace().getBranch() != null) {
                 dto.setBranchId(favoriteSpace.getSpace().getBranch().getBranchId());
                 dto.setBranchName(favoriteSpace.getSpace().getBranch().getBranchName());
                 dto.setBranchAddr(favoriteSpace.getSpace().getBranch().getBranchAddr());
+                dto.setBranchStatus(favoriteSpace.getSpace().getBranch().getBranchStatus());
             }
             
             // 取得第一張照片
