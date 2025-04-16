@@ -132,7 +132,7 @@ $(document).ready(function () {
     // 監聽問號圖示的點擊事件
     $('#activity-info-trigger').click(function () {
         // 取得活動說明內容
-        var activityContent = $('#activity-description').html();
+        var activityContent = $('#event-remarks').html();
 
         // 將活動說明內容放入 Modal body
         $('#activityModalBody').html(activityContent);
