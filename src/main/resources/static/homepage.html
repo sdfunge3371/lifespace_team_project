@@ -40,6 +40,8 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    
+    <link href="css/homepage.css" rel="stylesheet">
 
 </head>
 
@@ -794,46 +796,42 @@
                     </div>
                 </div>
 
-                <!-- 最新消息表 start -->
+                <!-- 最新活動一覽 Start -->
+					<div class="container mt-5">
+    					<h1 class="mb-3">最新活動一覽</h1>
+    					<div class="row" id="latestEventsContainer">
+        					<!-- 活動卡片動態加入 -->
+    					</div>
+    					<div class="text-center mt-3">
+        					<a class="btn btn-primary py-3 px-5" href="event_overview.html">查看更多活動</a>
+    					</div>
+					</div>
+					<!-- 最新活動一覽 End -->
+					
+					
+					<!-- 最新消息表 start -->
 
-                <br>
-                <br>
-                <h1 class="mb-3">最新消息一覽</h1>
-                <br>
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">消息標題</th>
-                        <th scope="col">消息內容</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>最新優惠</td>
-                        <td>優惠優惠優惠優惠優惠</td>
+					<br> <br>
+					<h1 class="mb-3">最新消息一覽</h1>
+					<br>
+					<div class="news-container">
+						<table class="table table-striped news-table">
+							<thead>
+								<tr>
+									<th scope="col">No.</th>
+									<th scope="col">消息標題</th>
+									<th scope="col">消息內容</th>
+								</tr>
+							</thead>
+							<tbody id="newsTableBody"></tbody>
+						</table>
+					</div>
 
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>裝潢公告</td>
-                        <td>公告公告公告公告公告</td>
-
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>優惠券發放</td>
-                        <td>發放發放發放發放發放</td>
-
-                    </tr>
-                    </tbody>
-                </table>
-                <br>
-                <div class="col-12 text-center">
-                    <a class="btn btn-primary py-3 px-5" href="./news_list.html">瀏覽更多最新消息</a>
-                </div>
-                <!-- 最新消息表 end -->
+					<br>
+					<div class="col-12 text-center">
+						<a class="btn btn-primary py-3 px-5" href="frontend_news.html">瀏覽更多最新消息</a>
+					</div>
+					<!-- 最新消息表 end -->
 
 
             </div>
