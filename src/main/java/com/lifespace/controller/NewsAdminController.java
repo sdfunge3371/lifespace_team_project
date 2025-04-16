@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -131,6 +132,14 @@ public class NewsAdminController {
 		newsSvc.deprecatedNews(newsId);
 	}
 		
+	
+	 // 單張圖片寫入資料庫(側視圖片或補圖用)
+    @PostMapping("/upload-image/{newsId}/{filename}")
+    public ResponseEntity<?> uploadImage(@PathVariable String newsId,
+                                         @PathVariable String filename) {
+        String result = newsSvc.insertNewsImageFromResource(newsId, filename);
+        return ResponseEntity.ok(result);
+    }
 }
 
 
