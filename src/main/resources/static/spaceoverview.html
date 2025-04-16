@@ -42,7 +42,6 @@
         // 透過後端取得Google Maps API key
         $.get("/api/config/google-maps-key", function(response) {
             const apiKey = response.key;
-            console.log(apiKey);
             const script = document.createElement("script");
             script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=marker&callback=initMap`;
             script.async = true;
