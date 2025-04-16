@@ -209,9 +209,9 @@ public class MemberController {
 	
 	//-------------------------------會員登出功能------------------------------------
 	@PostMapping("/member/logout")
-	public String logout(HttpSession session) {
+	public ResponseEntity<Void> logout(HttpSession session) {
 		SessionUtils.removeMemberLogin(session); // 清掉 session 裡的loginMember
-		return "../html/login"; //返回登入頁面
+		return ResponseEntity.ok().build();  //讓前端決定要導去哪裡
 	}
 	
 	

@@ -48,6 +48,7 @@ div.card{
 /* 其他連結樣式 */
 .others{
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 .others a {
     color: #007bff;
