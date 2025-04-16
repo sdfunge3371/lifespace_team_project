@@ -245,10 +245,7 @@ function addUsageOptionToSelect(usage) {
 
 // 回上一頁
 function historyBack() {
-    const isConfirmed = confirm("確定離開此畫面？（剛剛輸入的資料將被捨棄）");
-    if (isConfirmed) {
-        history.back();
-    }
+    history.back();
 }
 
 let isFormDirty = true; // 預設：表單可能有資料，離開前要確認

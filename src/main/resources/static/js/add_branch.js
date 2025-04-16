@@ -57,6 +57,7 @@ $(document).ready(function() {
         const formData = {
             branchName: $('#branchName').val().trim(),
             branchAddr: $('#branchAddr').val().trim(),
+
             latitude: parseFloat($('#latitude').val()),
             longitude: parseFloat($('#longitude').val()),
             branchStatus: parseInt($('input[name="branchStatus"]:checked').val()),
@@ -115,5 +116,39 @@ $(document).ready(function() {
         }
         
         return true;
+    }
+
+    const input = document.getElementById('branchAddr');
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: "tw" }, // 限制在台灣（可選）
+        fields: ["formatted_address", "geometry"],
+    });
+
+    // 當使用者選擇地址建議後，自動填入經緯度
+    autocomplete.addListener("place_changed", function () {
+        const place = autocomplete.getPlace();
+
+        if (!place.geometry) {
+            alert("無法找到該地址的經緯度");
+            return;
+        }
+
+        // 強制將完整地址填入輸入框（避免只顯示店名）
+        if (place.formatted_address) {
+            $('#branchAddr').val(getAddressAfterCharacter(place.formatted_address));
+        }
+
+        // 填入經緯度
+        const location = place.geometry.location;
+        $('#latitude').val(location.lat().toFixed(6));
+        $('#longitude').val(location.lng().toFixed(6));
+    });
+
+    function getAddressAfterCharacter(address, keyword = "灣") {
+        const index = address.indexOf(keyword);
+        if (index !== -1) {
+            return address.substring(index + 1); // +1 是為了排除「灣」這個字
+        }
+        return address; // 如果沒有找到「灣」，就回傳原始字串
     }
 });
