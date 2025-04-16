@@ -369,12 +369,17 @@
                        ${formattedStartTime} ${formattedEndTime ? ' - ' + formattedEndTime : ''}
                    </div>
                    <div class="event-category">
-                       ${event.eventCategory ? event.eventCategory.eventCategoryName : '類別未定'}
+                       ${event.eventCategory ? event.eventCategory.eventCategoryName : event.eventCategoryName}
                    </div>
-				   <div class="event-location">
+				   <div class="event-members">
 				   		<i class="fas fa-users"></i>
 				   			  參與人數: ${event.numberOfParticipants}/${event.maximumOfParticipants}
 				   	</div>
+					${event.spaceAddress ? `<div class="event-location">
+					    					<i class="fa-solid fa-building"></i>
+					    					地點: ${event.spaceAddress}
+					  						</div>
+										` : ''}
                    <div class="event-actions">
                        <a href="event_detail.html?eventId=${event.eventId}" class="action-button message-button">查看詳情</a>
                    </div>

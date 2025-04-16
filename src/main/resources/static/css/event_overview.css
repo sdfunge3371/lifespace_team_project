@@ -520,6 +520,18 @@
             color: #4caf50;
         }
         
+        .event-members {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #666;
+        }
+        
+        .event-members i {
+            margin-right: 8px;
+            color: #ff9800;
+        }
+        
         .event-location {
             display: flex;
             align-items: center;
@@ -529,7 +541,7 @@
         
         .event-location i {
             margin-right: 8px;
-            color: #ff9800;
+            color: #ff0000;
         }
         
         .event-category {
