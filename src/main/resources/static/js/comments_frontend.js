@@ -196,37 +196,54 @@ function loadComments() {
   if (noMoreData || loading) return;
   loading = true;
 
-  $.ajax({
-    url: `/comments/event/${eventId}/page/${page}/5`,
-    method: "GET",
-    success: function (data) {
-      if (page === 0) {
-        $("#commentsContainer").empty();
-        $("#noCommentMessage").toggle(data.length === 0);
-      }
-
-      if (data.length === 0) {
-        noMoreData = true;
-        return;
-      }
-
-      data.forEach(comment => renderComment(comment));
-      page++;
-      loading = false;
-    },
-    error: function () {
-      alert("無法載入留言資料");
-      loading = false;
-    }
-  });
+//  $.get("/comments/loginMember", function (memberId) {
+//     currentMemberId = memberId; // 先拿到登入會員 ID
+  
+	  $.ajax({
+	    url: `/comments/event/${eventId}/page/${page}/5`,
+	    method: "GET",
+	    success: function (data) {
+	      if (page === 0) {
+	        $("#commentsContainer").empty();
+	        $("#noCommentMessage").toggle(data.length === 0);
+	      }
+	
+	      if (data.length === 0) {
+	        noMoreData = true;
+	        return;
+	      }
+	
+	      data.forEach(comment => renderComment(comment));
+	      page++;
+	      loading = false;
+	    },
+	    error: function () {
+	      alert("無法載入留言資料");
+	      loading = false;
+	    }
+	  });
+//	});
 }
 
 // 建立留言區塊 DOM
 function renderComment(comment, returnBox = false) {
-  const isOwner = comment.eventMemberId === currentMemberId; // isOwner用來判斷留言是不是本人 → 控制是否顯示編輯／刪除按鈕
+	
+  // 🔧 workaround：如果是自己剛剛新增的留言，後端未帶 eventMember.memberId，這裡補上
+  if (comment.eventMember && !comment.eventMember.memberId) {
+    comment.eventMember.memberId = currentMemberId;
+  }
+  
+	
+//  const isOwner = comment.eventMemberId === currentMemberId; // isOwner用來判斷留言是不是本人 → 控制是否顯示編輯／刪除按鈕
+//  const isOwner = comment.eventMember && comment.eventMember.memberId === currentMemberId;
+  const isOwner = comment.eventMember?.memberId === currentMemberId;
+//  console.log("登入會員:", currentMemberId, "留言會員:", comment.eventMember?.memberId);
+
   const avatarUrl = comment.imageUrl || `https://i.pravatar.cc/40?u=${comment.eventMemberId}`;
   const timeStr = comment.commentTime ? new Date(comment.commentTime).toLocaleString() : '';
   const memberLink = `<a href="/members/${comment.eventMemberId}/profile">${comment.memberName || '匿名'}</a>`;
+  console.log("留言資料：", comment);
+
 
   const box = $(`
     <div class="comment-box" data-id="${comment.commentId}">
@@ -340,12 +357,18 @@ $("#newCommentInput").on("keydown", function (e) {
 //        commentMessage: msg,
 //        eventMember: { eventMemberId: currentMemberId } // 使用 session 抓到的 memberId
 //      }),
-      success: function (newComment) {
-        console.log(newComment);
-        $("#newCommentInput").val('');
-        const box = renderComment(newComment, true);
-        $("#commentsContainer").append(box); // 把留言插入列表底部
-      }
+//      success: function (newComment) {
+//        console.log(newComment);
+//        $("#newCommentInput").val('');
+//        const box = renderComment(newComment, true);
+//        $("#commentsContainer").append(box); // 把留言插入列表底部
+//      }
+		success: function () {
+		  $("#newCommentInput").val('');
+		  page = 0;
+		  noMoreData = false;
+		  loadComments(); // 重新查一次留言，拿到完整資料（包含 memberName）
+		}
     });
   }
 });
