@@ -168,13 +168,17 @@ function showRowData(space) {
 
     let availableUsageNames = [];
     let usageNames = "";
-    if (space.spaceUsageMaps && space.spaceUsageMaps.length > 0) {
+    let usageCount = 0;
+    if (space.spaceUsageMaps) {
         for (const map of space.spaceUsageMaps) {
-            console.log(map);
-            if (map.spaceUsage.spaceUsageStatus === "AVAILABLE")
+            if (map.spaceUsage.spaceUsageStatus === "AVAILABLE") {
+                usageCount++;
                 availableUsageNames.push(map.spaceUsage?.spaceUsageName || '未知');
+            }
         }
         usageNames = availableUsageNames.join(", ");
+        if (usageCount === 0)
+            usageNames = "無";
     } else {
         usageNames = "無";
     }

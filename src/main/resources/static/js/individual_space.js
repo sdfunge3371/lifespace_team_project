@@ -11,7 +11,21 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchComments();
 
     setupOrderConfirmModal();
+    checkFavoriteStatus();
 });
+
+function showToast(message) {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement("div");
+    toast.className = 'toast';
+    toast.textContent = message;
+
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
 
 // ========== 處理頁籤 ==========
 
@@ -89,18 +103,64 @@ btnOpenModal.addEventListener("click", function () {
     document.body.style.overflow = 'hidden';
 })
 
-// ===============愛心(我的最愛)切換===============
+// ===============加入最愛相關===============
+
+// 判斷特定空間是否已被加到最愛
+function checkFavoriteStatus() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const spaceId = urlParams.get("spaceId");
+
+    fetch(`/favorite-space/check/${spaceId}`, {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(res => res.json())
+        .then(data => {
+            const isFavorite = data.isFavorite;
+            const heartIcon = document.getElementById('heart-fav-icon');
+            heartIcon.style.display = "block";
+
+            if (isFavorite) {
+                heartIcon.classList.remove("fa-regular");
+                heartIcon.classList.add("fa-solid");
+            } else {
+                heartIcon.classList.remove("fa-solid");
+                heartIcon.classList.add("fa-regular");
+            }
+        })
+        .catch(err => {
+            console.error("檢查最愛失敗", err)
+            heartIcon.style.display = "none";
+        });
+}
+
 const heartBtn = document.getElementById('heart-fav-btn');
 const heartIcon = document.getElementById('heart-fav-icon');
 
 heartBtn.addEventListener('click', () => {
-    if (heartIcon.classList.contains('fa-regular')) {
-        heartIcon.classList.remove('fa-regular');
-        heartIcon.classList.add('fa-solid');
-    } else {
-        heartIcon.classList.remove('fa-solid');
-        heartIcon.classList.add('fa-regular');
-    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const spaceId = urlParams.get("spaceId");
+    const isAdding = heartIcon.classList.contains("fa-regular");
+    const method = isAdding ? 'POST' : 'DELETE';
+
+    fetch(`favorite-space/${spaceId}`, {
+        method,
+        credentials: 'include'
+    }).then(res => {
+        if (res.ok) {
+            heartIcon.classList.toggle('fa-regular');
+            heartIcon.classList.toggle('fa-solid');
+        } else {
+            showToast("操作失敗，請稍後再試");
+        }
+        if (isAdding) {
+            showToast(`已將「${spaceName}」加入最愛`);
+        } else {
+            showToast(`已將「${spaceName}」移除最愛`);
+        }
+    }).catch(err => {
+        console.error(err);
+    })
 });
 
 // ===============選擇時租、日租===============
@@ -767,7 +827,7 @@ function updateTotal() {
 
 let branchId = null;
 let spaceFloor = null;
-
+let spaceName = null;
 // 載入空間資訊
 
 function fetchSpace() {
@@ -781,6 +841,7 @@ function fetchSpace() {
             console.log(space);   // 檢查回傳的json是否正確
             branchId = space.branchId;
             spaceFloor = space.spaceFloor;
+            spaceName = space.spaceName;
             insertPhotos(space.spacePhotos);
             insertAlert(space.spaceAlert);
             insertInfo(space.spacePeople, space.spaceUsageMaps, space.spaceFloor, space.spaceSize, space.spaceDesc);
