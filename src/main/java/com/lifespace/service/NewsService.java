@@ -258,6 +258,13 @@ public class NewsService {
            return "讀取圖片失敗：" + filename;
        }
    }   
+   
+   // 前台首頁讓使用者到看到上架的最新消息(只取三筆)
+   public List<News> getActiveNews() {
+	    // 這裡預設撈所有上架中（例如狀態代號為 1）
+	    return repository.findTop3ByNewsStatus_NewsStatusId(1);
+	}
+
 	
 	// ---------------排程任務：更新狀態---------------
 	public void updateNewsStatusAutomatically() {
