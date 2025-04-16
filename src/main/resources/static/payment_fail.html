@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>付款失敗</title>
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.js"></script>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background-color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 450px;
+      max-height: 80vh;
+      margin: 100px auto;
+    }
+    .animation-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .failed-icon {
+      width: 150px;
+      height: 150px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0px 10px 0px;
+      color: #e74c3c;
+    }
+    .button {
+      width: 48%;
+      padding: 12px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .button{
+      background-color: #f1f1f1;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+<div class="modal-content">
+  <div class="animation-container">
+    <dotlottie-player
+            class="failed-icon"
+            src="https://lottie.host/c6f1a0da-8db0-4c6f-a890-29f6c57e550a/YTBgjT4Gu9.lottie"
+            background="transparent"
+            speed="0.5"
+            loop autoplay>
+    </dotlottie-player>
+  </div>
+  <div class="title">付款失敗，請重新操作</div>
+  <button class="button" onclick="location.href='/frontend_orders.html'">回訂單管理</button>
+</div>

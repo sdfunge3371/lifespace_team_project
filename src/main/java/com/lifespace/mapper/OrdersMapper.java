@@ -48,7 +48,8 @@ public class OrdersMapper {
         if (orders.getOrderStart() != null && orders.getOrderEnd() != null) {
             long spaceMillis = orders.getOrderEnd().getTime() - orders.getOrderStart().getTime();
             long spaceHalfHourUnits = spaceMillis / (1000 * 60 * 30) ; //每30分鐘
-            int spaceFee =(int) (orders.getSpace().getSpaceHourlyFee() * spaceHalfHourUnits / 2);
+            int halfHourPrice = orders.getSpace().getSpaceHourlyFee() / 2;
+            int spaceFee =(int) (spaceHalfHourUnits * halfHourPrice);
             dto.setCalculatedSpaceFee(spaceFee);
         }
 
