@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,7 @@ import com.lifespace.service.EventService;
 import com.lifespace.service.OrdersService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
@@ -63,7 +66,8 @@ public class EventController {
 	
 	@PostMapping("/add")
     public  ResponseEntity<?> insert(
-            @RequestPart("eventRequest") EventRequest eventRequest,
+    		@Valid @RequestPart("eventRequest") EventRequest eventRequest,
+            BindingResult bindingResult, // 新增這個參數來接收驗證錯誤
             @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
             HttpSession session) {
 
@@ -75,12 +79,27 @@ public class EventController {
 
 	    eventRequest.setOrganizerId(organizerId);
 
+	 // 驗證活動新增的參數是否符合基本規範
+	    if (bindingResult.hasErrors()) {
+	        StringBuilder errorMsg = new StringBuilder("輸入資料格式錯誤: ");
+	        bindingResult.getFieldErrors().forEach(error ->
+	            errorMsg.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append("; ")
+	        );
+	        return ResponseEntity.badRequest().body(errorMsg.toString());
+	    }
+	    
 	    // 驗證活動時間是否在訂單時間範圍內
 	    Orders order = ordersRepository.findById(eventRequest.getOrderId()).orElse(null);
 	    Timestamp eventStart = eventRequest.getEventStartTime();
 	    Timestamp eventEnd = eventRequest.getEventEndTime();
+	   
+	    final Pattern numberPattern = Pattern.compile("^[1-9]\\d*$");
+
+	    
 	    if (eventStart.before(order.getOrderStart()) || eventEnd.after(order.getOrderEnd())) {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("活動時間需在訂單時間範圍內");
+	    }else if(eventRequest.getMaximumOfParticipants() > order.getSpace().getSpacePeople()) {
+	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("活動人數上限不可超出空間容量");
 	    }
 
 	    eventSvc.addEvent(eventRequest, photos);
