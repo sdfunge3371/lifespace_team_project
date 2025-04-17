@@ -360,7 +360,7 @@ public class EventService {
     public void UpdateHeldEvents() {
         Timestamp now = Timestamp.from(Instant.now());
         //找出狀態為SCHEDULED 且目前時間已經超過event_start_time
-        List<Event> scheduledEvents = eventRepository.findByEventStatusAndEventStartTimeAfter( EventStatus.SCHEDULED, now);
+        List<Event> scheduledEvents = eventRepository.findByEventStatusAndEventStartTimeBefore( EventStatus.SCHEDULED, now);
         
         //將狀態改為HELD
         if(!scheduledEvents.isEmpty()){

@@ -27,7 +27,7 @@
 		// 獲取所有活動類別
 		       async function fetchAllEventsCategory() {
 		            // 使用API端點路徑
-		            const apiUrl = 'http://localhost:8080/lifespace/event/getAllCategories';
+		            const apiUrl = '/lifespace/event/getAllCategories';
 
 		            console.log('正在嘗試獲取活動類別數據，API 路徑:', apiUrl);
 
@@ -200,7 +200,7 @@
 		    }));
 
 		    try {
-		        const response = await fetch('http://localhost:8080/lifespace/event/add', {
+		        const response = await fetch('/lifespace/event/add', {
 		            method: 'POST',
 		            body: formData,
 		            credentials: 'include'

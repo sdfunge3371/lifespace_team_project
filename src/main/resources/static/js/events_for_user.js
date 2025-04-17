@@ -52,9 +52,11 @@ $(document).ready(function () {
                
                // 請求API
                $.ajax({
-                   url: 'http://localhost:8080/lifespace/event/search/ByMember',
+                   url: '/lifespace/event/search/ByMember',
                    method: 'GET',
-				   credentials: 'include', //加入session
+				   xhrFields: {
+				       withCredentials: true
+				     }, //加入session
                    data: {
                        userCategory: userCategory,
                        //memberId: memberId,
@@ -169,7 +171,7 @@ $(document).ready(function () {
                actionButtons = messageButton + actionButtons;
                
                // 圖片處理
-               let imageUrl = 'images/img.bootstrap/property-1.jpg'; // 預設圖片
+               let imageUrl = '/images/default_for_event_and_space.jpg'; // 預設圖片
                if (event.photoUrls && event.photoUrls.length > 0) {
                    imageUrl = event.photoUrls[0]; // 使用第一張活動圖片
                }
@@ -213,7 +215,7 @@ $(document).ready(function () {
 		       const eventId = $(this).data('event-id');
 		       if (eventId) {
 		           // 導向活動詳情頁面
-		           window.location.href = `http://localhost:8080/event_detail.html?eventId=${eventId}`;
+		           window.location.href = `/event_detail.html?eventId=${eventId}`;
 		       }
 		   });
 		   
@@ -315,7 +317,9 @@ $(document).ready(function () {
 
            // 確認取消舉辦活動
            $('#confirmCancelHostBtn').one('click', function() {
-               if (!cancelEventId || !cancelOrganizerId) return;
+               if (!cancelEventId || !cancelOrganizerId){ 
+					return
+				};
                
                $('#cancelHostEventModal').modal('hide');
                
@@ -331,10 +335,12 @@ $(document).ready(function () {
                
                // 發送取消舉辦請求
                $.ajax({
-                   url: 'http://localhost:8080/lifespace/event/cancell',
+                   url: '/lifespace/event/cancell',
                    method: 'PUT',
+				   xhrFields: {
+				       withCredentials: true
+				     },
                    data: {
-                       organizerId: cancelOrganizerId,
                        eventId: cancelEventId
                    },
                    success: function(response) {
@@ -437,11 +443,13 @@ $(document).ready(function () {
 
 		       // 發送取消參與請求
 		       $.ajax({
-		           url: 'http://localhost:8080/lifespace/event/removeMemFromEvent',
+		           url: '/lifespace/event/removeMemFromEvent',
 		           method: 'PUT',
+				   xhrFields: {
+				      withCredentials: true
+				    },
 		           data: {
-		               eventId: cancelEventId,
-		               memberId: memberId
+		               eventId: cancelEventId
 		           },
 		           success: function() {
 		               // 重新加載當前頁面的數據
@@ -461,7 +469,7 @@ $(document).ready(function () {
 		   
 		   //按下瀏覽可參加的活動後導向活動瀏覽頁面
 		   		   $('.btn.btn-outline-primary.mt-3').click(function() {
-							const events_url = 'http://localhost:8080/event_overview.html';
+							const events_url = '/event_overview.html';
 		   		       		window.location.href = events_url;
 		   		       });
 		  
