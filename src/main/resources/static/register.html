@@ -76,7 +76,6 @@
 
 <body>
 
-
     <!-- Header Navbar Start -->
         <div class="container-fluid nav-bar bg-transparent">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
@@ -218,7 +217,7 @@
 
             // ✅ Step 3: 傳送資料到後端
             //因為是回傳DTO，所以是return response.json();
-            fetch("http://localhost:8080/register", {
+            fetch("/register", {
                 method: "POST",
                 body: formData
             })
