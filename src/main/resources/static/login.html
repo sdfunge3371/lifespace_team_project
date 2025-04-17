@@ -110,13 +110,12 @@
         </div>
         <!-- Footer End -->
 
-
     <script>
         document.querySelector("#loginBtn").addEventListener("click", function () {
             const email = document.querySelector(".account").value;
             const password = document.querySelector(".password").value;
 
-            fetch("http://localhost:8080/member/login", {
+            fetch("/member/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
