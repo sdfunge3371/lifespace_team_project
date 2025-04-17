@@ -222,6 +222,10 @@
 		            const errorText = await response.text();
 		            console.error('伺服器回應:', response.status, errorText);
 		            alert('新增活動失敗: ' + errorText);
+					//3秒後導向首頁
+					setTimeout(function() {
+					  location.href = "/login.html";
+					}, 3000); 
 		        }
 		    } catch (error) {
 		        console.error('錯誤詳情:', error);

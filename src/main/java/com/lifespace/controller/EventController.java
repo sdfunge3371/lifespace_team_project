@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -162,14 +163,13 @@ public class EventController {
              @RequestParam(defaultValue = "0") @Min(0) Integer page) {
     	
     	// 創建分頁和排序條件
-        Pageable pageable = PageRequest.of( page, size,
-        			Sort.by("numberOfParticipants").descending()
-        );
+        Pageable pageable = PageRequest.of( page, size );
         
     	  Page<Event> events = eventSvc.getAll(pageable);
-          for (Event event : events) {
-              event.getPhotoUrls(); // 確保 photoUrls 被填充
-          }
+    	//載入圖片資料（若有必要）
+    	  for (Event event : events.getContent()) {
+    		  Hibernate.initialize(event.getPhotoUrls());
+    	}
           
         return events;
     }

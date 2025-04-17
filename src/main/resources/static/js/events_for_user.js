@@ -92,6 +92,12 @@ $(document).ready(function () {
                                加載數據失敗: ${xhr.responseText || '請稍後再試'}
                            </div>
                        `);
+					   
+					   if (xhr.status === 401) {
+					   		alert("請先登入");
+					   		location.href = "/login.html";
+					   	}
+
                    }
                });
            }
