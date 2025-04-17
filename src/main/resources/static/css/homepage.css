@@ -34,3 +34,110 @@
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
+
+
+/* 空間相關CSS */
+.spaces-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.space-card {
+    background-color: #edf8f8;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.space-image {
+    height: 200px;
+    background-color: #ddd;
+    display: flex;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.space-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.space-info {
+    padding: 15px;
+    position: relative;
+}
+
+.space-title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.space-location {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between; /* 左右排列 */
+
+}
+
+.location-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.space-price {
+    font-weight: bold;
+    color: #000;
+}
+
+.space-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #ccc;
+    font-size: 20px;
+}
+
+.favorite-btn:hover i {
+    transform: scale(1.15);
+    transition: transform 0.2s;
+}
+
+
+.favorite-btn i.fas.fa-heart {
+    color: #ff6b6b; /* 實心愛心 = 已收藏 */
+}
+
+.favorite-btn i.far.fa-heart {
+    color: #ccc; /* 空心愛心 = 未收藏 */
+}
+
+.people-count {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #333;
+}

@@ -77,7 +77,74 @@ $(document).ready(function () {
 			           $('#latestEventsContainer').html('<p class="text-danger text-center">載入活動失敗</p>');
 			       }
 			   });
-			   
+
+
+				// 取得6筆空間
+				fetch("/spaces")
+                    .then(response => response.json())
+                    .then(data => data.filter(space => space.spaceStatus !== 0 && space.branchStatus !== 0))
+                    .then(data => {
+                        console.log(data);
+						const randomSpaces = getRandomElements(data, 6);
+                        const spaceContainer = document.querySelector("#spaceContainer");
+
+						randomSpaces.forEach(space => {
+                            const spaceCard = document.createElement('div');
+                            spaceCard.className = 'space-card';
+                            spaceCard.dataset.id = space.spaceId;
+                            spaceCard.dataset.branchId = space.branchId;
+                            const addressText = `${space.branchAddr}${space.spaceFloor}${space.spaceFloor ? "樓" : ""}`;
+
+                            spaceCard.innerHTML = `
+								<div class="space-image">    
+									<img src="${getFirstPhoto(space.spacePhotos)}" alt="空間圖片">
+								</div>
+								<div class="space-info">
+									<div class="space-title">
+										<span>${space.spaceName}</span>
+									</div>
+									<div class="space-location">
+										<div class="location-text">
+											<i class="fas fa-map-marker-alt"></i> ${addressText}
+										</div>
+										<div class="people-count">
+											<i class="fas fa-user"></i> ${space.spacePeople}
+										</div>
+									</div>
+									<div class="space-rating">
+										<span class="space-price">$${space.spaceHourlyFee}/hr</span>
+										<div class="rating-stars">
+											<i class="fas fa-star"></i> ${space.spaceRating.toFixed(1)}</div>
+									</div>
+								</div>
+							`;
+                            spacesContainer.appendChild(spaceCard);
+
+                            spaceCard.addEventListener('click', () => {
+                                window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
+                            });
+                        })
+                    })
+                    .catch(error => {
+                        console.log("bug");
+                        console.log(error);
+                    })
+
+				function getRandomElements(array, count) {
+					const shuffled = array.slice(); // 複製一份陣列，避免改變原陣列
+					for (let i = shuffled.length - 1; i > 0; i--) {
+						const j = Math.floor(Math.random() * (i + 1));
+						[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+					}
+					return shuffled.slice(0, count);
+				}
+
+				function getFirstPhoto(spacePhoto) {
+					if (spacePhoto.length === 0) {
+						return "default.jpg";
+					}
+					return "data:image/jpeg;base64," + spacePhoto[0].photo;
+				}
 			   
 			   
         });
