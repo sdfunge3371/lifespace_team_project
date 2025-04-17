@@ -262,7 +262,7 @@ p.description {
 	    .then(response => {
 	        if (response.status === 401) {
 	            alert("尚未登入，請先登入");
-	            window.location.href = "../html/login.html";
+	            window.location.href = "/login.html";
 	        }
 	        return response.json();
 	    })
