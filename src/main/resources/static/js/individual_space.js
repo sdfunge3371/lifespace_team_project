@@ -1082,7 +1082,6 @@ function fetchComments() {
 
 function insertHeadComments(comments) {
 
-
     // 計算平均滿意度
     let totalRating = 0;
     comments.forEach(c => totalRating += c.satisfaction);
@@ -1133,9 +1132,7 @@ function insertHeadComments(comments) {
         let photosHtml = "";
         if (Array.isArray(photosUrls) && photosUrls.length > 0) {
             photosUrls.forEach(url => {
-                const commentImgSrc = `data:image/jpeg:base64,${url}`;
-                // 改成base64陣列
-                photosHtml += `<img src="${commentImgSrc}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
+                photosHtml += `<img src="${url}" alt="評論照片" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">`;
             });
         }
 

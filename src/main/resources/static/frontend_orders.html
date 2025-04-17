@@ -237,6 +237,7 @@
                     const dateStr = start.toLocaleDateString('zh-TW');
                     const timeStr = `${start.getHours().toString().padStart(2, '0')} : ${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')} : ${end.getMinutes().toString().padStart(2, '0')}`
 
+                    console.log(orders.spaceCoverPhotoURL);
 
                     const cardHtml = `
                         <div class="order-container">
