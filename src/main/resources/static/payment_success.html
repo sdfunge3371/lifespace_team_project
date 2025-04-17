@@ -62,13 +62,13 @@
 </head>
 <body>
 <div class="modal-content">
-    <div class="animation-container">
+    <div class="animation-container" style="display: none;">
         <dotlottie-player
-                class="success-icon"
-                src="https://lottie.host/e210d343-23be-4a39-8bf8-5b16178374d1/ZNZKiPtOuz.lottie"
-                background="transparent"
-                speed="1"
-                loop autoplay>
+            class="success-icon"
+            src="https://lottie.host/e210d343-23be-4a39-8bf8-5b16178374d1/ZNZKiPtOuz.lottie"
+            background="transparent"
+            speed="0.8"
+            loop autoplay>
         </dotlottie-player>
     </div>
     <div class="title">付款已完成</div>
@@ -79,7 +79,37 @@
 </div>
 
 <script>
-    sessionStorage.removeItem("currentOrderId");
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId");
+
+    if (!orderId) {
+        window.location.href = "/payment_fail.html";
+    }
+
+    fetch(`/orders/status/${orderId}`)
+        .then(res => {
+            if (!res.ok) throw new Error("查詢失敗");
+            return res.json();
+        })
+        .then(order => {
+            if (order.orderStatus !== 1) {
+                // 尚未付款成功
+                window.location.href = "/payment_fail.html";
+            } else {
+                // 顯示訂單成功畫面
+                document.getElementById("status-text").textContent = `訂單 ${order.orderId} 付款成功`;
+            }
+        })
+        .catch(err => {
+            console.error("驗證失敗：", err);
+            window.location.href = "/payment_fail.html";
+        });
+</script>
+
+</body>
+</html>
+
+sessionStorage.removeItem("currentOrderId");
 </script>
 </body>
 </html>

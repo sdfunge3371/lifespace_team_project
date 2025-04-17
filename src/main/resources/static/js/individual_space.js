@@ -1529,6 +1529,7 @@ function sendOrder(memberId) {
         accountsPayable: totalPrice,
         paymentDatetime: Date.now(),
         memberId: memberId,
+        isDaily: isDaily,
         eventDTO: null,     // 活動要在付款之後才放上去 (利用修改的方式)
         rentalItemDetailsDTOList: rentalItemList,
         spaceFloor: spaceFloor

@@ -126,21 +126,6 @@ public class OrdersService {
         return OrdersMapper.toOrdersDTO(orders);
     }
 
-    public OrdersDTO toOrdersDTOWithCoverPhoto(Orders orders) {
-        OrdersDTO dto = OrdersMapper.toOrdersDTO(orders);
-
-        // 抓第一張圖當封面
-        List<SpacePhoto> photos = spacePhotoSvc.getSpacePhotosBySpaceId(orders.getSpaceId());
-        if (!photos.isEmpty()) {
-            byte[] CoverPhoto = photos.get(0).getPhoto();
-            String base64 = Base64.getEncoder().encodeToString(CoverPhoto);
-            dto.setSpaceCoverPhoto("data:image/jpeg;base64," + base64);
-        }
-
-        return dto;
-    }
-
-
     //綠界 送form表單
     public ResponseEntity<String> checkoutWithEcpay(String orderId) {
         OrdersDTO order = getOrdersDTOByOrderId(orderId);
@@ -347,7 +332,18 @@ public class OrdersService {
         space.setSpaceId(ordersDTO.getSpaceId());
         order.setSpace(space);
 
+        int spaceFee;
+        if (ordersDTO.getOrderStart() != null && ordersDTO.getOrderEnd() != null & Boolean.TRUE.equals(ordersDTO.getIsDaily())) {
+            spaceFee = space.getSpaceDailyFee();
+        } else {
+            long millis = ordersDTO.getOrderEnd().getTime() - ordersDTO.getOrderStart().getTime();
+            long halfHours = (long) Math.ceil(millis / (1000.0 * 60 * 30));
+            int halfHourPrice = space.getSpaceHourlyFee() / 2;
+            spaceFee = (int) (halfHours * halfHourPrice);
+        }
+
         // 若有加購項目
+        int rentalItemFee = 0 ;
         List<RentalItemDetailsDTO> rentalItemList = ordersDTO.getRentalItemDetailsDTOList();
 
         if (rentalItemList != null && !rentalItemList.isEmpty()) {
@@ -363,9 +359,14 @@ public class OrdersService {
                     throw new IllegalArgumentException("可租借數量不足：" + rentalItem.getRentalItemName());
                 }
 
+                int quantity = dto.getRentalItemQuantity();
+                int Price = rentalItem.getRentalItemPrice();
+
                 // 更新剩餘可租借數量
                 rentalItem.setAvailableRentalQuantity(rentalItem.getAvailableRentalQuantity() - dto.getRentalItemQuantity());
                 rentalItemRepository.save(rentalItem);
+
+                rentalItemFee += Price * quantity;
 
                 // 建立關聯
                 RentalItemDetails item = new RentalItemDetails();
@@ -377,7 +378,10 @@ public class OrdersService {
                 rentalItems.add(item);
             }
 
+
             order.setRentalItemDetails(rentalItems);
+            order.setTotalPrice(spaceFee);
+            order.setAccountsPayable(spaceFee + rentalItemFee);
 
         }
         ordersRepository.save(order);

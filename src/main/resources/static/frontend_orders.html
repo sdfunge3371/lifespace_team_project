@@ -241,8 +241,8 @@
                     const cardHtml = `
                         <div class="order-container">
                             <div class="order-img position-relative">
-                                <img src="images/img.bootstrap/house-placeholder.jpg" alt="空間圖片" class="img-fluid">
-                                <a href="space_detail.html?spaceId=${orders.spaceId}"
+                                <img src="${orders.spaceCoverPhotoURL}" alt="空間圖片" class="img-fluid" onerror= "this.src='images/img.bootstrap/house-placeholder.jpg'">
+                                <a href="/individual_space.html?spaceId=${orders.spaceId}"
                                    class="btn btn-sm btn-light text-dark border view-space-btn">
                                     查看空間
                                 </a>
@@ -253,9 +253,9 @@
                                 <p><span class="label">租借時段：</span>${timeStr}</p>
                                 <p><span class="label">空間地點：</span>${orders.spaceLocation}</p>
                                 <p>
-                                    <span class="label">訂單金額：</span>$${orders.totalPrice}
+                                    <span class="label">訂單總金額：</span>$${orders.accountsPayable}
                                     <button type="button" class="btn btn-sm btn-outline-secondary ms-2 view-detail-btn"
-                                        data-spacefee="${orders.calculatedSpaceFee|| 0}"
+                                        data-spacefee="${orders.totalPrice|| 0}"
                                         data-items='${JSON.stringify(orders.rentalItemDetailsDTOList || [])}'>
                                         查看明細
                                     </button>
