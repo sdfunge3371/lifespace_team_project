@@ -145,10 +145,10 @@
 	</div>
 
 
-    <!-- 熱門推薦 -->
+    <!-- 活動總覽 -->
     <div class="container my-5">
     <div class="slide-outer">
-        <h2>熱門推薦</h2>
+        <h2>活動總覽</h2>
         <div class="events-container" id="events-container">
             <!-- 活動卡片 -->
         </div>
@@ -371,11 +371,11 @@
             document.getElementById('category').value = ''; 
         }
 
-        // 重置到熱門推薦
+        // 重置到活動總覽
         function resetToPopularEvents() {
-            // 將標題改回「熱門推薦」
+            // 將標題改回「活動總覽」
             const slideOuterTitle = document.querySelector('.slide-outer h2');
-            slideOuterTitle.textContent = '熱門推薦';
+            slideOuterTitle.textContent = '活動總覽';
 
             // 重新獲取所有活動
             fetchAllEvents();
@@ -404,8 +404,8 @@
                 })
                 .then(events => {
                     console.log('成功獲取活動數據:', events);
-                    // 顯示活動在熱門推薦區域
-                    displayEvents(events, '熱門推薦');
+                    // 顯示活動在活動總覽區域
+                    displayEvents(events, '活動總覽');
                 })
                 .catch(error => {
                     console.error('獲取活動時出錯:', error);
