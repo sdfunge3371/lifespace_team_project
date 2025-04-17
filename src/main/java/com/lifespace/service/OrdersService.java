@@ -134,7 +134,7 @@ public class OrdersService {
         }
 
         try {
-            //確認可以讀到綠界的EcpayPayment.xml
+            //確認可以讀到綠界的payment.xml
             URL fileURL = getClass().getClassLoader().getResource("payment_conf.xml");
             if (fileURL != null) {
                 System.out.println("有讀到payment_conf.xml：" + fileURL);
