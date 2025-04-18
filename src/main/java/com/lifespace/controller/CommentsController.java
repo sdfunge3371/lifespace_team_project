@@ -221,14 +221,33 @@ public class CommentsController {
 	}
 
 	
+//	@GetMapping("/comments/loginMember")
+//	public ResponseEntity<?> getLoginMemberId(HttpSession session) {
+//	    String memberId = SessionUtils.getLoginMemberId(session); // 從工具類取得會員ID，session.getAttribute("loginMember")
+//	    if (memberId == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入或參加活動");
+//	    }
+//	    return ResponseEntity.ok(memberId);
+//	}
+//	
+	// 先驗證是否登入會員
 	@GetMapping("/comments/loginMember")
-	public ResponseEntity<?> getLoginMemberId(HttpSession session) {
+	public ResponseEntity<?> getLoginEventMemberId(HttpSession session, @RequestParam String eventId) {
 	    String memberId = SessionUtils.getLoginMemberId(session); // 從工具類取得會員ID，session.getAttribute("loginMember")
 	    if (memberId == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入或參加活動");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
 	    }
-	    return ResponseEntity.ok(memberId);
+
+	    String eventMemberId = commentsService.findEventMemberId(memberId, eventId);
+	    if (eventMemberId == null) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("未參加此活動");
+	    }
+
+	    return ResponseEntity.ok(eventMemberId); // 回傳 EM001
 	}
+
+	
+	
 
 	
 	
@@ -265,26 +284,152 @@ public class CommentsController {
 //	    return dto;
 //	}
 
+//	// 有參加活動的會員才能 編輯 本人的留言
+//	@PutMapping("/comments/{commentId}")
+//	public ResponseEntity<?> updateComment(@PathVariable String commentId,
+//	                                        @RequestBody Comments updatedComment,
+//	                                        HttpSession session) {
+//	    Object obj = session.getAttribute("eventMember");
+//	    EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+//	    if (eventMember == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登入或未參加活動");
+//	    }
+//
+//	    Comments original = commentsService.getOneComments(commentId);
+//	    if (original == null || !original.getEventMember().getEventMemberId().equals(eventMember.getEventMemberId())) {
+//	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("無權限編輯他人留言");
+//	    }
+//
+//	    original.setCommentMessage(updatedComment.getCommentMessage());
+//	    commentsService.updateComments(original);
+//	    return ResponseEntity.ok("留言已更新");
+//	}
+	
+	
+//	// 有參加活動的會員才能 編輯 本人的留言
+//	@PutMapping("/comments/{commentId}")
+//	public ResponseEntity<?> updateComment(@PathVariable String commentId,
+//	                                       @RequestBody CommentsDTO dto,
+//	                                       HttpSession session) {
+//	    String eventMemberId = commentsService.findEventMemberIdBySessionMemberAndEvent(dto.getEventId(), session);
+//	    if (eventMemberId == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入或未參加活動");
+//	    }
+//
+//	    return commentsService.updateComment(commentId, dto.getCommentMessage(), eventMemberId);
+//	}
+	
+	
+	
+//	// 有參加活動的會員才能 編輯 本人的留言
+//	@PutMapping("/comments/{commentId}")
+//	public ResponseEntity<?> updateComment(
+//	        @PathVariable String commentId,
+//	        @RequestBody CommentsDTO updated,
+//	        HttpSession session) {
+//
+//	    Object obj = session.getAttribute("eventMember");
+//	    EventMember sessionEventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+//
+//	    if (sessionEventMember == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入或未參加活動");
+//	    }
+//
+//	    Comments original = commentsService.getOneComments(commentId);
+//	    if (original == null) {
+//	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("留言不存在");
+//	    }
+//
+//	    if (!original.getEventMember().getEventMemberId().equals(sessionEventMember.getEventMemberId())) {
+//	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("無權限編輯他人留言");
+//	    }
+//
+//	    original.setCommentMessage(updated.getCommentMessage());
+//	    commentsService.updateComments(original);
+//	    return ResponseEntity.ok("留言已更新");
+//	}
+
+	
+//	// 有參加活動的會員才能 編輯 本人的留言
+//	@PutMapping("/comments/{commentId}")
+//	public ResponseEntity<?> updateComment(
+//	        @PathVariable String commentId,
+//	        @RequestBody CommentsDTO updated,
+//	        HttpSession session) {
+//
+//	    String memberId = SessionUtils.getLoginMemberId(session);
+//	    if (memberId == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登入");
+//	    }
+//
+//	    Comments original = commentsService.getOneComments(commentId);
+//	    if (original == null) {
+//	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("留言不存在");
+//	    }
+//
+//	    // 比對目前登入會員與留言者是否為同一人（透過 event + member 關聯）
+//	    String expectedEventMemberId = commentsService.findEventMemberId(memberId, original.getEvent().getEventId());
+//	    if (!original.getEventMember().getEventMemberId().equals(expectedEventMemberId)) {
+//	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("無權限編輯他人留言");
+//	    }
+//
+//	    original.setCommentMessage(updated.getCommentMessage());
+//	    commentsService.updateComments(original);
+//	    return ResponseEntity.ok("留言已更新");
+//	}
+	
+	
+//	// 有參加活動的會員才能 編輯 本人的留言
+//	@PutMapping("/comments/{commentId}")
+//	public ResponseEntity<?> updateComment(@PathVariable String commentId,
+//	                                       @RequestBody CommentsDTO dto,
+//	                                       HttpSession session) {
+//	    // 🔴 Step 1：取得登入會員 ID
+//	    String memberId = SessionUtils.getLoginMemberId(session);
+//	    if (memberId == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
+//	    }
+//
+//	    // 🔴 Step 2：根據 memberId 與 eventId 找出 eventMember
+//	    String eventId = dto.getEventId(); // 記得 DTO 要帶 eventId
+//	    EventMember eventMember = eventMemberRepository.findByMemberMemberIdAndEventEventId(memberId, eventId);
+//
+//	    if (eventMember == null) {
+//	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未參加活動");
+//	    }
+//
+//	    // ✅ Step 3：設入 session（讓後續的權限檢查可用）
+//	    session.setAttribute("eventMember", eventMember);
+//
+//	    // ✅ Step 4：交給原本的邏輯做檢查與更新
+//	    return commentsService.updateCommentWithCheck(commentId, dto, eventMember);
+//	}
+	
+	
+	
 	// 有參加活動的會員才能 編輯 本人的留言
 	@PutMapping("/comments/{commentId}")
 	public ResponseEntity<?> updateComment(@PathVariable String commentId,
-	                                        @RequestBody Comments updatedComment,
-	                                        HttpSession session) {
-	    Object obj = session.getAttribute("eventMember");
-	    EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+	                                       @RequestBody CommentsDTO dto,
+	                                       HttpSession session) {
+		// 取得登入會員 ID
+	    String memberId = SessionUtils.getLoginMemberId(session);
+	    if (memberId == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
+	    }
+	    
+	    // 根據 memberId 與 eventId 找出 eventMember
+	    String eventId = dto.getEventId();
+	    EventMember eventMember = eventMemberRepository.findByMemberMemberIdAndEventEventId(memberId, eventId);
 	    if (eventMember == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登入或未參加活動");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未參加活動");
 	    }
 
-	    Comments original = commentsService.getOneComments(commentId);
-	    if (original == null || !original.getEventMember().getEventMemberId().equals(eventMember.getEventMemberId())) {
-	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("無權限編輯他人留言");
-	    }
-
-	    original.setCommentMessage(updatedComment.getCommentMessage());
-	    commentsService.updateComments(original);
-	    return ResponseEntity.ok("留言已更新");
+	    return commentsService.updateComment(commentId, dto.getCommentMessage(), eventMember.getEventMemberId());
 	}
+
+	
+	
 
 	// 有參加活動的會員才能 刪除 本人的留言
 	@DeleteMapping("/comments/{commentId}")
@@ -304,7 +449,7 @@ public class CommentsController {
 	    return ResponseEntity.ok("留言已刪除");
 	}
 
-	// 查詢會員資料
+	// 前端點擊該留言的會員名稱或大頭貼可查詢會員資料
 	@GetMapping("/members/{eventMemberId}/profile")
 	public ResponseEntity<?> getMemberProfileFromEventMember(@PathVariable String eventMemberId) {
 	    Optional<EventMember> emOpt = eventMemberRepository.findById(eventMemberId);
@@ -318,8 +463,8 @@ public class CommentsController {
 	    data.put("memberId", member.getMemberId());
 	    data.put("memberName", member.getMemberName());
 	    data.put("email", member.getEmail());
-	    data.put("phone", member.getPhone());
-	    data.put("birthday", member.getBirthday());
+//	    data.put("phone", member.getPhone());
+//	    data.put("birthday", member.getBirthday());
 
 	    return ResponseEntity.ok(data);
 	}
