@@ -109,6 +109,14 @@ public class AdminController {
 		
 	}
     
+    
+  //-------------------------------管理員登出功能------------------------------------
+  	@PostMapping("/admin/logout")
+  	public ResponseEntity<Void> logout(HttpSession session) {
+  		SessionUtils.removeAdminLogin(session); // 清掉 session 裡的loginMember
+  		return ResponseEntity.ok().build();  //讓前端決定要導去哪裡
+  	}
+    
 
     
     
