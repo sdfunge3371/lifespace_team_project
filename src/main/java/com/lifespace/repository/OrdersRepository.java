@@ -1,9 +1,7 @@
 package com.lifespace.repository;
 
-import com.lifespace.entity.Member;
 import com.lifespace.entity.Orders;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,6 +22,7 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     List<Orders> findByOrderStatusAndOrderEndBefore(Integer orderStatus, Timestamp OrderEnd );
 
+
     @EntityGraph(attributePaths = {"branch", "member", "rentalItemDetails", "rentalItemDetails.rentalItem"})
     List<Orders> findAll();
 
@@ -43,9 +42,13 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     //判斷訂單是否有存LineUserId
     boolean existsByLineUserId(String lineUserId);
 
+    @Transactional
     @Modifying
-    @Query("UPDATE Orders o Set o.lineUserId = :userId WHERE o.orderId IN :orderIds AND o.lineUserId IS NULL")
-    int bulkInsertLineUserIdIfNull(@Param("userId") String userId, @Param("orderIds") List<String> orderIds);
+    @Query("UPDATE Orders o Set o.lineUserId = :lineUserId WHERE o.orderId IN :orderIds AND o.lineUserId IS NULL")
+    int bulkInsertLineUserIdIfNull(@Param("lineUserId") String lineUserId, @Param("orderIds") List<String> orderIds);
+
+    @Query("SELECT o.orderStatus FROM Orders o WHERE o.orderId = :orderId ")
+    Integer findOrderStatusByOrderId(@Param("orderId")  String orderId);
 
     //用舉辦人id以及活動id查詢訂單，作為舉辦者取消活動用
     Optional<Orders> findByEventEventIdAndMemberMemberId(String eventId, String memberId);

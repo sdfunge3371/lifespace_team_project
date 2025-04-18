@@ -4,6 +4,9 @@ import com.lifespace.exception.ResourceNotFoundException;
 import com.lifespace.entity.SpacePhoto;
 import com.lifespace.service.SpacePhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,9 +51,9 @@ public class SpacePhotoController {
 
         byte[] image = photos.get(0).getPhoto();
 
-        return ResponseEntity
-                .ok()
-                .header("Content-Type", "image/jpeg")
-                .body(image);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.IMAGE_JPEG); //設定圖片副檔名
+
+        return new ResponseEntity<>(image, httpHeaders, HttpStatus.OK);
     }
 }

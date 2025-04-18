@@ -140,7 +140,7 @@ public class OrdersService {
         }
 
         try {
-            //確認可以讀到綠界的payment.xml
+            //確認可以讀到綠界的EcpayPayment.xml
             URL fileURL = getClass().getClassLoader().getResource("payment_conf.xml");
             if (fileURL != null) {
                 System.out.println("有讀到payment_conf.xml：" + fileURL);
@@ -229,117 +229,42 @@ public class OrdersService {
         }
     }
 
-    //取出未綁定lineUserId的訂單筆數收集成List
-    @Transactional
-    public int insertLineUserIdToOrders(List<Orders> orders, String userId) {
-        List<String> lineUserIdToBind = orders.stream()
+    public  List<OrdersDTO> getOrdersByLineUserId(String lineUserId) {
+        List<Orders> orders = ordersRepository.findTop3ByLineUserIdAndOrderStatusOrderByOrderStartDesc(lineUserId, 1);
+        return orders.stream()
+                     .map(OrdersMapper::toOrdersDTO)
+                     .collect(Collectors.toList());
+    }
+
+    public boolean bindLineUserIdAndPushOrders(String lineUserId, String memberName, String phone) {
+        Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
+        if (member == null) {
+            return false;
+        }
+
+        //取出三筆最靠近開始時間及狀態是已付款的訂單
+        List<Orders> orders = ordersRepository.findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(member.getMemberId(), 1);
+        if (orders == null) {
+            return false;
+        }
+
+        //取出未綁定lineUserId的訂單筆數收集成List,將這些訂單綁定lineUserId
+        List<String> orderIds = orders.stream()
                 .filter(order -> order.getLineUserId() == null)
                 .map(Orders::getOrderId)
                 .collect(Collectors.toList());
 
-        //驗證是否有訂單筆數,沒有就直接return 0筆中斷
-        if(lineUserIdToBind.isEmpty()) {
-            return 0;
-        }else{
-            return ordersRepository.bulkInsertLineUserIdIfNull(userId, lineUserIdToBind);
-        }
-    }
-
-    //lineWebHookHandler webhook推播訂單內容
-    public void handleLineWebhook(Map<String, Object> lineReq) {
-        try{
-            List<Map<String, Object>> lineEvents = (List<Map<String,Object>>)lineReq.get("events");
-            Map<String, Object> lineEvent = lineEvents.get(0);
-            Map<String, Object> lineSource = (Map<String, Object>) lineEvent.get("source");
-            String userId = lineSource.get("userId").toString();
-
-            Map<String, Object> lineMessage = (Map<String, Object>) lineEvent.get("message");
-            String lineText = lineMessage.get("text").toString().trim();
-
-            System.out.println("使用者ID: " + userId + "\n訊息內容: " + lineText);
-
-            boolean isReturnUser = ordersRepository.existsByLineUserId(userId);
-            if(isReturnUser) {
-                List<Orders> orders = ordersRepository.findTop3ByLineUserIdAndOrderStatusOrderByOrderStartDesc(userId, 1);
-
-                if (orders.isEmpty()) {
-                    sendLineMessage(userId, "沒有預訂中的訂單喔! 趕快進入官網預訂吧～");
-                }else {
-
-                }
-            }
-
-
-            String[] isFirstUse = lineText.split("//s+");
-            if(isFirstUse.length > 2) {
-                sendLineMessage(userId, "請輸入正確的格式\n例如:王花花 0958672727");
-                return;
-            }
-
-            String name = isFirstUse[0];
-            String phone = isFirstUse[1];
-
-            Member member = memberRepository.findByMemberNameAndPhone(name, phone);
-            if(member == null) {
-                sendLineMessage(userId, "查無此會員，請確認會員資料是否正確");
-                return;
-            }
-
-            List<Orders> orders = ordersRepository.findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(member.getMemberId(), 1);
-
-            if (orders.isEmpty()) {
-                sendLineMessage(userId, "沒有預訂中的訂單喔! 趕快進入官網預訂吧～");
-                return;
-            }
-
-            //List<Orders>轉換成List<OrdersDTO>
-            List<OrdersDTO> ordersDTO = orders.stream()
-                    .map(OrdersMapper::toOrdersDTO)
-                    .collect(Collectors.toList());
-
-            pushOrdersToUser(ordersDTO, userId);
-
-            int updateOrdersLineId = insertLineUserIdToOrders(orders, userId);
-            pushOrdersToUser(ordersDTO, userId);
-
-            if ("訂單".equals(lineText.trim())) {}
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    //僅適用handleLineWebhook方法
-    private void pushOrdersToUser(List<OrdersDTO> ordersDTO, String userId) {
-        StringBuilder sb = new StringBuilder("最近已預定的訂單:\n");
-
-        for (OrdersDTO dto : ordersDTO){
-            sb.append("訂單編號:").append(dto.getOrderId())
-              .append("\n地點").append(dto.getSpaceLocation())
-              .append("\n時間").append(dto.getOrderStart()).append(" 至 ").append(dto.getOrderEnd())
-              .append("\n金額").append(dto.getAccountsPayable()).append("元");
+        if (orderIds.isEmpty()) {
+            return false;
         }
 
-        sendLineMessage(userId, sb.toString());
-    }
+        int lineUserIdUpdated = ordersRepository.bulkInsertLineUserIdIfNull(lineUserId, orderIds);
 
-    //Line推播訊息
-    public void sendLineMessage(String userId, String message) {
-        PushMessageRequest request = new PushMessageRequest(
-                userId,
-                List.of(new TextMessage(message)),
-                false,
-                null
-        );
-
-        UUID retryKey = UUID.randomUUID();
-        messagingApiClient.pushMessage(retryKey, request)
-            .whenComplete((response, exception) -> {
-                if (exception != null) {
-                    System.err.println("LINE 訊息推播失敗: " + exception.getMessage());
-                } else {
-                    System.out.println("LINE 推播成功");
-                }
-            });
+        if(lineUserIdUpdated > 0){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     
