@@ -10,7 +10,7 @@ $(document).ready(function () {
     console.log(eventId);
     if (eventId) {
         // 2. 使用 eventId 呼叫 API 獲取活動資料
-        const apiUrl = `http://localhost:8080/lifespace/event/getOne?eventId=${eventId}`;
+        const apiUrl = `/lifespace/event/getOne?eventId=${eventId}`;
 
         fetch(apiUrl)
             .then(response => {
@@ -75,7 +75,7 @@ $(document).ready(function () {
                         event.photoUrls.forEach(photoUrl => {
                             carousel.append(`
                 <div class="owl-carousel-item" style="height: 400px; display: flex; align-items: center; justify-content: center;">
-                    <img class="img-fluid" src="${'http://localhost:8080' + photoUrl}" alt="${event.eventName}" style="width: 100%; height: 350px; object-fit: contain;">
+                    <img class="img-fluid" src="${photoUrl}" alt="${event.eventName}" style="width: 100%; height: 350px; object-fit: contain;">
                 </div>
             `);
                         });
@@ -83,7 +83,7 @@ $(document).ready(function () {
                         // 如果沒有圖片，使用默認圖片
                         carousel.append(`
             <div class="owl-carousel-item">
-                <img src="http://localhost:8080/images/default_for_event_and_space.jpg" alt="預設圖片">
+                <img src="/images/default_for_event_and_space.jpg" alt="預設圖片">
             </div>
         `);
                     }
@@ -153,7 +153,7 @@ $(document).ready(function () {
     
     // 檢查用戶參與狀態
     function checkUserParticipationStatus() {
-        fetch(`http://localhost:8080/lifespace/event/check/eventMemberStatus?eventId=${eventId}`, {
+        fetch(`/lifespace/event/check/eventMemberStatus?eventId=${eventId}`, {
             method: 'GET',
             credentials: 'include' // 確保請求包含 cookies
         })
@@ -198,7 +198,7 @@ $(document).ready(function () {
 		// 彈出確認視窗
 		if (confirm("確定要參加這個活動嗎？")){
         // 發送 API 請求
-        	fetch(`http://localhost:8080/lifespace/event/addMemToEvent?eventId=${eventId}`, {
+        	fetch(`/lifespace/event/addMemToEvent?eventId=${eventId}`, {
             	method: 'PUT',
             	credentials: 'include' // 確保請求包含 cookies
         	})
@@ -257,7 +257,7 @@ $(document).ready(function () {
 		// 彈出確認視窗
 		if (confirm("確定要取消參加這個活動嗎？")){
         // 發送 API 請求
-        	fetch(`http://localhost:8080/lifespace/event/removeMemFromEvent?eventId=${eventId}`, {
+        	fetch(`/lifespace/event/removeMemFromEvent?eventId=${eventId}`, {
             	method: 'PUT',
             	credentials: 'include' // 確保請求包含 cookies
         	})
@@ -303,7 +303,7 @@ $(document).ready(function () {
     // 原有的候補取消按鈕點擊事件
     $("#waiting-cancel").click(function () {
         // 調用 API 取消候補
-        fetch(`http://localhost:8080/lifespace/event/removeMemFromEvent?eventId=${eventId}`, {
+        fetch(`/lifespace/event/removeMemFromEvent?eventId=${eventId}`, {
             method: 'PUT',
             credentials: 'include' // 確保請求包含 cookies
         })
@@ -345,3 +345,65 @@ let spaces = [];
 let usages = [];
     
 // ============= 地圖相關 =============
+
+// 定義全局 initMap 函數
+    function initMap(latitude, longitude) {
+        // 確保座標是數值類型
+        const lat = parseFloat(latitude);
+        const lng = parseFloat(longitude);
+        
+        if (isNaN(lat) || isNaN(lng)) {
+            console.error('無效的坐標值:', latitude, longitude);
+            return;
+        }
+        
+        // 檢查 map 元素是否存在
+        const mapElement = document.getElementById("map");
+        if (!mapElement) {
+            console.error('找不到地圖容器元素 #map');
+            return;
+        }
+        
+        // 位置坐標
+        const position = { lat: lat, lng: lng };
+        
+        // 創建地圖
+        const map = new google.maps.Map(mapElement, {
+            zoom: 15,
+            center: position
+        });
+
+        // 創建標記
+        const marker = new google.maps.Marker({
+            map: map,
+            position: position,
+            title: "活動位置"
+        });
+    }
+	
+	
+	// 全局變數儲存坐標
+	  window.eventCoords = {
+	      latitude: null,
+	      longitude: null
+	  };
+		
+	// 回調函數，當 Google Maps API 載入完成時調用
+		function initMapCallback() {
+		    console.log("Google Maps API 已載入");
+		    if (window.eventCoords.latitude && window.eventCoords.longitude) {
+		        console.log("初始化地圖，坐標:", window.eventCoords);
+		        initMap(window.eventCoords.latitude, window.eventCoords.longitude);
+		    }
+		}
+		
+		// 透過後端取得 Google Maps API key
+		 $.get("/api/config/google-maps-key", function(response) {
+		      const apiKey = response.key;
+		       // 使用script標籤載入 Google Maps API
+		       const script = document.createElement("script");
+		       script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMapCallback`;
+		       script.async = true;
+		       script.defer = true;
+		       document.head.appendChild(script);
+		 });

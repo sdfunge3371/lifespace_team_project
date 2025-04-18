@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	        let adminId = '';  // 假設登入者 ID
 
 	        $.ajax({
-	            url: "http://localhost:8080/admin/faq/profile",
+	            url: "/admin/faq/profile",
 	            method: "GET",
 	            xhrFields: {
 	                withCredentials: true // 等同於 fetch 的 credentials: "include"
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			// 獲取所有地點
 			async function fetchAllBranches() {
 			       // 使用API端點路徑
-			       const apiUrl = 'http://localhost:8080/branch/getAll';
+			       const apiUrl = '/branch/getAll';
 
 			       fetch(apiUrl)
 			           .then(response => {
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				const branchId = document.getElementById('location').value || "";
 				
                 // 構建API URL
-                let url = `http://localhost:8080/spaces/comments?page=${currentPage}&size=${pageSize}`;
+                let url = `/spaces/comments?page=${currentPage}&size=${pageSize}`;
                 if (spaceId) url += `&spaceId=${encodeURIComponent(spaceId)}`;
                 if (spaceName) url += `&spaceName=${encodeURIComponent(spaceName)}`;
                 if (branchId) url += `&branchId=${encodeURIComponent(branchId)}`;
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			            const input = box.querySelector('.reply-input');
 			            const replyContent = input.value.trim();
 
-			            fetch('http://localhost:8080/spaces/comments/reply', {
+			            fetch('/spaces/comments/reply', {
 			                method: 'POST',
 			                headers: {
 			                    'Content-Type': 'application/json'

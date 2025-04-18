@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface EventRepository extends JpaRepository<Event,String>{
 
-	List<Event> findByEventStatusAndEventStartTimeAfter( EventStatus eventStatus, Timestamp timeStart );
+	List<Event> findByEventStatusAndEventStartTimeBefore( EventStatus eventStatus, Timestamp timeStart );
 
 	List<Event> findByEventStartTimeBetweenAndEventStatus(
 			Timestamp start, Timestamp end, EventStatus status );

@@ -40,7 +40,7 @@
    // 獲取所有活動類別
    async function fetchAllEventsCategory() {
        // 使用API端點路徑
-       const apiUrl = 'http://localhost:8080/lifespace/event/getAllCategories';
+       const apiUrl = '/lifespace/event/getAllCategories';
 
        console.log('正在嘗試獲取活動類別數據，API 路徑:', apiUrl);
 
@@ -130,7 +130,7 @@
    // 獲取所有地點
    async function fetchAllBranches() {
        // 使用API端點路徑
-       const apiUrl = 'http://localhost:8080/branch/getAll';
+       const apiUrl = '/branch/getAll';
 
        fetch(apiUrl)
            .then(response => {
@@ -193,7 +193,7 @@
    // 修改獲取所有活動的函數，支持後端分頁
    async function fetchAllEvents(page = 0) {
        // 使用API端點路徑，添加分頁參數
-       const apiUrl = `http://localhost:8080/lifespace/event/getAll?page=${page}&size=${pageSize}`;
+       const apiUrl = `/lifespace/event/getAll?page=${page}&size=${pageSize}`;
 
        console.log('正在嘗試獲取活動數據，API 路徑:', apiUrl);
 
@@ -257,7 +257,7 @@
        };
 
        // 構建 API URL，包含分頁參數
-       const apiUrl = 'http://localhost:8080/lifespace/event/search/native?' + new URLSearchParams({
+       const apiUrl = '/lifespace/event/search/native?' + new URLSearchParams({
            ...searchParams,
            page: page,
            size: pageSize
@@ -275,7 +275,7 @@
 
                // 如果沒有結果
                if (pageData.content.length === 0) {
-                   alert('沒有符合條件的活動');
+                   //alert('沒有符合條件的活動');
                    
                    // 清空顯示區域並顯示無數據提示
                    const eventsContainer = document.getElementById('events-container');
@@ -347,9 +347,9 @@
            // 取得照片 URL
            let photoUrl = '';
            if (event.photoUrls && event.photoUrls.length > 0) {
-               photoUrl = 'http://localhost:8080' + event.photoUrls[0]; // 顯示第一張照片
+               photoUrl = event.photoUrls[0]; // 顯示第一張照片
            } else {
-               photoUrl = 'http://localhost:8080/images/default_for_event_and_space.jpg'; // 使用預設圖片
+               photoUrl = '/images/default_for_event_and_space.jpg'; // 使用預設圖片
            }
            
            // 創建活動卡片

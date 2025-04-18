@@ -256,14 +256,25 @@ public class EventController {
         return ResponseEntity.ok(result);
     }
     
-    //舉辦者取消活動
+  //舉辦者取消活動
     @PutMapping("/cancell")
-    public String cancellEvent(
-    		@RequestParam(required = true) String organizerId, 
-    		@RequestParam(required = true) String eventId){
-    		
-    	eventSvc.cancellEvent(organizerId, eventId);
-		return "執行cancell event by organizer jpa方法";	
+    public ResponseEntity<String> cancellEvent(
+    		  @RequestParam String eventId,
+    	      HttpSession session ){
+    	
+    	 String organizerId = (String) session.getAttribute("loginMember");
+
+    	 // 未登入時拒絕操作
+    	  if (organizerId == null) {
+    	       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入後再取消活動");
+    	  }
+
+    	  try {
+    	        eventSvc.cancellEvent(organizerId, eventId); 
+    	        return ResponseEntity.ok("活動取消成功");
+    	    } catch (Exception e) {
+    	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("取消活動失敗：" + e.getMessage());
+    	    }
     }
     
     //檢查使用者在特定活動的參與狀態
