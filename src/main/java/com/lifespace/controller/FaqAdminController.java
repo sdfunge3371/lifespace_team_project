@@ -1,11 +1,11 @@
 package com.lifespace.controller;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lifespace.SessionUtils;
 import com.lifespace.dto.FaqAddDTO;
 import com.lifespace.dto.FaqDTO;
+import com.lifespace.dto.FaqGaEventDTO;
 import com.lifespace.dto.FaqUpdateDTO;
-import com.lifespace.dto.MemberDTO;
-import com.lifespace.entity.Member;
 import com.lifespace.service.FaqService;
+import com.lifespace.service.GAReportingService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -32,6 +32,9 @@ public class FaqAdminController {
 
 	@Autowired
 	private FaqService faqSvc;
+	
+	@Autowired
+	private GAReportingService gaService;
 	
 	//---檢查是否登入管理員---
 	@GetMapping("profile")
@@ -77,4 +80,16 @@ public class FaqAdminController {
 
 		return faqSvc.updateFaqError(dto, bindingResult);
 	}
+	
+	// 透過 GA4 的官方API取得報表資料
+		@GetMapping("/ga/popular-events")
+		public ResponseEntity<List<FaqGaEventDTO>> getPopularEvents(
+		    @RequestParam String startDate,
+		    @RequestParam String endDate,		//GA API要的參數格式
+		    @RequestParam String eventName,    // 這裡傳"faq_click"
+		    @RequestParam(defaultValue = "5") int limit) {
+
+			 return ResponseEntity.ok(gaService.getTopEvents(startDate, endDate, "faq_click", limit));
+		}
+		
 }

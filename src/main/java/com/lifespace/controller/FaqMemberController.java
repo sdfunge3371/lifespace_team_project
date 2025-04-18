@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lifespace.dto.FaqDTO;
 import com.lifespace.service.FaqRedisService;
 import com.lifespace.service.FaqService;
-//會回傳 JSON，不會找 View
+//會回傳 JSON
 @RestController
 @RequestMapping("/member/faq")
 public class FaqMemberController {

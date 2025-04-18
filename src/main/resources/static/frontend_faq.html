@@ -5,7 +5,21 @@
 <meta content="" name="keywords">
 <meta content="" name="description">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="images/favicon.ico" rel="icon">
+
+<!-- Google tag (gtag.js)官方建議放在<head>裡，GA 需要一開始就載入追蹤程式碼，這樣才能準確紀錄整個頁面瀏覽行為(讓 GA 一開始就能準備好接收事件) -->
+<!-- 載入 gtag.js（非同步） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2NM42NTB06"></script>
+
+<!-- 初始化 GA -->
+<script>
+	//官方推薦的初始化寫法
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);} // 定義gtag()函式：把傳進來的所有參數推到dataLayer
+  gtag('js', new Date());                    // 設定GA初始化時間
+  gtag('config', 'G-2NM42NTB06');            // 註冊(自己的)GA4 ID，觸發預設追蹤(專案識別碼)
+</script>
+
+<link href="images/img.bootstrap/LifeSpace.png" rel="icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
