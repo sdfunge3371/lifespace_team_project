@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-
+//負責攔截那些需要"登入"才能進入的頁面
 
 @Configuration
 public class SecurityConfig  {
@@ -37,21 +37,46 @@ public class SecurityConfig  {
 		 
 		http.cors(); //啟用跨域支援
 		http.csrf().disable(); //先關掉CSRF（測試階段方便，但上線建議開啟）
-         
+		
+		//這段是負責根據路徑導去對應的登入頁面
+	    http.exceptionHandling()
+	        .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+		
+        //需要擋掉的路徑 
 		http.authorizeHttpRequests()
-         .requestMatchers(                 //這些頁面需要登入
+		//擋掉前台需要登入才能進入的路徑
+         .requestMatchers(                 
         		 "/myAccount.html",
                  "/events_for_user.html",
                  "/frontend_orders.html",
                  "/favorite_space.html"
           ).authenticated()   
-         .anyRequest().permitAll();  // 其他都允許
+         
+       //擋掉後台需要登入才能進入的路徑
+         .requestMatchers(                 
+        		 "/backend_news.html",
+                 "/member.html",
+                 "/admin.html",
+                 "/backend_faq.html",
+                 "/space_comment.html",
+                 "/branch.html",
+                 "/rental_item.html",
+                 "/listSpaces.html",
+                 "/backend_index.html"
+          ).authenticated()  
+         
+         
+         
+         
+         
+         
+         .anyRequest().permitAll();  // 其他頁面開放進入
          
 
         //表單登入設計
          http.formLogin()
-             .loginPage("/login.html")   // ✅ 自訂登入頁
-             .defaultSuccessUrl("/homepage.html", true) // 登入成功後導向
+             .loginPage("/login.html")   // 自訂登入頁
+             .successHandler(new CustomLoginSuccessHandler()) // 登入成功後導向
              .permitAll();
          
              

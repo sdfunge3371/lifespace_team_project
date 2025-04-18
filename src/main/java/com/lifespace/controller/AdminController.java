@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,8 +52,21 @@ public class AdminController {
     	if(adminOpt.isPresent()) {
     		//登入成功
     		Admin admin = adminOpt.get();
+    		
+    		//告訴spring security會員已登入
+			Authentication auth = new UsernamePasswordAuthenticationToken(
+			        admin.getEmail(), null, List.of(new SimpleGrantedAuthority("ROLE_MEMBER")));
+			SecurityContextHolder.getContext().setAuthentication(auth);
+			
+			// Spring Security的session認證狀態
+			session.setAttribute(
+			    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+			    SecurityContextHolder.getContext()
+			);
+    		
     		//把資料放在session儲存
     		session.setAttribute("loginAdmin",admin.getAdminId());
+    		
     		//避免洩漏敏感資訊，這裡回傳部分資料
     		Map<String, Object> response = new HashMap<>();
     		response.put("adminId",admin.getAdminId());
