@@ -31,7 +31,7 @@ function previewImage(event) {
       formData.append("memberImage", fileInput.files[0]);  // 確保檔案有選再加
     }
   
-    fetch("http://localhost:8080/member", {
+    fetch("/member", {
       method: "POST",
       body: formData
     })

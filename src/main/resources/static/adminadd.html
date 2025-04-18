@@ -137,7 +137,7 @@
         	
         	//傳送資料到後端
         	//因為這裡是回傳文字而已，所以是response.text();，其他小地方也要改
-            fetch("http://localhost:8080/admin", {
+            fetch("/admin", {
               method: "POST",
               body: formData
             })

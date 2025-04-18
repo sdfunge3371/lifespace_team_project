@@ -131,7 +131,7 @@
             let urlParams = new URLSearchParams(window.location.search);
             let adminId = urlParams.get("adminId");
             if (adminId) {
-                fetch(`http://localhost:8080/admin/id/${adminId}`)
+                fetch(`/admin/id/${adminId}`)
                     .then(res => res.json())
                     .then(data => {
                         document.getElementById("adminName").value = data.adminName;
@@ -153,7 +153,7 @@
             formData.append("email", document.getElementById("email").value);
             formData.append("accountStatus", document.getElementById("accountStatus").value);
 
-            fetch(`http://localhost:8080/admin/${adminId}`, {
+            fetch(`/admin/${adminId}`, {
                 method: "POST",
                 body: formData
             })
