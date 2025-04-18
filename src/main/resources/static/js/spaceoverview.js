@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filters.maxPrice = values[1];
         minPriceDisplay.textContent = `$${filters.minPrice}`;
         maxPriceDisplay.textContent = `$${filters.maxPrice}`;
-        applyFilters();
+        // applyFilters();
     });
 
     // 初始化距離滑桿
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         maxDistanceDisplay.textContent = filters.maxDistance >= 1000
             ? `${(filters.maxDistance / 1000).toFixed(1)}km`
             : `${filters.maxDistance}m`;
-        applyFilters();
+        // applyFilters();
     });
 
 
@@ -124,7 +124,7 @@ function fetchSpaces() {
             // 提取分店資訊
             branches = extractBranchInfo(spaces);
 
-            renderSpaces(spaces);
+            console.log("抓後端時呼叫");
 
             // 如果已經獲取到用戶位置，則更新距離
             if (userLocation) {
@@ -146,6 +146,7 @@ function renderSpaces(spacesToRender) {
 
     // 利用迴圈一個一個生出資料
     spacesToRender.forEach(space => {
+        console.log(space.name);
 
         if (space.status === 0 || space.branchStatus === 0) {    // 如果是分點或空間「未上架」，則不生成此空間資料
             return;   // forEach需要用return以執行迴圈continue功能
@@ -293,15 +294,6 @@ function renderUsages(usages) {
         // 把 label 加到 usageOptions 容器裡
         usageOptions.appendChild(label);
     })
-
-    // 用途篩選
-    document.querySelectorAll('input[name="usage"]').forEach(checkbox => {
-        console.log("usages");
-        checkbox.addEventListener('change', () => {
-            filters.usage = Array.from(document.querySelectorAll('input[name="usage"]:checked')).map(input => input.value);
-            applyFilters();
-        });
-    });
 }
 
 let favoriteSpaceIds = [];
@@ -433,6 +425,7 @@ function getUserLocation() {
                     console.error(`達到最大重試次數 (${MAX_LOCATION_RETRIES})，無法獲取位置`);
                     // 使用默認位置（例如台北市中心）
                     userLocation = { lat: 25.0497, lng: 121.5380 };
+                    console.log("getUserLocation時呼叫");
                     renderSpaces(spaces);
                 }
             },
@@ -441,6 +434,7 @@ function getUserLocation() {
     } else {
         console.warn("瀏覽器不支援地理定位");
         locationRequestInProgress = false;
+        console.log("getUserLocation時呼叫");
         renderSpaces(spaces);
     }
 }
@@ -451,10 +445,8 @@ function updateMapIfInitialized() {
     }
 }
 
-// 之後會改成抓分點
 function updateSpacesDistance() {
     if (!userLocation) return;
-
     spaces.forEach(space => {
         try {
             if (isValidCoordinates(space.coordinates)) {
@@ -475,8 +467,9 @@ function updateSpacesDistance() {
     });
 
     // 更新完距離後重新渲染空間列表
+    console.log("updateSpacesDistance時呼叫");
     renderSpaces(spaces);
-    applyFilters();
+    // applyFilters();
 }
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -529,6 +522,7 @@ function initMap() {
         alert("無法載入地圖，請稍後再試。");
     }
 }
+window.initMap = initMap;
 
 // 取得分點位置資訊
 function extractBranchInfo(spacesData) {
@@ -700,6 +694,7 @@ function filterSpacesByBranch(branchId, branchSpaces) {
     });
 
     // 顯示篩選結果
+    console.log("filterSpacesByBranch時呼叫");
     renderSpaces(filteredSpaces);
 }
 
@@ -781,7 +776,7 @@ function setupEventListeners() {
     priceRange.addEventListener('input', () => {
         filters.maxPrice = parseInt(priceRange.value);
         maxPriceDisplay.textContent = `$${filters.maxPrice}`;
-        applyFilters();
+        // applyFilters();
     });
 
     // 距離範圍
@@ -790,15 +785,14 @@ function setupEventListeners() {
         maxDistanceDisplay.textContent = filters.maxDistance >= 1000
             ? `${(filters.maxDistance / 1000).toFixed(1)}km`
             : `${filters.maxDistance}m`;
-        applyFilters();
+        // applyFilters();
     });
 
     // 人數勾選
     document.querySelectorAll('input[name="people"]').forEach(checkbox => {
-        console.log("people");
         checkbox.addEventListener('change', () => {
             filters.peopleCount = Array.from(document.querySelectorAll('input[name="people"]:checked')).map(input => input.value);
-            applyFilters();
+            // applyFilters();
         });
     });
 
@@ -811,9 +805,23 @@ function setupEventListeners() {
             } else if (parentClass.includes('distance-range')) {
                 distanceRange.noUiSlider.set([0, 10000]);
             }
-            applyFilters();
+            // applyFilters();
         });
     });
+
+    // 用途篩選
+    document.querySelectorAll('input[name="usage"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            filters.usage = Array.from(document.querySelectorAll('input[name="usage"]:checked')).map(input => input.value);
+            // applyFilters();
+        });
+    });
+
+    // 依上述條件搜尋
+    document.getElementById('apply-filter-btn').addEventListener('click', () => {
+        applyFilters();
+    });
+
 
     // === 篩選條件相關 END ===
 }
@@ -855,11 +863,7 @@ function applyFilters() {
 
         return true;
     });
-
     renderSpaces(filteredSpaces);
-    // if (map) { // Only update markers if map is initialized
-    //     updateMapMarkers(filteredSpaces);
-    // }
 }
 
 
@@ -949,6 +953,7 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
 
             targetSearchingElement.innerHTML = targetSearching;
 
+            console.log("按下搜尋時呼叫");
             if (userLocation) {
                 updateSpacesDistance();
             } else {
