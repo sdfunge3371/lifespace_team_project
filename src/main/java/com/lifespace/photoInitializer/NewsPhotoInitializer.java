@@ -1,4 +1,4 @@
-package com.lifespace;
+package com.lifespace.photoInitializer;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

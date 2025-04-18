@@ -1,4 +1,4 @@
-package com.lifespace;
+package com.lifespace.photoInitializer;
 
 import com.lifespace.entity.Space;
 import com.lifespace.entity.SpacePhoto;
