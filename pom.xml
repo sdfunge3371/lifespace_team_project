@@ -282,6 +282,23 @@
             <version>4.0.2</version>
         </dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.google.analytics/google-analytics-data -->
+		<!--Google 提供的 Java SDK，可查詢 GA 報表資料-->
+		<dependency>
+			<groupId>com.google.analytics</groupId>
+			<artifactId>google-analytics-data</artifactId>
+			<version>0.65.0</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http -->
+		<!--Google 認證套件依賴,提供 OAuth2 驗證登入，用來授權存取 GA 資料-->
+		<dependency>
+			<groupId>com.google.auth</groupId>
+			<artifactId>google-auth-library-oauth2-http</artifactId>
+			<version>1.33.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
