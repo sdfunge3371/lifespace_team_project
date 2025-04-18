@@ -48,7 +48,7 @@
             const email = document.querySelector(".account").value;
             const password = document.querySelector(".password").value;
 
-            fetch("http://localhost:8080/admin/login", {
+            fetch("admin/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

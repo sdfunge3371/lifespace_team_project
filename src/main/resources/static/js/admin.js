@@ -22,7 +22,7 @@ function editAdmin(adminId) {
 
 
 // ------------------------------------一進頁面就抓後端資料------------------------------------
-fetch('http://localhost:8080/admin') //這要看你的 REST API endpoint 是什麼
+fetch('/admin') //這要看你的 REST API endpoint 是什麼
 	.then(response => response.json())
 	.then(data => {
 		const tbody = document.getElementById('adminBody');
@@ -46,7 +46,7 @@ fetch('http://localhost:8080/admin') //這要看你的 REST API endpoint 是什�
 
 
 //---------------------------------------查詢資訊---------------------------------------------------------
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "";
 
 document.getElementById("searchBtn").addEventListener("click", function() {
 
@@ -74,7 +74,7 @@ document.getElementById("searchBtn").addEventListener("click", function() {
 	}
 
 	//(3)發送POST請求到後端的/member/search
-	fetch(`${BASE_URL}/admin/search`, {
+	fetch(`/admin/search`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"

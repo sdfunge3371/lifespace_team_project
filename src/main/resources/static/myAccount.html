@@ -255,7 +255,7 @@ p.description {
 	
 	//顯示會員一開始的資訊
 	document.addEventListener("DOMContentLoaded", function () {
-	    fetch("http://localhost:8080/member/profile", {
+	    fetch("/member/profile", {
 	        method: "GET",
 	        credentials: "include"  // 帶上 session cookie
 	    })
@@ -274,7 +274,7 @@ p.description {
 	        document.querySelector('input[type="email"]').value = member.email;
 	        
 	        // 顯示大頭貼（假設你有圖片的URL）
-	        document.querySelector('.avatar').src = "http://localhost:8080/member/image/" + member.memberId;
+	        document.querySelector('.avatar').src = "/member/image/" + member.memberId;
 	    })
 	    .catch(error => {
 	        console.error("無法取得會員資料", error);
@@ -314,7 +314,7 @@ function submitMemberUpdate() {
         formData.append("memberImage", fileInput.files[0]);
     }
 
-    fetch("http://localhost:8080/member/update", {
+    fetch("/member/update", {
         method: "POST",
         body: formData,
         credentials: "include"

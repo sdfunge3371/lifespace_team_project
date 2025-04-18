@@ -139,7 +139,7 @@
             let urlParams = new URLSearchParams(window.location.search);
             let memberId = urlParams.get("memberId");
             if (memberId) {
-                fetch(`http://localhost:8080/member/id/${memberId}`)
+                fetch(`/member/id/${memberId}`)
                     .then(res => res.json())
                     .then(data => {
                         document.getElementById("memberName").value = data.memberName;
@@ -175,7 +175,7 @@
                 formData.append("memberImage", fileInput.files[0]);
             }
 
-            fetch(`http://localhost:8080/member/${memberId}`, {
+            fetch(`/member/${memberId}`, {
                 method: "POST",
                 body: formData
             })

@@ -22,7 +22,7 @@ function editMember(memberId) {
 
 
 // ------------------------------------一進頁面就抓後端資料------------------------------------
-fetch('http://localhost:8080/member') //這要看你的 REST API endpoint 是什麼
+fetch('/member') //這要看你的 REST API endpoint 是什麼
   .then(response => response.json())
   .then(data => {
     const tbody = document.getElementById('memberBody');
@@ -36,7 +36,7 @@ fetch('http://localhost:8080/member') //這要看你的 REST API endpoint 是什
        <td>${member.accountStatus}</td>
        <td>${member.birthday}</td>
        <td>${member.registrationTime}</td>
-       <td><img src="http://localhost:8080/member/image/${member.memberId}" width="50px" height="50px"></td>
+       <td><img src="/member/image/${member.memberId}" width="50px" height="50px"></td>
        <td>
          <button onclick="editMember('${member.memberId}')">修改</button>
        </td>
@@ -50,7 +50,7 @@ fetch('http://localhost:8080/member') //這要看你的 REST API endpoint 是什
 // --------------------------------------重整----------------------------------
 document.getElementById("resetBtn").addEventListener("click", function(){
 	
-	fetch('http://localhost:8080/member') //這要看你的 REST API endpoint 是什麼
+	fetch('/member') //這要看你的 REST API endpoint 是什麼
 	  .then(response => response.json())
 	  .then(data => {
 	    const tbody = document.getElementById('memberBody');
@@ -66,7 +66,7 @@ document.getElementById("resetBtn").addEventListener("click", function(){
 	       <td>${member.accountStatus}</td>
 	       <td>${member.birthday}</td>
 	       <td>${member.registrationTime}</td>
-	       <td><img src="http://localhost:8080/member/image/${member.memberId}" width="50px" height="50px"></td>
+	       <td><img src="/member/image/${member.memberId}" width="50px" height="50px"></td>
 	       <td>
 	         <button onclick="editMember('${member.memberId}')">修改</button>
 	       </td>
