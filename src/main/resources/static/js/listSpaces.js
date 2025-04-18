@@ -212,7 +212,7 @@ function showRowData(space) {
                         <td>${escapeHtml(space.spaceRating.toFixed(1))}</td>
                         <td title="${escapeHtml(space.spaceAlert)}">${truncateText(escapeHtml(space.spaceAlert), 20)}</td>
                         <td class="branch-status"></td>
-                        <td>${escapeHtml(space.spaceStatusText)}</td>
+                        <td class="space-status"></td>
                         <td title="${escapeHtml(space.spaceFloor)}">${truncateText(escapeHtml(space.branchAddr), 20) + truncateText(escapeHtml(space.spaceFloor), 20) + (space.spaceFloor ? "樓" : "")}</td>
                         <td title="${equipmentNames}">${truncateText(equipmentNames, 20)}</td>
                         <td title="${usageNames}">${truncateText(usageNames, 20)}</td>
@@ -233,18 +233,30 @@ function showRowData(space) {
     // truncateText(): 利用...處理過長的資料，20就是只顯示前20個字
     // *spaceFloor記得跟branch地址連結，合併成完整地址
     handleBranchStatusText(tr, space.branchStatus);
+    handleSpaceStatusText(tr, space.spaceStatus);
 
     tableBody.appendChild(tr);
 }
 
 function handleBranchStatusText(tr, status) {
     const branchStatusTd = tr.querySelector(".branch-status");
-    console.log(branchStatusTd);
     if (status === 1) {
         branchStatusTd.innerHTML = "可用";
         branchStatusTd.style.color = "green";
     } else {
         branchStatusTd.innerHTML = "分點未上架";
+        branchStatusTd.style.color = "red";
+        branchStatusTd.style.fontWeight = 600;
+    }
+}
+
+function handleSpaceStatusText(tr, status) {
+    const branchStatusTd = tr.querySelector(".space-status");
+    if (status == 1) {
+        branchStatusTd.innerHTML = "上架中";
+        branchStatusTd.style.color = "green";
+    } else {
+        branchStatusTd.innerHTML = "未上架";
         branchStatusTd.style.color = "red";
         branchStatusTd.style.fontWeight = 600;
     }
@@ -313,8 +325,10 @@ document.getElementById('statusFilter').addEventListener('change', function () {
 
     if (selectedStatus === 'all') {
         filteredSpacesData = [...allSpacesData]; // 顯示全部
+    } else if (selectedStatus === '1') {
+        filteredSpacesData = allSpacesData.filter(space => String(space.spaceStatus) == 1 && String(space.branchStatus) == 1);   // 0: 未上架, 1: 已上架
     } else {
-        filteredSpacesData = allSpacesData.filter(space => String(space.spaceStatus) === selectedStatus);   // 0: 未上架, 1: 已上架
+        filteredSpacesData = allSpacesData.filter(space => String(space.spaceStatus) == 0 || String(space.branchStatus) == 0);
     }
 
     currentPage = 1;
@@ -485,7 +499,17 @@ tableBody.addEventListener('click', function (e) {
                     button.setAttribute('data-current-status', newStatus);  // 設定attribute，以在表格欄位中顯示正確的文字
 
                     const statusCell = button.closest('tr').querySelector('td:nth-child(12)');
-                    statusCell.textContent = newStatus === "1" ? '上架中' : '未上架';   // 欄位更新狀態
+                    // statusCell.textContent = newStatus === "1" ? '上架中' : '未上架';   // 欄位更新狀態
+
+                    if (newStatus === "1") {
+                        statusCell.textContent = "上架中";
+                        statusCell.style.color = "green";
+                        statusCell.style.fontWeight = "normal";
+                    } else {
+                        statusCell.textContent = "未上架";
+                        statusCell.style.color = "red";
+                        statusCell.style.fontWeight = 600;
+                    }
 
                     // 同步更新 allSpacesData 的狀態
                     const index = allSpacesData.findIndex(s => s.spaceId === spaceId);  // 迭代找出目前的空間編號
