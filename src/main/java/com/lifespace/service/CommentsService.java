@@ -386,10 +386,10 @@ public class CommentsService {
 	    }
 
 	    original.setCommentMessage(newMessage);
-	    updateComments(original); 
+	    updateComments(original);
 	    
 	    	    
-	    
+
 	    return ResponseEntity.ok("留言已更新");
 	    
 	    
