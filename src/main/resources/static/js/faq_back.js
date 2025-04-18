@@ -200,7 +200,46 @@ $(document).ready(function () {
 	            }
 	        }).catch(() => alert('修改失敗'));
 	    });
-	});
+		
+		// 熱門點擊
+		  $('#btn-view-popular-faq').on('click', function () {
+		    // 這裡範例抓「過去一個月」：
+		    const endDate   = new Date().toISOString().slice(0,10);              // 今天 YYYY-MM-DD
+		    const startDate = new Date(Date.now() - 30*24*3600*1000)
+		                        .toISOString().slice(0,10);                     // 30 天前
+
+		    // 把日期顯示到 Modal 標題下方
+		    $('#popularFaqDateRange').text(`（${startDate} ~ ${endDate}）`);
+
+		    // 向後端呼叫報表 API
+		    $.get('/admin/faq/ga/popular-events', {
+		      startDate: startDate,
+		      endDate:   endDate,
+		      eventName: 'faq_click',
+		      limit:     5
+		    }, function (data) {
+		      const $body = $('#popularFaqBody');
+		      $body.empty();
+
+		      // data = List<FaqGaEventDTO>
+		      data.forEach(item => {
+		        $body.append(`
+		          <tr>
+		            <td>${item.faqTitle}</td>
+		            <td>${item.faqId}</td>
+		            <td class="text-end">${item.eventCount} 次</td>
+		          </tr>
+		        `);
+		      });
+
+		      // 顯示 Modal
+		      new bootstrap.Modal(document.getElementById('popularFaqModal')).show();
+		    })
+		    .fail(function () {
+		      alert('❌ 取得熱門 FAQ 失敗，請稍後再試');
+		    });
+		  });
+		});
 	
 	// 新增時，當使用者輸入常見問題欄位時，自動清除錯誤訊息
 	$('#add-faqAsk').on('input', function () {

@@ -15,208 +15,245 @@
 </head>
 <body>
 	<div class="row g-0">
-    <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu">
-        <i class="fas fa-bars"></i>
-    </button>
-</div>
-<!-- 側邊欄 -->
-<div class="row">
-    <!-- 側邊欄 -->
-    <div class="col-lg-2 sidebar">
-        <div class="sidebar-header">
-            <a href="/backend_index.html">
-                <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
-            </a>
-            <h2 class="sidebar-title">後台中心</h2>
-        </div>
-        <ul class="nav flex-column mt-3">
-            <!-- 消息管理 -->
-            <li class="nav-item">
-                <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-home"></i> 消息管理
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse submenu" id="newsSubmenu">
-                    <li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
-                </ul>
-            </li>
+		<button class="btn btn-primary d-md-none m-2" type="button"
+			data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+			<i class="fas fa-bars"></i>
+		</button>
+	</div>
+	<!-- 側邊欄 -->
+	<div class="row">
+		<!-- 側邊欄 -->
+		<div class="col-lg-2 sidebar">
+			<div class="sidebar-header">
+				<a href="/backend_index.html"> <img
+					src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo"
+					class="sidebar-logo">
+				</a>
+				<h2 class="sidebar-title">後台中心</h2>
+			</div>
+			<ul class="nav flex-column mt-3">
+				<!-- 消息管理 -->
+				<li class="nav-item"><a href="#newsSubmenu"
+					data-bs-toggle="collapse" class="nav-link"> <i
+						class="fas fa-home"></i> 消息管理 <i
+						class="fas fa-chevron-down ms-auto"></i>
+				</a>
+					<ul class="collapse submenu" id="newsSubmenu">
+						<li><a href="/backend_news.html" class="submenu-item">最新消息</a></li>
+					</ul></li>
 
-            <!-- 帳號管理 -->
-            <li class="nav-item">
-                <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-user"></i> 帳號管理
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse submenu" id="accountSubmenu">
-                    <li><a href="/member.html" class="submenu-item">會員帳號</a></li>
-                    <li><a href="/admin.html" class="submenu-item">管理員帳號</a></li>
-                </ul>
-            </li>
+				<!-- 帳號管理 -->
+				<li class="nav-item"><a href="#accountSubmenu"
+					data-bs-toggle="collapse" class="nav-link"> <i
+						class="fas fa-user"></i> 帳號管理 <i
+						class="fas fa-chevron-down ms-auto"></i>
+				</a>
+					<ul class="collapse submenu" id="accountSubmenu">
+						<li><a href="/member.html" class="submenu-item">會員帳號</a></li>
+						<li><a href="/admin.html" class="submenu-item">管理員帳號</a></li>
+					</ul></li>
 
-            <!-- 空間訂單管理 -->
-            <li class="nav-item">
-                <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-map-marker-alt"></i> 訂單管理
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse submenu" id="ordersSubmenu">
-                    <li><a href="/ordersWithSidebar.html" class="submenu-item">訂單</a></li>
-                </ul>
-            </li>
+				<!-- 空間訂單管理 -->
+				<li class="nav-item"><a href="#ordersSubmenu"
+					data-bs-toggle="collapse" class="nav-link"> <i
+						class="fas fa-map-marker-alt"></i> 訂單管理 <i
+						class="fas fa-chevron-down ms-auto"></i>
+				</a>
+					<ul class="collapse submenu" id="ordersSubmenu">
+						<li><a href="/ordersWithSidebar.html" class="submenu-item">訂單</a></li>
+					</ul></li>
 
-            <!-- 商品管理 -->
-            <li class="nav-item">
-                <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-box"></i> 商品管理
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse submenu" id="productSubmenu">
-                    <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
-                    <li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
-                    <li><a href="/branch.html" class="submenu-item">分點</a></li>
-                </ul>
-            </li>
+				<!-- 商品管理 -->
+				<li class="nav-item"><a href="#productSubmenu"
+					data-bs-toggle="collapse" class="nav-link"> <i
+						class="fas fa-box"></i> 商品管理 <i
+						class="fas fa-chevron-down ms-auto"></i>
+				</a>
+					<ul class="collapse submenu" id="productSubmenu">
+						<li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
+						<li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
+						<li><a href="/branch.html" class="submenu-item">分點</a></li>
+					</ul></li>
 
-            <!-- 活動留言評論管理 -->
-            <li class="nav-item">
-                <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-star"></i> 留言評論管理
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse submenu" id="commentSubmenu">
-                    <li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
-                </ul>
-            </li>
+				<!-- 活動留言評論管理 -->
+				<li class="nav-item"><a href="#commentSubmenu"
+					data-bs-toggle="collapse" class="nav-link"> <i
+						class="fas fa-star"></i> 留言評論管理 <i
+						class="fas fa-chevron-down ms-auto"></i>
+				</a>
+					<ul class="collapse submenu" id="commentSubmenu">
+						<li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
+					</ul></li>
 
-            <!-- 常見問題管理 -->
-            <li class="nav-item">
-                <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-headset"></i> 常見問題管理
-                    <i class="fas fa-chevron-down ms-auto"></i>
-                </a>
-                <ul class="collapse submenu" id="faqSubmenu">
-                    <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div>
-<!-- 側邊欄結束 -->
+				<!-- 常見問題管理 -->
+				<li class="nav-item"><a href="#faqSubmenu"
+					data-bs-toggle="collapse" class="nav-link"> <i
+						class="fas fa-headset"></i> 常見問題管理 <i
+						class="fas fa-chevron-down ms-auto"></i>
+				</a>
+					<ul class="collapse submenu" id="faqSubmenu">
+						<li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
+					</ul></li>
+			</ul>
+		</div>
+	</div>
+	<!-- 側邊欄結束 -->
 
 	<!-- Main Content -->
-	
+
 	<div class="main-content">
-<div class="header sticky-header">
-  <h2 class="mb-0">常見問題</h2>
-</div>
+		<div class="header sticky-header">
+			<h2 class="mb-0">常見問題</h2>
+		</div>
 
 
-  <button id="btn-add-faq" class="btn btn-success mb-3">新增 FAQ</button>
+		<button id="btn-add-faq" class="btn btn-success mb-3">新增 FAQ</button>
+		<button id="btn-view-popular-faq" class="btn btn-info mb-3 ms-2">查看熱門FAQ</button>
 
-  <div class="table-responsive">
-    <table id="faqTable" class="display">
-      <thead>
-        <tr>
-          <th>常見問題編號</th>
-          <th>管理者編號</th>
-          <th>常見問題</th>
-          <th>回答</th>
-          <th>建檔時間</th>
-          <th>問題狀態</th>
-          <th>修改</th>
-          <th>狀態操作</th>
-        </tr>
-      </thead>
-      <tbody id="faqBody">
-        <!-- jQuery 動態生成 -->
-      </tbody>
-    </table>
-  </div>
-</div>
-	
+		<!-- 熱門 FAQ Modal -->
+		<div class="modal fade" id="popularFaqModal" tabindex="-1"
+			aria-labelledby="popularFaqModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<!-- modal-lg 讓它寬一點 -->
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="popularFaqModalLabel">🔥 熱門 FAQ</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="關閉"></button>
+					</div>
+					<div class="modal-body">
+						<p id="popularFaqDateRange"></p>
+						<!-- 顯示日期範圍 -->
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>常見問題</th>
+									<th>FAQ 編號</th>
+									<th class="text-end">點擊次數</th>
+								</tr>
+							</thead>
+							<tbody id="popularFaqBody">
+								<!-- JS 會動態插入 <tr> -->
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">關閉</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- FAQTable -->
+		<div class="table-responsive">
+			<table id="faqTable" class="display">
+				<thead>
+					<tr>
+						<th>常見問題編號</th>
+						<th>管理者編號</th>
+						<th>常見問題</th>
+						<th>回答</th>
+						<th>建檔時間</th>
+						<th>問題狀態</th>
+						<th>修改</th>
+						<th>狀態操作</th>
+					</tr>
+				</thead>
+				<tbody id="faqBody">
+					<!-- jQuery 動態生成 -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+
 	<!-- 新增 FAQ Modal -->
-<div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="addFaqModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="addFaqForm">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addFaqModalLabel">新增常見問題</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">常見問題</label>
-            <textarea class="form-control" id="add-faqAsk"></textarea>
-            <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="add-faqAsk-error"></span>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">回答內容</label>
-            <textarea class="form-control large-textarea" id="add-faqAnswer"></textarea>
-            <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="add-faqAnswer-error"></span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">確定新增</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+	<div class="modal fade" id="addFaqModal" tabindex="-1"
+		aria-labelledby="addFaqModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<form id="addFaqForm">
+					<div class="modal-header">
+						<h5 class="modal-title" id="addFaqModalLabel">新增常見問題</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="關閉"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label class="form-label">常見問題</label>
+							<textarea class="form-control" id="add-faqAsk"></textarea>
+							<!-- 顯示錯誤訊息 -->
+							<span class="text-danger small" id="add-faqAsk-error"></span>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">回答內容</label>
+							<textarea class="form-control large-textarea" id="add-faqAnswer"></textarea>
+							<!-- 顯示錯誤訊息 -->
+							<span class="text-danger small" id="add-faqAnswer-error"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">確定新增</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 
 
 
-<!-- 編輯 FAQ Modal -->
-<div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="editFaqForm">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editFaqModalLabel">編輯常見問題</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="edit-faqId">
-          <div class="mb-3">
-            <label class="form-label">常見問題</label>
-            <textarea class="form-control" id="edit-faqAsk"></textarea>
-          <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="edit-faqAsk-error"></span>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">回答內容</label>
-            <textarea class="form-control large-textarea" id="edit-faqAnswer"></textarea>
-          <!-- 顯示錯誤訊息 -->
-            <span class="text-danger small" id="edit-faqAnswer-error"></span>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">確定修改</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-</div>
+	<!-- 編輯 FAQ Modal -->
+	<div class="modal fade" id="editFaqModal" tabindex="-1"
+		aria-labelledby="editFaqModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<form id="editFaqForm">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editFaqModalLabel">編輯常見問題</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="關閉"></button>
+					</div>
+					<div class="modal-body">
+						<input type="hidden" id="edit-faqId">
+						<div class="mb-3">
+							<label class="form-label">常見問題</label>
+							<textarea class="form-control" id="edit-faqAsk"></textarea>
+							<!-- 顯示錯誤訊息 -->
+							<span class="text-danger small" id="edit-faqAsk-error"></span>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">回答內容</label>
+							<textarea class="form-control large-textarea" id="edit-faqAnswer"></textarea>
+							<!-- 顯示錯誤訊息 -->
+							<span class="text-danger small" id="edit-faqAnswer-error"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-primary">確定修改</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	</div>
 
-		<!-- jQuery -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		
-		<!-- Bootstrap JS -->
-		<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
-		
-		<!-- DataTables -->
-		<script src="/vendors/dataTables/datatable_faq.js"></script>
-		
-		  <!-- Sidebar JS -->
- 		 <script src="/js/sidebar2.js"></script>
-		
-		<script src="./js/faq_back.js"></script>
+	<!-- jQuery -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+	<!-- Bootstrap JS -->
+	<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+	<!-- DataTables -->
+	<script src="/vendors/dataTables/datatable_faq.js"></script>
+
+	<!-- Sidebar JS -->
+	<script src="/js/sidebar2.js"></script>
+
+	<script src="./js/faq_back.js"></script>
 
 
-	
+
 </body>
 </html>
