@@ -89,5 +89,5 @@ public interface EventRepository extends JpaRepository<Event,String>{
 	 
 	 	//首頁預設最新活動推薦，以及活動總覽頁面熱門推薦
 	 	Page<Event> findByEventStatus(EventStatus eventStatus, Pageable pageable);
-
+	 	
 }

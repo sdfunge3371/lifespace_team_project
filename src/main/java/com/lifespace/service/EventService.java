@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -306,11 +308,17 @@ public class EventService {
 
 	//找出所有可參加的活動
 	public Page<Event> getAll(Pageable pageable) {
+		
 		Page<Event> availableEvents =  eventRepository.findByEventStatus(
 				EventStatus.SCHEDULED, pageable);
+		
+		 for (Event event : availableEvents.getContent()) {
+		        Hibernate.initialize(event.getPhotoUrls());
+		    }
+
 		return availableEvents;
 	}
-	
+					
 	// 添加搜尋方法
     public Page<EventResponse> searchEvents( String eventName,
             Timestamp startTime,

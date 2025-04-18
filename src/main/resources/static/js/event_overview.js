@@ -3,7 +3,7 @@
    let totalPages = 1; // 總頁數
    const pageSize = 5; // 每頁顯示的事件數量，與後端默認一致
    let currentDisplayMode = 'popular'; // 'popular' 或 'search'
-   let currentTitle = '活動總覽'; // 當前顯示的標題
+   let currentTitle = '熱門推薦'; // 當前顯示的標題
    
    // 搜尋條件變量
    let searchParams = {
@@ -167,10 +167,10 @@
        document.getElementById('category').value = ''; 
    }
 
-   // 重置成活動總覽
+   // 重置成熱門推薦
    function resetToPopularEvents() {
-       currentTitle = '活動總覽';
-       // 將標題改回「活動總覽」
+       currentTitle = '熱門推薦';
+       // 將標題改回「熱門推薦」
        const slideOuterTitle = document.querySelector('.slide-outer h2');
        slideOuterTitle.textContent = currentTitle;
 
@@ -213,7 +213,7 @@
                totalPages = pageData.totalPages;
                
                // 顯示分頁結果
-               displayEvents(pageData.content, '活動總覽', pageData);
+               displayEvents(pageData.content, '熱門推薦', pageData);
            })
            .catch(error => {
                console.error('獲取活動時出錯:', error);

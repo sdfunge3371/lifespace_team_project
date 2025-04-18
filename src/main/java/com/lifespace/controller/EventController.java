@@ -150,9 +150,9 @@ public class EventController {
         );
         
     	  Page<Event> events = eventSvc.getAll(pageable);
-          for (Event event : events) {
-              event.getPhotoUrls(); // 確保 photoUrls 被填充
-          }
+//          for (Event event : events) {
+//              event.getPhotoUrls(); // 確保 photoUrls 被填充
+//          }
           
         return events;
     }
@@ -163,13 +163,14 @@ public class EventController {
              @RequestParam(defaultValue = "0") @Min(0) Integer page) {
     	
     	// 創建分頁和排序條件
-        Pageable pageable = PageRequest.of( page, size );
+        Pageable pageable = PageRequest.of( page, size,
+        		Sort.by("numberOfParticipants").descending() );
         
     	  Page<Event> events = eventSvc.getAll(pageable);
     	//載入圖片資料（若有必要）
-    	  for (Event event : events.getContent()) {
-    		  Hibernate.initialize(event.getPhotoUrls());
-    	}
+//    	  for (Event event : events.getContent()) {
+//    		  Hibernate.initialize(event.getPhotoUrls());
+//    	}
           
         return events;
     }
@@ -179,7 +180,7 @@ public class EventController {
     	System.out.println("被要求檔案");
     	EventResponse event = eventSvc.getOneEvent(eventId);
         
-        event.getPhotoUrls(); // 確保 photoUrls 被填充
+        event.getPhotoUrls(); // 確保放入 photoUrls 圖片地址
         
         return event;
     }
