@@ -856,8 +856,9 @@ function fetchSpace() {
             insertTransportation(space.branchAddr, space.spaceFloor);  // 地址到時候改成branchAddress
             insertAsideInfo(space.spaceName, space.spaceHourlyFee, space.spaceDailyFee);
             insertRentalItems(space.rentalItems);
+            document.querySelector("title").textContent = spaceName;
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error))
 }
 
 let firstPhotoHtml = "";
