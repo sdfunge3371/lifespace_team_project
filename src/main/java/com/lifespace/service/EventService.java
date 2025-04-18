@@ -400,7 +400,7 @@ public class EventService {
     
     
 	//活動正式舉辦前一天(? 寄email給所有參加者以及舉辦者，用Thread(多執行續?)
-    @Transactional(readOnly = true) // 只讀事務，因為我們只是查詢並發送郵件
+    @Transactional(readOnly = true) // 只讀取，因為只是查詢並發送郵件
     public void notifyHeldEventsMembers() {
     	
     	 // 取得明天的日期（從當前時間加上24小時）
@@ -425,8 +425,8 @@ public class EventService {
                         
                         // 發送郵件給參加者
                         for (EventMember participant : participants) {
-                        	String member = participant.getMember().getEmail();
-                        	String mail = participant.getMember().getMemberName();
+                        	String mail = participant.getMember().getEmail().trim();
+                        	String member = participant.getMember().getMemberName();
                         	mailService.eventMemberNotification("活動開始通知", member, eventName, mail );
                         }
                    
@@ -540,7 +540,7 @@ public class EventService {
 					//寄email通知所有被設為取消的成員
 					String memberName = cancellMember.getMember().getMemberName();
 					String eventName = event.getEventName();
-					String toEmail = cancellMember.getMember().getEmail();
+					String toEmail = cancellMember.getMember().getEmail().trim();
 							
 					mailService.eventMemberNotification("活動取消", memberName, eventName, toEmail);
 				}
