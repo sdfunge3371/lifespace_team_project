@@ -20,6 +20,7 @@ public class OrdersDTO {
     private String spaceFloor;
     private String spaceCoverPhotoURL;
     private boolean isDaily;
+    private String lineUserId;
     private EventDTO eventDTO;
     private List<RentalItemDetailsDTO> rentalItemDetailsDTOList = new ArrayList<>();
 
@@ -179,6 +180,14 @@ public class OrdersDTO {
 
     public void setIsDaily(boolean isDaily) {
         this.isDaily = isDaily;
+    }
+
+    public String getLineUserId() {
+        return lineUserId;
+    }
+
+    public void setLineUserId(String lineUserId) {
+        this.lineUserId = lineUserId;
     }
 }
 

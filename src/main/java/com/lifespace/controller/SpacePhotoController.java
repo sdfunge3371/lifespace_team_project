@@ -36,4 +36,21 @@ public class SpacePhotoController {
         }
         return ResponseEntity.ok(sp);
     }
+
+    //抓取訂單的空間封面
+    @GetMapping("/space-photo/space/{spaceId}/cover")
+    public ResponseEntity<byte[]> getCoverPhoto(@PathVariable String spaceId) {
+        List<SpacePhoto> photos = spacePhotoService.getSpacePhotosBySpaceId(spaceId);
+
+        if (photos.isEmpty() || photos.get(0).getPhoto() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] image = photos.get(0).getPhoto();
+
+        return ResponseEntity
+                .ok()
+                .header("Content-Type", "image/jpeg")
+                .body(image);
+    }
 }

@@ -7,13 +7,14 @@ import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.ecpay.payment.integration.AllInOne;
 import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
 import com.lifespace.entity.*;
-import com.lifespace.repository.OrdersRepository;
-import com.lifespace.repository.RentalItemRepository;
-import com.lifespace.repository.SpaceCommentPhotoRepository;
+import com.lifespace.repository.*;
 
-import com.lifespace.repository.SpaceRepository;
+import com.linecorp.bot.messaging.model.TextMessage;
+import com.linecorp.bot.messaging.client.MessagingApiClient;
+import com.linecorp.bot.messaging.model.PushMessageRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import com.lifespace.mapper.OrdersMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -34,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service("ordersService")
 public class OrdersService {
@@ -48,8 +51,11 @@ public class OrdersService {
     private SpaceService spaceService;
 
     @Autowired
-    private SpacePhotoService spacePhotoSvc;
-    
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private MessagingApiClient messagingApiClient;
+
     public void updateOrderStatusByOrderId(String orderId) {
 
         Orders orders = ordersRepository.findById(orderId)
@@ -223,6 +229,119 @@ public class OrdersService {
         }
     }
 
+    //取出未綁定lineUserId的訂單筆數收集成List
+    @Transactional
+    public int insertLineUserIdToOrders(List<Orders> orders, String userId) {
+        List<String> lineUserIdToBind = orders.stream()
+                .filter(order -> order.getLineUserId() == null)
+                .map(Orders::getOrderId)
+                .collect(Collectors.toList());
+
+        //驗證是否有訂單筆數,沒有就直接return 0筆中斷
+        if(lineUserIdToBind.isEmpty()) {
+            return 0;
+        }else{
+            return ordersRepository.bulkInsertLineUserIdIfNull(userId, lineUserIdToBind);
+        }
+    }
+
+    //lineWebHookHandler webhook推播訂單內容
+    public void handleLineWebhook(Map<String, Object> lineReq) {
+        try{
+            List<Map<String, Object>> lineEvents = (List<Map<String,Object>>)lineReq.get("events");
+            Map<String, Object> lineEvent = lineEvents.get(0);
+            Map<String, Object> lineSource = (Map<String, Object>) lineEvent.get("source");
+            String userId = lineSource.get("userId").toString();
+
+            Map<String, Object> lineMessage = (Map<String, Object>) lineEvent.get("message");
+            String lineText = lineMessage.get("text").toString().trim();
+
+            System.out.println("使用者ID: " + userId + "\n訊息內容: " + lineText);
+
+            boolean isReturnUser = ordersRepository.existsByLineUserId(userId);
+            if(isReturnUser) {
+                List<Orders> orders = ordersRepository.findTop3ByLineUserIdAndOrderStatusOrderByOrderStartDesc(userId, 1);
+
+                if (orders.isEmpty()) {
+                    sendLineMessage(userId, "沒有預訂中的訂單喔! 趕快進入官網預訂吧～");
+                }else {
+
+                }
+            }
+
+
+            String[] isFirstUse = lineText.split("//s+");
+            if(isFirstUse.length > 2) {
+                sendLineMessage(userId, "請輸入正確的格式\n例如:王花花 0958672727");
+                return;
+            }
+
+            String name = isFirstUse[0];
+            String phone = isFirstUse[1];
+
+            Member member = memberRepository.findByMemberNameAndPhone(name, phone);
+            if(member == null) {
+                sendLineMessage(userId, "查無此會員，請確認會員資料是否正確");
+                return;
+            }
+
+            List<Orders> orders = ordersRepository.findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(member.getMemberId(), 1);
+
+            if (orders.isEmpty()) {
+                sendLineMessage(userId, "沒有預訂中的訂單喔! 趕快進入官網預訂吧～");
+                return;
+            }
+
+            //List<Orders>轉換成List<OrdersDTO>
+            List<OrdersDTO> ordersDTO = orders.stream()
+                    .map(OrdersMapper::toOrdersDTO)
+                    .collect(Collectors.toList());
+
+            pushOrdersToUser(ordersDTO, userId);
+
+            int updateOrdersLineId = insertLineUserIdToOrders(orders, userId);
+            pushOrdersToUser(ordersDTO, userId);
+
+            if ("訂單".equals(lineText.trim())) {}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //僅適用handleLineWebhook方法
+    private void pushOrdersToUser(List<OrdersDTO> ordersDTO, String userId) {
+        StringBuilder sb = new StringBuilder("最近已預定的訂單:\n");
+
+        for (OrdersDTO dto : ordersDTO){
+            sb.append("訂單編號:").append(dto.getOrderId())
+              .append("\n地點").append(dto.getSpaceLocation())
+              .append("\n時間").append(dto.getOrderStart()).append(" 至 ").append(dto.getOrderEnd())
+              .append("\n金額").append(dto.getAccountsPayable()).append("元");
+        }
+
+        sendLineMessage(userId, sb.toString());
+    }
+
+    //Line推播訊息
+    public void sendLineMessage(String userId, String message) {
+        PushMessageRequest request = new PushMessageRequest(
+                userId,
+                List.of(new TextMessage(message)),
+                false,
+                null
+        );
+
+        UUID retryKey = UUID.randomUUID();
+        messagingApiClient.pushMessage(retryKey, request)
+            .whenComplete((response, exception) -> {
+                if (exception != null) {
+                    System.err.println("LINE 訊息推播失敗: " + exception.getMessage());
+                } else {
+                    System.out.println("LINE 推播成功");
+                }
+            });
+    }
+
     
   //訂單完成後，新增空間評論
     public void addSpaceComments(SpaceCommentRequest commentRequest,
@@ -317,6 +436,7 @@ public class OrdersService {
         order.setMemberId(ordersDTO.getMemberId());
         order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
         order.setOrderStatus(0);
+        order.setLineUserId(ordersDTO.getLineUserId());
 
         // 建立Branch與Member的關聯，讓Mapper取得
         Branch branch = new Branch();

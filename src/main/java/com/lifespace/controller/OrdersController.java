@@ -77,6 +77,9 @@ public class OrdersController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        String lineUserId = (String) session.getAttribute("lineUserId");
+        ordersDTO.setLineUserId(lineUserId);
+
         ordersDTO.setMemberId(memberId);
         OrdersDTO newOrder = ordersSvc.createOrder(ordersDTO);
         return ResponseEntity.ok(newOrder);
@@ -96,6 +99,13 @@ public class OrdersController {
     @PostMapping("/ecpay/return")
     public ResponseEntity<String> handleEcpayReturn(HttpServletRequest req) {
         return ordersSvc.handleEcpayReturn(req);
+    }
+
+    //line推播通知
+    @PostMapping("/notify/webhook")
+    public ResponseEntity<String> handleWebhook(@RequestBody Map<String, Object> lineWebhookPayload) {
+        ordersSvc.handleLineWebhook(lineWebhookPayload);
+        return ResponseEntity.ok("已收到Line的webhook");
     }
 
 
