@@ -9,7 +9,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="images/favicon.ico" rel="icon">
+<!--   <link href="images/favicon.ico" rel="icon"> -->
+  <link href="images/img.bootstrap/LifeSpace.png" rel="icon">
 
   <!-- Google Web Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,22 +43,19 @@
   
   <link rel="stylesheet" href="css/comments_frontend.css">
   
-  <!-- jQuery：只留一份最新的即可 -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-  <!-- 先載入 jQuery 主程式，再載入 jQuery UI 或其他依賴 jQuery 的程式 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   
   <!-- Slick 輪播（必須在 jQuery 之後） -->
 <!--   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" /> -->
 <!--   <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script> -->
   
   <!-- Slick CSS -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-  <!-- Slick JS -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
   
+  <!-- Slick JS -->
+<!--   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script> -->
+
   
   <!-- WOW.js -->
   <script src="https://cdn.jsdelivr.net/npm/wowjs@1.1.3/dist/wow.min.js"></script>
@@ -129,7 +127,8 @@
 		</div>
 		
 		<!-- 留言輸入區（輸入框與留言串）（下方） -->
-		<div class="container" style="max-width: 600px;">
+<!-- 		<div class="container" style="max-width: 600px;"> -->
+		<div class="container" style="max-width: 600px; padding-bottom: 120px;">
 		  <div id="noCommentMessage">尚無留言</div>
 		  <div id="commentsContainer"></div>
 		  <div class="d-flex align-items-center mt-4">
@@ -149,7 +148,7 @@
 <!-- 	        </div> -->
 <!-- 	    </div> -->
 
-    <script src="vendors/jquery/jquery-3.7.1.min.js"></script>
+<!--     <script src="vendors/jquery/jquery-3.7.1.min.js"></script> -->
     
 
   
@@ -186,17 +185,66 @@
 
       <!-- Template Javascript -->
 <!-- 	<script src="./js/jquery-3.7.1.min.js"></script> -->
- 	<script src="js/wow.min.js"></script>
+<!-- 分段註解開始 	
+	<script src="js/wow.min.js"></script>
     <script src="js/easing.min.js"></script>
     <script src="js/waypoints.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
-
+分段註解結束 -->
     <!-- Template Javascript -->
+    <!-- 分段註解開始 
     <script src="js/main.js"></script>
+    分段註解結束 -->
+    
+    
+    
+    <!-- jQuery：只留一份最新的即可 -->
+    <!-- 分段註解開始
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	分段註解結束 -->
+
+    <!-- 先載入 jQuery 主程式，再載入 jQuery UI 或其他依賴 jQuery 的程式 -->
+    <!-- 分段註解開始
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    分段註解結束 -->
+    
+    <!-- Slick JS  Slick 輪播（必須在 jQuery 之後） -->
+<!--     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <!-- 分段註解開始
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     
     <script src="/js/comments_frontend.js"></script>
+    分段註解結束 -->
+    
+    
+    
+    
+    <!-- ✅ 1. jQuery（最先載入） -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	
+	<!-- ✅ 2. jQuery UI（依賴 jQuery） -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	
+	<!-- ✅ 3. 依賴 jQuery 的插件或腳本 -->
+	<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+	<script src="js/wow.min.js"></script>
+	<script src="js/easing.min.js"></script>
+	<script src="js/waypoints.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	
+	<!-- ✅ 4. Bootstrap（不強依 jQuery，但放後面安全） -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- ✅ 5. 你自訂的主程式 -->
+	<script src="js/main.js"></script>
+	<script src="/js/comments_frontend.js"></script>
+    
+    
+    
   
 </body>
 </html>

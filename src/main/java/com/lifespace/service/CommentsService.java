@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.lifespace.SessionUtils;
@@ -78,7 +80,8 @@ public class CommentsService {
 	public List<Comments> getAll() {
 //		List<Comments> list = commentsrepository.findAll();
 //		return list;
-		return commentsRepository.findAll(); //上面兩行簡寫為此行。
+		int i = 1;
+		return commentsRepository.findAll(); //上面兩行簡寫為此行。abc
 	}
 	
 	
@@ -99,7 +102,6 @@ public class CommentsService {
 	        dto.setMemberName("匿名");
 	        dto.setImageUrl(null);
 	    }
-
 	    return dto;
 	}
 	
@@ -123,7 +125,7 @@ public class CommentsService {
         // 取得留言所屬活動（只取第一筆留言）
         Event event = commentsList.get(0).getEventMember().getEvent();
 
-        // 活動名稱
+        // 活動名稱abc
         data.put("eventName", event.getEventName());
 
         // 活動圖片
@@ -371,6 +373,30 @@ public class CommentsService {
 	            })
 	            .collect(Collectors.toList());
 	}
+	
+	
+	public ResponseEntity<?> updateComment(String commentId, String newMessage, String eventMemberId) {
+	    Comments original = getOneComments(commentId);
+	    if (original == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("留言不存在");
+	    }
+
+	    if (!original.getEventMember().getEventMemberId().equals(eventMemberId)) {
+	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("無權限編輯他人留言");
+	    }
+
+	    original.setCommentMessage(newMessage);
+	    updateComments(original); 
+	    
+	    	    
+	    
+	    return ResponseEntity.ok("留言已更新");
+	    
+	    
+	}
+
+	
+	
 
 /**
  * 還有報錯需要處理，故先註解	

@@ -426,6 +426,7 @@ public class CommentsController {
 	    }
 
 	    return commentsService.updateComment(commentId, dto.getCommentMessage(), eventMember.getEventMemberId());
+	    
 	}
 
 	
