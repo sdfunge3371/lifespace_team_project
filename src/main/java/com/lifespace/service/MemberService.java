@@ -16,6 +16,7 @@ import com.lifespace.dto.MemberDTO;
 import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
 import com.lifespace.exception.MemberValidator;
+import com.lifespace.exception.ResourceNotFoundException;
 import com.lifespace.repository.MemberRepository;
 
 import jakarta.persistence.EntityManager;
@@ -67,6 +68,10 @@ public class MemberService {
 	//共用的會員新增功能
 	public Member createMember(String memberName, String email, String phone, Integer accountStatus, String password,
 			LocalDate birthday, MultipartFile memberImage) {
+		
+		//欄位驗證(會員資訊除錯)，如果驗證失敗就會自動 throw，會被 Global Handler 接住
+		 new MemberValidator(memberRepository, null, memberName, email, phone, password, true).validateAndThrow();
+		
 		Member member = new Member();
 		String newId = generateNextMemberId();
 		member.setMemberId(newId);
@@ -111,9 +116,12 @@ public class MemberService {
 			
 			//先抓出會員ID
 			Optional<Member> optional = memberRepository.findById(memberId);
+			 if (optional.isEmpty()) {
+			        throw new ResourceNotFoundException("找不到會員");
+			    }
 			
 			//欄位驗證(會員資訊除錯)，如果驗證失敗就會自動 throw，會被 Global Handler 接住
-			new MemberValidator(memberRepository, memberId, memberName, email, phone).validateAndThrow();
+			 new MemberValidator(memberRepository, memberId, memberName, email, phone, null, false).validateAndThrow();
 			
 			//更新修正後的會員資料
 			if (optional.isPresent()) {
@@ -129,11 +137,10 @@ public class MemberService {
 					try {
 						member.setMemberImage(memberImage.getBytes());
 					} catch (IOException e) {
-						e.printStackTrace();
+						throw new RuntimeException("圖片處理錯誤", e);
 					}
 				}
 				memberRepository.save(member);
-				return true;
 			}
 			return false;
 		}

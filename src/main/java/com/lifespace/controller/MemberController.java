@@ -35,6 +35,7 @@ import com.lifespace.SessionUtils;
 import com.lifespace.dto.MemberDTO;
 import com.lifespace.dto.MemberRequestDTO;
 import com.lifespace.entity.Member;
+import com.lifespace.exception.MemberValidator;
 import com.lifespace.repository.MemberRepository;
 import com.lifespace.service.MailService;
 import com.lifespace.service.MemberService;
@@ -182,26 +183,9 @@ public class MemberController {
 		    if (memberId == null) {
 		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("尚未登入");
 		    }
-
-		    Member member = memberRepository.findById(memberId).orElse(null);
-		    if (member == null) {
-		        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("找不到會員");
-		    }
-
-		    // 更新資料
-		    member.setMemberName(memberName);
-		    member.setEmail(email);
-		    member.setPhone(phone);
-		    member.setBirthday(birthday);
-		    if (memberImage != null && !memberImage.isEmpty()) {
-		        try {
-		            member.setMemberImage(memberImage.getBytes());
-		        } catch (IOException e) {
-		            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("圖片讀取失敗");
-		        }
-		    }
-
-		    memberRepository.save(member);
+		    
+		    //統一由service處理驗證跟邏輯
+		    memberService.updateMem(memberId, memberName, email, phone, 1, birthday, memberImage);
 		    return ResponseEntity.ok("更新成功");
 		}
 
@@ -285,13 +269,9 @@ public class MemberController {
 	        @RequestParam("birthday") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
 	        @RequestPart(value = "memberImage", required = false) MultipartFile memberImage,
 	        HttpSession session) {
-
-	    // 檢查信箱是否重複註冊
-	    if (memberRepository.findByEmail(email).isPresent()) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("此信箱已註冊！");
-	    }
-	    
-	    Member member = memberService.createMember(memberName, email, phone, 1, password, birthday, memberImage);
+		
+		//統一交給service層處理邏輯
+		Member member = memberService.createMember(memberName, email, phone, 1, password, birthday, memberImage);
 	    MemberDTO dto = memberService.toDTO(member);
 	    session.setAttribute("loginUser", dto); //自動登入
 	    return ResponseEntity.ok(dto);
@@ -314,11 +294,7 @@ public class MemberController {
 			@RequestPart(value = "memberImage", required = false) MultipartFile memberImage
 			){
 		
-		 // 檢查信箱是否重複註冊
-	    if (memberRepository.findByEmail(email).isPresent()) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("此信箱已註冊！");
-	    }
-	    
+		//統一交給service層處理邏輯
 	    memberService.createMember(memberName, email, phone, accountStatus, password, birthday, memberImage);
 	    return ResponseEntity.ok("會員新增成功!");
 		
@@ -338,6 +314,9 @@ public class MemberController {
 				@RequestParam("birthday") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate birthday,
 				@RequestPart(value = "memberImage", required = false) MultipartFile memberImage
 		) {
+			
+
+			//統一交給service層處理邏輯
 			boolean success = memberService.updateMem(memberId, memberName, email, phone, accountStatus, birthday, memberImage);
 			return success ? "成功更新資料" : "update失敗，數據不存在";
 		}
