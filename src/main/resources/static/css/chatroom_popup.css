@@ -1,3 +1,30 @@
+/* 客服 icon */
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #F7D777;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.chat-icon:active {
+    transform: scale(0.9);
+    background-color: white;
+}
+
+.chat-icon img {
+    width: 35px;
+    height: 35px;
+}
+
 /* 聊天室彈窗樣式 */
 .chat-popup {
     display: none;
