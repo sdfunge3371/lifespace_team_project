@@ -1,74 +1,90 @@
-/* === 桌面版預設樣式（剛剛那份） === */
+/* === 桌面版預設樣式 === */
+.news-title, .news-content, .news-category, .news-image {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+.py-5,.container-fluid.nav-bar.bg-transparent {
+  background-color: #effdf5 !important;
+}
+.container{
+	background-color: white;
+}
 .news-title {
   width: 20%;
-  text-align: center !important;
 }
+
 .news-content {
   width: 35%;
-  text-align: center !important;
   white-space: normal;
   word-break: break-word;
 }
 
 .news-category {
   width: 15%;
-  text-align: center !important; 
 }
 
 .news-image {
   width: 15%;
-  text-align: center !important;
 }
 
-/* === 768px 以下的響應式調整 === */
+#newsTable tbody td {
+  vertical-align: middle !important;   /* 垂直置中 */
+  text-align: center !important;       /* 水平置中 */
+  padding: 10px;
+  position: relative;
+}
+
+/* 固定圖片寬度 */
+#newsTable td:nth-child(4) {
+  width: 120px;
+  text-align: center;
+}
+
+/* === 響應式樣式（768px 以下） === */
 @media (max-width: 768px) {
   #newsTable {
     font-size: 14px;
     display: block;
     overflow-x: auto;
-    white-space: nowrap;
   }
 
-/*   #newsTable thead { */
-/*     display: none; 隱藏表頭，讓內容清爽 */
-/*   } */
+  #newsTable thead {
+    display: none; /* 手機版隱藏表頭 */
+  }
 
   #newsTable tbody tr {
     display: block;
     border: 1px solid #ddd;
     margin-bottom: 15px;
     padding: 10px;
-    text-align: center;
   }
 
   #newsTable tbody td {
     display: block;
-    text-align: left;
-    padding: 5px 10px;
-    border: none;
-    border-bottom: 1px solid #eee;
-    text-align: center;
+    text-align: left !important;
+    padding-left: 120px;      /* 給 label 預留空間 */
+    position: relative;
+    vertical-align: middle;
   }
 
-  /* 自訂每個欄位前的 label（可選） */
   #newsTable tbody td::before {
     content: attr(data-label);
     font-weight: bold;
-    display: inline-block;
-    width: 100px;
     color: #333;
-   
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    white-space: nowrap;
   }
 
-  /* 內容欄擴大使用空間 */
-  .news-content {
-    width: 100%;
-    white-space: normal;
+  /* 圖片調整 */
+  #newsTable td:nth-child(4) {
+    width: auto;
+    text-align: left;
+    padding-left: 10px;
   }
-}
 
-/* 消息圖片固定寬度 */
-#newsTable td:nth-child(4) {
-  width: 120px;
-  text-align: center;
+  #newsTable td:nth-child(4)::before {
+    top: 10px;
+  }
 }

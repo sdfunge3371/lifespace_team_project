@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
   // 一進頁面就載入"全部"分類，並幫"全部"按鈕加上 active 樣式
   loadAllFaqs();
 
