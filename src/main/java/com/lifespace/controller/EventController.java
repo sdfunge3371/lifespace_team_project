@@ -91,26 +91,35 @@ public class EventController {
 	    
 	    // 驗證活動時間是否在訂單時間範圍內
 	    Orders order = ordersRepository.findById(eventRequest.getOrderId()).orElse(null);
+	    if (order == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("找不到對應的訂單");
+        }
+	    
 	    Timestamp eventStart = eventRequest.getEventStartTime();
 	    Timestamp eventEnd = eventRequest.getEventEndTime();
-	   
-	    final Pattern numberPattern = Pattern.compile("^[1-9]\\d*$");
-
-	    
+	      
 	    if (eventStart.before(order.getOrderStart()) || eventEnd.after(order.getOrderEnd())) {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("活動時間需在訂單時間範圍內");
 	    }else if(eventRequest.getMaximumOfParticipants() > order.getSpace().getSpacePeople()) {
 	    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("活動人數上限不可超出空間容量");
 	    }
 
-	    eventSvc.addEvent(eventRequest, photos);
-	    return ResponseEntity.ok("活動建立成功");
+	    try {
+            eventSvc.addEvent(eventRequest, photos);
+            return ResponseEntity.ok("活動建立成功");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("建立活動時發生錯誤: " + e.getMessage());
+        }
     }
     
 	@PutMapping("/updateStatus")
-    public String updateStatus(@RequestParam(required = true) String eventId, @RequestParam(required = true) String status) {
-    	eventSvc.updateEventStatus(eventId, status);
-        return "執行update event status jpa方法";
+    public  ResponseEntity<?> updateStatus(@RequestParam(required = true) String eventId, @RequestParam(required = true) String status) {
+		 try {
+	            eventSvc.updateEventStatus(eventId, status);
+	            return ResponseEntity.ok("活動狀態更新成功");
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("更新失敗: " + e.getMessage());
+	        }
     }
     
     @PutMapping("/addMemToEvent")
@@ -123,8 +132,12 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入才能參加活動");
         }
         
-    	eventSvc.addMemberToEvent(memberId, eventId);
-        return ResponseEntity.ok("執行add event member jpa方法");
+        try {
+            eventSvc.addMemberToEvent(memberId, eventId);
+            return ResponseEntity.ok("成功加入活動");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("加入活動失敗: " + e.getMessage());
+        }
     }
     
     @PutMapping("/removeMemFromEvent")
@@ -135,8 +148,12 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("請先登入才能取消參加活動");
         }
     	
-        eventSvc.removeMemberFromEvent(memberId, eventId);
-        return ResponseEntity.ok("執行remove event member jpa方法");
+    	try {
+            eventSvc.removeMemberFromEvent(memberId, eventId);
+            return ResponseEntity.ok("取消參加活動成功");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("取消活動失敗: " + e.getMessage());
+        }
     }
     
     @GetMapping("/getNewEvents")
@@ -177,7 +194,6 @@ public class EventController {
     
     @GetMapping("/getOne")
     public EventResponse getOneEvent(@RequestParam String eventId) {
-    	System.out.println("被要求檔案");
     	EventResponse event = eventSvc.getOneEvent(eventId);
         
         event.getPhotoUrls(); // 確保放入 photoUrls 圖片地址
@@ -188,7 +204,6 @@ public class EventController {
     //獲取所有活動類別
     @GetMapping("/getAllCategories")
     public ResponseEntity<List<EventCategory>> getAllCategories() {
-    	System.out.println("被要求檔案");
     	List<EventCategory> categories = eventSvc.findAllEventsCategory();
     	
         return ResponseEntity.ok(categories);
