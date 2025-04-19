@@ -31,23 +31,34 @@ function previewImage(event) {
       formData.append("memberImage", fileInput.files[0]);  // 確保檔案有選再加
     }
   
-    fetch("/member", {
-      method: "POST",
-      body: formData
-    })
-    .then(response => {
-      if (!response.ok) return response.text().then(msg => { throw new Error(msg); });
-      return response.text(); // 後端回傳 ResponseEntity<String>
-    })
-    .then(msg => {
-      alert("新增成功！" );
-      // 可選擇跳回主頁或清空表單
-      window.location.href = "./member.html";
-    })
-    .catch(err => {
-      alert("錯誤：" + err.message);
-    });
-  }
+	fetch("/member", {
+	  method: "POST",
+	  body: formData
+	})
+	.then(response => {
+	  if (!response.ok) {
+	    // 嘗試解析成 JSON
+	    return response.json().then(err => {
+	      // 顯示所有錯誤（或選擇只取第一筆）
+	      alert(err.errors?.join("\n") || err.message || "未知錯誤");
+	      throw new Error("驗證失敗");
+	    }).catch(() => {
+	      // 如果不是 JSON 格式（例如普通文字錯誤）
+	      return response.text().then(msg => {
+	        alert("錯誤：" + msg);
+	        throw new Error("格式錯誤");
+	      });
+	    });
+	  }
+	  return response.text();
+	})
+	.then(msg => {
+	  alert("新增成功！");
+	  window.location.href = "./member.html";
+	})
+	.catch(err => {
+	  console.error("錯誤資訊：", err);
+	});
 
 
 
@@ -82,4 +93,5 @@ function cancelImage() {
 
     // 當沒有照片時，隱藏取消按鈕
     document.getElementById('cancelBtn').style.display = "none";
+}
 }

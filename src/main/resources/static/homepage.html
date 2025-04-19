@@ -894,7 +894,7 @@
         const nameSpan = document.getElementById("navMemberName");
 
 
-        fetch("http://localhost:8080/member/account", {
+        fetch("/member/account", {
             method: "GET",
             credentials: "include"
         })
@@ -906,25 +906,25 @@
                 const avatarImg = document.getElementById("navAvatar");
                 if (member && member.memberId) {
                     // 會員登入成功，替換成會員頭貼
-                    avatarImg.src = `http://localhost:8080/member/image/${member.memberId}`;
+                    avatarImg.src = `/member/image/${member.memberId}`;
                     nameSpan.innerText = `${member.memberName}`;
                 }
             })
             .catch(err => {
-                avatarImg.src = `http://localhost:8080/images/default.jpg`;
+                avatarImg.src = `/images/default.jpg`;
                 nameSpan.innerText = "會員資料";
             });
     });
 
     //----------------登出-------------------------------------
     function logout() {
-        fetch("http://localhost:8080/member/logout", {
+        fetch("/member/logout", {
             method: "POST",
             credentials: "include"
         })
             .then(response => {
                 if (response.ok) {
-                    windows.location.href = "../homepage.html"; //登出後回首頁
+                    windows.location.href = "/homepage.html"; //登出後回首頁
                 } else {
                     alert("登出失敗");
                 }

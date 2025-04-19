@@ -14,15 +14,27 @@ public class MemberValidator {
 	private final String memberNameError;
 	private final String emailError;
 	private final String phoneError;
+	private final String passwordError;
+	private final boolean needPasswordValidation;
+	
 	private final List<String> errorMessageError = new ArrayList<>();
 	
-	
-	public MemberValidator(MemberRepository memberRepositoryError, String memberIdError, String memberNameError, String emailError, String phoneError) {
+	public MemberValidator(
+			MemberRepository memberRepositoryError, 
+			String memberIdError, 
+			String memberNameError, 
+			String emailError, 
+			String phoneError,
+			String passwordError,
+			boolean needPasswordValidation) {
+		
 		this.memberRepositoryError = memberRepositoryError; 
 		this.memberIdError = memberIdError;
 		this.memberNameError = memberNameError; 
 		this.emailError = emailError; 
 		this.phoneError = phoneError;
+		this.passwordError = passwordError;
+		this.needPasswordValidation = needPasswordValidation;
 		validate();
 	}
 	
@@ -35,6 +47,14 @@ public class MemberValidator {
 
 	
 	private void validate() {
+		
+		// 密碼規定
+		if (needPasswordValidation) {
+		    if (passwordError == null || passwordError.isBlank()) {
+		        errorMessageError.add("密碼不可為空");
+		     }
+		}
+		
         // 姓名格式：只允許中文或英文
         if (memberNameError == null || !memberNameError.matches("^[A-Za-z\\u4e00-\\u9fa5]+$")) {
             errorMessageError.add("姓名格式錯誤，只能包含中英文");
@@ -67,5 +87,5 @@ public class MemberValidator {
     }
 	
 	
-
+	
 }
