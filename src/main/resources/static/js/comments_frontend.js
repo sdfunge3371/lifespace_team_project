@@ -143,72 +143,152 @@ $(document).ready(function () {
         return;
     }
 
-    $(document).on("click", ".edit-btn", function (e) {
-        e.preventDefault();
-        console.log("點到編輯按鈕");
+//    $(document).on("click", ".edit-btn", function (e) {
+//        e.preventDefault();
+//        console.log("點到編輯按鈕");
+//
+//        const box = $(this).closest(".comment-box");
+//        box.find(".dropdown").hide();
+//        currentlyDropdownBox = null;
+//
+//        if (currentlyEditingBox && currentlyEditingBox[0] !== box[0]) {
+//            const previousInput = currentlyEditingBox.find(".edit-input");
+//            const originalMsg = previousInput.attr("data-original");
+//            previousInput.replaceWith(`<div class="comment-message">${originalMsg}</div>`);
+//        }
+//
+//        const commentId = box.data("id");
+//        const msgDiv = box.find(".comment-message");
+//
+//
+//
+//        if (msgDiv.length > 0) {
+//            const originalMsg = msgDiv.text();
+//            const input = $(`<input type="text" class="edit-input" value="${originalMsg}" />`);
+//            input.attr("data-original", originalMsg);
+//
+//            // 儲存替換前的元素位置
+//            const parent = msgDiv.parent();
+//
+//            // 執行替換
+//            msgDiv.replaceWith(input);
+//
+//            // 驗證替換是否成功
+//            console.log("替換後的元素:", parent.find(".edit-input"));
+//        } else {
+//            console.log("未找到要替換的元素");
+//        }
+//
+//
+//        input.focus();
+//        currentlyEditingBox = box;
+//
+//        input.off("keydown").on("keydown", function (e) {
+//            if (e.key === "Enter") {
+//                const newMsg = input.val().trim();
+//                if (!newMsg) return;
+//
+//                $.ajax({
+//                    url: `/comments/${commentId}`,
+//                    method: "PUT",
+//                    contentType: "application/json",
+//                    data: JSON.stringify({
+//                        commentMessage: newMsg,
+//                        eventMemberId: currentEventMemberId
+//                    }),
+//                    success: function () {
+//                        page = 0;
+//                        noMoreData = false;
+//                        currentlyEditingBox = null;
+//                        loadComments();
+//                    }
+//                });
+//            } else if (e.key === "Escape") {
+//                input.replaceWith(`<div class="comment-message">${originalMsg}</div>`);
+//                currentlyEditingBox = null;
+//            }
+//        });
+//    });
 
-        const box = $(this).closest(".comment-box");
-        box.find(".dropdown").hide();
-        currentlyDropdownBox = null;
+	// 編輯留言
+	$(document).on("click", ".edit-btn", function (e) {
+	  e.preventDefault();
+	  console.log("✅ 點到編輯按鈕");
+	
+	  const box = $(this).closest(".comment-box");
+	  const commentId = box.data("id");
+	  console.log("🔍 目前 commentId：", commentId);
+	  
+	  box.find(".dropdown").hide(); // 收起 ⋯ 選單
+	  currentlyDropdownBox = null;
 
-        if (currentlyEditingBox && currentlyEditingBox[0] !== box[0]) {
-            const previousInput = currentlyEditingBox.find(".edit-input");
-            const originalMsg = previousInput.attr("data-original");
-            previousInput.replaceWith(`<div class="comment-message">${originalMsg}</div>`);
-        }
+	  console.log('currentlyEditingBox', currentlyEditingBox);
+	  console.log('box', box);
+	
+	  // 如果有其他留言正在編輯，先還原
+	  //if (currentlyEditingBox && currentlyEditingBox[0] !== box[0]) {
+      const previousInput = $('[class^=edit-input]')
+	  if ( previousInput.length > 0) {
+		//const previousInput = currentlyEditingBox.find(".edit-input");
+	    const original = previousInput.attr("data-original");
+	    previousInput.replaceWith(`<div class="comment-message">${original}</div>`);
+	  }
+	
+	  const msgDiv = box.find(".comment-message");
+	  if (msgDiv.length === 0) {
+	    console.error("❌ 找不到 .comment-message");
+	    return;
+	  }
+	
+	  const originalMsg = msgDiv.text();
+	  console.log("原始留言文字：", originalMsg);
+	  const inputHtml = `<input type="text" class="edit-input-${commentId}" value="${originalMsg}" />`;
+	
+	  msgDiv.replaceWith(inputHtml);
+	  const input = $(`.edit-input-${commentId}`);
+	  input.attr("data-original", originalMsg);
 
-        const commentId = box.data("id");
-        const msgDiv = box.find(".comment-message");
+	  console.log("✅ 已將留言替換為 input：", input[0]);
+	  
+	  input.focus();
+	  console.warn("11111111111");
+	  console.log('box??', box);
+	  currentlyEditingBox = box;
+	  console.log('currentlyEditingBox??', currentlyEditingBox);
+	  console.warn("2222222222222");
+	  
+	  // 處理按鍵事件（Enter = 送出編輯；Esc = 取消）
+	  input.off("keydown").on("keydown", function (e) {
+		console.warn("3333333333333");
+	    if (e.key === "Enter") {
+	      const newMsg = input.val().trim();
+	      if (!newMsg) return;
+	
+	      $.ajax({
+	        url: `/comments/${commentId}`,
+	        method: "PUT",
+	        contentType: "application/json",
+	        data: JSON.stringify({
+	          commentMessage: newMsg,
+	          eventMemberId: currentEventMemberId,
+			  eventId
+	        }),
+	        success: function () {
+	          console.log("✅ 留言成功更新");
+	          page = 0;
+	          noMoreData = false;
+	          currentlyEditingBox = null;
+	          loadComments();
+	        }
+	      });
+	    } else if (e.key === "Escape") {
+	      input.replaceWith(`<div class="comment-message">${originalMsg}</div>`);
+	      currentlyEditingBox = null;
+		  console.log("↩️ 已取消編輯，還原留言");
+	    }
+	  });
+	});
 
-
-
-        if (msgDiv.length > 0) {
-            const originalMsg = msgDiv.text();
-            const input = $(`<input type="text" class="edit-input" value="${originalMsg}" />`);
-            input.attr("data-original", originalMsg);
-
-            // 儲存替換前的元素位置
-            const parent = msgDiv.parent();
-
-            // 執行替換
-            msgDiv.replaceWith(input);
-
-            // 驗證替換是否成功
-            console.log("替換後的元素:", parent.find(".edit-input"));
-        } else {
-            console.log("未找到要替換的元素");
-        }
-
-
-        input.focus();
-        currentlyEditingBox = box;
-
-        input.off("keydown").on("keydown", function (e) {
-            if (e.key === "Enter") {
-                const newMsg = input.val().trim();
-                if (!newMsg) return;
-
-                $.ajax({
-                    url: `/comments/${commentId}`,
-                    method: "PUT",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        commentMessage: newMsg,
-                        eventMemberId: currentEventMemberId
-                    }),
-                    success: function () {
-                        page = 0;
-                        noMoreData = false;
-                        currentlyEditingBox = null;
-                        loadComments();
-                    }
-                });
-            } else if (e.key === "Escape") {
-                input.replaceWith(`<div class="comment-message">${originalMsg}</div>`);
-                currentlyEditingBox = null;
-            }
-        });
-    });
 
 
     getLoginEventMemberId()
@@ -248,7 +328,7 @@ $(document).ready(function () {
 //		  currentlyEditingBox = null;
 //	    }
 //	
-
+console.log('$(e.target)', $(e.target));
 
         const isClickInsideDropdown = $(e.target).closest(".dropdown").length || $(e.target).hasClass("options-btn");
         const isClickInsideEdit = $(e.target).hasClass("edit-input");
@@ -265,6 +345,7 @@ $(document).ready(function () {
             const original = input.attr("data-original");
             input.replaceWith(`<div class="comment-message">${original}</div>`);
             currentlyEditingBox = null;
+			console.log('!!!!!!!!!!!!!!!!')
         }
     });
 

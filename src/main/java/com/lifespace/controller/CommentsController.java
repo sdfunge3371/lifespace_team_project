@@ -435,13 +435,15 @@ public class CommentsController {
 	// 有參加活動的會員才能 刪除 本人的留言
 	@DeleteMapping("/comments/{commentId}")
 	public ResponseEntity<?> deleteComment(@PathVariable String commentId, HttpSession session) {
-	    Object obj = session.getAttribute("eventMember");
-	    EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
-	    if (eventMember == null) {
+	    Object obj = session.getAttribute("loginMember");
+	    //EventMember eventMember = (obj instanceof EventMember) ? (EventMember) obj : null;
+	    if (obj == null) {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登入或未參加活動");
 	    }
+	    String memberId = (String) obj;
 
 	    Comments original = commentsService.getOneComments(commentId);
+	    EventMember eventMember = eventMemberRepository.findByMemberMemberIdAndEventEventId(memberId, original.getEventMember().getEvent().getEventId());
 	    if (original == null || !original.getEventMember().getEventMemberId().equals(eventMember.getEventMemberId())) {
 	        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("無權限刪除他人留言");
 	    }
