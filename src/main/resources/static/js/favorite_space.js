@@ -1,4 +1,4 @@
-// DOM 載入完成後執行
+// DOM 載入完成後執行 
 document.addEventListener('DOMContentLoaded', function() {
     // 檢查會員登入狀態
     checkLoginStatus();
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 檢查會員登入狀態
 function checkLoginStatus() {
-    fetch("http://localhost:8080/member/profile", {
+    fetch("/member/profile", {
         method: "GET",
         credentials: "include" // 記得加這個，才會帶 session cookie
     })
