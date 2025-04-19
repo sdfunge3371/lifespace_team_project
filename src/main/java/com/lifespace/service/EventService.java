@@ -74,6 +74,14 @@ public class EventService {
 	@Autowired
 	MailService mailService;
 	
+	//判斷該會員是否有參與會員(攔截器要用的)
+	public EventMemberStatus getParticipationStatus(String eventId, String memberId) {
+		//用optional來判斷
+	    Optional<EventMember> eventMemberOpt = eventMemberRepository.findByEventEventIdAndMemberMemberId(eventId, memberId);
+	    return eventMemberOpt.map(EventMember::getParticipateStatus).orElse(null);
+	}
+
+	
 	//新增活動
 	@Transactional
 	public void addEvent(EventRequest eventRequest, List<MultipartFile> photos) {

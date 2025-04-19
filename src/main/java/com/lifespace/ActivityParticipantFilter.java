@@ -30,7 +30,8 @@ public class ActivityParticipantFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         
      // 只對這些特定 URL 做過濾
-        if (uri.startsWith("/activity/comment.html")) {
+        if (uri.startsWith("/comments_frontend.html")) {
+        	System.out.println("🧠 [Filter] 嘗試進入留言板！");
             
         	//確認是否有session
         	HttpSession session = request.getSession(false);
@@ -47,15 +48,16 @@ public class ActivityParticipantFilter extends OncePerRequestFilter {
             }
             
             //確認是否有參與活動
-            String activityId = request.getParameter("activityId"); // 須從前端帶入參數
-            if (activityId == null) {
-                response.sendRedirect("/error.html"); // 沒帶活動編號，導錯頁
+            String eventId = request.getParameter("eventId"); // 須從前端帶入參數
+            if (eventId == null || eventId.isBlank()) {
+            	System.out.println("⚠️ eventId 缺失！");
+                response.sendRedirect("/homepage.html"); // 沒帶活動編號，導到首頁
                 return;
             }
             
-            //
-            EventMemberStatus joinedStatus = eventService.checkMemberEventStatus(activityId, memberId);
-            if (joinedStatus != EventMemberStatus.ATTENT) {
+            //抓參與活動的會員狀態
+            EventMemberStatus joinedStatus = eventService.getParticipationStatus(eventId, memberId);
+            if (joinedStatus == null || joinedStatus != EventMemberStatus.ATTENT) {
                 response.sendRedirect("homepage.html"); // 回首頁
                 return;
             }
