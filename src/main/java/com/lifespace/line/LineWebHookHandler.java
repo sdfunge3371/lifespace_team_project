@@ -9,17 +9,19 @@ import com.linecorp.bot.spring.boot.handler.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.handler.annotation.LineMessageHandler;
 import com.linecorp.bot.webhook.model.MessageEvent;
 import com.linecorp.bot.webhook.model.TextMessageContent;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @LineMessageHandler
-@RequiredArgsConstructor
 public class LineWebHookHandler {
 
+    @Autowired
     private OrdersService ordersSvc;
+
+    @Autowired
     private MessagingApiClient messagingApiClient;
 
     @EventMapping

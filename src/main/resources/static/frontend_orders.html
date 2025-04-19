@@ -120,7 +120,7 @@
     <div class="cancel-dialog">
         <div class="cancel-dialog-content">
             <div class="cancel-dialog-title">取消訂單</div>
-            <p>您確定要取消這筆訂單嗎？取消後將無法恢復。</p>
+            <p>您確定要取消這筆訂單嗎？取消後無法恢復，僅能重新下單</p>
             <div class="cancel-reason">
                 <select id="cancel-reason-select" class="form-select">
                     <option value="">請選擇取消原因</option>
@@ -504,7 +504,7 @@
                  }
         
                  // 顯示已上傳的照片
-                 function displayPhotos() {
+                function displayPhotos() {
                      var $photoPreview = $("#photoPreview");
                      $photoPreview.empty();
         
@@ -521,10 +521,10 @@
                          $photoItem.append($img, $removeBtn);
                          $photoPreview.append($photoItem);
                     });
-                 }
+                }
         
                  // 點擊提交評價按鈕
-                 $(".review-submit-btn").click(function () {
+                $(".review-submit-btn").click(function () {
                      // 獲取評分
                      var rating = $("input[name='rating']:checked").val();
                      // 獲取評論文字
@@ -540,8 +540,21 @@
                          alert("請分享您的使用體驗");
                          return;
                      }
-        
-                     
+                     $(".review-dialog").fadeOut();
+
+                     if (currentReviewOrder) {
+                         const reviewBtn = currentReviewOrder.find(".action-button.review");
+
+                         reviewBtn.removeClass("review")
+                                  .addClass("reviewed")
+                                  .text("已評價")
+                                  .prop("disabled", true); // 防止再點
+                     }
+
+
+
+
+
                      var orderId = currentReviewOrder.find("p:first").text().split("：")[1].trim();
 
                      // 準備表單資料

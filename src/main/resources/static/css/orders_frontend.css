@@ -173,10 +173,21 @@ body {
     background-color: rgb(98, 182, 98);
 }
 
-.action-button.group-button:hover {
+.action-button.group-button
+a.action-button.message-button:hover {
     background-color: rgb(82, 160, 82);
 }
 
+a.action-button.message-button {
+    background-color: rgb(98, 182, 98);
+    color: white;
+}
+
+
+a.action-button.message-button:hover {
+    background-color: rgb(82, 160, 82);
+    color: white;
+}
 .action-button.review {
     background-color: rgb(98, 182, 98);
 }
@@ -304,6 +315,11 @@ body {
 .reviewed-tag {
     background-color: #e1f4e1;
     color: #4a8c4a;
+}
+
+.action-button.reviewed{
+    background-color: #8a8a8a;
+    color: white;
 }
 
 /* 評價對話框樣式 */
