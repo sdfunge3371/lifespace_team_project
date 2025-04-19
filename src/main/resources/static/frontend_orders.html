@@ -294,6 +294,60 @@
 
                     });
 
+                
+             // 過濾出歷史訂單
+                const historyOrders = orders.filter(o => o.orderStatus == 2);
+
+                // 避免重複請求，用 Set 找出唯一 spaceId
+                const uniqueSpaceIds = [...new Set(historyOrders.map(o => o.spaceId))];
+
+                // 針對每個 spaceId 發出請求查詢評論
+                uniqueSpaceIds.forEach(spaceId => {
+                    fetch(`/spaces/comments/${spaceId}?size=100`)  // 預設最多拿100筆評論
+                        .then(res => res.json())
+                        .then(res => {
+                            const commentList = res.content || [];
+
+                            historyOrders
+                                .filter(order => order.spaceId === spaceId)
+                                .forEach(order => {
+                                    const comment = commentList.find(c =>
+                                        c.orderId === order.orderId &&
+                                        c.commentContent &&
+                                        c.commentContent.trim() !== ""
+                                    );
+
+                                    if (comment) {
+                                        const $orderBlock = $(`#history-orders .order-container`).filter(function () {
+                                            return $(this).find("p:first").text().includes(order.orderId);
+                                        });
+
+                                        if ($orderBlock.length > 0) {
+                                            // 1. 改變按鈕為已評價 & 停用
+                                            const $btn = $orderBlock.find(".action-button.review");
+                                            $btn.removeClass("review")
+                                            	.addClass("reviewed")
+                                            		.text("已評價")
+                                            		.prop("disabled", true); // 防止再點
+                                            //$btn.text("已評價").prop("disabled", true);
+
+                                            // 2. 加上「已評價」標籤
+                                            const $firstLine = $orderBlock.find("p").filter(function () {
+    												return $(this).find(".label").text().trim() === "訂單編號：";
+														});
+											if ($firstLine.find(".reviewed-tag").length === 0) {
+    													$firstLine.append('<span class="reviewed-tag ms-2 text-success">已評價</span>');
+													}
+                                        }
+                                    }
+                                });
+                        })
+                        .catch(err => {
+                            console.error(`查詢評論失敗 (spaceId=${spaceId}):`, err);
+                        });
+                });
+                
+                
                     //判斷訂單區塊是否有訂單
 
                     if ($('#space-orders .order-container').length == 0) {
