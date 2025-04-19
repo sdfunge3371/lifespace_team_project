@@ -22,6 +22,7 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
 
     List<Orders> findByOrderStatusAndOrderEndBefore(Integer orderStatus, Timestamp OrderEnd );
 
+
     @EntityGraph(attributePaths = {"branch", "member", "rentalItemDetails", "rentalItemDetails.rentalItem"})
     List<Orders> findAll();
 
@@ -32,6 +33,22 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     @Query("SELECT o FROM Orders o WHERE o.member.memberId = :memberId And o.member.accountStatus = 1")
     List<Orders> findAllByMemberId(@Param("memberId") String memberId);
 
+    //line官方第一次用memberId查三筆已付款訂單
+    List<Orders> findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(String memberId, Integer orderStatus);
+
+    //line官方第二次之後用lineUserId查三筆已付款訂單
+    List<Orders> findTop3ByLineUserIdAndOrderStatusOrderByOrderStartDesc(String lineUserId, Integer orderStatus);
+
+    //判斷訂單是否有存LineUserId
+    boolean existsByLineUserId(String lineUserId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Orders o Set o.lineUserId = :lineUserId WHERE o.orderId IN :orderIds AND o.lineUserId IS NULL")
+    int bulkInsertLineUserIdIfNull(@Param("lineUserId") String lineUserId, @Param("orderIds") List<String> orderIds);
+
+    @Query("SELECT o.orderStatus FROM Orders o WHERE o.orderId = :orderId ")
+    Integer findOrderStatusByOrderId(@Param("orderId")  String orderId);
 
     //用舉辦人id以及活動id查詢訂單，作為舉辦者取消活動用
     Optional<Orders> findByEventEventIdAndMemberMemberId(String eventId, String memberId);

@@ -4,6 +4,7 @@ package com.lifespace.controller;
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.entity.Orders;
+import com.lifespace.repository.OrdersRepository;
 import com.lifespace.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -23,8 +24,12 @@ public class OrdersController {
 
     @Autowired
     private OrdersService ordersSvc;
+
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
 
     public OrdersController(OrdersService ordersSvc) {
 
@@ -63,6 +68,8 @@ public class OrdersController {
         return ResponseEntity.ok(memberOrders);
      }
 
+
+
     //會員查詢訂單測試
 //    @GetMapping("/member/{memberId}")
 //    public List<OrdersDTO> getOrdersByMemberId(@PathVariable String memberId) {
@@ -82,6 +89,16 @@ public class OrdersController {
         return ResponseEntity.ok(newOrder);
     }
 
+    @GetMapping("/status/{orderId}")
+    public ResponseEntity<String> orderStatus(@PathVariable String orderId) {
+
+        Integer orderStatus = ordersRepository.findOrderStatusByOrderId(orderId);
+        if (orderStatus == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("查無此訂單");
+        }
+        return ResponseEntity.ok(String.valueOf(orderStatus));
+    }
+
 //    @PostMapping("/create-auto")
 //    public ResponseEntity<OrdersDTO> createAutoOrder(@RequestBody OrdersDTO dto) {
 //        OrdersDTO created = ordersService.createOrder(dto);
@@ -98,10 +115,6 @@ public class OrdersController {
         return ordersSvc.handleEcpayReturn(req);
     }
 
-
-
-
-    
     @PostMapping("/addComment")
     public ResponseEntity<String> addSpaceComments(
             @RequestPart("eventRequest") SpaceCommentRequest commentRequest,

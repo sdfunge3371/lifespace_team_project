@@ -31,6 +31,7 @@ public class OrdersMapper {
         dto.setBranchAddr(orders.getBranch().getBranchAddr());
         dto.setSpaceFloor(orders.getSpace().getSpaceFloor());
         dto.setSpaceCoverPhotoURL("/space-photo/space/" + orders.getSpaceId() + "/cover");
+        dto.setLineUserId(orders.getLineUserId());
 
         if(orders.getEvent() != null) {
             dto.setEventDTO(toEventDTO(orders.getEvent()));

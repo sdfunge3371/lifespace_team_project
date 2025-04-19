@@ -299,6 +299,33 @@
 			<version>1.33.1</version>
 		</dependency>
 
+		<!-- lineBot message用-->
+		<dependency>
+			<groupId>com.linecorp.bot</groupId>
+			<artifactId>line-bot-messaging-api-client</artifactId>
+			<version>9.6.1</version>
+		</dependency>
+
+		<!-- Spring Boot 整合：CallbackRequest、自動註冊 Bean -->
+		<dependency>
+			<groupId>com.linecorp.bot</groupId>
+			<artifactId>line-bot-spring-boot-webmvc</artifactId>
+			<version>9.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.linecorp.bot</groupId>
+			<artifactId>line-bot-spring-boot-handler</artifactId>
+			<version>9.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.linecorp.bot</groupId>
+			<artifactId>line-bot-spring-boot-client</artifactId>
+			<version>9.6.1</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

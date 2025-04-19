@@ -66,6 +66,9 @@ public class Orders implements Serializable {
     @Column(name = "order_status")
     private Integer orderStatus = 1;
 
+    @Column(name = "line_userid")
+    private String lineUserId;
+
     @Column(name = "created_time")
     @UpdateTimestamp
     private Timestamp createdTime;
@@ -249,7 +252,13 @@ public class Orders implements Serializable {
         this.space = space;
     }
 
+    public String getLineUserId() {
+        return lineUserId;
+    }
 
+    public void setLineUserId(String lineUserId) {
+        this.lineUserId = lineUserId;
+    }
 
     @Column(name = "member_id", insertable = false, updatable = false)
     private String memberId;

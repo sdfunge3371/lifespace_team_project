@@ -7,13 +7,14 @@ import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.ecpay.payment.integration.AllInOne;
 import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
 import com.lifespace.entity.*;
-import com.lifespace.repository.OrdersRepository;
-import com.lifespace.repository.RentalItemRepository;
-import com.lifespace.repository.SpaceCommentPhotoRepository;
+import com.lifespace.repository.*;
 
-import com.lifespace.repository.SpaceRepository;
+import com.linecorp.bot.messaging.model.TextMessage;
+import com.linecorp.bot.messaging.client.MessagingApiClient;
+import com.linecorp.bot.messaging.model.PushMessageRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import com.lifespace.mapper.OrdersMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -34,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service("ordersService")
 public class OrdersService {
@@ -48,8 +51,11 @@ public class OrdersService {
     private SpaceService spaceService;
 
     @Autowired
-    private SpacePhotoService spacePhotoSvc;
-    
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private MessagingApiClient messagingApiClient;
+
     public void updateOrderStatusByOrderId(String orderId) {
 
         Orders orders = ordersRepository.findById(orderId)
@@ -134,7 +140,7 @@ public class OrdersService {
         }
 
         try {
-            //確認可以讀到綠界的payment.xml
+            //確認可以讀到綠界的EcpayPayment.xml
             URL fileURL = getClass().getClassLoader().getResource("payment_conf.xml");
             if (fileURL != null) {
                 System.out.println("有讀到payment_conf.xml：" + fileURL);
@@ -220,6 +226,44 @@ public class OrdersService {
             orders.setOrderStatus(1);
             orders.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
             ordersRepository.save(orders);
+        }
+    }
+
+    public  List<OrdersDTO> getOrdersByLineUserId(String lineUserId) {
+        List<Orders> orders = ordersRepository.findTop3ByLineUserIdAndOrderStatusOrderByOrderStartDesc(lineUserId, 1);
+        return orders.stream()
+                     .map(OrdersMapper::toOrdersDTO)
+                     .collect(Collectors.toList());
+    }
+
+    public boolean bindLineUserIdAndPushOrders(String lineUserId, String memberName, String phone) {
+        Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
+        if (member == null) {
+            return false;
+        }
+
+        //取出三筆最靠近開始時間及狀態是已付款的訂單
+        List<Orders> orders = ordersRepository.findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(member.getMemberId(), 1);
+        if (orders == null) {
+            return false;
+        }
+
+        //取出未綁定lineUserId的訂單筆數收集成List,將這些訂單綁定lineUserId
+        List<String> orderIds = orders.stream()
+                .filter(order -> order.getLineUserId() == null)
+                .map(Orders::getOrderId)
+                .collect(Collectors.toList());
+
+        if (orderIds.isEmpty()) {
+            return false;
+        }
+
+        int lineUserIdUpdated = ordersRepository.bulkInsertLineUserIdIfNull(lineUserId, orderIds);
+
+        if(lineUserIdUpdated > 0){
+            return true;
+        }else {
+            return false;
         }
     }
 
@@ -317,6 +361,7 @@ public class OrdersService {
         order.setMemberId(ordersDTO.getMemberId());
         order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
         order.setOrderStatus(0);
+        order.setLineUserId(ordersDTO.getLineUserId());
 
         // 建立Branch與Member的關聯，讓Mapper取得
         Branch branch = new Branch();

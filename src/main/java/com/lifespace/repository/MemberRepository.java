@@ -29,8 +29,9 @@ public interface MemberRepository extends JpaRepository<Member,String> {
 
     // 自定義方法:根據 phone 查詢
 	Optional<Member> findByPhone(String phone);
-	
 
+	//小布 line官方首次查詢使用
+	Member findByMemberNameAndPhone(String memberName, String phone);
 	
 //	//動態查詢-帳號狀態、註冊日期、生日
 //	@Query("SELECT m FROM Member m " +
