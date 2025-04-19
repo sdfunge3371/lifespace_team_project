@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.lifespace.constant.EventMemberStatus;
 import com.lifespace.service.EventService;
 
 import jakarta.servlet.FilterChain;
@@ -53,8 +54,8 @@ public class ActivityParticipantFilter extends OncePerRequestFilter {
             }
             
             //
-            boolean joined = eventService.checkMemberEventStatus(activityId, memberId);
-            if (!joined) {
+            EventMemberStatus joinedStatus = eventService.checkMemberEventStatus(activityId, memberId);
+            if (joinedStatus != EventMemberStatus.ATTENT) {
                 response.sendRedirect("homepage.html"); // 回首頁
                 return;
             }

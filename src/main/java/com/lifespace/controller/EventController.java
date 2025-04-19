@@ -303,14 +303,9 @@ public class EventController {
         }
         
         Map<String, Object> response = new HashMap<>();
-        //若使用者已參加或已候補
-        if( eventSvc.checkMemberEventStatus(eventId, memberId) ) {
-             response.put( "participateStatus", "PARTICIPATING" );
-             return ResponseEntity.ok(response);
-        }else {
-        	//若使用者未參加也未候補
-        	 response.put("participateStatus", "NOT_PARTICIPATING");
-             return ResponseEntity.ok(response);
-        }
+       
+       response.put( "participateStatus", eventSvc.checkMemberEventStatus(eventId, memberId) );
+       return ResponseEntity.ok(response);
+        
     }
 }

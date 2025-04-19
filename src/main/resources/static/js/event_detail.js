@@ -172,12 +172,18 @@ $(document).ready(function () {
         .then(data => {
             if (data) {
                 // 根據用戶參與狀態設置按鈕
-                if (data.participateStatus === "PARTICIPATING") {
-                    // 已參加或已候補，停用參加按鈕，啟用取消按鈕
+                if (data.participateStatus === "ATTENT") {
+                    // 已參加，停用參加按鈕，啟用取消按鈕
                     $("#register-btn").prop("disabled", true);
                     $("#cancell-regis-btn").prop("disabled", false);
                     $("#participation-status").text("(已參加)").show();
-                } else {
+                } else if(data.participateStatus === "QUEUED"){
+					$("#register-btn").prop("disabled", true);
+					$("#cancell-regis-btn").prop("disabled", false);
+					$("#cancell-regis-btn").text("取消候補").show();
+					$("#participation-status").text("(已候補)").show();
+				}
+				else {
                     // 未參加或已取消，只能按參加按鈕
                     $("#register-btn").prop("disabled", false);
                     $("#cancell-regis-btn").prop("disabled", true);
@@ -214,6 +220,11 @@ $(document).ready(function () {
                     $("#registered-count").text(regisCount + 1); // 更新人數
                     $("#cancell-regis-btn").prop('disabled', false);
                     $("#register-btn").prop('disabled', true);
+					
+					//跳轉到活動留言板
+					document.getElementById("go-to-message-board-btn").onclick = function () {
+					       window.location.href = `comments_frontend.html?eventId=${eventId}`;
+					   };
                 } else {
                     // 候補
                     $("#waitingModal").modal("show");
