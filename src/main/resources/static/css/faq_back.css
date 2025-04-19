@@ -142,7 +142,19 @@ body {
 }
 
 #btn-add-faq {
-  margin-top: -20px;     /* 向上貼近一點 */
-  margin-bottom: 5px !important;  /* 底部保留一些空間 */
+  background-color: #6AC0BD !important;
+  color: #fff; /* 黑字 */
+  margin: 0 !important;
+}
+
+#btn-view-popular-faq {
+  background-color: #FF8888 !important;
+  color: #fff; /* 白字 */
+  margin: 0 !important;
+}
+
+/* 加強 d-flex 水平對齊排版 */
+.d-flex.align-items-center {
+  gap: 10px; /* 按鈕間距可自訂 */
 }
 

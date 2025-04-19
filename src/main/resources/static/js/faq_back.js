@@ -217,8 +217,10 @@ $(document).ready(function () {
 		      const $body = $('#popularFaqBody');
 		      $body.empty();
 
-		      //過濾掉 not set，再取前5筆
-		      const filtered = data.filter(item => item.faqId !== '(not set)').slice(0, 5);
+		      //過濾掉 not set與空字串，再取前5筆 
+			  const filtered = data
+			    .filter(item => item.faqId !== '(not set)' && item.faqTitle && item.faqTitle.trim() !== '')
+			    .slice(0, 5);
 
 		      // 正常資料顯示在表格中
 		      if (filtered.length === 0) {
