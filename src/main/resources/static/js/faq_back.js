@@ -201,36 +201,39 @@ $(document).ready(function () {
 	        }).catch(() => alert('修改失敗'));
 	    });
 		
-		// 熱門點擊
+		  // 熱門點擊
 		  $('#btn-view-popular-faq').on('click', function () {
-		    // 這裡範例抓「過去一個月」：
-		    const endDate   = new Date().toISOString().slice(0,10);              // 今天 YYYY-MM-DD
-		    const startDate = new Date(Date.now() - 30*24*3600*1000)
-		                        .toISOString().slice(0,10);                     // 30 天前
+		    const endDate = new Date().toISOString().slice(0, 10); // 今天
+		    const startDate = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().slice(0, 10); // 過去30天
 
-		    // 把日期顯示到 Modal 標題下方
 		    $('#popularFaqDateRange').text(`（${startDate} ~ ${endDate}）`);
 
-		    // 向後端呼叫報表 API
 		    $.get('/admin/faq/ga/popular-events', {
 		      startDate: startDate,
-		      endDate:   endDate,
+		      endDate: endDate,
 		      eventName: 'faq_click',
-		      limit:     5
+		      limit: 10   // 設多一點，避免前面出現 (not set) 會影響資料筆數
 		    }, function (data) {
 		      const $body = $('#popularFaqBody');
 		      $body.empty();
 
-		      // data = List<FaqGaEventDTO>
-		      data.forEach(item => {
-		        $body.append(`
-		          <tr>
-		            <td>${item.faqTitle}</td>
-		            <td>${item.faqId}</td>
-		            <td class="text-end">${item.eventCount} 次</td>
-		          </tr>
-		        `);
-		      });
+		      //過濾掉 not set，再取前5筆
+		      const filtered = data.filter(item => item.faqId !== '(not set)').slice(0, 5);
+
+		      // 正常資料顯示在表格中
+		      if (filtered.length === 0) {
+		        $body.append(`<tr><td colspan="3" class="text-center text-muted">目前無熱門點擊資料</td></tr>`);
+		      } else {
+		        filtered.forEach(item => {
+		          $body.append(`
+		            <tr>
+		              <td>${item.faqTitle}</td>
+		              <td>${item.faqId}</td>
+		              <td class="text-end">${item.eventCount} 次</td>
+		            </tr>
+		          `);
+		        });
+		      }
 
 		      // 顯示 Modal
 		      new bootstrap.Modal(document.getElementById('popularFaqModal')).show();
@@ -240,7 +243,7 @@ $(document).ready(function () {
 		    });
 		  });
 		});
-	
+			
 	// 新增時，當使用者輸入常見問題欄位時，自動清除錯誤訊息
 	$('#add-faqAsk').on('input', function () {
 	    if ($(this).val().trim() !== '') {

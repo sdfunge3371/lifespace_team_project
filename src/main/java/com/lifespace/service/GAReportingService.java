@@ -13,6 +13,7 @@ import com.google.analytics.data.v1beta.BetaAnalyticsDataSettings;
 import com.google.analytics.data.v1beta.DateRange;
 import com.google.analytics.data.v1beta.Dimension;
 import com.google.analytics.data.v1beta.Metric;
+import com.google.analytics.data.v1beta.OrderBy;
 import com.google.analytics.data.v1beta.Row;
 import com.google.analytics.data.v1beta.RunReportRequest;
 import com.google.analytics.data.v1beta.RunReportResponse;
@@ -78,57 +79,74 @@ public class GAReportingService {
 
 	// 主方法：取得熱門事件報表資料(建立查詢的報表條件)
 	public List<FaqGaEventDTO> getTopEvents(String startDate, String endDate, String eventName, int limit) {
-		// 1️. 建立 GA 請求條件
+		// 1️. 建立GA請求條件
 		RunReportRequest request = RunReportRequest.newBuilder()
-				// 1-1 設定要查詢的 GA4 資源ID（格式固定為 properties/你的資源 ID）
-				.setProperty("properties/" + GA_PROPERTY_ID)
+		    // 1-1 設定要查詢的 GA4 資源ID（格式固定為 properties/資源 ID）
+		    .setProperty("properties/" + GA_PROPERTY_ID)
 
-				// 1-2 設定查詢的時間範圍，addDateRanges: 新增一組日期範圍
-				.addDateRanges(DateRange.newBuilder().setStartDate(startDate) // ex: "2025-04-01"
-						.setEndDate(endDate) // ex: "2025-04-30"
-						.build())
+		    // 1-2 設定查詢的時間範圍，addDateRanges: 新增一組日期範圍
+		    .addDateRanges(DateRange.newBuilder()
+		        .setStartDate(startDate)       // ex:"2025-04-01"
+		        .setEndDate(endDate)           // ex:"2025-04-30"
+		        .build())
 
-				// 1-3 設定維度(要分組統計的欄位)，這裡只要 FAQ ID
-				.addDimensions(Dimension.newBuilder().setName("customEvent:faq_id") // 自訂維度：faq_id
-						.build())
+		    // 1-3 設定維度(要分組統計的欄位)，這裡只要 FAQ ID
+		    .addDimensions(Dimension.newBuilder()
+		        .setName("customEvent:faq_id") // 自訂維度：faq_id
+		        .build())
 
-				// 1-4 設定指標(要統計的數值)，這裡是事件次數
-				.addMetrics(Metric.newBuilder().setName("eventCount") // 自訂指標：eventCount
-						.build())
+		    // 1-4 設定指標(要統計的數值)，這裡是事件次數
+		    .addMetrics(Metric.newBuilder()
+		        .setName("eventCount")         // 自訂指標：eventCount
+		        .build())
 
-				// 1-5 最後 build成一個實體的Request
-				.build();
+		    // 1-5 新增排序條件 → 依eventCount降冪排序(點擊次數最多在前)
+		    .addOrderBys(OrderBy.newBuilder()
+		        .setMetric(OrderBy.MetricOrderBy.newBuilder()
+		            .setMetricName("eventCount")
+		            .build())
+		        .setDesc(true)
+		        .build())
+
+		    // 1-6 最後build成一個實體的Request
+		    .build();
 
 		// 2. 發送請求給GA，取得回傳資料
 		// 取得GA回應（GA4 Data API自動依eventCount降冪回傳）
 		// RunReportResponse來自Google Analytics Data API Client SDK
 		RunReportResponse response = analyticsData.runReport(request);
 
-		// 3. 將GA回應資料整理成DTO
-		List<FaqGaEventDTO> result = new ArrayList<>();
-		// GA 回傳的所有資料列
+		// 3. 將 GA 回應資料整理成 DTO
+		List<FaqGaEventDTO> result = new ArrayList<FaqGaEventDTO>();
+		// GA 回傳的所有資料列(每一列代表一組分群後的事件紀錄)
 		List<Row> rows = response.getRowsList();
 
-		// 只取前 limit 筆（若 GA 回傳少於 limit，就通通取完）
-		int max = Math.min(limit, rows.size());
-		for (int i = 0; i < max; i++) {
-			// Row由GA SDK提供，每一個Row物件代表GA回傳報表裡的一筆"分群後的結果"
-			Row row = rows.get(i);
+		// 4. 遍歷每筆資料，篩選出有效資料(不含not set)
+		int count = 0;  // 計數器，控制最多只取 limit 筆
+		for (int i = 0; i < rows.size(); i++) {
+		    Row row = rows.get(i);
 
-			// 解析維度與指標
-			// 拿到第 0 維度的字串值，customEvent:faq_id
-			String faqId = row.getDimensionValues(0).getValue();
-			// 拿到第 0 指標的字串值，eventCount
-			int count = Integer.parseInt(row.getMetricValues(0).getValue());
-
-			// 用faqId查詢資料庫，取得對應的FaqAsk
-			Faq faq = repository.findById(faqId).orElse(null);
-			String faqTitle = (faq != null ? faq.getFaqAsk() : "");
-
-			result.add(new FaqGaEventDTO(faqId, faqTitle, count));
+		    // 取得自訂維度的faqId
+		    String faqId = row.getDimensionValues(0).getValue();
+		    // 如果是not set，表示GA收不到自訂參數，這筆就略過
+		    if ("(not set)".equals(faqId)) {
+		        continue;
+		    }
+		    // 取得事件次數(eventCount)，轉成整數
+		    int eventCount = Integer.parseInt(row.getMetricValues(0).getValue());
+		    // 根據 faqId 查詢資料庫對應的常見問題標題
+		    Faq faq = repository.findById(faqId).orElse(null);
+		    String faqTitle = (faq != null) ? faq.getFaqAsk() : "";
+		    // 將資料封裝成 DTO
+		    FaqGaEventDTO dto = new FaqGaEventDTO(faqId, faqTitle, eventCount);
+		    // 加入結果清單
+		    result.add(dto);
+		    // 若已取到 limit 筆，就停止迴圈(controller限定5筆)
+		    count++;
+		    if (count >= limit) {
+		        break;
+		    }
 		}
-
-		// 直接回傳已按照點擊次數高→低的前5筆(FaqAdminController)
 		return result;
 	}
 }
