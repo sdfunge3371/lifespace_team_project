@@ -160,17 +160,16 @@ $(document).ready(function () {
                    `;
                }
                
-               // 訊息板按鈕 - 對所有活動都顯示
-               const messageButton = `
-                   <a href="comments_frontend.html?eventId=${event.eventId}" class="action-button message-button">
-                       <i class="fas fa-comments"></i> 活動留言板
-                   </a>
-               `;
+               // 訊息板按鈕 - 只有已參加活動且尚未舉辦才顯示
+               let messageButton = '';
 			   
-			   //按下「活動留言板」後將活動id帶到留言板url
-			   //messageButton.addEventListener('click', () => {
-			   	//	   	 window.location.href = `comments_frontend.html?eventId=${event.eventId}`;
-			  // 	});
+			   if (event.eventStatus === 'SCHEDULED' && event.participateStatus === 'ATTENT') {
+			       messageButton = `
+			           <a href="comments_frontend.html?eventId=${event.eventId}" class="action-button message-button">
+			               <i class="fas fa-comments"></i> 活動留言板
+			           </a>
+			       `;
+			   }
 			   
                // 組合所有按鈕
                actionButtons = messageButton + actionButtons;
