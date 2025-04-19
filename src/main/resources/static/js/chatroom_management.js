@@ -79,10 +79,11 @@ $(document).ready(function() {
             if (currentMemberId) {
                 // 如果有選中的會員，檢查該會員的新訊息
                 checkNewMessages(currentMemberId);
-            } else {
-                // 否則刷新所有會員的最後一條訊息
-                loadLatestMessagesWithoutUI();
             }
+            
+            // 無論是否有選中會員，都刷新所有會員的最後一條訊息
+            // 修正問題3：這樣可以及時更新其他會員的新訊息狀態
+            loadLatestMessagesWithoutUI();
         }, 5000);
     }
     
@@ -110,41 +111,58 @@ $(document).ready(function() {
             url: "/chatroom/latest-messages",
             method: "GET",
             success: function(data) {
-                // 檢查是否有新的最後一條訊息
+                // 獲取當前列表中的所有會員
                 const currentMembers = {};
                 $('.member-item').each(function() {
-                    currentMembers[$(this).attr('data-id')] = true;
+                    const memberId = $(this).attr('data-id');
+                    currentMembers[memberId] = {
+                        lastMessage: $(this).find('.last-message').text(),
+                        isUnread: $(this).hasClass('unread')
+                    };
                 });
                 
                 // 檢查新增的會員或變化的訊息
                 let hasChanges = false;
-                data.forEach(function(message) {
+                for (let i = 0; i < data.length; i++) {
+                    const message = data[i];
                     const existingItem = $(`.member-item[data-id="${message.memberId}"]`);
+                    
+                    let lastMessageText = '';
+                    if (message.chatPhoto) {
+                        lastMessageText = '已傳送照片';
+                    } else if (message.content) {
+                        lastMessageText = message.content;
+                    }
+                    
                     if (existingItem.length === 0) {
                         // 新會員
                         hasChanges = true;
                     } else {
-                        // 檢查最後訊息是否變化
-                        const lastMessageEl = existingItem.find('.last-message');
-                        let lastMessageText = '';
-                        if (message.chatPhoto) {
-                            lastMessageText = '已傳送照片';
-                        } else if (message.content) {
-                            lastMessageText = message.content;
-                        }
+                        const currentMemberInfo = currentMembers[message.memberId];
                         
-                        if (lastMessageEl.text() !== lastMessageText) {
+                        // 修正問題2：檢查最後訊息是否變化，並且更新顯示內容
+                        if (currentMemberInfo.lastMessage !== lastMessageText) {
+                            existingItem.find('.last-message').text(lastMessageText);
                             hasChanges = true;
                         }
                         
-                        // 檢查點擊狀態是否變化
+                        // 修正問題3：檢查點擊狀態是否變化
                         if (message.clickstatus === 0 && !existingItem.hasClass('unread')) {
+                            // 從已讀變為未讀
+                            existingItem.addClass('unread');
+                            existingItem.prepend('<span class="message-badge"></span>');
+                            
+                            // 將未讀訊息移至列表頂部
+                            memberList.prepend(existingItem);
                             hasChanges = true;
                         } else if (message.clickstatus === 1 && existingItem.hasClass('unread')) {
+                            // 從未讀變為已讀
+                            existingItem.removeClass('unread');
+                            existingItem.find('.message-badge').remove();
                             hasChanges = true;
                         }
                     }
-                });
+                }
                 
                 // 如果有變化，重新渲染會員列表
                 if (hasChanges) {
@@ -200,6 +218,9 @@ $(document).ready(function() {
     
     // 渲染會員列表
     function renderMemberList(messages) {
+        // 保存當前選中的會員ID
+        const selectedMemberId = currentMemberId;
+        
         memberList.empty();
         
         if (messages.length === 0) {
@@ -212,14 +233,14 @@ $(document).ready(function() {
                 .addClass('member-item')
                 .attr('data-id', message.memberId);
             
-            // 如果點擊狀態為0，添加未讀標記
+            // 修正問題1：判斷點擊狀態 (clickstatus === 0 表示未讀/藍色)
             if (message.clickstatus === 0) {
                 memberItem.addClass('unread');
                 memberItem.append('<span class="message-badge"></span>');
             }
             
             // 如果是當前選中的會員，添加選中標記
-            if (message.memberId === currentMemberId) {
+            if (message.memberId === selectedMemberId) {
                 memberItem.addClass('active');
             }
             
@@ -269,7 +290,7 @@ $(document).ready(function() {
         $('.member-item').removeClass('active');
         memberElement.addClass('active');
         
-        // 如果有未讀標記，更新點擊狀態並移除未讀標記
+        // 修正問題1：判斷是否有藍色未讀標記，再進行更新點擊狀態
         if (memberElement.hasClass('unread')) {
             updateClickStatus(memberId);
             memberElement.removeClass('unread');
@@ -437,9 +458,6 @@ $(document).ready(function() {
             
             // 將此會員移到列表最上方
             memberList.prepend(memberItem);
-            
-            // 同時更新全局列表數據，確保所有管理員看到的都是一致的
-            loadLatestMessages();
         }
     }
     
