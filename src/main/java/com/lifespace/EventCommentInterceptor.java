@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Component
-public class ActivityParticipantFilter extends OncePerRequestFilter {
+public class EventCommentInterceptor extends OncePerRequestFilter  {
 	
 	@Autowired
     private EventService eventService;
@@ -31,7 +31,7 @@ public class ActivityParticipantFilter extends OncePerRequestFilter {
         
      // 只對這些特定 URL 做過濾
         if (uri.startsWith("/comments_frontend.html")) {
-        	System.out.println("🧠 [Filter] 嘗試進入留言板！");
+        	System.out.println("嘗試進入留言板！");
             
         	//確認是否有session
         	HttpSession session = request.getSession(false);
@@ -66,5 +66,6 @@ public class ActivityParticipantFilter extends OncePerRequestFilter {
      // 通過條件，繼續往後執行
         filterChain.doFilter(request, response);
 	}
+
 
 }
