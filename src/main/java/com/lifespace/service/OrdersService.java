@@ -157,10 +157,13 @@ public class OrdersService {
             aio.setTotalAmount(order.getAccountsPayable().toString());
             aio.setTradeDesc("LifeSpace 空間租借");
             aio.setItemName("空間租借費用");
+            aio.setCustomField1(order.getOrderId()); // 傳 OR043
+            aio.setClientBackURL("http://localhost:8080/payment_success.html?orderId=" + order.getOrderId());
             aio.setReturnURL(" https://93f0-1-164-231-100.ngrok-free.app/orders/ecpay/return");
-            aio.setClientBackURL("http://localhost:8080/payment_success.html");
+//            aio.setClientBackURL("http://localhost:8080/payment_success.html");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
+
 
             String form = all.aioCheckOut(aio, null);
             return ResponseEntity.ok(form);
@@ -198,8 +201,8 @@ public class OrdersService {
                 String rtnCode = ecpayParams.get("RtnCode");
                 String tradeNo = ecpayParams.get("MerchantTradeNo");
                 //訂單編號還原
-                String orderId = tradeNo.substring(0, 5);
-
+//                String orderId = tradeNo.substring(0, 5);
+                String orderId = ecpayParams.get("CustomField1");
                 if ("1".equals(rtnCode)) {
                     paidOrders(orderId);
                     System.out.println("更新訂單狀態為已付款：" + orderId);

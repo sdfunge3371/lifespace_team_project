@@ -96,7 +96,7 @@ public class OrdersController {
         if (orderStatus == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("查無此訂單");
         }
-        return ResponseEntity.ok(String.valueOf(orderStatus));
+        return ResponseEntity.ok(String.valueOf(orderStatus).trim());
     }
 
 //    @PostMapping("/create-auto")
