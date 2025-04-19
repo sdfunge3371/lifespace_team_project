@@ -162,11 +162,16 @@ $(document).ready(function () {
                
                // 訊息板按鈕 - 對所有活動都顯示
                const messageButton = `
-                   <a href="event_message.html?eventId=${event.eventId}" class="action-button message-button">
+                   <a href="comments_frontend.html?eventId=${event.eventId}" class="action-button message-button">
                        <i class="fas fa-comments"></i> 活動留言板
                    </a>
                `;
-               
+			   
+			   //按下「活動留言板」後將活動id帶到留言板url
+			   //messageButton.addEventListener('click', () => {
+			   	//	   	 window.location.href = `comments_frontend.html?eventId=${event.eventId}`;
+			  // 	});
+			   
                // 組合所有按鈕
                actionButtons = messageButton + actionButtons;
                
@@ -472,6 +477,12 @@ $(document).ready(function () {
 							const events_url = '/event_overview.html';
 		   		       		window.location.href = events_url;
 		   		       });
+					   
+			//按下建立新活動後導向活動瀏覽頁面
+					$('.btn.btn-primary.mt-3').click(function() {
+					   		const events_url = '/event_overview.html';
+					   		window.location.href = events_url;
+					  });
 		  
 		   	   
        });

@@ -75,67 +75,65 @@ public class EventService {
 	MailService mailService;
 	
 	//新增活動
-	//@Transactional
+	@Transactional
 	public void addEvent(EventRequest eventRequest, List<MultipartFile> photos) {
 		
 		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-		
 		Event event = new Event();
-        event.setEventName(eventRequest.getEventName());
-        event.setEventStartTime(eventRequest.getEventStartTime());
-        event.setEventEndTime(eventRequest.getEventEndTime());
-        event.setEventCategory(eventCategoryRepository.findById(
-        		eventRequest.getEventCategory()).get());
-        event.setEventStatus(eventRequest.getEventStatus());
-        event.setMaximumOfParticipants(eventRequest.getMaximumOfParticipants());
-        event.setEventBriefing(eventRequest.getEventBriefing());
-        event.setRemarks(eventRequest.getRemarks());
-        event.setHostSpeaking(eventRequest.getHostSpeaking());
-        event.setCreatedTime(currentTime);
-        event.setNumberOfParticipants(0); // 後續會確保預設為1人(加入舉辦人)
+		
+		try {
+            event.setEventName(eventRequest.getEventName());
+            event.setEventStartTime(eventRequest.getEventStartTime());
+            event.setEventEndTime(eventRequest.getEventEndTime());
+            event.setEventCategory(eventCategoryRepository.findById(eventRequest.getEventCategory())
+                    .orElseThrow(() -> new ResourceNotFoundException("找不到活動類別")));
+            event.setEventStatus(eventRequest.getEventStatus());
+            event.setMaximumOfParticipants(eventRequest.getMaximumOfParticipants());
+            event.setEventBriefing(eventRequest.getEventBriefing());
+            event.setRemarks(eventRequest.getRemarks());
+            event.setHostSpeaking(eventRequest.getHostSpeaking());
+            event.setCreatedTime(currentTime);
+            event.setNumberOfParticipants(0);// 後續會確保預設為1人(加入舉辦人)
 
-        // 儲存 event 物件
-        Event savedEvent = eventRepository.save(event);
-        
-        // 從儲存後的 event 物件中取得自增主鍵 ID
-        String eventId = savedEvent.getEventId();
-        System.out.println("新活動的 ID: " + eventId);
-        
-        // 處理照片上傳
-        if (photos != null && !photos.isEmpty()) {
-        	System.out.println(photos.size());
-            for (MultipartFile photo : photos) {
-                try {
-                    // 儲存檔案到指定位置，並取得檔案路徑
-                    String photoPath = savePhoto(photo);
+         // 儲存 event 物件
+            Event savedEvent = eventRepository.save(event);
+            
+         // 從儲存後的 event 物件中取得自增主鍵 ID
+            String eventId = savedEvent.getEventId();
 
-                    EventPhoto eventPhoto = new EventPhoto();
-                    eventPhoto.setEvent(event);
-                    eventPhoto.setPhoto(photoPath);
-                    eventPhoto.setCreatedTime(currentTime);      
-                    eventPhotoRepository.save(eventPhoto);
-
-                } catch (Exception e) {
-                    // 處理檔案儲存失敗的例外
-                    e.printStackTrace();
-                    // 可以選擇拋出例外或記錄錯誤
+         // 處理照片上傳
+            if (photos != null && !photos.isEmpty()) {
+                for (MultipartFile photo : photos) {
+                    try {
+                    	// 儲存檔案到指定位置，並取得檔案路徑
+                        String photoPath = savePhoto(photo);
+                        EventPhoto eventPhoto = new EventPhoto();
+                        eventPhoto.setEvent(event);
+                        eventPhoto.setPhoto(photoPath);
+                        eventPhoto.setCreatedTime(currentTime);
+                        eventPhotoRepository.save(eventPhoto);
+                    } catch (Exception e) {
+                        System.err.println("儲存圖片失敗: " + e.getMessage());
+                    }
                 }
             }
+
+          //舉辦人為第1個活動參加者，直接將舉辦人加入
+            //舉辦人id之後從session拿 
+            addMemberToEvent(eventRequest.getOrganizerId(), eventId);
+
+            Orders eventOrder = ordersRepository.findById(eventRequest.getOrderId())
+                    .orElseThrow(() -> new ResourceNotFoundException("找不到訂單"));
+            
+          //因為是一筆訂單對應活動，該筆訂單也要加上新建的event_id
+            eventOrder.setEvent_id(eventId);
+            ordersRepository.save(eventOrder);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("建立活動過程中出現錯誤: " + e.getMessage());
         }
-        //舉辦人為第1個活動參加者，直接將舉辦人加入
-        //舉辦人id暫時放在EventRequest裡，之後可能會從session拿??  
-        try {
-			addMemberToEvent(eventRequest.getOrganizerId(), eventId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        
-        //因為是一筆訂單對應活動，該筆訂單(EventRequest是否要加入order_id?)也要加上新建的event_id
-        String orderId = eventRequest.getOrderId();
-        Orders eventOrder = ordersRepository.findById(orderId).orElse(null);
-        eventOrder.setEvent_id(eventId);
-        ordersRepository.save(eventOrder);
-	
+		
 	}
 
 	//獲取所有活動類別
@@ -167,6 +165,7 @@ public class EventService {
 		}
 
 	//加入成員到活動
+	@Transactional
 	public void addMemberToEvent(String memberId, String eventId) throws Exception {
 			
 			Event event = eventRepository.findById(eventId)
@@ -248,12 +247,24 @@ public class EventService {
 					 	.orElseThrow(() -> new ResourceNotFoundException("該會員尚未建立該活動資訊"));
 			 
 			
+			//若雖有該活動但狀態為已取消或已舉辦，則無法取消
+			if (event.getEventStatus() == EventStatus.CANCELLED 
+						|| event.getEventStatus() == EventStatus.HELD  ) {
+					throw new IllegalStateException("該活動已取消或已舉辦，不可取消參加該活動。");
+			}
+			
+			//若該使用者本身為舉辦人，不可取消參加活動，必須直接取消舉辦活動
+			Orders memberOrder = ordersRepository.findByEventEventId(eventId).orElse(null);
+		    if(member.getMemberId() == memberOrder.getMember().getMemberId()) {
+		    	throw new IllegalStateException("您為該活動的舉辦人，請取消舉辦該活動。");
+		    }
+		    
 			//若原本就已取消，不做任何動作
 	     	if(eventMember.getParticipateStatus() == EventMemberStatus.CANCELLED) {
 	     		return;
 	     	}
 	     	
-	     	//若原本排候補的取消候補，QUEUED改為CANCELLED??
+	     	//若原本排候補的取消候補，QUEUED改為CANCELLED
 	     	if(eventMember.getParticipateStatus() == EventMemberStatus.QUEUED) {
 	     		eventMember.setParticipateStatus(EventMemberStatus.CANCELLED);
 	     		return;
@@ -293,11 +304,10 @@ public class EventService {
 				 event.setNumberOfParticipants(event.getNumberOfParticipants() - 1);
 				 eventRepository.save(event); 
 			 }
-			 
-			//舉辦者不能取消參加活動?? 或是直接取消活動?? 待討論
+
 		}
 
-	//根據ID找出單一活動  (getOneEvent跟findEventsByConditions可以寫在一起...邏輯同空間評論...後改)
+	//根據ID找出單一活動  
 	public EventResponse getOneEvent(String eventno) {
 		
 			Optional<Event> optional = eventRepository.findById(eventno);
@@ -347,7 +357,7 @@ public class EventService {
 	// 儲存照片並返回檔案路徑
 	private String savePhoto(MultipartFile photo) throws Exception {
 	    String fileName = photo.getOriginalFilename();
-	    String uploadDir = "D://tiba_project//event_images"; // 替換為您的實際儲存目錄
+	    String uploadDir = "D://tiba_project//event_images"; // 替換為實際儲存目錄
 
 	    // 確保目錄存在
 	    File dir = new File(uploadDir);
@@ -363,8 +373,7 @@ public class EventService {
 	}
 	
 	
-	//隨時間自動更新活動狀態 ( 主要是 SCHEDULED 時間過了event_start_time後變成 HELD )，
-	//要用到Thread ( 多執行續 ) ?
+	//隨時間自動更新活動狀態 ( 主要是 SCHEDULED 時間過了event_start_time後變成 HELD )
     public void UpdateHeldEvents() {
         Timestamp now = Timestamp.from(Instant.now());
         //找出狀態為SCHEDULED 且目前時間已經超過event_start_time
@@ -398,7 +407,7 @@ public class EventService {
         System.out.println("啟動Spring後, 自動更新已舉辦的活動");
     }
     
-    //先在排程器中添加新方法調用
+    
     @Scheduled(cron = "0 0 10 * * ?") // 每天上午10點執行
     @Transactional
     public void scheduledNotificationCheck() {
@@ -407,7 +416,7 @@ public class EventService {
     }
     
     
-	//活動正式舉辦前一天(? 寄email給所有參加者以及舉辦者，用Thread(多執行續?)
+	//活動正式舉辦前一天 寄email給所有參加者以及舉辦者
     @Transactional(readOnly = true) // 只讀取，因為只是查詢並發送郵件
     public void notifyHeldEventsMembers() {
     	
@@ -450,20 +459,9 @@ public class EventService {
         } else {
             System.out.println("沒有需要發送提醒的活動");
         }
-       //寄email通知所有被設為取消的成員
-//         String memberName = firstQueuedMemebr.getMember().getMemberName();
-//		 String eventName = event.getEventName();
-//		 String toEmail = firstQueuedMemebr.getMember().getEmail();
-//					
-//		mailService.eventMemberNotification("活動取消", memberName, eventName, toEmail);
-    
+        
     }
     
-    
-    
-	//活動內容是否可以修改?? 改人數上限(只能調高不能調低)、活動類別、活動標題、注意事項、使用者的話...?
-	
-
 	//(使用者方的活動頁面) 根據種類篩選出活動列表 ( 已報名ATTENT、替補狀態QUEUED、已參與的活動歷史、自己建立的活動 )
 	public Page<EventMemberResponse> filterEventsByUser(
 			String userCategory, 
@@ -493,6 +491,8 @@ public class EventService {
 	  			memberResponsePage = eventMemberRepository.getEventByMemberConditions( memberId, participateStatus, eventStatus, organizerId, pageable );
 	  			break;
 	  		case "自己建立的活動":
+	  			//舉辦人id與session取得的會員id相同
+	  			organizerId = memberId;
 	  			memberResponsePage = eventMemberRepository.getEventByMemberConditions( memberId, participateStatus, eventStatus, organizerId, pageable );
 	  			break;
 	  		default:
@@ -519,6 +519,12 @@ public class EventService {
 		//用舉辦人id以及活動id查詢訂單，作為舉辦者取消活動用
 		Orders cancelledEventOrder = ordersRepository.findByEventEventIdAndMemberMemberId(eventId, organizerId)
 													.orElse(null);
+		
+		//若雖有該活動但狀態為已取消或已舉辦，則無法取消舉辦
+		if (event.getEventStatus() == EventStatus.CANCELLED 
+					|| event.getEventStatus() == EventStatus.HELD  ) {
+				throw new IllegalStateException("該活動已取消或已舉辦，不可取消舉辦該活動。");
+		}
 		
 		Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 		
@@ -554,12 +560,9 @@ public class EventService {
 				}
 				
 			}
-			//之後加上寄email通知所有被設為取消的成員
+
 		}
 		
-		//若活動開始時間已超過，則不能CANCELLED !! 要加判斷式
-		
-	
 	}
 	
 	//確認使用者對特定活動的參與狀態
