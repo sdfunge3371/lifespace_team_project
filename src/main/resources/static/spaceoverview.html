@@ -37,6 +37,9 @@
 
     <link rel="stylesheet" href="css/spaceoverview.css">
 
+    <!-- 聊天室彈窗 Stylesheet -->
+    <link href="css/chatroom_popup.css" rel="stylesheet">
+
     <!--Google地圖 API-->
     <script>
         // 透過後端取得Google Maps API key
@@ -68,9 +71,11 @@
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
                 <a href="homepage.html" class="navbar-brand d-flex align-items-center text-center">
                     <div class="icon p-2 me-2">
-                        <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                        <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon"
+                             style="width: 30px; height: 30px;">
                     </div>
-                    <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                    <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon"
+                         style="width: 200px; height: 60px;">
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -84,14 +89,21 @@
                     </div>
                     <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i
-                                class="bi bi-person-circle">會員資料</i></a>
+
+                        <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                            <img id="navAvatar" src="/images/default_avatar.jpg" alt="頭貼" class="rounded-circle"
+                                 width="35" height="35">
+                            <span id="navMemberName" class="ms-2">會員資料</span>
+                        </a>
+
+
                         <div class="dropdown-menu rounded-0 m-0">
                             <a href="myAccount.html" class="dropdown-item">我的帳號</a>
                             <a href="events_for_user.html" class="dropdown-item">我的活動管理</a>
                             <a href="frontend_orders.html" class="dropdown-item">我的訂單管理</a>
                             <a href="favorite_space.html" class="dropdown-item">我的最愛</a>
-                            <a href="#" class="dropdown-item">登出</a>
+                            <a href="homepage.html" class="dropdown-item" onclick="logout()">登出</a>
+                            <a href="login.html" class="dropdown-item">登入</a>
                         </div>
                     </div>
                 </div>
@@ -291,9 +303,36 @@
 
 
         <!-- 人工回復聊天按鈕 -->
-<!--        <div class="chat-icon" id="chatButton">-->
-<!--            <img src="images/img.bootstrap/support.webp" alt="客服聊天">-->
-<!--        </div>-->
+        <div class="chat-icon" id="chatButton">
+            <img src="images/img.bootstrap/support.webp" alt="客服聊天">
+        </div>
+
+        <!-- 聊天室彈窗 -->
+        <div class="chat-popup" id="chatPopup">
+            <div class="chat-header">
+                <h3>客服聊天室</h3>
+                <button class="close-chat" id="closeChat">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 聊天內容會動態生成 -->
+            </div>
+            <div class="chat-input">
+                <textarea id="messageInput" placeholder="請輸入訊息..."></textarea>
+                <div class="chat-actions">
+                    <div class="upload-photo">
+                        <button type="button" id="uploadPhotoBtn"><i class="fas fa-image"></i></button>
+                        <input type="file" id="fileUpload" accept="image/*" />
+                    </div>
+                    <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <div class="chat-qa">
+                <h4>常見問題</h4>
+                <ul>
+                    <li><a href="frontend_faq.html">查看更多常見問題</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <script src="js/spaceoverview.js"></script>
@@ -383,6 +422,58 @@
     </script>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+    <!-- 聊天室彈窗 Javascript -->
+    <script src="js/chatroom_popup.js"></script>
+    <script>
+
+        //-------------------header上可顯示會員的頭貼跟名字--------------
+        document.addEventListener("DOMContentLoaded", function () {
+            const avatarImg = document.getElementById("navAvatar");
+            const nameSpan = document.getElementById("navMemberName");
+
+
+            fetch("/member/account", {
+                method: "GET",
+                credentials: "include"
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("尚未登入");
+                    return res.json();
+                })
+                .then(member => {
+                    const avatarImg = document.getElementById("navAvatar");
+                    if (member && member.memberId) {
+                        // 會員登入成功，替換成會員頭貼
+                        avatarImg.src = `/member/image/${member.memberId}`;
+                        nameSpan.innerText = `${member.memberName}`;
+                    }
+                })
+                .catch(err => {
+                    avatarImg.src = `/images/default.jpg`;
+                    nameSpan.innerText = "會員資料";
+                });
+        });
+
+        //----------------登出-------------------------------------
+        function logout() {
+            fetch("/member/logout", {
+                method: "POST",
+                credentials: "include"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        windows.location.href = "/homepage.html"; //登出後回首頁
+                    } else {
+                        alert("登出失敗");
+                    }
+                })
+                .catch(error => {
+                    console.error("登出錯誤:" + error);
+                });
+        }
+
+    </script>
 
 </body>
 </html>
