@@ -343,14 +343,38 @@
             //點擊取消訂單
             $(document).on("click", ".cancel", function () {
                 const orderId = $(this).data("order-id");
-
-                if (confirm(`您確定要取消此訂單嗎？取消後將無法恢復。`)) {
+              //若有舉辦活動，取得該訂單對應的活動id
+              	const eventLine = $(this).closest('.order-container').find(".details p:contains('活動編號')").text();
+				const cancelEventId = eventLine.split("：")[1]?.trim(); 
+              	console.log(cancelEventId);
+                if (confirm(`您確定要取消此訂單嗎？${cancelEventId ? '取消後也會終止舉辦的活動。' : ''}`)) {
                     $.ajax({
                         url: `/orders/cancel/${orderId}`,
                         method: "POST",
                         success: function () {
-                            alert("訂單已取消");
-                            location.reload();
+                        	// 若有活動，取消訂單後發送取消舉辦活動請求
+                        	if (cancelEventId) {
+                                $.ajax({
+                                    url: '/lifespace/event/cancell',
+                                    method: 'PUT',
+                                    data: {
+                                        eventId: cancelEventId
+                                    },
+                                    xhrFields: { withCredentials: true },
+                                    success: function (res) {
+                                        alert("活動與訂單皆已取消！");
+                                    },
+                                    error: function (xhr) {
+                                        alert("取消訂單，活動取消失敗：" + xhr.responseText);
+                                    },
+                                    complete: function () {
+                                        location.reload();
+                                    }
+                                });
+                            } else {
+                                alert("訂單已取消");
+                                location.reload();
+                            }
                         },
                         error: function (xhr) {
                             alert("訂單取消失敗" + xhr.responseText);
