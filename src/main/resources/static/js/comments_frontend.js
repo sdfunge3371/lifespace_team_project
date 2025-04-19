@@ -389,37 +389,37 @@ function loadEventInfo() {
 //	      });
 //	  }
 
-            // append base64 圖片
-            const carousel = $(".myclass");
-            carousel.empty(); // 清空舊內容
-            data.eventPhotos.forEach(base64 => {
-                const img = `<div><img src="data:image/jpeg;base64,${base64}" class="carousel-image"></div>`;
-                carousel.append(img);
-            });
+//            // append base64 圖片
+//            const carousel = $(".myclass");
+//            carousel.empty(); // 清空舊內容
+//            data.eventPhotos.forEach(base64 => {
+//                const img = `<div><img src="data:image/jpeg;base64,${base64}" class="carousel-image"></div>`;
+//                carousel.append(img);
+//            });
 
 
 //      (data.photoUrls || []).forEach(photo => {
 //        carousel.append(`<div><img src="http://localhost:8080${photo}" alt="活動圖片"></div>`);
 //      });
 
-            // slick 初始化放最後
-            carousel.slick({
-                arrows: true,
-                dots: true,
-                centerMode: true,
-                centerPadding: "60px",
-                slidesToShow: 3,
-                autoplay: true,
-                autoplaySpeed: 3000,
-                responsive: [{
-                    breakpoint: 768,
-                    settings: {
-                        arrows: false,
-                        centerPadding: "0",
-                        slidesToShow: 1
-                    }
-                }]
-            });
+//            // slick 初始化放最後
+//            carousel.slick({
+//                arrows: true,
+//                dots: true,
+//                centerMode: true,
+//                centerPadding: "60px",
+//                slidesToShow: 3,
+//                autoplay: true,
+//                autoplaySpeed: 3000,
+//                responsive: [{
+//                    breakpoint: 768,
+//                    settings: {
+//                        arrows: false,
+//                        centerPadding: "0",
+//                        slidesToShow: 1
+//                    }
+//                }]
+//            });
         },
         error: function () {
             alert("讀取活動資訊失敗！");
