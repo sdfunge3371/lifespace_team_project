@@ -57,7 +57,7 @@ public class MemberService {
 	    Optional<Member> memberOpt = memberRepository.findByEmail(email);
 	    if (memberOpt.isPresent()) {
 	        Member member = memberOpt.get();
-	        if (passwordEncoder.matches(rawPassword, member.getPassword())) {
+	        if (passwordEncoder.matches(rawPassword, member.getPassword()) && member.getAccountStatus() != 0) {
 	            return Optional.of(member); // 密碼驗證通過
 	        }
 	    }

@@ -35,7 +35,7 @@ public class AdminService {
 			Optional<Admin> adminOpt = adminRepository.findByEmail(mail);
 			if(adminOpt.isPresent()) {
 				Admin admin = adminOpt.get();
-				if(passwordEncoder.matches(rawPassword, admin.getPassword())) {
+				if(passwordEncoder.matches(rawPassword, admin.getPassword()) && admin.getAccountStatus() != 0) {
 					return Optional.of(admin);  //密碼驗證通過
 				}
 			}
