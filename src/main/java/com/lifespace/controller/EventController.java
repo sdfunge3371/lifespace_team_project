@@ -194,7 +194,6 @@ public class EventController {
     
     @GetMapping("/getOne")
     public EventResponse getOneEvent(@RequestParam String eventId) {
-    	System.out.println("被要求檔案");
     	EventResponse event = eventSvc.getOneEvent(eventId);
         
         event.getPhotoUrls(); // 確保放入 photoUrls 圖片地址
@@ -205,7 +204,6 @@ public class EventController {
     //獲取所有活動類別
     @GetMapping("/getAllCategories")
     public ResponseEntity<List<EventCategory>> getAllCategories() {
-    	System.out.println("被要求檔案");
     	List<EventCategory> categories = eventSvc.findAllEventsCategory();
     	
         return ResponseEntity.ok(categories);
