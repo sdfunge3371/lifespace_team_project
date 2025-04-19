@@ -32,6 +32,7 @@ import com.lifespace.entity.Orders;
 import com.lifespace.repository.CommentsRepository;
 import com.lifespace.repository.EventMemberRepository;
 import com.lifespace.repository.EventPhotoRepository;
+import com.lifespace.repository.EventRepository;
 import com.lifespace.repository.OrdersRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -54,6 +55,9 @@ public class CommentsService {
 	
 	@Autowired
 	private EventPhotoRepository eventPhotoRepository;
+	
+	@Autowired
+	private EventRepository eventRepository;
 	
 	
 	public void addComments(Comments comments) {
@@ -119,11 +123,12 @@ public class CommentsService {
     public Map<String, Object> getEventInfoFromComments(String eventId) {
         Map<String, Object> data = new HashMap<>();
 
-        List<Comments> commentsList = commentsRepository.findByEventMember_Event_EventId(eventId);
-        if (commentsList.isEmpty()) return data;
-
-        // 取得留言所屬活動（只取第一筆留言）
-        Event event = commentsList.get(0).getEventMember().getEvent();
+//        List<Comments> commentsList = commentsRepository.findByEventMember_Event_EventId(eventId);
+//        if (commentsList.isEmpty()) return data;
+//
+//        // 取得留言所屬活動（只取第一筆留言）
+//        Event event = commentsList.get(0).getEventMember().getEvent();
+        Event event = eventRepository.findById(eventId).orElse(null);
 
         // 活動名稱abc
         data.put("eventName", event.getEventName());
