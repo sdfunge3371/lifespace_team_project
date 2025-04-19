@@ -19,8 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LineWebHookHandler {
 
-    private final OrdersService ordersSvc;
-    private final MessagingApiClient messagingApiClient;
+    private OrdersService ordersSvc;
+    private MessagingApiClient messagingApiClient;
 
     @EventMapping
     public void handleTextMessage(MessageEvent messageEvent){

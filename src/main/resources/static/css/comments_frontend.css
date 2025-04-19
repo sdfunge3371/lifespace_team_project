@@ -84,17 +84,17 @@
 
 
 
-/* index */
-.mic-button {
-    position: fixed;
-    top: 70%;
-    /* 將頂部位置設定為 50% */
-    right: 20px;
-    transform: translateY(-50%);
-    /* 使用 transform 將按鈕垂直置中 */
-    z-index: 1000;
-}
-/* index結束 */
+/*/* index */*/
+/* .mic-button { */
+/*     position: fixed; */
+/*     top: 70%; */
+/* /*     將頂部位置設定為 50% */ */
+/*     right: 20px; */
+/*     transform: translateY(-50%); */
+/* /*     使用 transform 將按鈕垂直置中 */ */
+/*     z-index: 1000; */
+/* } */
+/*/* index結束 */*/
 
 body {
   background-color: #f0f2f5;
