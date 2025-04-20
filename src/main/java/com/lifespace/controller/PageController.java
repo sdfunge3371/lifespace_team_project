@@ -14,15 +14,15 @@ public class PageController {
         return "front-end/orders";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/homepage")
     public String toHomePage(){
         return "front-end/homepage";
     }
-//
-//    @GetMapping("/add_branch")
-//    public String toAdd_branch(){
-//        return "/front-end/homepage";
-//    }
+
+    @GetMapping("/login")
+    public String toAdd_branch(){
+        return "/front-end/login";
+    }
 //
 //    @GetMapping("/add_remtal")
 //    public String toHomePage(){
