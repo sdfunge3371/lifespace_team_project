@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (res.status === 401) {
                 // 沒有登入，跳轉到登入頁面
                 alert("尚未登入，請先登入");
-                window.location.href = "/login.html";
+                window.location.href = "/lifespace/login";
             } else {
                 return res.json();
             }
