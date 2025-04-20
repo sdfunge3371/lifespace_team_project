@@ -442,7 +442,7 @@ searchForm.addEventListener('submit', function (e) {
 // 點擊「新增資料」按鈕時...
 document.getElementById('addSpaceBtn').addEventListener('click', function () {
     // window.location.href = 'addSpace.html'; // 前端路由跳轉
-    window.location.href = '/lifespace/addSpace'; // 前端路由跳轉
+    window.location.href = '/admin/addSpace'; // 前端路由跳轉
 });
 
 // 點擊「顯示全部」按鈕時...
@@ -479,7 +479,7 @@ tableBody.addEventListener('click', function (e) {
         const spaceId = button.getAttribute('data-space-id');   // 有在data-space-id綁定空間編號，以利於在修改表單中顯示目前的資料狀況
 
         // const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
-        const targetUrl = `/updateSpace?spaceId=${spaceId}`;
+        const targetUrl = `/admin/updateSpace?spaceId=${spaceId}`;
         window.location.href = targetUrl;
     }
 
@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
                 // window.location.href = "/loginAdmin.html";
-                window.location.href = "/admin/loginAdmin.html";
+                window.location.href = "/admin/loginAdmin";
             } else {
                 console.error("無法取得會員資料", xhr);
             }
