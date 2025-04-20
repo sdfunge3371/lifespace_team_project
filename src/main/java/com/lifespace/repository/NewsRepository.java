@@ -42,6 +42,7 @@ public interface NewsRepository extends JpaRepository<News, String> {
 	List<News> findByNewsStatus_NewsStatusIdAndNewsEndDateBefore(Integer newsStatusId, Timestamp now);
 
 	// 限制首頁最新消息筆數(取上架中3筆)
-	List<News> findTop3ByNewsStatus_NewsStatusId(Integer statusId); 
+	List<News> findTop3ByNewsStatus_NewsStatusId(Integer statusId);
 
+	News findTop1ByNewsStatus_NewsStatusIdOrderByCreatedTimeDesc(Integer statusId);
 }

@@ -1,6 +1,8 @@
 package com.lifespace.line;
 
 import com.lifespace.dto.OrdersDTO;
+import com.lifespace.entity.News;
+import com.lifespace.repository.NewsRepository;
 import com.lifespace.service.OrdersService;
 import com.linecorp.bot.messaging.client.MessagingApiClient;
 import com.linecorp.bot.messaging.model.ReplyMessageRequest;
@@ -12,11 +14,16 @@ import com.linecorp.bot.webhook.model.TextMessageContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
 @LineMessageHandler
 public class LineWebHookHandler {
+
+
+    @Autowired
+    NewsRepository newsRepository;
 
     @Autowired
     private OrdersService ordersSvc;
@@ -27,6 +34,8 @@ public class LineWebHookHandler {
     @EventMapping
     public void handleTextMessage(MessageEvent messageEvent){
 
+        //接收使用者message傳來的事件,取出要的
+        //message()拿到的是抽象父類別MessageContent介面,需TextMessageContent轉型才能取得文字內容
         TextMessageContent message = (TextMessageContent) messageEvent.message();
         String replyToken = messageEvent.replyToken();
         String userId = messageEvent.source().userId();
@@ -35,18 +44,32 @@ public class LineWebHookHandler {
         System.out.println("User:"+ userId + "傳來的文字:" + sendText);
 
         //已綁定userId的使用者可使用關鍵字查詢訂單
-        if (sendText.contains("查詢訂單") || sendText.contains("訂單")){
+        if (sendText.contains("查詢訂單") ){
             List<OrdersDTO> orders = ordersSvc.getOrdersByLineUserId(userId);
             if(orders.isEmpty()){
-                sendTextToUser(replyToken," 沒有預訂中的訂單喔！ 趕緊點擊官網預約吧～");
+                sendTextToUser(replyToken, """
+                                            沒有預訂中的訂單喔！ 
+                                            趕緊點擊官網預約吧～
+                                            http://localhost:8080/lifespace""");
             }else {
-                StringBuilder sb = new StringBuilder("最近已預訂的訂單:\n");
+                StringBuilder sb = new StringBuilder("最近已預訂的訂單：\n");
 
                 for (OrdersDTO dto : orders){
-                sb.append("訂單編號:").append(dto.getOrderId())
-                  .append("\n地點").append(dto.getSpaceLocation())
-                  .append("\n時間").append(dto.getOrderStart()).append(" 至 ").append(dto.getOrderEnd())
-                  .append("\n金額").append(dto.getAccountsPayable()).append("元");
+                    //訂單時間格式化
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+                    String msg = """
+                            訂單編號：%s
+                            空間地點：%s
+                            訂單金額：%s 元
+                            訂單時間：
+                            %s ～ %s
+                            ------------------
+                            """.formatted(
+                           dto.getOrderId(),
+                            dto.getSpaceLocation(),
+                            dto.getAccountsPayable(),
+                            dto.getOrderStart().toLocalDateTime().format(formatter),
+                            dto.getOrderEnd().toLocalDateTime().format(formatter));
                 }
 
                 sendTextToUser(replyToken, sb.toString());
@@ -61,20 +84,48 @@ public class LineWebHookHandler {
             String phone = parts[1];
             Boolean success = ordersSvc.bindLineUserIdAndPushOrders(userId, name, phone);
             if(success){
-                sendTextToUser(replyToken,"請輸入『查詢訂單』查詢時間最近的三筆預約資訊");
+                sendTextToUser(replyToken, """
+                                                請輸入『查詢訂單』
+                                                即可查詢最近的三筆空間預約資訊""");
             }else {
-                sendTextToUser(replyToken, "查無會員姓名，請您輸入正確的格式\n例如:吳石伍 0958672727");
+                sendTextToUser(replyToken, """
+                        帳號已綁定或是格式輸入錯誤!
+                        請輸入正確的會員姓名及手機號碼
+                        格式：大大吳 0987654321
+                        """
+                );
             }
 
+        }else if (sendText.contains("最新消息")){
+            sendLastestNews(replyToken, userId);
         }
+
     }
 
     private void sendTextToUser(String replyToken, String text){
-        //建立一個 LINE SDK的純文字訊息物件裝進req回覆給user
+        //建立一個 LINE SDK的純文字訊息物件
         TextMessage msg = new TextMessage(text);
 
         //傳入要傳送給使用者的參數(回覆user訊息的token, 回覆user的訊息內容, 是否發送通知音給使用者)
         ReplyMessageRequest req = new ReplyMessageRequest(replyToken, List.of(msg), false);
         messagingApiClient.replyMessage(req);
+    }
+
+    private void sendLastestNews(String replyToken, String lineUserId){
+        News lastestNews = newsRepository.findTop1ByNewsStatus_NewsStatusIdOrderByCreatedTimeDesc(1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+        String newsMsg = """
+                %s～%s
+                %s
+                %s
+                """.formatted(
+                        lastestNews.getNewsStartDate().toLocalDateTime().format(formatter),
+                lastestNews.getNewsEndDate().toLocalDateTime().format(formatter),
+                lastestNews.getNewsTitle(),
+                 lastestNews.getNewsContent()
+        );
+
+        sendTextToUser(replyToken, newsMsg);
+
     }
 }
