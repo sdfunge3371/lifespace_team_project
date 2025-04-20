@@ -25,12 +25,12 @@ const orderId = params.get("orderId");
 
             } else {
                 // 顯示付款失敗畫面
-                window.location.href = "/payment_fail.html";
+                window.location.href = "/lifespace/payment_fail";
             }
         })
         .catch(err => {
             console.error("驗證失敗：", err);
-            window.location.href = "/payment_fail.html";
+            window.location.href = "/lifespace/payment_fail";
         });
 
 sessionStorage.removeItem("currentOrderId");
