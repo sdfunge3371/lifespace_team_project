@@ -130,4 +130,10 @@ public class BackendPageController {
     public String toUpdateSpace(){
         return "/back-end/updateSpace";
     }
+
+    @GetMapping("/add_rental_item")
+    public String toAddRentalItem(){ return "/back-end/add_rental_item"; }
+
+    @GetMapping("/edit_rental_item")
+    public String toEditRentalItem(){ return "/back-end/edit_rental_item"; }
 }
