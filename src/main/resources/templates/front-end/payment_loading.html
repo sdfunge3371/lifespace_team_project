@@ -58,7 +58,7 @@
         if (!orderId) {
         alert("找不到訂單編號，請重新預訂");
 
-        window.location.href = "/frontend_orders.html";  // 失敗跳回訂單頁面
+        window.location.href = "/lifespace/frontend_orders";  // 失敗跳回訂單頁面
 
         }else{
           fetch(`orders/ecpay-checkout/${orderId}`,{

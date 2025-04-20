@@ -145,7 +145,7 @@ heartBtn.addEventListener('click', () => {
     const isAdding = heartIcon.classList.contains("fa-regular");
     const method = isAdding ? 'POST' : 'DELETE';
 
-    fetch(`favorite-space/${spaceId}`, {
+    fetch(`/favorite-space/${spaceId}`, {
         method,
         credentials: 'include'
     }).then(res => {
