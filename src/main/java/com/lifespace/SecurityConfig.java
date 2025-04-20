@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.lifespace.entity.Member;
@@ -24,6 +26,8 @@ import jakarta.servlet.http.HttpSession;
 
 //負責攔截那些需要"登入"才能進入的頁面
 
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
@@ -33,12 +37,23 @@ public class SecurityConfig  {
 	 public SecurityConfig(MemberService memberService) {
 	        this.memberService = memberService;
 	    }
+	 
+	 @Bean
+	 public SecurityContextRepository securityContextRepository() {
+	     return new HttpSessionSecurityContextRepository();
+	 }
+
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		 
+		
+		
 		http.cors(); //啟用跨域支援
 		http.csrf().disable(); //先關掉CSRF（測試階段方便，但上線建議開啟）
+		
+		http.securityContext()
+	    .securityContextRepository(securityContextRepository());
+		 
 		
 		//這段是負責根據路徑導去對應的登入頁面
 	    http.exceptionHandling()
