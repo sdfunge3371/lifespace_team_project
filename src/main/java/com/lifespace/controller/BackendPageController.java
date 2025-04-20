@@ -27,7 +27,6 @@ public class BackendPageController {
     public String toAddSpace(){
         return "/back-end/addSpace";
     }
-
     @GetMapping("/add")
     public String toAdminAdd(){
         return "/back-end/adminAdd";
