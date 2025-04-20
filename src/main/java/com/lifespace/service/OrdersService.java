@@ -158,8 +158,8 @@ public class OrdersService {
             aio.setTradeDesc("LifeSpace 空間租借");
             aio.setItemName("空間租借費用");
             aio.setCustomField1(order.getOrderId());
-            aio.setClientBackURL("http://localhost:8080/lifespace/orders/payment_success?orderId=" + order.getOrderId());
-            aio.setReturnURL("https://93f0-1-164-231-100.ngrok-free.app/ecpay/return");
+            aio.setClientBackURL("http://localhost:8080/lifespace/payment_success?orderId=" + order.getOrderId());
+            aio.setReturnURL("https://93f0-1-164-231-100.ngrok-free.app/orders/ecpay/return");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
 
@@ -198,7 +198,7 @@ public class OrdersService {
                 System.out.println("CheckMacValue 比對成功");
 
                 String rtnCode = ecpayParams.get("RtnCode");
-                String tradeNo = ecpayParams.get("MerchantTradeNo");
+//                String tradeNo = ecpayParams.get("MerchantTradeNo");
                 //訂單編號還原
 //                String orderId = tradeNo.substring(0, 5);
                 String orderId = ecpayParams.get("CustomField1");
@@ -222,6 +222,7 @@ public class OrdersService {
     }
 
     //更改綠界付款完成後的訂單狀態
+    @Transactional
     public void paidOrders(String orderId) {
         Orders orders = ordersRepository.findById(orderId).orElse(null);
         if(orders != null && orders.getOrderStatus() != 1) {

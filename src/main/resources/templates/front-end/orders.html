@@ -37,6 +37,7 @@
     <link href="/css/chatroom_popup.css" rel="stylesheet">
 
 </head>
+
 <body>
 <div class="container-xxl bg-white p-0">
     <!-- Spinner Start -->
@@ -49,7 +50,6 @@
     <!-- Spinner End -->
 
 
-    <!-- Header Navbar Start -->
     <div class="container-fluid nav-bar bg-transparent">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
             <a href="/lifespace/homepage" class="navbar-brand d-flex align-items-center text-center">
@@ -94,6 +94,7 @@
     </div>
     <!-- Header Navbar End -->
 
+
     <!-- 頁籤選單 -->
     <div class="tabs">
         <div class="tab active" data-tab="space-orders">空間訂單</div>
@@ -123,7 +124,7 @@
     <div id="cancel-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -211,155 +212,54 @@
             </div>
         </div>
     </div>
-    <!-- 人工回復聊天按鈕 -->
-    <div class="chat-icon" id="chatButton">
-        <img src="/images/img.bootstrap/support.webp" alt="客服聊天">
-    </div>
-
-    <!-- 聊天室彈窗 -->
-    <div class="chat-popup" id="chatPopup">
-        <div class="chat-header">
-            <h3>客服聊天室</h3>
-            <button class="close-chat" id="closeChat">&times;</button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <!-- 聊天內容會動態生成 -->
-        </div>
-        <div class="chat-input">
-            <textarea id="messageInput" placeholder="請輸入訊息..."></textarea>
-            <div class="chat-actions">
-                <div class="upload-photo">
-                    <button type="button" id="uploadPhotoBtn"><i class="fas fa-image"></i></button>
-                    <input type="file" id="fileUpload" accept="image/*" />
-                </div>
-                <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <div class="chat-qa">
-            <h4>常見問題</h4>
-            <ul>
-                <li><a href="/lifespace/frontend_faq">查看更多常見問題</a></li>
-            </ul>
-        </div>
-    </div>
 
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-4 col-md-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="icon p-2 me-2">
-                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon"
-                                 style="width: 30px; height: 30px;">
-                        </div>
-                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon"
-                             style="width: 200px; height: 60px;">
-                    </div>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
-                    <a href="/admin/loginAdmin" class="nav-item nav-link">後台登入</a>
-                </div>
-
-                <div class="col-lg-8 col-md-8 ">
-                    <div class="slogan-container p-4 rounded"
-                         style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
-                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">
-                            空間與活動的完美結合</h4>
-                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
-</div>
-
-
-    <!-- JavaScript Libraries -->
-<script src="/js/wow.min.js"></script>
-<script src="/js/easing.min.js"></script>
-<script src="/js/waypoints.min.js"></script>
-<script src="/js/owl.carousel.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <!-- Template Javascript -->
-<script src="/js/main.js"></script>
+    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+<!--    <script src="/vendors/wow.min.js"></script>-->
+<!--    <script src="/vendors/easing.min.js"></script>-->
+<!--    <script src="/vendors/waypoints.min.js"></script>-->
+<!--    <script src="/vendors/owl.carousel.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
 
-<script>
-    //-------------------header上可顯示會員的頭貼跟名字--------------
-    document.addEventListener("DOMContentLoaded", function () {
-        const avatarImg = document.getElementById("navAvatar");
-        const nameSpan = document.getElementById("navMemberName");
+    <!--<script src="js/event_overview.js"></script> -->
 
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
 
-        fetch("/member/account", {
-            method: "GET",
-            credentials: "include"
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("尚未登入");
-                return res.json();
-            })
-            .then(member => {
-                const avatarImg = document.getElementById("navAvatar");
-                if (member && member.memberId) {
-                    // 會員登入成功，替換成會員頭貼
-                    avatarImg.src = `/member/image/${member.memberId}`;
-                    nameSpan.innerText = `${member.memberName}`;
-                }
-            })
-            .catch(err => {
-                avatarImg.src = `/images/default.jpg`;
-                nameSpan.innerText = "會員資料";
+    <script src="/js/homepage.js"></script>
+
+    <!-- 聊天室彈窗 Javascript -->
+    <script src="/js/chatroom_popup.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            //頁籤
+            $(".tab").click(function () {
+                const tabId = $(this).data("tab");
+                $(".tab").removeClass("active");
+                $(this).addClass("active");
+                $(".tab-content").removeClass("active").hide(); // 隱藏所有內容
+                $("#" + tabId).addClass("active").fadeIn(); // 顯示選中的內容
             });
-    });
 
-    //----------------登出-------------------------------------
-    function logout() {
-        fetch("/member/logout", {
-            method: "POST",
-            credentials: "include"
-        })
-            .then(response => {
-                if (response.ok) {
-                    windows.location.href = "/lifespace/homepage"; //登出後回首頁
-                } else {
-                    alert("登出失敗");
-                }
-            })
-            .catch(error => {
-                console.error("登出錯誤:" + error);
-            });
-    }
+            $.ajax({
+                url: '/orders/member/orders',
+                method: 'GET',
+                credentials: 'include', // 會員 cookie用
+                success: function (orders) {
+                    console.log("取得的訂單資料：", orders);
+                    $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
 
-    $(document).ready(function () {
+                    orders.forEach(orders => {
+                        const start = new Date(orders.orderStart);
+                        const end = new Date(orders.orderEnd);
+                        const dateStr = start.toLocaleDateString('zh-TW');
+                        const timeStr = `${start.getHours().toString().padStart(2, '0')} : ${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')} : ${end.getMinutes().toString().padStart(2, '0')}`
 
-        //頁籤
-        $(".tab").click(function () {
-            const tabId = $(this).data("tab");
-            $(".tab").removeClass("active");
-            $(this).addClass("active");
-            $(".tab-content").removeClass("active").hide(); // 隱藏所有內容
-            $("#" + tabId).addClass("active").fadeIn(); // 顯示選中的內容
-        });
-
-        $.ajax({
-            url: '/orders/member/orders',
-            method: 'GET',
-            credentials: 'include', // 會員 cookie用
-            success: function (orders) {
-                console.log("取得的訂單資料：", orders);
-                $('#space-orders .order-container, #history-orders .order-container, #cancel-orders .order-container' ).empty();
-
-                orders.forEach(orders => {
-                    const start = new Date(orders.orderStart);
-                    const end = new Date(orders.orderEnd);
-                    const dateStr = start.toLocaleDateString('zh-TW');
-                    const timeStr = `${start.getHours().toString().padStart(2, '0')} : ${start.getMinutes().toString().padStart(2, '0')} - ${end.getHours().toString().padStart(2, '0')} : ${end.getMinutes().toString().padStart(2, '0')}`
-
-                    const cardHtml = `
+                        const cardHtml = `
                         <div class="order-container">
                             <div class="order-img position-relative">
                                 <img src="${orders.spaceCoverPhotoURL}" alt="空間圖片" class="img-fluid" onerror= "this.src='images/img.bootstrap/house-placeholder.jpg'">
@@ -394,10 +294,7 @@
                                         ${orders.eventDTO ? `
                                             <a class="action-button message-button" href="/lifespace/comments_frontend?eventId=${orders.eventDTO.eventId}">留言板</a>
                                         ` : `
-                                            <button class="action-button group-button"
-                                            	data-order-id="${orders.orderId}"
-                                                data-order-start="${orders.orderStart}"
-                                                data-order-end="${orders.orderEnd}">揪團去</button>
+                                            <button class="action-button group-button">揪團去</button>
                                         `}
                                         <button class="action-button cancel" data-order-id="${orders.orderId}">取消訂單</button>
                                     ` : orders.orderStatus == 2 ? `
@@ -407,72 +304,72 @@
                             </div>
                         </div>
                         `;
-                    console.log("訂單狀態", orders.orderId, typeof orders.orderStatus, orders.orderStatus);
-                    if (orders.orderStatus == 1) {
-                        $('#space-orders').append(cardHtml);
+                        console.log("訂單狀態", orders.orderId, typeof orders.orderStatus, orders.orderStatus);
+                        if (orders.orderStatus == 1) {
+                            $('#space-orders').append(cardHtml);
 
-                    } else if (orders.orderStatus == 2) {
-                        $('#history-orders').append(cardHtml);
-                    } else if (orders.orderStatus == 0) {
-                        $('#cancel-orders').append(cardHtml);
-                    }
+                        } else if (orders.orderStatus == 2) {
+                            $('#history-orders').append(cardHtml);
+                        } else if (orders.orderStatus == 0) {
+                            $('#cancel-orders').append(cardHtml);
+                        }
 
                     });
 
-                
-             // 過濾出歷史訂單
-                const historyOrders = orders.filter(o => o.orderStatus == 2);
 
-                // 避免重複請求，用 Set 找出唯一 spaceId
-                const uniqueSpaceIds = [...new Set(historyOrders.map(o => o.spaceId))];
+                    // 過濾出歷史訂單
+                    const historyOrders = orders.filter(o => o.orderStatus == 2);
 
-                // 針對每個 spaceId 發出請求查詢評論
-                uniqueSpaceIds.forEach(spaceId => {
-                    fetch(`/spaces/comments/${spaceId}?size=100`)  // 預設最多拿100筆評論
-                        .then(res => res.json())
-                        .then(res => {
-                            const commentList = res.content || [];
+                    // 避免重複請求，用 Set 找出唯一 spaceId
+                    const uniqueSpaceIds = [...new Set(historyOrders.map(o => o.spaceId))];
 
-                            historyOrders
-                                .filter(order => order.spaceId === spaceId)
-                                .forEach(order => {
-                                    const comment = commentList.find(c =>
-                                        c.orderId === order.orderId &&
-                                        c.commentContent &&
-                                        c.commentContent.trim() !== ""
-                                    );
+                    // 針對每個 spaceId 發出請求查詢評論
+                    uniqueSpaceIds.forEach(spaceId => {
+                        fetch(`/spaces/comments/${spaceId}?size=100`)  // 預設最多拿100筆評論
+                            .then(res => res.json())
+                            .then(res => {
+                                const commentList = res.content || [];
 
-                                    if (comment) {
-                                        const $orderBlock = $(`#history-orders .order-container`).filter(function () {
-                                            return $(this).find("p:first").text().includes(order.orderId);
-                                        });
+                                historyOrders
+                                    .filter(order => order.spaceId === spaceId)
+                                    .forEach(order => {
+                                        const comment = commentList.find(c =>
+                                            c.orderId === order.orderId &&
+                                            c.commentContent &&
+                                            c.commentContent.trim() !== ""
+                                        );
 
-                                        if ($orderBlock.length > 0) {
-                                            // 1. 改變按鈕為已評價 & 停用
-                                            const $btn = $orderBlock.find(".action-button.review");
-                                            $btn.removeClass("review")
-                                            	.addClass("reviewed")
-                                            		.text("已評價")
-                                            		.prop("disabled", true); // 防止再點
-                                            //$btn.text("已評價").prop("disabled", true);
+                                        if (comment) {
+                                            const $orderBlock = $(`#history-orders .order-container`).filter(function () {
+                                                return $(this).find("p:first").text().includes(order.orderId);
+                                            });
 
-                                            // 2. 加上「已評價」標籤
-                                            const $firstLine = $orderBlock.find("p").filter(function () {
-    												return $(this).find(".label").text().trim() === "訂單編號：";
-														});
-											if ($firstLine.find(".reviewed-tag").length === 0) {
-    													$firstLine.append('<span class="reviewed-tag ms-2 text-success">已評價</span>');
-													}
+                                            if ($orderBlock.length > 0) {
+                                                // 1. 改變按鈕為已評價 & 停用
+                                                const $btn = $orderBlock.find(".action-button.review");
+                                                $btn.removeClass("review")
+                                                    .addClass("reviewed")
+                                                    .text("已評價")
+                                                    .prop("disabled", true); // 防止再點
+                                                //$btn.text("已評價").prop("disabled", true);
+
+                                                // 2. 加上「已評價」標籤
+                                                const $firstLine = $orderBlock.find("p").filter(function () {
+                                                    return $(this).find(".label").text().trim() === "訂單編號：";
+                                                });
+                                                if ($firstLine.find(".reviewed-tag").length === 0) {
+                                                    $firstLine.append('<span class="reviewed-tag ms-2 text-success">已評價</span>');
+                                                }
+                                            }
                                         }
-                                    }
-                                });
-                        })
-                        .catch(err => {
-                            console.error(`查詢評論失敗 (spaceId=${spaceId}):`, err);
-                        });
-                });
-                
-                
+                                    });
+                            })
+                            .catch(err => {
+                                console.error(`查詢評論失敗 (spaceId=${spaceId}):`, err);
+                            });
+                    });
+
+
                     //判斷訂單區塊是否有訂單
 
                     if ($('#space-orders .order-container').length == 0) {
@@ -498,17 +395,17 @@
                     $("#space-orders").addClass("active").fadeIn();
                     $(".tab").removeClass("active");
                     $(".tab[data-tab='space-orders']").addClass("active");
-                    },
-                    error: function (xhr) {
+                },
+                error: function (xhr) {
                     if (xhr.status === 401) {
                         alert("請先登入");
-                        location.href = "/lifespace/login";
+                        location.href = "/login.html";
                     } else {
                         alert("載入失敗，請稍後再試");
+                    }
                 }
-            }
 
-        });
+            });
 
             //活動資訊收合
             $(document).on("click", ".toggle-details", function () {
@@ -522,17 +419,17 @@
             //點擊取消訂單
             $(document).on("click", ".cancel", function () {
                 const orderId = $(this).data("order-id");
-              //若有舉辦活動，取得該訂單對應的活動id
-              	const eventLine = $(this).closest('.order-container').find(".details p:contains('活動編號')").text();
-				const cancelEventId = eventLine.split("：")[1]?.trim(); 
-              	console.log(cancelEventId);
+                //若有舉辦活動，取得該訂單對應的活動id
+                const eventLine = $(this).closest('.order-container').find(".details p:contains('活動編號')").text();
+                const cancelEventId = eventLine.split("：")[1]?.trim();
+                console.log(cancelEventId);
                 if (confirm(`您確定要取消此訂單嗎？${cancelEventId ? '取消後也會終止舉辦的活動。' : ''}`)) {
                     $.ajax({
                         url: `/orders/cancel/${orderId}`,
                         method: "POST",
                         success: function () {
-                        	// 若有活動，取消訂單後發送取消舉辦活動請求
-                        	if (cancelEventId) {
+                            // 若有活動，取消訂單後發送取消舉辦活動請求
+                            if (cancelEventId) {
                                 $.ajax({
                                     url: '/lifespace/event/cancell',
                                     method: 'PUT',
@@ -562,284 +459,367 @@
                 }
             });
 
-        $(document).on("click", ".view-detail-btn", function () {
-            // 從按鈕 data 取得參數
-            const spaceFeeTotal = Number($(this).data("spacefee")) || 0;
-            let rentalItems = $(this).attr("data-items");
+            $(document).on("click", ".view-detail-btn", function () {
+                // 從按鈕 data 取得參數
+                const spaceFeeTotal = Number($(this).data("spacefee")) || 0;
+                let rentalItems = $(this).attr("data-items");
 
-            try {
-                rentalItems = JSON.parse(rentalItems); // 明確轉成 array
-            } catch (e) {
-                rentalItems = [];
-            }
+                try {
+                    rentalItems = JSON.parse(rentalItems); // 明確轉成 array
+                } catch (e) {
+                    rentalItems = [];
+                }
 
-            // 空間費用顯示
-            let html = `<p><strong>空間費用：</strong>$${spaceFeeTotal}</p>`;
+                // 空間費用顯示
+                let html = `<p><strong>空間費用：</strong>$${spaceFeeTotal}</p>`;
 
-            // 加購品項明細
-            if (Array.isArray(rentalItems) && rentalItems.length > 0) {
-                html += `<p><strong>租借品項：</strong></p><ul>`;
-                rentalItems.forEach(item => {
-                    html += `<li>${item.rentalItemName} x ${item.rentalItemQuantity}：$${item.rentalItemPrice * item.rentalItemQuantity}</li>`;
-                });
-                html += `</ul>`;
-            } else {
-                html += `<p><strong>租借品項：</strong>無</p>`;
-            }
+                // 加購品項明細
+                if (Array.isArray(rentalItems) && rentalItems.length > 0) {
+                    html += `<p><strong>租借品項：</strong></p><ul>`;
+                    rentalItems.forEach(item => {
+                        html += `<li>${item.rentalItemName} x ${item.rentalItemQuantity}：$${item.rentalItemPrice * item.rentalItemQuantity}</li>`;
+                    });
+                    html += `</ul>`;
+                } else {
+                    html += `<p><strong>租借品項：</strong>無</p>`;
+                }
 
-            // 計算總金額
-            const itemTotal = rentalItems.reduce((sum, item) => sum + item.rentalItemPrice * item.rentalItemQuantity, 0);
-            const total = spaceFeeTotal + itemTotal;
+                // 計算總金額
+                const itemTotal = rentalItems.reduce((sum, item) => sum + item.rentalItemPrice * item.rentalItemQuantity, 0);
+                const total = spaceFeeTotal + itemTotal;
 
-            html += `<hr><p><strong>總金額：</strong>$${total}</p>`;
+                html += `<hr><p><strong>總金額：</strong>$${total}</p>`;
 
-            // 顯示 Modal
-            $("#price-detail-body").html(html);
-            $("#priceDetailModal").modal('show');
+                // 顯示 Modal
+                $("#price-detail-body").html(html);
+                $("#priceDetailModal").modal('show');
+            });
         });
-    });
         //
         //處理評價相關的 jQuery 代碼
-             $(document).ready(function () {
-                 // 儲存當前評價的訂單和上傳的照片
-                 var currentReviewOrder = null;
-                 var uploadedPhotos = [];
-        
-                 // 點擊評價按鈕
-                 $(document).on("click", ".action-button.review", function () {
-                     currentReviewOrder = $(this).closest(".order-container");
-                     $(".review-dialog").css("display", "flex").fadeIn();
-        
-                     // 重置評價表單
-                     $("input[name='rating']").prop("checked", false);
-                     $(".review-text").val("");
-                     $("#photoPreview").empty();
-                     uploadedPhotos = [];
-                 });
-        
-                 // 點擊取消評價按鈕
-                 $(".review-cancel-btn").click(function () {
-                     $(".review-dialog").fadeOut();
-                     currentReviewOrder = null;
-                 });
-        
-                 // 照片上傳處理
-                $("#photoUpload").change(function (e) {
-                     handleFiles(e.target.files);
-                 });
-        
-                 // 拖放照片功能 - 使用jQuery實現
-                 var $dropArea = $("#dropArea");
-        
-                 $dropArea.on('dragenter dragover', function (e) {
-                    e.preventDefault();
-                     e.stopPropagation();
-                     $(this).addClass('highlight');
-                 });
-        
-                 $dropArea.on('dragleave drop', function (e) {
-                     e.preventDefault();
-                     e.stopPropagation();
-                     $(this).removeClass('highlight');
-                 });
-        
-                 $dropArea.on('drop', function (e) {
-                     e.preventDefault();
-                     var files = e.originalEvent.dataTransfer.files;
-                     handleFiles(files);
-                 });
-        
-                 // 處理上傳的照片文件
-                function handleFiles(files) {
-                     if (uploadedPhotos.length >= 5) {
-                         alert("最多只能上傳5張照片");
-                         return;
-                     }
-        
-                     // 將FileList轉換為Array
-                     var filesArray = $.makeArray(files);
-        
-                     // 限制最多5張照片
-                     var remainingSlots = 5 - uploadedPhotos.length;
-                     var filesToProcess = filesArray.slice(0, remainingSlots);
-        
-                     $.each(filesToProcess, function (index, file) {
-                         if (!file.type.match('image.*')) {
-                             alert("請只上傳圖片檔案");
-                             return;
-                         }
-        
-                         var reader = new FileReader();
-                         reader.onload = function (e) {
-                             uploadedPhotos.push({
-                                 file: file,
-                                 dataUrl: e.target.result
-                             });
-        
-                             displayPhotos();
-                         };
-                         reader.readAsDataURL(file);
-                     });
-                 }
-        
-                 // 顯示已上傳的照片
-                function displayPhotos() {
-                     var $photoPreview = $("#photoPreview");
-                     $photoPreview.empty();
-        
-                     $.each(uploadedPhotos, function (index, photo) {
-                         var $photoItem = $('<div class="photo-item"></div>');
-                         var $img = $('<img>').attr('src', photo.dataUrl);
-                         var $removeBtn = $('<button class="remove-photo">×</button>');
-        
-                         $removeBtn.on('click', function () {
-                             uploadedPhotos.splice(index, 1);
-                             displayPhotos();
-                         });
-        
-                         $photoItem.append($img, $removeBtn);
-                         $photoPreview.append($photoItem);
-                    });
+        $(document).ready(function () {
+            // 儲存當前評價的訂單和上傳的照片
+            var currentReviewOrder = null;
+            var uploadedPhotos = [];
+
+            // 點擊評價按鈕
+            $(document).on("click", ".action-button.review", function () {
+                currentReviewOrder = $(this).closest(".order-container");
+                $(".review-dialog").css("display", "flex").fadeIn();
+
+                // 重置評價表單
+                $("input[name='rating']").prop("checked", false);
+                $(".review-text").val("");
+                $("#photoPreview").empty();
+                uploadedPhotos = [];
+            });
+
+            // 點擊取消評價按鈕
+            $(".review-cancel-btn").click(function () {
+                $(".review-dialog").fadeOut();
+                currentReviewOrder = null;
+            });
+
+            // 照片上傳處理
+            $("#photoUpload").change(function (e) {
+                handleFiles(e.target.files);
+            });
+
+            // 拖放照片功能 - 使用jQuery實現
+            var $dropArea = $("#dropArea");
+
+            $dropArea.on('dragenter dragover', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).addClass('highlight');
+            });
+
+            $dropArea.on('dragleave drop', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).removeClass('highlight');
+            });
+
+            $dropArea.on('drop', function (e) {
+                e.preventDefault();
+                var files = e.originalEvent.dataTransfer.files;
+                handleFiles(files);
+            });
+
+            // 處理上傳的照片文件
+            function handleFiles(files) {
+                if (uploadedPhotos.length >= 5) {
+                    alert("最多只能上傳5張照片");
+                    return;
                 }
-        
-                 // 點擊提交評價按鈕
-                $(".review-submit-btn").click(function () {
-                     // 獲取評分
-                     var rating = $("input[name='rating']:checked").val();
-                     // 獲取評論文字
-                     var reviewText = $(".review-text").val().trim();
-        
-                     // 驗證
-                     if (!rating) {
-                         alert("請為此次體驗評分");
-                         return;
-                     }
-        
-                     if (!reviewText) {
-                         alert("請分享您的使用體驗");
-                         return;
-                     }
-                     $(".review-dialog").fadeOut();
 
-                     if (currentReviewOrder) {
-                         const reviewBtn = currentReviewOrder.find(".action-button.review");
+                // 將FileList轉換為Array
+                var filesArray = $.makeArray(files);
 
-                         reviewBtn.removeClass("review")
-                                  .addClass("reviewed")
-                                  .text("已評價")
-                                  .prop("disabled", true); // 防止再點
-                     }
+                // 限制最多5張照片
+                var remainingSlots = 5 - uploadedPhotos.length;
+                var filesToProcess = filesArray.slice(0, remainingSlots);
+
+                $.each(filesToProcess, function (index, file) {
+                    if (!file.type.match('image.*')) {
+                        alert("請只上傳圖片檔案");
+                        return;
+                    }
+
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        uploadedPhotos.push({
+                            file: file,
+                            dataUrl: e.target.result
+                        });
+
+                        displayPhotos();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 顯示已上傳的照片
+            function displayPhotos() {
+                var $photoPreview = $("#photoPreview");
+                $photoPreview.empty();
+
+                $.each(uploadedPhotos, function (index, photo) {
+                    var $photoItem = $('<div class="photo-item"></div>');
+                    var $img = $('<img>').attr('src', photo.dataUrl);
+                    var $removeBtn = $('<button class="remove-photo">×</button>');
+
+                    $removeBtn.on('click', function () {
+                        uploadedPhotos.splice(index, 1);
+                        displayPhotos();
+                    });
+
+                    $photoItem.append($img, $removeBtn);
+                    $photoPreview.append($photoItem);
+                });
+            }
+
+            // 點擊提交評價按鈕
+            $(".review-submit-btn").click(function () {
+                // 獲取評分
+                var rating = $("input[name='rating']:checked").val();
+                // 獲取評論文字
+                var reviewText = $(".review-text").val().trim();
+
+                // 驗證
+                if (!rating) {
+                    alert("請為此次體驗評分");
+                    return;
+                }
+
+                if (!reviewText) {
+                    alert("請分享您的使用體驗");
+                    return;
+                }
+                $(".review-dialog").fadeOut();
+
+                if (currentReviewOrder) {
+                    const reviewBtn = currentReviewOrder.find(".action-button.review");
+
+                    reviewBtn.removeClass("review")
+                        .addClass("reviewed")
+                        .text("已評價")
+                        .prop("disabled", true); // 防止再點
+                }
 
 
 
 
 
-                     var orderId = currentReviewOrder.find("p:first").text().split("：")[1].trim();
+                var orderId = currentReviewOrder.find("p:first").text().split("：")[1].trim();
 
-                     // 準備表單資料
-                     var formData = new FormData();
-                     var commentData = {
-                         orderId: orderId,
-                         rating: parseInt(rating),
-                         comments: reviewText
-                     };
-                     formData.append("eventRequest", new Blob([JSON.stringify(commentData)], { type: "application/json" }));
+                // 準備表單資料
+                var formData = new FormData();
+                var commentData = {
+                    orderId: orderId,
+                    rating: parseInt(rating),
+                    comments: reviewText
+                };
+                formData.append("eventRequest", new Blob([JSON.stringify(commentData)], { type: "application/json" }));
 
-                     // 加入照片檔案
-                     uploadedPhotos.forEach(function (photo, index) {
-                         formData.append("photos", photo.file);
-                     });
+                // 加入照片檔案
+                uploadedPhotos.forEach(function (photo, index) {
+                    formData.append("photos", photo.file);
+                });
 
 
-                     fetch("/orders/addComment", {
-                    	    method: "POST",
-                    	    body: formData
-                    	})
-                    	.then(response => {
-                    	    if (response.ok) {
-                    	        // 顯示成功提示
-                    	        alert("評價提交成功！感謝您的回饋。");
+                fetch("/orders/addComment", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // 顯示成功提示
+                            alert("評價提交成功！感謝您的回饋。");
 
-                    	        //更新畫面
-                    	        if (currentReviewOrder) {
-                    	            // 加上「已評價」標籤
-                    	            var $orderNumberElem = currentReviewOrder.find(".order-info p:first-child");
-                    	            if ($orderNumberElem.find(".reviewed-tag").length === 0) {
-                    	                $orderNumberElem.append('<span class="reviewed-tag ms-2 text-success">已評價</span>');
-                    	            }
+                            //更新畫面
+                            if (currentReviewOrder) {
+                                // 加上「已評價」標籤
+                                var $orderNumberElem = currentReviewOrder.find(".order-info p:first-child");
+                                if ($orderNumberElem.find(".reviewed-tag").length === 0) {
+                                    $orderNumberElem.append('<span class="reviewed-tag ms-2 text-success">已評價</span>');
+                                }
 
-                    	            // 移除「評價」按鈕
-                    	            //currentReviewOrder.find(".action-button.review").remove();
-                    	         // 停用「評價」按鈕
-                    	           currentReviewOrder.find(".action-button.review").prop("disabled", true);
-                    	        }
+                                // 移除「評價」按鈕
+                                //currentReviewOrder.find(".action-button.review").remove();
+                                // 停用「評價」按鈕
+                                currentReviewOrder.find(".action-button.review").prop("disabled", true);
+                            }
 
-                    	        //關閉 dialog
-                    	        $(".review-dialog").fadeOut();
-                    	        currentReviewOrder = null;
-                    	        uploadedPhotos = [];
-                    	    } else {
-                    	        return response.text().then(text => { throw new Error(text); });
-                    	    }
-                    	})
-                    	.catch(error => {
-                    		 if (error.message.includes("已經提交過評論")) {
-                    		        alert("此訂單已經評價過，無法重複評論！");
-                    		    } else {
-                    		        alert("提交失敗：" + error.message);
-                    		    }
-                    		 $(".review-dialog").fadeOut();
-                 	        currentReviewOrder = null;
-                 	        uploadedPhotos = [];
-                    	});
-                     
-                     
-                 });
-                 
-                 
-              // 點擊「揪團去」按鈕導向活動建立頁面
-                 $(document).on("click", ".group-button", function () {
-                     const $orderContainer = $(this).closest(".order-container");
-                     const orderId = $orderContainer.find("p:contains('訂單編號')").text().split("：")[1].trim();
+                            //關閉 dialog
+                            $(".review-dialog").fadeOut();
+                            currentReviewOrder = null;
+                            uploadedPhotos = [];
+                        } else {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                    })
+                    .catch(error => {
+                        if (error.message.includes("已經提交過評論")) {
+                            alert("此訂單已經評價過，無法重複評論！");
+                        } else {
+                            alert("提交失敗：" + error.message);
+                        }
+                        $(".review-dialog").fadeOut();
+                        currentReviewOrder = null;
+                        uploadedPhotos = [];
+                    });
 
-                     const orderStartStr = $(this).data("order-start");
-                     const orderEndStr = $(this).data("order-end");
 
-                     const orderStart = encodeURIComponent(new Date(orderStartStr).toISOString());
-                     const orderEnd = encodeURIComponent(new Date(orderEndStr).toISOString());
-                     
-                   	window.location.href = `/lifespace/event_create?orderId=${orderId}&orderStart=${orderStart}&orderEnd=${orderEnd}`;
-             
-                 })               
-         });
+            });
+
+
+            // 點擊「揪團去」按鈕導向活動建立頁面
+            $(document).on("click", ".group-button", function () {
+                const $orderContainer = $(this).closest(".order-container");
+                const orderId = $orderContainer.find("p:contains('訂單編號')").text().split("：")[1].trim();
+
+                window.location.href = `event_create.html?orderId=${orderId}`;
+
+            })
+        });
 
 
     </script>
-    <!-- 聊天室彈窗 Javascript -->
-    <script src="/js/chatroom_popup.js"></script>
-<!--    &lt;!&ndash; Footer Start &ndash;&gt;-->
-<!--    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">-->
-<!--        <div class="container py-5">-->
-<!--            <div class="row g-5 align-items-center">-->
-<!--                <div class="col-lg-4 col-md-4">-->
-<!--                    <div class="d-flex align-items-center mb-4">-->
-<!--                        <div class="icon p-2 me-2">-->
-<!--                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">-->
-<!--                        </div>-->
-<!--                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">-->
-<!--                    </div>-->
-<!--                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>-->
-<!--                </div>-->
 
-<!--                <div class="col-lg-8 col-md-8 ">-->
-<!--                    <div class="slogan-container p-4 rounded" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">-->
-<!--                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>-->
-<!--                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; Footer End &ndash;&gt;-->
+    <!-- 人工回復聊天按鈕 -->
+    <div class="chat-icon" id="chatButton">
+        <img src="/images/img.bootstrap/support.webp" alt="客服聊天">
+    </div>
+
+    <!-- 聊天室彈窗 -->
+    <div class="chat-popup" id="chatPopup">
+        <div class="chat-header">
+            <h3>客服聊天室</h3>
+            <button class="close-chat" id="closeChat">&times;</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- 聊天內容會動態生成 -->
+        </div>
+        <div class="chat-input">
+            <textarea id="messageInput" placeholder="請輸入訊息..."></textarea>
+            <div class="chat-actions">
+                <div class="upload-photo">
+                    <button type="button" id="uploadPhotoBtn"><i class="fas fa-image"></i></button>
+                    <input type="file" id="fileUpload" accept="image/*" />
+                </div>
+                <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <div class="chat-qa">
+            <h4>常見問題</h4>
+            <ul>
+                <li><a href="/lifespace/frontend_faq">查看更多常見問題</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-4 col-md-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon p-2 me-2">
+                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon"
+                                 style="width: 30px; height: 30px;">
+                        </div>
+                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon"
+                             style="width: 200px; height: 60px;">
+                    </div>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
+                    <a href="/admin/loginAdmin" class="nav-item nav-link">後台登入</a>
+                </div>
+
+                <div class="col-lg-8 col-md-8 ">
+                    <div class="slogan-container p-4 rounded"
+                         style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
+                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">
+                            空間與活動的完美結合</h4>
+                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+</div>
+
+<script>
+
+    //-------------------header上可顯示會員的頭貼跟名字--------------
+    document.addEventListener("DOMContentLoaded", function () {
+        const avatarImg = document.getElementById("navAvatar");
+        const nameSpan = document.getElementById("navMemberName");
+
+
+            fetch("/member/account", {
+                method: "GET",
+                credentials: "include"
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("尚未登入");
+                    return res.json();
+                })
+                .then(member => {
+                    const avatarImg = document.getElementById("navAvatar");
+                    if (member && member.memberId) {
+                        // 會員登入成功，替換成會員頭貼
+                        avatarImg.src = `/member/image/${member.memberId}`;
+                        nameSpan.innerText = `${member.memberName}`;
+                    }
+                })
+                .catch(err => {
+                    avatarImg.src = `/images/default.jpg`;
+                    nameSpan.innerText = "會員資料";
+                });
+        });
+
+        //----------------登出-------------------------------------
+        function logout() {
+            fetch("/member/logout", {
+                method: "POST",
+                credentials: "include"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        windows.location.href = "/lifespace/homepage"; //登出後回首頁
+                    } else {
+                        alert("登出失敗");
+                    }
+                })
+                .catch(error => {
+                    console.error("登出錯誤:" + error);
+                });
+        }
+
+</script>
 </body>
 </html>
