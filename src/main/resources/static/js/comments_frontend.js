@@ -273,13 +273,22 @@ $(document).ready(function () {
 	          eventMemberId: currentEventMemberId,
 			  eventId
 	        }),
-	        success: function () {
-	          console.log("✅ 留言成功更新");
-	          page = 0;
-	          noMoreData = false;
-	          currentlyEditingBox = null;
-	          loadComments();
-	        }
+//	        success: function () {
+//	          console.log("✅ 留言成功更新");
+//	          page = 0;
+//	          noMoreData = false;
+//	          currentlyEditingBox = null;
+//	          loadComments();
+//	        }
+			
+			success: function () {
+			    console.log("✅ 留言成功更新");
+			    const updatedMsg = input.val();
+			    input.replaceWith(`<div class="comment-message">${updatedMsg}</div>`);
+			    currentlyEditingBox = null;
+			}
+
+			
 	      });
 	    } else if (e.key === "Escape") {
 	      input.replaceWith(`<div class="comment-message">${originalMsg}</div>`);
@@ -650,12 +659,46 @@ $("#newCommentInput").on("keydown", function (e) {
 //        const box = renderComment(newComment, true);
 //        $("#commentsContainer").append(box); // 把留言插入列表底部
 //      }
-            success: function () {
-                $("#newCommentInput").val('');
-                page = 0;
-                noMoreData = false;
-                loadComments(); // 重新查一次留言，拿到完整資料（包含 memberName）
-            }
+//            success: function () {
+//                $("#newCommentInput").val('');
+//                page = 0;
+//                noMoreData = false;
+//                loadComments(); // 重新查一次留言，拿到完整資料（包含 memberName）
+//            }
+//			
+			
+//			success: function (newComment) {
+//			    $("#newCommentInput").val('');
+//
+//			    // 🔧 如果是第一筆留言，要先隱藏「尚無留言」
+//			    $("#noCommentMessage").hide();
+//
+//			    // ✅ 直接將新留言渲染到畫面上（renderComment 是你已寫好的函數）
+//			    const box = renderComment(newComment, true);
+//			    $("#commentsContainer").append(box);
+//
+//			    // 🔄 保持頁數與載入狀態（不用重設 page）
+//			}
+			
+			
+			success: function (newComment) {
+			    $("#newCommentInput").val('');
+
+			    // 隱藏「尚無留言」
+			    $("#noCommentMessage").hide();
+
+			    // ⚠️ 手動補上目前登入者的資訊（避免匿名）
+			    newComment.eventMemberId = currentEventMemberId;
+			    newComment.memberName = $("#navMemberName").text().trim(); // 從頁首讀取名稱
+			    newComment.imageUrl = $("#navAvatar").attr("src"); // 從頁首讀取大頭貼
+
+			    const box = renderComment(newComment, true);
+			    $("#commentsContainer").append(box);
+			}
+
+
+			
+			
         });
     }
 });
