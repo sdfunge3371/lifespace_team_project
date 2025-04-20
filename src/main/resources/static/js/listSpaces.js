@@ -478,7 +478,6 @@ tableBody.addEventListener('click', function (e) {
         const button = target.closest('.edit-space-btn');       // 找到你剛剛按的「修改」按鈕
         const spaceId = button.getAttribute('data-space-id');   // 有在data-space-id綁定空間編號，以利於在修改表單中顯示目前的資料狀況
 
-        // const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
         const targetUrl = `/admin/updateSpace?spaceId=${spaceId}`;
         window.location.href = targetUrl;
     }

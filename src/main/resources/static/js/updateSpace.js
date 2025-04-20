@@ -447,7 +447,7 @@ submitButton.addEventListener('click', function () {    // 點擊「完成」按
         .then(data => {
             form.reset(); // 務必要清空清空表單
             // window.location.href = 'listSpaces.html';
-            window.location.href = '/lifespace/listSpaces';
+            window.location.href = '/admin/listSpaces';
         })
         .catch(errorOrErrors => {
             console.error('提交時發生錯誤:', errorOrErrors);
