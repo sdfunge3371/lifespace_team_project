@@ -724,7 +724,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
                 // window.location.href = "/loginAdmin.html";
-                window.location.href = "/lifespace/loginAdmin";
+                window.location.href = "/admin/loginAdmin";
             } else {
                 console.error("無法取得會員資料", xhr);
             }
