@@ -11,9 +11,15 @@ const orderId = params.get("orderId");
                 document.querySelector(".modal-content").style.display = "block";
                 document.querySelector(".animation-container").style.display = "flex";
 
-                if (typeof window["lineIt"] !== "undefined" && lineIt.loadButton) {
-                    lineIt.loadButton();
-                }
+                window.onload = function () {
+                    // 顯示 QRCode 按鈕
+                    document.getElementById("line-qrcode").style.display = "block";
+
+                    // 初始化 Line的點擊加入好友按鈕
+                    if (typeof lineIt !== "undefined" && lineIt.loadButton) {
+                        lineIt.loadButton();
+                    }
+                };
 
                 // 設定 "揪團去" 按鈕的連結，帶入 orderId
                 const eventButton = document.querySelector(".btn-primary");
