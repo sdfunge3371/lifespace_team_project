@@ -130,7 +130,7 @@ $('#addNewsForm').on('submit', function(e) {
 	    contentType: false,
 	    success: function(res) {
 	        alert('新增成功'); // 彈出提示框
-	          window.location.href = "/admin/backend_news";
+	          window.location.href = "/admin/news";
 	    },
 	    error: function(xhr) {
 	        const errors = xhr.responseJSON;
@@ -152,6 +152,6 @@ $('#newsTitle, #newsContent, #newsCategoryId, #newsStartDate, #newsEndDate, #new
 
 // 取消回首頁
 $('#cancelBtn').on('click', function() {
-	window.location.href = '/admin/backend_news';
+	window.location.href = '/admin/news';
 });
 });
