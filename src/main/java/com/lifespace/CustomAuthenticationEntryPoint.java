@@ -17,15 +17,15 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 	//轉而用比較土法煉鋼的方式，但至少不會影響到大家的路徑
 	//並且寫一個小方法包裝起來
 	 private boolean isBackendPage(String uri) {
-         return uri.equals("/backend_news.html") ||
-                uri.equals("/member.html") ||
-                uri.equals("/admin.html") ||
-                uri.equals("/backend_faq.html") ||
-                uri.equals("/space_comment.html") ||
-                uri.equals("/branch.html") ||
-                uri.equals("/rental_item.html") ||
-                uri.equals("/listSpaces.html") ||
-                uri.equals("/backend_index.html");
+         return uri.equals("/admin/news") ||
+                uri.equals("/admin/member") ||
+                uri.equals("/admin/admin") ||
+                uri.equals("/admin/faq") ||
+                uri.equals("/admin/space_comment") ||
+                uri.equals("/admin/branch") ||
+                uri.equals("/admin/rental_item") ||
+                uri.equals("/admin/listSpaces") ||
+                uri.equals("/admin/index");
      }
 	
 	  @Override
@@ -41,9 +41,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
 
 	        if (isBackendPage(uri)) {
-	            response.sendRedirect("/loginAdmin.html"); // 管理員導向後台登入頁
+	            response.sendRedirect("/admin/loginAdmin"); // 管理員導向後台登入頁
 	        } else {
-	            response.sendRedirect("/login.html"); // 其他導向前台登入頁
+	            response.sendRedirect("/lifespace/login"); // 其他導向前台登入頁
 	        }
 	    }
 

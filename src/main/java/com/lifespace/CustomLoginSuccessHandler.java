@@ -32,13 +32,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         HttpSession session = request.getSession();
         session.setAttribute("loginMember", email);
 
-//        // 寫入 Spring Security 的認證（給 Spring Security 用的）
-//        Authentication auth = new UsernamePasswordAuthenticationToken(
-//                email,
-//                null,
-//                List.of(new SimpleGrantedAuthority("ROLE_MEMBER")) // 可依照需求改成 ROLE_ADMIN
-//        );
-//        SecurityContextHolder.getContext().setAuthentication(auth);
 
         // 依照 Referer 判斷來自哪個登入頁面
         String referer = request.getHeader("Referer");
