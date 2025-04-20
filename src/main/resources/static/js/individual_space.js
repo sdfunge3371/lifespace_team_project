@@ -1255,6 +1255,12 @@ function insertAllComments(comments) {
                         <p>${commentContent}</p>
                          ${photosHtml ? `<div class="mt-2 d-flex flex-wrap">${photosHtml}</div>` : ""}
                     </div>
+                    ${comment.commentReply ? `
+						<div class="reply-box">
+							<div class="reply-label">LifeSpace： </div>
+									<div class="reply-content">${comment.commentReply}</div>
+						</div>` : ''}
+                    </div>
                 `;
 
         reviewContainer.appendChild(reviewDiv);
