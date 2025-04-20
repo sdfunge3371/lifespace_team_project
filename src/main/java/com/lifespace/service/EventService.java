@@ -120,6 +120,7 @@ public class EventService {
                         eventPhoto.setPhoto(photoPath);
                         eventPhoto.setCreatedTime(currentTime);
                         eventPhotoRepository.save(eventPhoto);
+                        eventPhotoRepository.flush(); // 確保 Hibernate session 中的 insert 立即同步
                     } catch (Exception e) {
                         System.err.println("儲存圖片失敗: " + e.getMessage());
                     }
@@ -361,24 +362,49 @@ public class EventService {
         return new PageImpl<>(responseList, pageable, eventPage.getTotalElements());
     }
 	 
-	
-	// 儲存照片並返回檔案路徑
-	private String savePhoto(MultipartFile photo) throws Exception {
-	    String fileName = photo.getOriginalFilename();
-	    String uploadDir = "D://tiba_project//event_images"; // 替換為實際儲存目錄
+	//初始化活動圖片資料夾
+    @PostConstruct
+    public void initEventImageFolder() {
+        String rootPath = System.getProperty("user.dir");
+        File eventImageDir = new File(rootPath, "uploads/event-images");
+        if (!eventImageDir.exists()) eventImageDir.mkdirs();
+        System.out.println("活動圖片資料夾初始化完成於: " + eventImageDir.getAbsolutePath());
+    }
+    
+	// 儲存照片
+    private String savePhoto(MultipartFile photo) throws Exception {
+        return savePhoto(photo, "event-images");
+    }
+    
+    // 儲存到 /uploads/event-images/
+    private String savePhoto(MultipartFile photo, String subFolder) throws Exception {
+        String originalFileName = photo.getOriginalFilename();
+        if (originalFileName == null || originalFileName.isEmpty()) {
+            throw new IOException("檔案名稱為空");
+        }
 
-	    // 確保目錄存在
-	    File dir = new File(uploadDir);
-	    if (!dir.exists()) {
-	        if (!dir.mkdirs()) {
-	            throw new IOException("無法建立目錄: " + uploadDir);
-	        }
-	    }
+        String baseName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
 
-	    String filePath = uploadDir + "/" + fileName;
-	    photo.transferTo(new File(filePath));
-	    return "/event-images/" + fileName; // 返回可訪問的 URL
-	}
+        String rootPath = System.getProperty("user.dir");
+        File uploadDir = new File(rootPath, "uploads" + File.separator + subFolder);
+
+        if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+            throw new IOException("無法建立目錄: " + uploadDir.getAbsolutePath());
+        }
+
+        String fileName = baseName + extension;
+        File file = new File(uploadDir, fileName);
+        int counter = 1;
+        while (file.exists()) {
+            fileName = baseName + "(" + counter + ")" + extension;
+            file = new File(uploadDir, fileName);
+            counter++;
+        }
+
+        photo.transferTo(file);
+        return "/" + subFolder + "/" + fileName;
+    }
 	
 	
 	//隨時間自動更新活動狀態 ( 主要是 SCHEDULED 時間過了event_start_time後變成 HELD )
