@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 綁定搜尋空間按鈕事件
     document.getElementById('search-space-btn').addEventListener('click', function() {
-        window.location.href = 'spaceoverview.html';
+        window.location.href = '/lifespace/spaceoverview';
     });
 });
 
@@ -19,7 +19,7 @@ function checkLoginStatus() {
         if (res.status === 401) {
             // 沒有登入，跳轉到登入頁面
             alert("尚未登入，請先登入");
-            window.location.href = "/login.html";
+            window.location.href = "/lifespace/login";
         } else {
             return res.json();
         }
@@ -157,7 +157,7 @@ function renderFavoriteSpaces(favoriteSpaces) {
                 alert("此空間暫停租借");
                 return;
             }
-            window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
+            window.location.href = `/lifespace/individual_space?spaceId=${space.spaceId}`;
         });
     });
 }

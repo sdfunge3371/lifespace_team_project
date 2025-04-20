@@ -47,7 +47,7 @@ $(document).ready(function() {
     function checkAdminLogin() {
         // 模擬管理員登入接口
         $.ajax({
-            url: "http://localhost:8080/admin/profile",
+            url: "/admin/profile",
             method: "GET",
             xhrFields: {
                 withCredentials: true // 等同於 fetch 的 credentials: "include"
@@ -58,7 +58,7 @@ $(document).ready(function() {
             error: function(xhr) {
                 if (xhr.status === 401) {
                     alert("尚未登入，請先登入");
-                    window.location.href = "/loginAdmin.html";
+                    window.location.href = "/lifespace/loginAdmin";
                 } else {
                     console.error("無法取得管理員資料", xhr);
                 }

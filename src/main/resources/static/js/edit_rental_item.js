@@ -3,7 +3,7 @@ $(document).ready(function() {
 	        let adminId = '';  // 假設登入者 ID
 
 	        $.ajax({
-	            url: "http://localhost:8080/admin/faq/profile",
+	            url: "/admin/faq/profile",
 	            method: "GET",
 	            xhrFields: {
 	                withCredentials: true // 等同於 fetch 的 credentials: "include"
@@ -16,7 +16,7 @@ $(document).ready(function() {
 	            error: function (xhr) {
 	                if (xhr.status === 401) {
 	                    alert("尚未登入，請先登入");
-	                    window.location.href = "/loginAdmin.html";
+	                    window.location.href = "/lifespace/loginAdmin";
 	                } else {
 	                    console.error("無法取得會員資料", xhr);
 	                }
@@ -28,7 +28,7 @@ $(document).ready(function() {
     
     if (!rentalItemId) {
         alert('未指定要編輯的租借品項');
-        window.location.href = '/rental_item.html';
+        window.location.href = '/lifespace/rental_item';
         return;
     }
     
@@ -80,7 +80,7 @@ $(document).ready(function() {
             data: JSON.stringify(formData),
             success: function(response) {
                 alert('更新租借品項成功');
-                window.location.href = '/rental_item.html';
+                window.location.href = '/lifespace/rental_item';
             },
             error: function(xhr, status, error) {
                 alert('更新租借品項失敗: ' + error);
@@ -141,12 +141,12 @@ $(document).ready(function() {
                     }
                 } else {
                     alert('查無此租借品項資料');
-                    window.location.href = '/rental_item.html';
+                    window.location.href = '/lifespace/rental_item';
                 }
             },
             error: function(xhr, status, error) {
                 alert('載入租借品項資料失敗: ' + error);
-                window.location.href = '/rental_item.html';
+                window.location.href = '/lifespace/rental_item';
             }
         });
     }
