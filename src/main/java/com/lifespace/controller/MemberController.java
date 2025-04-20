@@ -58,7 +58,10 @@ public class MemberController {
 	
 	//-------------------------會員登入-----------------------------
 	@PostMapping("/member/login")
-	public ResponseEntity<?> login(@RequestBody Map<String,String> loginRequest, HttpSession session){
+	public ResponseEntity<?> login(
+			@RequestBody Map<String,String> loginRequest, 
+			HttpSession session
+			){
 		String email = loginRequest.get("email");
 		String password = loginRequest.get("password");
 		

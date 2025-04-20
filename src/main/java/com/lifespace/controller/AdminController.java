@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,10 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lifespace.SessionUtils;
 import com.lifespace.dto.AdminDTO;
 import com.lifespace.entity.Admin;
-import com.lifespace.entity.Member;
 import com.lifespace.repository.AdminRepository;
 import com.lifespace.service.AdminService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 
@@ -40,10 +42,19 @@ public class AdminController {
     @Autowired
     private AdminRepository adminRepository;
     
+    private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+
+
+    
     
   //-------------------------管理員登入-----------------------------
     @PostMapping("/admin/login")
-    public ResponseEntity<?> login(@RequestBody Map<String,String> loginRequest, HttpSession session){
+    public ResponseEntity<?> login(
+    		@RequestBody Map<String,String> loginRequest, 
+    		HttpServletRequest request,
+    		HttpServletResponse response,
+    		HttpSession session
+    		){
     	String email = loginRequest.get("email");
     	String password = loginRequest.get("password");
     	
@@ -54,25 +65,36 @@ public class AdminController {
     		Admin admin = adminOpt.get();
     		
     		//告訴spring security會員已登入
-			Authentication auth = new UsernamePasswordAuthenticationToken(
-			        admin.getEmail(), null, List.of(new SimpleGrantedAuthority("ROLE_MEMBER")));
-			SecurityContextHolder.getContext().setAuthentication(auth);
-			
-			// Spring Security的session認證狀態
-			session.setAttribute(
-			    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-			    SecurityContextHolder.getContext()
-			);
+    		Authentication auth = new UsernamePasswordAuthenticationToken(
+    			    admin, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))); 
+    		
+    		
+            // 放進 SecurityContext
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(auth);
+            SecurityContextHolder.setContext(context);
+            
+
+            // 主動寫入 securityContext 到 session
+            HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+            repo.saveContext(context, request, response);
+
+    		
+//			// Spring Security的session認證狀態
+//			session.setAttribute(
+//			    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+//			    SecurityContextHolder.getContext()
+//			);
     		
     		//把資料放在session儲存
     		session.setAttribute("loginAdmin",admin.getAdminId());
     		
     		//避免洩漏敏感資訊，這裡回傳部分資料
-    		Map<String, Object> response = new HashMap<>();
-    		response.put("adminId",admin.getAdminId());
-    		response.put("adminName",admin.getAdminName());
-    		response.put("email",admin.getEmail());
-    		return ResponseEntity.ok(response);
+    		Map<String, Object> responseBody = new HashMap<>();
+    		responseBody.put("adminId",admin.getAdminId());
+    		responseBody.put("adminName",admin.getAdminName());
+    		responseBody.put("email",admin.getEmail());
+    		return ResponseEntity.ok(responseBody);
     	} else {
     		//登入失敗
     		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "帳號或密碼錯誤"));
