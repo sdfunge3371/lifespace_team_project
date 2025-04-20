@@ -209,23 +209,24 @@ public class CommentsService {
         
         
         
-        List<EventPhoto> photos = eventPhotoRepository.findByEventEventId(eventId);
-        
-        // 把每一張照片讀出來並轉成 base64，然後只回傳 base64 字串陣列（或物件）
-        List<String> photoBase64List = new ArrayList<>();
-        for (EventPhoto photo : photos) {
-            String path = photo.getPhoto(); // 假設 photo 欄位是檔案路徑
-            try {
-                byte[] fileContent = Files.readAllBytes(Paths.get(path));
-                String base64 = Base64.getEncoder().encodeToString(fileContent);
-                photoBase64List.add(base64);
-            } catch (IOException e) {
-                e.printStackTrace();
-                // 可選：photoBase64List.add("error")
-            }
-        }
-
-        data.put("eventPhotos", photoBase64List);
+//        // 目前已經不使用輪播圖片，故先註解這段邏輯，避免找不到指定圖片
+//        List<EventPhoto> photos = eventPhotoRepository.findByEventEventId(eventId);
+//        
+//        // 把每一張照片讀出來並轉成 base64，然後只回傳 base64 字串陣列（或物件）
+//        List<String> photoBase64List = new ArrayList<>();
+//        for (EventPhoto photo : photos) {
+//            String path = photo.getPhoto(); // 假設 photo 欄位是檔案路徑
+//            try {
+//                byte[] fileContent = Files.readAllBytes(Paths.get(path));
+//                String base64 = Base64.getEncoder().encodeToString(fileContent);
+//                photoBase64List.add(base64);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                // 可選：photoBase64List.add("error")
+//            }
+//        }
+//
+//        data.put("eventPhotos", photoBase64List);
 
         
         
