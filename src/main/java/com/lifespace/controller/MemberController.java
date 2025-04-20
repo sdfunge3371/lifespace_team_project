@@ -220,7 +220,7 @@ public class MemberController {
 	    redisTemplate.opsForValue().set("RESET_TOKEN_" + token, email, Duration.ofMinutes(10)); //亂碼壽命十分鐘
 
 	    // 3. 建立重設密碼連結（token 放在 URL）
-	    String resetLink = "http://localhost:8080/setPassword.html?token=" + token;
+	    String resetLink = "/lifespace/setPassword?token=" + token;
 
 	    // 4. 寄信（用原本的 mailService）
 	    mailService.sendResetLink(email, resetLink);
