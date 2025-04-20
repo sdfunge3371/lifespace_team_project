@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>活動詳情</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
+          rel="stylesheet">
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/css/bootstrap2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.css" />
+
+    <!-- Template Stylesheet -->
+    <link href="/css/style.css" rel="stylesheet">
+    
+    <!-- 活動詳情 -->
+   	<!--<link rel="stylesheet" href="css/event_overview.css"> -->
+
+	<!--Google地圖 API-->
+
+	<!--Google地圖 API-->
+   
+	<style>
+	 .modal {
+        z-index: 9999;
+    }
+
+    .modal-backdrop {
+        z-index: 999;
+    }	
+	</style>
+
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+
+        <!-- Header Navbar Start -->
+        <div class="container-fluid nav-bar bg-transparent">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+                <a href="/lifespace/homepage" class="navbar-brand d-flex align-items-center text-center">
+                    <div class="icon p-2 me-2">
+                        <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                    </div>
+                    <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                </a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="/lifespace/spaceoverview" class="nav-item nav-link">瀏覽空間</a>
+                        <a href="/lifespace/event_overview" class="nav-item nav-link">參與活動</a>
+                        <a href="/lifespace/frontend_news" class="nav-item nav-link">最新消息</a>
+                        <a href="/lifespace/frontend_faq" class="nav-item nav-link">常見問題</a>
+                    </div>
+                    <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i
+                                class="bi bi-person-circle">會員資料</i></a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                              <a href="/lifespace/myAccount" class="dropdown-item">我的帳號</a>
+                            <a href="/lifespace/events_for_user" class="dropdown-item">我的活動管理</a>
+                            <a href="/lifespace/frontend_orders" class="dropdown-item">我的訂單管理</a>
+                            <a href="/lifespace/favorite_space" class="dropdown-item">我的最愛</a>
+                            <a href="/lifespace/homepage" class="dropdown-item" onclick="logout()">登出</a>
+                            <a href="/lifespace/login" class="dropdown-item">登入</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Header Navbar End -->
+
+
+        <!-- content -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row gx-5">
+
+
+                    <!-- 活動照片輪播圖 -->
+                    <div class="col-md-6 animated fadeIn">
+                        <div class="owl-carousel header-carousel">
+                            <div class="owl-carousel-item">
+                                <img class="img-fluid" src="./img/house1.jpg" alt="">
+                            </div>
+                            <div class="owl-carousel-item">
+                                <img class="img-fluid" src="./img/house2.jpg" alt="">
+                            </div>
+                            <div class="owl-carousel-item">
+                                <img class="img-fluid" src="./img/house3.jpg" alt="">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- thumbs-wrap.// -->
+                    <!-- gallery-wrap .end// -->
+
+                    <main class="col-lg-6">
+                        <div class="ps-lg-3">
+                            <h4 class="title text-dark" id="event-name">
+                                永和狼人殺團 <br />
+                            </h4>
+
+                       	<div class="row">
+                                <dt class="col-3">時間:</dt>
+                                <dd class="col-9" id="event-time">2/7 13:00~17:00 永和區</dd>
+
+                                <dt class="col-3">地點</dt>
+                                <dd class="col-9" id="event-location">新北市中和區中安街85號3樓A房</dd>
+
+                                <dt class="col-3">總人數</dt>
+                                <dd class="col-9" id="event-capacity">20 人</dd>
+
+                                <dt class="col-3">舉辦人</dt>
+                                <dd class="col-9" id="event-host">Aaaaron</dd>
+                            </div>
+
+                            <hr />
+
+                            <div class="row mb-4">
+
+                                <!-- col.// -->
+                                <div class="col-md-4 col-6 mb-3">
+
+                                </div>
+                            </div>
+                            <a href="#" class="btn btn-warning shadow-0"> 目前人數 <span id="registered-count">17</span> /
+    						<span id="total-regis">20</span> 人 </a>
+							<button href="#" class="btn btn-primary shadow-0" id="register-btn"> <i
+        								class="me-1 fa fa-shopping-basket"></i>我要參加
+							</button>
+							<span id="participation-status" style="display:none; color:#4CAF50; font-weight:bold; margin-left:10px;"></span>
+							<button class="btn btn-danger shadow-0" id="cancell-regis-btn" disabled="true"> <i
+        							class="me-1 fa fa-shopping-basket"></i>取消參加
+							</button>
+                        </div>
+                    </main>
+
+                    <!-- 報名成功對話窗 -->
+                    <div class="modal fade" id="successModal" tabindex="-1" role="dialog"
+                        aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="successModalLabel">恭喜報名成功 !</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="successModalExplain">
+                                    <button class="btn btn-danger" id="go-to-message-board-btn">
+                                        留言板區</button>
+                                </div>
+                                <div class="modal-body" id="successModalExample"> 趕快去留言板查看大家在討論什麼吧
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安排候補對話窗 -->
+                    <div class="modal fade" id="waitingModal" tabindex="-1" role="dialog"
+                        aria-labelledby="waitingModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="waitingModalLabel">候補通知</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="waitingModalContent">已為您安排候補，順位第<span
+                                        id="waiting-num">0</span>位
+                                </div>
+
+                                <div class="modal-body"> <button class="btn btn-danger" id="waiting-cancel">
+                                        取消候補</button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- 取消參加活動對話窗 -->
+                    <div class="modal fade" id="cancellRegisModal" tabindex="-1" role="dialog"
+                        aria-labelledby="cancellRegisModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="cancellRegisModalLabel">已取消報名</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="cancellRegisModalExample">若要參加活動請重新報名
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <br>
+
+                <h4 class="title text-dark">
+                    活動說明 <i class="bi bi-question-circle" id="activity-info-trigger"></i> <br />
+                </h4>
+                <p id="event-remarks">
+                    活動說明活動說明活動說明活動說明活動說明活動說明活動說明活動說明活動說明活動說明活動說明
+                </p>
+
+
+                <h4 class="title text-dark">
+                    注意事項 <br />
+                </h4>
+
+                <p id="activity-description">
+                    <!-- <div>(1) 注意事項注意事項注意事項注意事項注意事項注意事項注意事項</div>
+                <div>(2) 注意事項注意事項注意事項注意事項注意事項注意事項注意事項</div>
+                <div>(3) 注意事項注意事項注意事項注意事項注意事項注意事項注意事項</div>
+                <div>(4) 注意事項注意事項注意事項注意事項注意事項注意事項注意事項</div> -->
+                </p>
+
+                <div>
+                    <span>
+                        <h4><i class="bi bi-person-circle">主辦者的話</i>
+                        </h4>
+                        <p id="event-briefing">嗨嗨大家 我們固定會在這裡舉辦狼人殺活動，大家快來參加吧</p>
+                    </span>
+
+                </div>
+
+                <div>
+                    <h4 class="title text-dark">
+                        活動地點 <br />
+                    </h4>
+                     <!-- thumbs-wrap.// -->
+                   <!-- <div style="width: 100%">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.4685249345007!2d121.54143377515841!3d25.05210442780461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442abdd9325b9b3%3A0xf28a7bf903eb8dca!2z5o236YGL5Y2X5Lqs5b6p6IiI56uZ!5e0!3m2!1szh-TW!2stw!4v1740495795611!5m2!1szh-TW!2stw"
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div> -->
+                    
+                     <!-- 地圖區域 -->
+        			<div id="map-container" class="map-container p-4">
+    					<div id="map" style="width: 100%; height: 400px;"></div>
+					</div>
+
+
+                    <div class="modal fade" id="activityModal" tabindex="-1" role="dialog"
+                        aria-labelledby="activityModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="activityModalLabel">活動說明</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="activityModalBody">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+        </section>
+
+
+        <!-- content -->
+
+        <!-- 
+        <div class="col-md-6 animated fadeIn">
+            <div class="owl-carousel header-carousel">
+                <div class="owl-carousel-item">
+                    <img class="img-fluid" src="./img/house1.jpg" alt="">
+                </div>
+                <div class="owl-carousel-item">
+                    <img class="img-fluid" src="./img/house2.jpg" alt="">
+                </div>
+                <div class="owl-carousel-item">
+                    <img class="img-fluid" src="./img/house3.jpg" alt="">
+                </div>
+            </div>
+        </div> -->
+
+
+        <!-- Footer Start -->
+        <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon p-2 me-2">
+                                <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                            </div>
+                            <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                        </div>
+                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
+                    </div>
+
+                    <div class="col-lg-8 col-md-8 ">
+                        <div class="slogan-container p-4 rounded" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
+                            <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>
+                            <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+        
+    </div>
+
+    <!-- Template Javascript -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+ 	<script src="/js/wow.min.js"></script>
+    <script src="/js/easing.min.js"></script>
+    <script src="/js/waypoints.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
+    
+    <!--<script src="js/event_overview.js"></script> -->
+    
+    <!-- Template Javascript -->
+    <script src="/js/main.js"></script>
+    <script src="/js/event_detail.js"></script>
+    
+</body>
+
+</html>

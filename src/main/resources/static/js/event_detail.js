@@ -75,7 +75,7 @@ $(document).ready(function () {
                         event.photoUrls.forEach(photoUrl => {
                             carousel.append(`
                 <div class="owl-carousel-item" style="height: 400px; display: flex; align-items: center; justify-content: center;">
-                    <img class="img-fluid" src="${photoUrl}" alt="${event.eventName}" style="width: 100%; height: 350px; object-fit: contain;">
+                    <img class="img-fluid" src="${photoUrl}" alt="${event.eventName}" onerror="this.onerror=null; this.src='/images/default_for_event_and_space.jpg';" style="width: 100%; height: 350px; object-fit: contain;">
                 </div>
             `);
                         });
@@ -223,7 +223,7 @@ $(document).ready(function () {
 					
 					//跳轉到活動留言板
 					document.getElementById("go-to-message-board-btn").onclick = function () {
-					       window.location.href = `comments_frontend.html?eventId=${eventId}`;
+					       window.location.href = `/lifespace/comments_frontend?eventId=${eventId}`;
 					   };
                 } else {
                     // 候補
@@ -236,7 +236,7 @@ $(document).ready(function () {
             } else if (response.status === 401) {
                 // 未授權，顯示提示並導向登入頁面
                 alert("請先登入才能參加活動");
-                window.location.href = "login.html";
+                window.location.href = "/lifespace/login";
                 throw new Error('未登入');
             } else {
                 // 其他錯誤
@@ -285,7 +285,7 @@ $(document).ready(function () {
             } else if (response.status === 401) {
                 // 未授權，顯示提示並導向登入頁面
                 alert("請先登入才能取消參加活動");
-                window.location.href = "login.html";
+                window.location.href = "/lifespace/login";
                 throw new Error('未登入');
             } else {
                 // 其他錯誤
@@ -328,7 +328,7 @@ $(document).ready(function () {
                 return response.text();
             } else if (response.status === 401) {
                 alert("請先登入才能取消候補");
-                window.location.href = "login.html";
+                window.location.href = "/lifespace/login";
                 throw new Error('未登入');
             } else {
                 return response.text().then(text => {

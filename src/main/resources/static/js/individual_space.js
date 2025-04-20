@@ -145,7 +145,7 @@ heartBtn.addEventListener('click', () => {
     const isAdding = heartIcon.classList.contains("fa-regular");
     const method = isAdding ? 'POST' : 'DELETE';
 
-    fetch(`favorite-space/${spaceId}`, {
+    fetch(`/favorite-space/${spaceId}`, {
         method,
         credentials: 'include'
     }).then(res => {
@@ -1280,7 +1280,7 @@ document.querySelector(".pay-button").addEventListener("click", () => {
                 console.error(err.message);
                 alert("預訂前請先登入");
                 // window.location.href = "/login.html";
-                window.location.href = "/login";
+                window.location.href = "/lifespace/login";
         });
 
     // showReservation();  // 啟動攔截器後，把這行刪掉
@@ -1558,7 +1558,7 @@ function sendOrder(memberId) {
 
             // 直接跳轉 loading 畫面
             // window.location.href = "/payment_loading.html";
-            window.location.href = "/payment_loading";
+            window.location.href = "/lifespace/payment_loading";
         //     alert("預訂成功");
         //     console.log("預定成功", data);
         //
@@ -1572,7 +1572,7 @@ function sendOrder(memberId) {
         //           document.body.appendChild(tempDiv);
         //           tempDiv.querySelector('form').submit();
         //       })
-        //     // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
+        //     // window.location.href = "/orders.html";   // 或改成付款成功頁面
         //     window.location.href = "/homepage.html";   // 或改成付款成功頁面
         // })
         // .catch(error => {

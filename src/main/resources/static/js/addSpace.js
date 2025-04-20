@@ -324,7 +324,7 @@ submitButton.addEventListener('click', function () {    // 點擊「完成」按
         .then(data => {
             form.reset(); // 務必要清空清空表單
             // window.location.href = 'listSpaces.html';
-            window.location.href = '/listSpaces';
+            window.location.href = '/lifespace/listSpaces';
         })
         .catch(errorOrErrors => {
             console.error('提交時發生錯誤:', errorOrErrors);
@@ -583,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
                 // window.location.href = "/loginAdmin.html";
-                window.location.href = "/loginAdmin";
+                window.location.href = "/admin/loginAdmin";
             } else {
                 console.error("無法取得會員資料", xhr);
             }

@@ -64,7 +64,7 @@ $(document).ready(function () {
 			                   `;
 							   
 							   eventCard.addEventListener('click', () => {
-							   		   	   	      window.location.href = `event_detail.html?eventId=${event.eventId}`;
+							   		   	   	      window.location.href = `/lifespace/event_detail?eventId=${event.eventId}`;
 							   		   	   });
 										   
 			                   container.append(eventCard);
@@ -121,7 +121,7 @@ $(document).ready(function () {
                             spacesContainer.appendChild(spaceCard);
 
                             spaceCard.addEventListener('click', () => {
-                                window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
+                                window.location.href = `/lifespace/individual_space?spaceId=${space.spaceId}`;
                             });
                         })
                     })

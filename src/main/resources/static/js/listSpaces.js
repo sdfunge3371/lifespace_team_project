@@ -442,7 +442,7 @@ searchForm.addEventListener('submit', function (e) {
 // 點擊「新增資料」按鈕時...
 document.getElementById('addSpaceBtn').addEventListener('click', function () {
     // window.location.href = 'addSpace.html'; // 前端路由跳轉
-    window.location.href = '/addSpace'; // 前端路由跳轉
+    window.location.href = '/lifespace/addSpace'; // 前端路由跳轉
 });
 
 // 點擊「顯示全部」按鈕時...
@@ -551,7 +551,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
                 // window.location.href = "/loginAdmin.html";
-                window.location.href = "/loginAdmin.html";
+                window.location.href = "/admin/loginAdmin.html";
             } else {
                 console.error("無法取得會員資料", xhr);
             }

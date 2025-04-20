@@ -11,8 +11,28 @@
 			// 取得 URL 中的 orderId 參數並填入表單欄位
 			const urlParams = new URLSearchParams(window.location.search);
 			const orderId = urlParams.get("orderId");
+			const orderStartStr = urlParams.get("orderStart");
+			const orderEndStr = urlParams.get("orderEnd");
+			
 			if (orderId) {
+				
 			    const orderInput = document.getElementById("orderId");
+				
+				if (orderStartStr && orderEndStr) {
+
+				        const orderStart = new Date(orderStartStr);
+				        const orderEnd = new Date(orderEndStr);
+
+				        // 顯示提示
+				        const hint = document.getElementById("orderTimeHint");
+				        hint.textContent = `本訂單租借時段為：${formatDateTime(orderStart)} 至 ${formatDateTime(orderEnd)}，請於此範圍內安排活動。`;
+
+				        // 儲存於全域變數供後續驗證
+				        window.orderStartTime = orderStart;
+				        window.orderEndTime = orderEnd;
+												
+				    }
+					
 			    if (orderInput) {
 			        orderInput.value = orderId;
 			    }
@@ -182,6 +202,16 @@
 		        return;
 		    }
 
+			const eventName = document.getElementById('eventName').value.trim();
+			if (eventName.length === 0) {
+			    alert("請輸入活動名稱");
+			    return;
+			}
+			if (eventName.length > 30) {
+			    alert("活動名稱不能超過 30 個字");
+			    return;
+			}
+			
 		    const eventRequest = {
 		        orderId: document.getElementById('orderId').value,
 		        eventName: document.getElementById('eventName').value,
@@ -217,15 +247,15 @@
 		            //alert("活動建立成功！");
 					
 					//新增成功後，導向活動管理頁面
-		            window.location.href = "events_for_user.html";
+		            window.location.href = "/lifespace/events_for_user";
 		        } else {
 		            const errorText = await response.text();
 		            console.error('伺服器回應:', response.status, errorText);
 		            alert('新增活動失敗: ' + errorText);
 					//3秒後導向首頁
-					setTimeout(function() {
-					  location.href = "/login.html";
-					}, 3000); 
+					//setTimeout(function() {
+				//	  location.href = "/login.html";
+					//}, 3000); 
 		        }
 		    } catch (error) {
 		        console.error('錯誤詳情:', error);
@@ -240,3 +270,7 @@
             const timePart = date.toLocaleTimeString({ hour: '2-digit', minute: '2-digit' });
             return `${datePart} ${timePart}`;
         }
+
+		function formatDateTime(date) {
+		    return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+		}
