@@ -95,8 +95,12 @@ public class FrontendPageController {
     public String toRegister(){
         return "/front-end/register";
     }
-        @GetMapping("/setPasswordOK")
+        @GetMapping("/setPassword")
     public String toSetPassword(){
+        return "/front-end/setPassword";
+    }
+        @GetMapping("/setPasswordOK")
+    public String toSetPasswordOK(){
         return "/front-end/setPasswordOK";
     }
         @GetMapping("/spaceoverview")
