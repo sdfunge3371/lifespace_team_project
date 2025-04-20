@@ -64,6 +64,11 @@ public class BackendPageController {
     public String toBranch(){
         return "/back-end/branch";
     }
+    
+    @GetMapping("/backend_index")
+    public String toBackendIndex(){
+        return "/back-end/backend_index";
+    }
 
     @GetMapping("/chatroom_management")
     public String toChatroom(){

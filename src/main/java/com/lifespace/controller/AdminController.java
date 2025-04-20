@@ -75,7 +75,7 @@ public class AdminController {
     		return ResponseEntity.ok(response);
     	} else {
     		//登入失敗
-    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("帳號或密碼錯誤");
+    		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "帳號或密碼錯誤"));
     	}
     	
     }
