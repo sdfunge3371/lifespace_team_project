@@ -32,6 +32,10 @@
     <link href="/css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/orders_frontend.css">
+
+    <!-- 聊天室彈窗 Stylesheet -->
+    <link href="/css/chatroom_popup.css" rel="stylesheet">
+
 </head>
 <body>
 <div class="container-xxl bg-white p-0">
@@ -45,6 +49,7 @@
     <!-- Spinner End -->
 
 
+    <!-- Header Navbar Start -->
     <div class="container-fluid nav-bar bg-transparent">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
             <a href="/lifespace/homepage" class="navbar-brand d-flex align-items-center text-center">
@@ -87,6 +92,7 @@
             </div>
         </nav>
     </div>
+    <!-- Header Navbar End -->
 
     <!-- 頁籤選單 -->
     <div class="tabs">
@@ -205,7 +211,69 @@
             </div>
         </div>
     </div>
+    <!-- 人工回復聊天按鈕 -->
+    <div class="chat-icon" id="chatButton">
+        <img src="/images/img.bootstrap/support.webp" alt="客服聊天">
+    </div>
 
+    <!-- 聊天室彈窗 -->
+    <div class="chat-popup" id="chatPopup">
+        <div class="chat-header">
+            <h3>客服聊天室</h3>
+            <button class="close-chat" id="closeChat">&times;</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- 聊天內容會動態生成 -->
+        </div>
+        <div class="chat-input">
+            <textarea id="messageInput" placeholder="請輸入訊息..."></textarea>
+            <div class="chat-actions">
+                <div class="upload-photo">
+                    <button type="button" id="uploadPhotoBtn"><i class="fas fa-image"></i></button>
+                    <input type="file" id="fileUpload" accept="image/*" />
+                </div>
+                <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <div class="chat-qa">
+            <h4>常見問題</h4>
+            <ul>
+                <li><a href="/lifespace/frontend_faq">查看更多常見問題</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-4 col-md-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon p-2 me-2">
+                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon"
+                                 style="width: 30px; height: 30px;">
+                        </div>
+                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon"
+                             style="width: 200px; height: 60px;">
+                    </div>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
+                    <a href="/admin/loginAdmin" class="nav-item nav-link">後台登入</a>
+                </div>
+
+                <div class="col-lg-8 col-md-8 ">
+                    <div class="slogan-container p-4 rounded"
+                         style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
+                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">
+                            空間與活動的完美結合</h4>
+                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+</div>
 
 
     <!-- JavaScript Libraries -->
@@ -218,7 +286,54 @@
 
     <!-- Template Javascript -->
 <script src="/js/main.js"></script>
+
 <script>
+    //-------------------header上可顯示會員的頭貼跟名字--------------
+    document.addEventListener("DOMContentLoaded", function () {
+        const avatarImg = document.getElementById("navAvatar");
+        const nameSpan = document.getElementById("navMemberName");
+
+
+        fetch("/member/account", {
+            method: "GET",
+            credentials: "include"
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("尚未登入");
+                return res.json();
+            })
+            .then(member => {
+                const avatarImg = document.getElementById("navAvatar");
+                if (member && member.memberId) {
+                    // 會員登入成功，替換成會員頭貼
+                    avatarImg.src = `/member/image/${member.memberId}`;
+                    nameSpan.innerText = `${member.memberName}`;
+                }
+            })
+            .catch(err => {
+                avatarImg.src = `/images/default.jpg`;
+                nameSpan.innerText = "會員資料";
+            });
+    });
+
+    //----------------登出-------------------------------------
+    function logout() {
+        fetch("/member/logout", {
+            method: "POST",
+            credentials: "include"
+        })
+            .then(response => {
+                if (response.ok) {
+                    windows.location.href = "/lifespace/homepage"; //登出後回首頁
+                } else {
+                    alert("登出失敗");
+                }
+            })
+            .catch(error => {
+                console.error("登出錯誤:" + error);
+            });
+    }
+
     $(document).ready(function () {
 
         //頁籤
@@ -691,30 +806,31 @@
 
 
     </script>
-    <!-- Footer Start -->
-    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-4 col-md-4">
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="icon p-2 me-2">
-                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
-                        </div>
-                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
-                    </div>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
-                </div>
+    <!-- 聊天室彈窗 Javascript -->
+    <script src="/js/chatroom_popup.js"></script>
+<!--    &lt;!&ndash; Footer Start &ndash;&gt;-->
+<!--    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">-->
+<!--        <div class="container py-5">-->
+<!--            <div class="row g-5 align-items-center">-->
+<!--                <div class="col-lg-4 col-md-4">-->
+<!--                    <div class="d-flex align-items-center mb-4">-->
+<!--                        <div class="icon p-2 me-2">-->
+<!--                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">-->
+<!--                        </div>-->
+<!--                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">-->
+<!--                    </div>-->
+<!--                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>-->
+<!--                </div>-->
 
-                <div class="col-lg-8 col-md-8 ">
-                    <div class="slogan-container p-4 rounded" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
-                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>
-                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
-</div>
+<!--                <div class="col-lg-8 col-md-8 ">-->
+<!--                    <div class="slogan-container p-4 rounded" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">-->
+<!--                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>-->
+<!--                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash; Footer End &ndash;&gt;-->
 </body>
 </html>
