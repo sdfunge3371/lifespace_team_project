@@ -1572,7 +1572,7 @@ function sendOrder(memberId) {
         //           document.body.appendChild(tempDiv);
         //           tempDiv.querySelector('form').submit();
         //       })
-        //     // window.location.href = "/frontend_orders.html";   // 或改成付款成功頁面
+        //     // window.location.href = "/orders.html";   // 或改成付款成功頁面
         //     window.location.href = "/homepage.html";   // 或改成付款成功頁面
         // })
         // .catch(error => {

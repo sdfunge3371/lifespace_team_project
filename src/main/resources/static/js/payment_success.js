@@ -10,7 +10,12 @@ const orderId = params.get("orderId");
                 // 付款成功
                 document.querySelector(".modal-content").style.display = "block";
                 document.querySelector(".animation-container").style.display = "flex";
-           
+
+                if (typeof window["lineIt"] !== "undefined" && lineIt.loadButton) {
+                    lineIt.loadButton();
+                }
+            } else {
+
 				// 設定 "揪團去" 按鈕的連結，帶入 orderId
 				   const eventButton = document.querySelector(".btn-primary");
 				   if (eventButton) {
@@ -18,7 +23,7 @@ const orderId = params.get("orderId");
 				           location.href = `/event_create.html?orderId=${orderId}`;
 				       };
 				   }
-				
+
 				 } else {
                 // 顯示付款失敗畫面
                 window.location.href = "/payment_fail.html";
