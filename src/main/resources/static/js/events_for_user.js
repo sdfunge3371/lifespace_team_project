@@ -97,7 +97,7 @@ $(document).ready(function () {
 					   
 					   if (xhr.status === 401) {
 					   		alert("請先登入");
-					   		location.href = "/login";
+					   		location.href = "/lifespace/login";
 					   	}
 
                    }
