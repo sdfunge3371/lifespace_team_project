@@ -32,6 +32,9 @@
     <link href="/css/style.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/individual_space.css">
+
+    <!-- 聊天室彈窗 Stylesheet -->
+    <link href="/css/chatroom_popup.css" rel="stylesheet">
 </head>
 
 <body>
@@ -429,6 +432,38 @@
         </div>
         <!-- 網頁內容 End -->
 
+        <!-- 人工回復聊天按鈕 -->
+        <div class="chat-icon" id="chatButton">
+            <img src="/images/img.bootstrap/support.webp" alt="客服聊天">
+        </div>
+
+        <!-- 聊天室彈窗 -->
+        <div class="chat-popup" id="chatPopup">
+            <div class="chat-header">
+                <h3>客服聊天室</h3>
+                <button class="close-chat" id="closeChat">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 聊天內容會動態生成 -->
+            </div>
+            <div class="chat-input">
+                <textarea id="messageInput" placeholder="請輸入訊息..."></textarea>
+                <div class="chat-actions">
+                    <div class="upload-photo">
+                        <button type="button" id="uploadPhotoBtn"><i class="fas fa-image"></i></button>
+                        <input type="file" id="fileUpload" accept="image/*" />
+                    </div>
+                    <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <div class="chat-qa">
+                <h4>常見問題</h4>
+                <ul>
+                    <li><a href="/lifespace/frontend_faq">查看更多常見問題</a></li>
+                </ul>
+            </div>
+        </div>
+
 
         <!-- Footer Start -->
         <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
@@ -461,11 +496,11 @@
         <!-- Footer End -->
 
 
-        <!-- 人工回復聊天按鈕 -->
-<!--        <div class="chat-icon" id="chatButton">-->
-<!--            <img src="images/img.bootstrap/support.webp" alt="客服聊天">-->
-<!--        </div>-->
+
+
     </div>
+
+    <div class="overlay hidden"></div>
 
     <!-- 空間評論modal Start -->
     <div class="modal hidden">
@@ -631,7 +666,7 @@
         </div>
     </div>
 
-    <div class="overlay hidden"></div>
+    <div class="overlay1 hidden"></div>
 
     <!-- 空間評論modal End -->
 
@@ -737,6 +772,9 @@
 
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
+
+    <!-- 聊天室彈窗 Javascript -->
+    <script src="/js/chatroom_popup.js"></script>
 </body>
 
 </html>
