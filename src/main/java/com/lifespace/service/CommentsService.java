@@ -175,10 +175,12 @@ public class CommentsService {
         if (orders != null) {
             String holderName = orders.getMember().getMemberName();
             data.put("holderName", holderName);
+            
+            Event eventTime = eventRepository.findById(eventId).orElse(null);
 
             // 留言板開放時間／結束時間
-            data.put("orderStart", orders.getOrderStart());
-            data.put("orderEnd", orders.getOrderEnd());
+            data.put("orderStart", eventTime.getEventStartTime());
+            data.put("orderEnd", eventTime.getEventEndTime());
 
             String branchId = orders.getBranch().getBranchAddr();
             data.put("spaceLocation", branchId);
