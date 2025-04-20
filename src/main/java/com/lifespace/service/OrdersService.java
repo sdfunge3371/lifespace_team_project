@@ -198,7 +198,7 @@ public class OrdersService {
                 System.out.println("CheckMacValue 比對成功");
 
                 String rtnCode = ecpayParams.get("RtnCode");
-                String tradeNo = ecpayParams.get("MerchantTradeNo");
+//                String tradeNo = ecpayParams.get("MerchantTradeNo");
                 //訂單編號還原
 //                String orderId = tradeNo.substring(0, 5);
                 String orderId = ecpayParams.get("CustomField1");
