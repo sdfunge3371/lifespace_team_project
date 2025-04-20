@@ -54,7 +54,7 @@ function previewImage(event) {
 	})
 	.then(msg => {
 	  alert("新增成功！");
-	  window.location.href = "./member.html";
+	  window.location.href = "/admin/member";
 	})
 	.catch(err => {
 	  console.error("錯誤資訊：", err);
