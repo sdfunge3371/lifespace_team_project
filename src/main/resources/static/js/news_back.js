@@ -76,7 +76,7 @@ function reflashNews(newsList) {
         <td>${statusText}</td>
         <td>${imgHtml}</td>
         <td>
-          <a href="/lifespace/backend_updatenews?newsId=${news.newsId}" class="btn btn-primary btn-sm">修改</a>
+          <a href="/admin/updatenews?newsId=${news.newsId}" class="btn btn-primary btn-sm">修改</a>
           <button onclick="confirmDeprecated('${news.newsId}')" class="btn btn-danger btn-sm">下架</button>
         </td>
       </tr>
