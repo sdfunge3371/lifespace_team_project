@@ -95,7 +95,7 @@
                 <td>
                     <h2>管理員資料修改</h2>
                     <h4>
-                        <a href="../admin.html">回首頁</a>
+                        <a href="/admin/admin">回上一頁</a>
                     </h4>
                 </td>
             </tr>
@@ -117,7 +117,7 @@
             </select><br>
             <span id="errStatus" class="err-msg"></span><br>            
             
-            <button type="button" onclick="submitForm()">送出新增</button>
+            <button type="button" onclick="submitForm()">送出修改</button>
 
 
         </div>
@@ -165,7 +165,7 @@
                 })
                 .then(msg => {
                     alert("✅ 修改成功！");
-                    window.location.href = "admin.html"; // 回首頁
+                    window.location.href = "/admin/admin"; // 回首頁
                 })
                 .catch(err => {
                     alert("❌ 錯誤：" + err.message);
