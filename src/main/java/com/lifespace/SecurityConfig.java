@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 //負責攔截那些需要"登入"才能進入的頁面
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig  {
 	
 	private  MemberService memberService;
@@ -42,40 +44,34 @@ public class SecurityConfig  {
 	    http.exceptionHandling()
 	        .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 		
-        //需要擋掉的路徑 
-		http.authorizeHttpRequests()
-		//擋掉前台需要登入才能進入的路徑
-         .requestMatchers(                 
-        		 "/lifespace/myAccount",
-                 "/lifespace/events_for_user",
-                 "/lifespace/orders",
-                 "/lifespace/favorite_space"
-          ).authenticated()   
-         
-       //擋掉後台需要登入才能進入的路徑
-         .requestMatchers(                 
-        		 "/admin/news",
-                 "/admin/member",
-                 "/admin/admin",
-                 "/admin/faq",
-                 "/admin/space_comment",
-                 "/admin/branch",
-                 "/admin/rental_item",
-                 "/admin/listSpaces",
-                 "/admin/orders",
-                 "/admin/chatroom_management",
-                 "/admin/backend_index"
-          ).authenticated()  
-         
+	    http.authorizeHttpRequests()
+	    // 允許登入頁+靜態資源
+	    .requestMatchers(
+	        "/admin/loginAdmin",       // 後台登入頁開放
+	        "/lifespace/login",        // 前台登入頁開放
+	        "/css/**", "/js/**", "/images/**"  // 靜態資源開放
+	    ).permitAll()
 
-         .anyRequest().permitAll();  // 其他頁面開放進入
+	    // 前台需要登入的 4 頁
+	    .requestMatchers(
+	        "/lifespace/myAccount",
+	        "/lifespace/events_for_user",
+	        "/lifespace/orders",
+	        "/lifespace/favorite_space"
+	    ).authenticated()
+
+	    // 後台其他頁面全擋（除了 loginAdmin）
+	    .requestMatchers("/admin/**").authenticated()
+
+	    // 其他全部放行（例如首頁、註冊頁等）
+	    .anyRequest().permitAll();
          
 
         //表單登入設計
-         http.formLogin()
-             .loginPage("/lifespace/login")   // ✅ 自訂登入頁
-             .defaultSuccessUrl("/lifespace/homepage", true) // 登入成功後導向
-             .permitAll();
+		http.formLogin()
+	       .loginPage("/lifespace/login")  // 不管登入頁是前台還後台，都用這個
+	       .successHandler(new CustomLoginSuccessHandler())  // ✅ 改用你寫的 handler
+	       .permitAll();
          
              
          //第三方登入(google)
