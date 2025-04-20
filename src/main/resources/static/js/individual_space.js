@@ -82,7 +82,7 @@ function hideModalFixed(modal, overlay) {
 
 // 關閉空間評論modal
 const modal = document.querySelector('.modal');
-const overlay = document.querySelector(".overlay");
+const overlay = document.querySelector(".overlay1");
 const closeButton = document.querySelector('.close-button');
 
 const btnOpenModal = document.querySelector('.list-all-equip');
@@ -1095,8 +1095,14 @@ function insertHeadComments(comments) {
 
     const commentsContainer = document.querySelector(".container-comment-row");
     commentsContainer.innerHTML = ""; // 清空舊資料
-
+    let counter = 0;
     comments.forEach(comment => {
+        if (counter === 2) {
+            return;
+        }
+
+        counter++;
+
         const {
             commentContent,
             memberImage,
@@ -1174,7 +1180,7 @@ function insertHeadComments(comments) {
 
     const commentButton = document.querySelector(".comment-button");
     // 處理「查看所有評論」按鈕
-    if (comments.length > 3) {
+    if (comments.length >= 3) {
         commentButton.style.display = "block"; // 顯示按鈕
         insertAllComments(comments);
     } else {
@@ -1184,7 +1190,7 @@ function insertHeadComments(comments) {
 
 function insertAllComments(comments) {
     // 抓取評論container，並初始化
-    const reviewContainer = document.querySelector(".review-container");
+    const reviewContainer = document.querySelector(".reviews-container");
     reviewContainer.innerHTML = "";
     comments.forEach(comment => {
         const {
@@ -1400,6 +1406,9 @@ function setupModalCloseListeners() {
 
     // 按modal外面任意處關閉
     const overlay = document.querySelector(".overlay");
+
+
+
     overlay.onclick = function() {
         document.getElementById("orderConfirmModal").style.display = "none";
         this.classList.add("hidden");
