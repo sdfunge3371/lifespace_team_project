@@ -360,7 +360,7 @@
   
            eventCard.innerHTML = `
                <div class="event-img">
-                   <img src="${photoUrl}" alt="${event.eventName}">
+                   <img src="${photoUrl}" alt="${event.eventName}" onerror="this.onerror=null; this.src='/images/default_for_event_and_space.jpg';">
                </div>
                <div class="event-info">
                    <h4>${event.eventName}</h4>
@@ -381,13 +381,13 @@
 					  						</div>
 										` : ''}
                    <div class="event-actions">
-                       <a href="event_detail.html?eventId=${event.eventId}" class="action-button message-button">查看詳情</a>
+                       <a href="/lifespace/event_detail?eventId=${event.eventId}" class="action-button message-button">查看詳情</a>
                    </div>
                </div>
            `;
            	 
 		   eventCard.addEventListener('click', () => {
-		   	   	      window.location.href = `event_detail.html?eventId=${event.eventId}`;
+		   	   	      window.location.href = `/lifespace/event_detail?eventId=${event.eventId}`;
 		   	   });
 			   
            eventsContainer.appendChild(eventCard);
