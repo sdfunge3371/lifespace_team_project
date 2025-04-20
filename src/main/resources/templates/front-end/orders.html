@@ -124,7 +124,7 @@
     <div id="cancel-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -402,7 +402,7 @@
                 error: function (xhr) {
                     if (xhr.status === 401) {
                         alert("請先登入");
-                        location.href = "/login.html";
+                        location.href = "/lifespace/login";
                     } else {
                         alert("載入失敗，請稍後再試");
                     }
@@ -819,7 +819,7 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        windows.location.href = "/lifespace/homepage"; //登出後回首頁
+                        window.location.href = "/lifespace/homepage"; //登出後回首頁
                     } else {
                         alert("登出失敗");
                     }
