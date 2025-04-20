@@ -46,23 +46,23 @@ public class SecurityConfig  {
 		http.authorizeHttpRequests()
 		//擋掉前台需要登入才能進入的路徑
          .requestMatchers(                 
-        		 "/myAccount.html",
-                 "/events_for_user.html",
-                 "/frontend_orders.html",
-                 "/favorite_space.html"
+        		 "/lifespace/myAccount",
+                 "/lifespace/events_for_user",
+                 "/lifespace/frontend_orders",
+                 "/lifespace/favorite_space"
           ).authenticated()   
          
        //擋掉後台需要登入才能進入的路徑
          .requestMatchers(                 
-        		 "/backend_news.html",
-                 "/member.html",
-                 "/admin.html",
-                 "/backend_faq.html",
-                 "/space_comment.html",
-                 "/branch.html",
-                 "/rental_item.html",
-                 "/listSpaces.html",
-                 "/backend_index.html"
+        		 "/admin/backend_news",
+                 "/admin/member",
+                 "/admin/admin",
+                 "/admin/backend_faq",
+                 "/admin/space_comment",
+                 "/admin/branch",
+                 "/admin/rental_item",
+                 "/admin/listSpaces",
+                 "/back-end/backend_index"
           ).authenticated()  
          
          
@@ -75,14 +75,14 @@ public class SecurityConfig  {
 
         //表單登入設計
          http.formLogin()
-             .loginPage("/login.html")   // 自訂登入頁
-             .successHandler(new CustomLoginSuccessHandler()) // 登入成功後導向
+             .loginPage("/lifespace/login")   // ✅ 自訂登入頁
+             .defaultSuccessUrl("/lifespace/homepage", true) // 登入成功後導向
              .permitAll();
          
              
          //第三方登入(google)
          http.oauth2Login()
-         .loginPage("/login.html")
+         .loginPage("/lifespace/login")
          .userInfoEndpoint()
              .userService(oauth2UserService()) // Google 登入後取得 email
              .and()
@@ -92,7 +92,7 @@ public class SecurityConfig  {
          //登出設定    
          http.logout()
              .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-             .logoutSuccessUrl("/homepage.html")
+             .logoutSuccessUrl("/lifespace/homepage")
              .permitAll();
 		 
 		
@@ -122,7 +122,7 @@ public class SecurityConfig  {
                 session.setAttribute("loginMember",member.getMemberId());
 
                 // 導向首頁
-                response.sendRedirect("/homepage.html");
+                response.sendRedirect("/lifespace/homepage");
             }
         };
     }

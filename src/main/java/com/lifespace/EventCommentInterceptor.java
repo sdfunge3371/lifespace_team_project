@@ -30,35 +30,35 @@ public class EventCommentInterceptor extends OncePerRequestFilter  {
         String uri = request.getRequestURI();
         
      // 只對這些特定 URL 做過濾
-        if (uri.startsWith("/comments_frontend.html")) {
+        if (uri.startsWith("/lifespace/comments")) {
         	System.out.println("嘗試進入留言板！");
             
         	//確認是否有session
         	HttpSession session = request.getSession(false);
             if (session == null) {
-                response.sendRedirect("/login.html");
+                response.sendRedirect("/lifespace/login");
                 return;
             }
             
             //確認是否有此會員資料
             String memberId = SessionUtils.getLoginMemberId(session);
             if (memberId == null) {
-                response.sendRedirect("/login.html");
+                response.sendRedirect("/lifespace/login");
                 return;
             }
             
             //確認是否有參與活動
             String eventId = request.getParameter("eventId"); // 須從前端帶入參數
             if (eventId == null || eventId.isBlank()) {
-            	System.out.println("⚠️ eventId 缺失！");
-                response.sendRedirect("/homepage.html"); // 沒帶活動編號，導到首頁
+            	System.out.println("eventId 缺失！");
+                response.sendRedirect("/lifespace/homepage"); // 沒帶活動編號，導到首頁
                 return;
             }
             
             //抓參與活動的會員狀態
             EventMemberStatus joinedStatus = eventService.getParticipationStatus(eventId, memberId);
             if (joinedStatus == null || joinedStatus != EventMemberStatus.ATTENT) {
-                response.sendRedirect("homepage.html"); // 回首頁
+                response.sendRedirect("/lifespace/homepage"); // 回首頁
                 return;
             }
         }

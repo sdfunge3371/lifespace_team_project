@@ -94,7 +94,7 @@
                 <td>
                     <h2>會員資料修改</h2>
                     <h4>
-                        <a href="../member.html">回首頁</a>
+                        <a href="/admin/member">回首頁</a>
                     </h4>
                 </td>
             </tr>
@@ -191,7 +191,7 @@
                 })
                 .then(msg => {
                     alert("✅ 修改成功！");
-                    window.location.href = "member.html"; // 回首頁
+                    window.location.href = "/admin/member"; // 回首頁
                 })
                 .catch(err => {
                     alert("❌ 錯誤：" + err.message);
