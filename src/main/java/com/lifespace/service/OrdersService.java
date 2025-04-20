@@ -7,6 +7,7 @@ import com.lifespace.dto.SpaceCommentRequest;
 import com.lifespace.ecpay.payment.integration.AllInOne;
 import com.lifespace.ecpay.payment.integration.domain.AioCheckOutOneTime;
 import com.lifespace.entity.*;
+import com.lifespace.line.LinePushMessageService;
 import com.lifespace.repository.*;
 
 import com.linecorp.bot.messaging.model.TextMessage;
@@ -28,7 +29,6 @@ import com.lifespace.mapper.OrdersMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLOutput;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -55,6 +55,8 @@ public class OrdersService {
 
     @Autowired
     private MessagingApiClient messagingApiClient;
+    @Autowired
+    private LinePushMessageService linePushMessageService;
 
     public void updateOrderStatusByOrderId(String orderId) {
 
@@ -70,6 +72,9 @@ public class OrdersService {
 
         orders.setOrderStatus(0);
         ordersRepository.save(orders);
+
+        OrdersDTO chancelOrder = OrdersMapper.toOrdersDTO(orders);
+        linePushMessageService.autoPushCancelMsg(chancelOrder);
     }
 
 
@@ -240,6 +245,13 @@ public class OrdersService {
     }
 
     public boolean bindLineUserIdAndPushOrders(String lineUserId, String memberName, String phone) {
+
+        //是否綁定過
+        boolean exists = ordersRepository.existsByLineUserId(lineUserId);
+        if (exists) {
+            return false;
+        }
+
         Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
         if (member == null) {
             return false;
