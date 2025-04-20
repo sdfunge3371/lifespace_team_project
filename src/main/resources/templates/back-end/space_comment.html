@@ -19,7 +19,7 @@
      <!-- 側邊欄 -->
     <div class="col-lg-2 sidebar">
         <div class="sidebar-header">
-            <a href="/templates/back-end/backend_index.html">
+            <a href="/admin/backend_index">
                 <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
             </a>
             <h2 class="sidebar-title">後台中心</h2>
@@ -32,7 +32,7 @@
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="newsSubmenu">
-                    <li><a href="/templates/back-end/backend_news.html" class="submenu-item">最新消息</a></li>
+                    <li><a href="/admin/news" class="submenu-item">最新消息</a></li>
                 </ul>
             </li>
 
@@ -43,8 +43,8 @@
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="accountSubmenu">
-                    <li><a href="/templates/back-end/member.html" class="submenu-item">會員帳號</a></li>
-                    <li><a href="/templates/back-end/admin.html" class="submenu-item">管理員帳號</a></li>
+                    <li><a href="/admin/member" class="submenu-item">會員帳號</a></li>
+                    <li><a href="/admin/admin" class="submenu-item">管理員帳號</a></li>
                 </ul>
             </li>
 
@@ -55,7 +55,7 @@
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="ordersSubmenu">
-                    <li><a href="/templates/back-end/orders.html" class="submenu-item">訂單</a></li>
+                    <li><a href="/admin/orders" class="submenu-item">訂單</a></li>
                 </ul>
             </li>
 
@@ -66,33 +66,32 @@
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="productSubmenu">
-                    <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
-                    <li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
-                    <li><a href="/branch.html" class="submenu-item">分點</a></li>
+                    <li><a href="/admin/listSpaces" class="submenu-item">空間管理</a></li>
+                    <li><a href="/admin/rental_item" class="submenu-item">租借品項</a></li>
+                    <li><a href="/admin/branch" class="submenu-item">分點</a></li>
                 </ul>
             </li>
 
-            <!-- 活動留言評論管理 -->
+            <!-- 評論管理 -->
             <li class="nav-item">
                 <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-star"></i> 留言評論管理
+                    <i class="fas fa-star"></i> 評論管理
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="commentSubmenu">
-                    <li><a href="/commentsBackend.html" class="submenu-item">活動留言板</a></li>
-                    <li><a href="/commentReportBackend.html" class="submenu-item">檢舉留言</a></li>
-                    <li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
+                    <li><a href="/admin/space_comment" class="submenu-item">空間評論</a></li>
                 </ul>
             </li>
 
             <!-- 常見問題管理 -->
             <li class="nav-item">
                 <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-headset"></i> 常見問題管理
+                    <i class="fas fa-headset"></i> 客服管理
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="faqSubmenu">
-                    <li><a href="/templates/back-end/backend_faq.html" class="submenu-item">常見問題</a></li>
+                    <li><a href="/admin/faq" class="submenu-item">常見問題</a></li>
+                    <li><a href="/admin/chatroom_management" class="submenu-item">聊天室管理</a></li>
                 </ul>
             </li>
         </ul>
