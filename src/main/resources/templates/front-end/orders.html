@@ -105,7 +105,7 @@
     <div id="space-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -114,7 +114,7 @@
     <div id="history-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -123,7 +123,7 @@
     <div id="cancel-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
+            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -363,7 +363,7 @@
                         <div class="order-container">
                             <div class="order-img position-relative">
                                 <img src="${orders.spaceCoverPhotoURL}" alt="空間圖片" class="img-fluid" onerror= "this.src='images/img.bootstrap/house-placeholder.jpg'">
-                                <a href="/individual_space.html?spaceId=${orders.spaceId}"
+                                <a href="/lifespace/individual_space?spaceId=${orders.spaceId}"
                                    class="btn btn-sm btn-light text-dark border view-space-btn">
                                     查看空間
                                 </a>
@@ -499,7 +499,7 @@
                     error: function (xhr) {
                     if (xhr.status === 401) {
                         alert("請先登入");
-                        location.href = "/login.html";
+                        location.href = "/lifespace/login";
                     } else {
                         alert("載入失敗，請稍後再試");
                 }
@@ -799,7 +799,7 @@
                      const $orderContainer = $(this).closest(".order-container");
                      const orderId = $orderContainer.find("p:contains('訂單編號')").text().split("：")[1].trim();
 
-                   	window.location.href = `event_create.html?orderId=${orderId}`;
+                   	window.location.href = `lifespace/event_create?orderId=${orderId}`;
                   
                  })               
          });
