@@ -82,7 +82,7 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 alert('新增分點成功');
-                window.location.href = '/lifespace/branch';
+                window.location.href = '/admin/branch';
             },
             error: function(xhr, status, error) {
                 alert('新增分點失敗: ' + error);

@@ -16,7 +16,7 @@ $(document).ready(function() {
 	            error: function (xhr) {
 	                if (xhr.status === 401) {
 	                    alert("尚未登入，請先登入");
-	                    window.location.href = "/lifespace/loginAdmin";
+	                    window.location.href = "/admin/loginAdmin";
 	                } else {
 	                    console.error("無法取得會員資料", xhr);
 	                }
@@ -54,7 +54,7 @@ $(document).ready(function() {
             data: JSON.stringify(formData),
             success: function(response) {
                 alert('新增租借品項成功');
-                window.location.href = '/lifespace/rental_item';
+                window.location.href = '/admin/rental_item';
             },
             error: function(xhr, status, error) {
                 alert('新增租借品項失敗: ' + error);

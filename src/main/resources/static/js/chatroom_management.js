@@ -58,7 +58,7 @@ $(document).ready(function() {
             error: function(xhr) {
                 if (xhr.status === 401) {
                     alert("尚未登入，請先登入");
-                    window.location.href = "/lifespace/loginAdmin";
+                    window.location.href = "/admin/loginAdmin";
                 } else {
                     console.error("無法取得管理員資料", xhr);
                 }

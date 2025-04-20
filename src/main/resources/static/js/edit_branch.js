@@ -5,7 +5,7 @@ $(document).ready(function() {
     
     if (!branchId) {
         alert('未指定要編輯的分點');
-        window.location.href = '/lifespace/branch';
+        window.location.href = '/admin/branch';
         return;
     }
     
@@ -90,12 +90,12 @@ $(document).ready(function() {
                     }
                 } else {
                     alert('查無此分點資料');
-                    window.location.href = '/lifespace/branch';
+                    window.location.href = '/admin/branch';
                 }
             },
             error: function(xhr, status, error) {
                 alert('載入分點資料失敗: ' + error);
-                window.location.href = '/lifespace/branch';
+                window.location.href = '/admin/branch';
             }
         });
     }
@@ -140,7 +140,7 @@ $(document).ready(function() {
             }),
             success: function() {
                 alert('更新分點成功');
-                window.location.href = '/lifespace/branch';
+                window.location.href = '/admin/branch';
             },
             error: function(xhr, status, error) {
                 alert('更新分點失敗: ' + error);
