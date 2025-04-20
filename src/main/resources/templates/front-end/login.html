@@ -126,6 +126,36 @@
     <!-- Footer End -->
 
    <script>
+   //-----------------登入功能------------------------------------
+    document.querySelector("#loginBtn").addEventListener("click", function () {
+            const email = document.querySelector(".account").value;
+            const password = document.querySelector(".password").value;
+
+            fetch("/member/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: "include"  //一定要加這句才會把session放在瀏覽器的coockie內
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error("登入失敗！");
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert("登入成功，歡迎 " + data.memberName);
+                    location.href = "/lifespace/homepage";
+                })
+                .catch(err => {
+                    alert("登入失敗，請檢查帳號或密碼");
+                });
+        });
+   
+   
+   
 
     //-------------------header上可顯示會員的頭貼跟名字--------------
     document.addEventListener("DOMContentLoaded", function () {
