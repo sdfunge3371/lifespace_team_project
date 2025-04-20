@@ -16,7 +16,7 @@ toggleBtn.addEventListener("click", function() {
 
 // ----------------------------------按修改按鈕進入個人修改頁面----------------------------------
 function editAdmin(adminId) {
-	window.location.href = `adminUpdate.html?adminId=${adminId}`;
+	window.location.href = `/admin/update?adminId=${adminId}`;
 }
 
 

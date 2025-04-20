@@ -91,7 +91,7 @@
                     <td>
                         <h2>管理員資料新增</h2>
                         <h4>
-                            <a href="../admin.html">回首頁</a>
+                            <a href="/admin/admin">回上一頁</a>
                         </h4>
                     </td>
                 </tr>
@@ -149,7 +149,7 @@
             .then(msg => {
               alert(msg);
               // 可選擇跳回主頁或清空表單
-              window.location.href = "admin.html";
+              window.location.href = "/admin/admin";
             })
             .catch(err => {
               alert("錯誤：" + err.message);
