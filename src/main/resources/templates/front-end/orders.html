@@ -394,7 +394,10 @@
                                         ${orders.eventDTO ? `
                                             <a class="action-button message-button" href="/lifespace/comments_frontend?eventId=${orders.eventDTO.eventId}">留言板</a>
                                         ` : `
-                                            <button class="action-button group-button">揪團去</button>
+                                            <button class="action-button group-button"
+                                            	data-order-id="${orders.orderId}"
+                                                data-order-start="${orders.orderStart}"
+                                                data-order-end="${orders.orderEnd}">揪團去</button>
                                         `}
                                         <button class="action-button cancel" data-order-id="${orders.orderId}">取消訂單</button>
                                     ` : orders.orderStatus == 2 ? `
@@ -799,8 +802,14 @@
                      const $orderContainer = $(this).closest(".order-container");
                      const orderId = $orderContainer.find("p:contains('訂單編號')").text().split("：")[1].trim();
 
-                   	window.location.href = `lifespace/event_create?orderId=${orderId}`;
-                  
+                     const orderStartStr = $(this).data("order-start");
+                     const orderEndStr = $(this).data("order-end");
+
+                     const orderStart = encodeURIComponent(new Date(orderStartStr).toISOString());
+                     const orderEnd = encodeURIComponent(new Date(orderEndStr).toISOString());
+                     
+                   	window.location.href = `/lifespace/event_create?orderId=${orderId}&orderStart=${orderStart}&orderEnd=${orderEnd}`;
+             
                  })               
          });
 
