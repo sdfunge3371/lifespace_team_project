@@ -222,6 +222,7 @@ public class OrdersService {
     }
 
     //更改綠界付款完成後的訂單狀態
+    @Transactional
     public void paidOrders(String orderId) {
         Orders orders = ordersRepository.findById(orderId).orElse(null);
         if(orders != null && orders.getOrderStatus() != 1) {
