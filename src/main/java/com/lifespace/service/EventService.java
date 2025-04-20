@@ -437,7 +437,7 @@ public class EventService {
     @Transactional
     public void updateEventsByStartUp(){
     	UpdateHeldEvents();
-    	notifyHeldEventsMembers();
+    	//notifyHeldEventsMembers();
         System.out.println("啟動Spring後, 自動更新已舉辦的活動");
     }
     
@@ -445,7 +445,7 @@ public class EventService {
     @Scheduled(cron = "0 0 10 * * ?") // 每天上午10點執行
     @Transactional
     public void scheduledNotificationCheck() {
-    	notifyHeldEventsMembers();
+    	//notifyHeldEventsMembers();
         System.out.println("排程器檢查需要發送提醒的活動");
     }
     
