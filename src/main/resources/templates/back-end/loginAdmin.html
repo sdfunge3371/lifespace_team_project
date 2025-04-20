@@ -48,7 +48,7 @@
             const email = document.querySelector(".account").value;
             const password = document.querySelector(".password").value;
 
-            fetch("admin/login", {
+            fetch("/admin/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -64,7 +64,7 @@
                 })
                 .then(data => {
                     alert("登入成功，歡迎 " + data.adminName);
-                    location.href = "/admin/backend_index";
+                    window.location.href = "/admin/backend_index";
                 })
                 .catch(err => {
                     alert("登入失敗，請檢查帳號或密碼");
