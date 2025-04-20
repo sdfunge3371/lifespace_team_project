@@ -11,12 +11,12 @@ public class FrontendPageController {
     //前台
     @GetMapping("/orders")
     public String toOrders(){
-        return "front-end/orders";
+        return "/front-end/orders";
     }
 
     @GetMapping("/homepage")
     public String toHomePage(){
-        return "front-end/homepage";
+        return "/front-end/homepage";
     }
 
     @GetMapping("/login")

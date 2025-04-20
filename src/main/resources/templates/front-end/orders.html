@@ -69,10 +69,10 @@
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i
                             class="bi bi-person-circle">會員資料</i></a>
                     <div class="dropdown-menu rounded-0 m-0">
-                        <a href="myAccount.html" class="dropdown-item">我的帳號</a>
-                        <a href="events_for_user.html" class="dropdown-item">我的活動管理</a>
-                        <a href="orders.html" class="dropdown-item">我的訂單管理</a>
-                        <a href="#" class="dropdown-item">我的最愛</a>
+                        <a href="/lifespace/myAccount" class="dropdown-item">我的帳號</a>
+                        <a href="/lifespace/events_for_user" class="dropdown-item">我的活動管理</a>
+                        <a href="/lifespace/orders.html" class="dropdown-item">我的訂單管理</a>
+                        <a href="/lifespace/" class="dropdown-item">我的最愛</a>
                         <a href="#" class="dropdown-item">登出</a>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <!-- Template Javascript -->
-<script src="js/main.js"></script>
+<script src="/js/main.js"></script>
 <script>
     $(document).ready(function () {
 
@@ -270,7 +270,7 @@
                                 <div class="actions">
                                     ${orders.orderStatus == 1 ? `
                                         ${orders.eventDTO ? `
-                                            <a class="action-button message-button" href="group_message.html?eventId=${orders.eventDTO.eventId}">留言板</a>
+                                            <a class="action-button message-button" href="/lifespace/comments_frontend?eventId=${orders.eventDTO.eventId}">留言板</a>
                                         ` : `
                                             <button class="action-button group-button">揪團去</button>
                                         `}
