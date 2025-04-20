@@ -36,7 +36,7 @@
             padding: 40px;
             margin: 60px auto 20px auto;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             max-width: 900px;
         }
 
@@ -108,29 +108,29 @@
             max-width: 31%;
         }
 
-  
-  
-  /* 響應式調整 */
-  @media (max-width: 768px) {
-    .main-content {
-      margin-left: 0;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .multi-image-row {
-      flex-direction: column;
-    }
-    
-    .image-card {
-      flex: 0 0 100%;
-      max-width: 100%;
-      margin-bottom: 20px;
-    }
-  }
-</style>
+
+        /* 響應式調整 */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .multi-image-row {
+                flex-direction: column;
+            }
+
+            .image-card {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 
 </head>
+<body>
 <div class="row g-0">
     <button class="btn btn-primary d-md-none m-2" type="button" data-bs-toggle="collapse"
             data-bs-target="#sidebarMenu">
@@ -222,65 +222,64 @@
 </div>
 <!-- 側邊欄結束 -->
 
-    <!-- 主要內容區 -->
-    <div class="col-lg-10 main-content">  
-        <!-- 右上角 管理員資訊 -->
-        <div class="admin-info">  
-            <a href="/lifespace/homepage" onclick="logout()">登出</a>
-            <span id="adminWelcome" class="ms-2 fw-semibold">Hi，歡迎 <span style="color:#007bff">管理員mia</span> 👋</span>
-        </div>
+<!-- 主要內容區 -->
+<div class="col-lg-10 main-content">
+    <!-- 右上角 管理員資訊 -->
+    <div class="admin-info">
+        <a href="/lifespace/homepage" onclick="logout()">登出</a>
+        <span id="adminWelcome" class="ms-2 fw-semibold">Hi，歡迎 <span style="color:#007bff">管理員mia</span> 👋</span>
+    </div>
 
-        <!-- 歡迎橫幅 -->
-        <div class="welcome-banner">
-            <h1 class="welcome-title">歡迎回來</h1>
-            <h2 class="welcome-subtitle">LifeSpace 空間不止於形式，更是感受</h2>
-            <p class="welcome-description">
-                這裡是 LifeSpace 後台管理系統。透過左側選單，您可以快速訪問不同的管理功能。<br>祝您有個愉快的工作日！
-            </p>
-        </div>
+    <!-- 歡迎橫幅 -->
+    <div class="welcome-banner">
+        <h1 class="welcome-title">歡迎回來</h1>
+        <h2 class="welcome-subtitle">LifeSpace 空間不止於形式，更是感受</h2>
+        <p class="welcome-description">
+            這裡是 LifeSpace 後台管理系統。透過左側選單，您可以快速訪問不同的管理功能。<br>祝您有個愉快的工作日！
+        </p>
+    </div>
 
-        <!-- 底部透明輪播圖 -->
-        <div class="image-carousel-container">
-            <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- 第一組圖片 -->
-                    <div class="carousel-item active">
-                        <div class="multi-image-row">
-                            <div class="image-card">
-                                <div class="transparent-image-container">
-                                    <img src="/images/img.bootstrap/house1.jpg" class="d-block w-100" alt="空間1">
-                                </div>
+    <!-- 底部透明輪播圖 -->
+    <div class="image-carousel-container">
+        <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- 第一組圖片 -->
+                <div class="carousel-item active">
+                    <div class="multi-image-row">
+                        <div class="image-card">
+                            <div class="transparent-image-container">
+                                <img src="/images/img.bootstrap/house1.jpg" class="d-block w-100" alt="空間1">
                             </div>
-                            <div class="image-card">
-                                <div class="transparent-image-container">
-                                    <img src="/images/img.bootstrap/house2.jpg" class="d-block w-100" alt="空間2">
-                                </div>
+                        </div>
+                        <div class="image-card">
+                            <div class="transparent-image-container">
+                                <img src="/images/img.bootstrap/house2.jpg" class="d-block w-100" alt="空間2">
                             </div>
-                            <div class="image-card">
-                                <div class="transparent-image-container">
-                                    <img src="/images/img.bootstrap/house3.jpg" class="d-block w-100" alt="空間3">
-                                </div>
+                        </div>
+                        <div class="image-card">
+                            <div class="transparent-image-container">
+                                <img src="/images/img.bootstrap/house3.jpg" class="d-block w-100" alt="空間3">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- 第二組圖片 -->
-                    <div class="carousel-item">
-                        <div class="multi-image-row">
-                            <div class="image-card">
-                                <div class="transparent-image-container">
-                                    <img src="/images/img.bootstrap/house4.jpg" class="d-block w-100" alt="空間4">
-                                </div>
+                <!-- 第二組圖片 -->
+                <div class="carousel-item">
+                    <div class="multi-image-row">
+                        <div class="image-card">
+                            <div class="transparent-image-container">
+                                <img src="/images/img.bootstrap/house4.jpg" class="d-block w-100" alt="空間4">
                             </div>
-                            <div class="image-card">
-                                <div class="transparent-image-container">
-                                    <img src="/images/img.bootstrap/house5.jpg" class="d-block w-100" alt="空間5">
-                                </div>
+                        </div>
+                        <div class="image-card">
+                            <div class="transparent-image-container">
+                                <img src="/images/img.bootstrap/house5.jpg" class="d-block w-100" alt="空間5">
                             </div>
-                            <div class="image-card">
-                                <div class="transparent-image-container">
-                                    <img src="/images/img.bootstrap/house6.jpg" class="d-block w-100" alt="空間6">
-                                </div>
+                        </div>
+                        <div class="image-card">
+                            <div class="transparent-image-container">
+                                <img src="/images/img.bootstrap/house6.jpg" class="d-block w-100" alt="空間6">
                             </div>
                         </div>
                     </div>
@@ -288,65 +287,64 @@
             </div>
         </div>
     </div>
-    <!-- 主要內容區結束 -->
+</div>
+<!-- 主要內容區結束 -->
 </div>
 
 
-  <!-- jQuery -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-  <!-- Bootstrap JS -->
-  <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
 
 
-  <!-- Sidebar JS -->
-  <script src="/js/sidebar2.js"></script>
+<!-- Sidebar JS -->
+<script src="/js/sidebar2.js"></script>
 
-  <script>
-  
-  //-----------------顯示管理者的登入----------------------
-  document.addEventListener("DOMContentLoaded", function(){
-	  fetch("http://localhost:8080/admin/account",{
-		  method: "GET",
-		  credentials: "include"
-	  })
-	  .then(res =>{
-		  if (res.status === 401) {
-		      document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:red">未登入</span> 👋`;
-		      return;
-	  }
-		  return res.json();
-	  })
-	   .then(admin => {
-    if (!admin) return;
-    const name = admin.adminName || "管理員";
-    document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:#007bff">管理員${name}</span> 👋`;
-  })
-  .catch(err => {
-	    console.error("取得管理員資訊失敗：", err);
-	    document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:red">錯誤</span> 👋`;
-	  });
-  });
-  
-  //----------------登出-------------------------------------
-  function logout() {
-      fetch("/admin/logout", {
-          method: "POST",
-          credentials: "include"
-      })
-          .then(response => {
-              if (response.ok) {
-                  windows.location.href = "/lifespace/homepage"; //登出後回首頁
-              } else {
-                  alert("登出失敗");
-              }
-          })
-          .catch(error => {
-              console.error("登出錯誤:" + error);
-          });
-  }
-  
-  
+<script>
+
+    //-----------------顯示管理者的登入----------------------
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("http://localhost:8080/admin/account", {
+            method: "GET",
+            credentials: "include"
+        })
+            .then(res => {
+                if (res.status === 401) {
+                    document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:red">未登入</span> 👋`;
+                    return;
+                }
+                return res.json();
+            })
+            .then(admin => {
+                if (!admin) return;
+                const name = admin.adminName || "管理員";
+                document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:#007bff">管理員${name}</span> 👋`;
+            })
+            .catch(err => {
+                console.error("取得管理員資訊失敗：", err);
+                document.getElementById("adminWelcome").innerHTML = `Hi，歡迎 <span style="color:red">錯誤</span> 👋`;
+            });
+    });
+
+    //----------------登出-------------------------------------
+    function logout() {
+        fetch("/admin/logout", {
+            method: "POST",
+            credentials: "include"
+        })
+            .then(response => {
+                if (response.ok) {
+                    windows.location.href = "/lifespace/homepage"; //登出後回首頁
+                } else {
+                    alert("登出失敗");
+                }
+            })
+            .catch(error => {
+                console.error("登出錯誤:" + error);
+            });
+    }
 
 
     // 初始化輪播
@@ -355,7 +353,7 @@
         wrap: true,      // 循環播放
         touch: true      // 支援觸控滑動
     });
-    
-</script>  
+
+</script>
 </body>
 </html>
