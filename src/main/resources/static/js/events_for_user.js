@@ -97,7 +97,7 @@ $(document).ready(function () {
 					   
 					   if (xhr.status === 401) {
 					   		alert("請先登入");
-					   		location.href = "/login.html";
+					   		location.href = "/login";
 					   	}
 
                    }
@@ -165,7 +165,7 @@ $(document).ready(function () {
 			   
 			   if (event.eventStatus === 'SCHEDULED' && event.participateStatus === 'ATTENT') {
 			       messageButton = `
-			           <a href="comments_frontend.html?eventId=${event.eventId}" class="action-button message-button">
+			           <a href="/lifespace/comments_frontend?eventId=${event.eventId}" class="action-button message-button">
 			               <i class="fas fa-comments"></i> 活動留言板
 			           </a>
 			       `;
@@ -184,7 +184,7 @@ $(document).ready(function () {
 			   const cardHtml = `
 			       <div class="event-container" data-event-id="${event.eventId}">
 			           <div class="event-img">
-			               <img src="${imageUrl}" alt="${event.eventName}">
+			               <img src="${imageUrl}" alt="${event.eventName}" onerror="this.onerror=null; this.src='/images/default_for_event_and_space.jpg';">
 			           </div>
 			           <div class="event-info">
 			               <span class="event-status ${statusClass}">${statusText}</span>
@@ -219,7 +219,7 @@ $(document).ready(function () {
 		       const eventId = $(this).data('event-id');
 		       if (eventId) {
 		           // 導向活動詳情頁面
-		           window.location.href = `/event_detail.html?eventId=${eventId}`;
+		           window.location.href = `/lifespace/event_detail?eventId=${eventId}`;
 		       }
 		   });
 		   
@@ -473,13 +473,13 @@ $(document).ready(function () {
 		   
 		   //按下瀏覽可參加的活動後導向活動瀏覽頁面
 		   		   $('.btn.btn-outline-primary.mt-3').click(function() {
-							const events_url = '/event_overview.html';
+							const events_url = '/lifespace/event_overview';
 		   		       		window.location.href = events_url;
 		   		       });
 					   
 			//按下建立新活動後導向活動瀏覽頁面
 					$('.btn.btn-primary.mt-3').click(function() {
-					   		const events_url = '/event_overview.html';
+					   		const events_url = '/lifespace/event_overview';
 					   		window.location.href = events_url;
 					  });
 		  
