@@ -13,6 +13,11 @@ public class BackendPageController {
     public String toBackEndOrders(){
         return "/back-end/orders";
     }
+    
+    @GetMapping("/admin")
+    public String toAdmin(){
+        return "/back-end/admin";
+    }
 
     @GetMapping("/add_branch")
     public String toAddBranch(){
@@ -22,10 +27,7 @@ public class BackendPageController {
     public String toAddSpace(){
         return "/back-end/addSpace";
     }
-    @GetMapping("/")
-    public String toAdmin(){
-        return "/back-end/admin";
-    }
+
     @GetMapping("/add")
     public String toAdminAdd(){
         return "/back-end/adminAdd";
