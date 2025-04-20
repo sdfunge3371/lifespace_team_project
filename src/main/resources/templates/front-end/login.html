@@ -25,41 +25,51 @@
 
 <body>
 
-     <!-- Header Navbar Start -->
-        <div class="container-fluid nav-bar bg-transparent">
-            <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
-                <a href="homepage.html" class="navbar-brand d-flex align-items-center text-center">
-                    <div class="icon p-2 me-2">
-                        <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
-                    </div>
-                    <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
-                </a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <div class="navbar-nav ms-auto">
-                        <a href="spaceoverview.html" class="nav-item nav-link">瀏覽空間</a>
-                        <a href="event_overview.html" class="nav-item nav-link">參與活動</a>
-                        <a href="../../static/frontend_news.html" class="nav-item nav-link">最新消息</a>
-                        <a href="../../static/frontend_faq.html" class="nav-item nav-link">常見問題</a>
-                    </div>
-                    <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <i
-                                class="bi bi-person-circle">會員資料</i></a>
-                        <div class="dropdown-menu rounded-0 m-0">
-                            <a href="myAccount.html" class="dropdown-item">我的帳號</a>
-                            <a href="events_for_user.html" class="dropdown-item">我的活動管理</a>
-                            <a href="frontend_orders.html" class="dropdown-item">我的訂單管理</a>
-                            <a href="#" class="dropdown-item">我的最愛</a>
-                            <a href="#" class="dropdown-item">登出</a>
-                        </div>
+      <!-- Header Navbar Start -->
+    <div class="container-fluid nav-bar bg-transparent">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
+            <a href="/lifespace/homepage" class="navbar-brand d-flex align-items-center text-center">
+                <div class="icon p-2 me-2">
+                    <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon"
+                         style="width: 30px; height: 30px;">
+                </div>
+                <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon"
+                     style="width: 200px; height: 60px;">
+            </a>
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <a href="/lifespace/spaceoverview" class="nav-item nav-link">瀏覽空間</a>
+                    <a href="/lifespace/event_overview" class="nav-item nav-link">參與活動</a>
+                    <a href="/lifespace/frontend_news" class="nav-item nav-link">最新消息</a>
+                    <a href="/lifespace/frontend_faq" class="nav-item nav-link">常見問題</a>
+                </div>
+                <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
+                <div class="nav-item dropdown">
+
+                    <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                        <img id="navAvatar" src="/images/default_avatar.jpg" alt="頭貼" class="rounded-circle"
+                             width="35" height="35">
+                        <span id="navMemberName" class="ms-2">會員資料</span>
+                    </a>
+
+
+                    <div class="dropdown-menu rounded-0 m-0">
+                        <a href="/lifespace/myAccount" class="dropdown-item">我的帳號</a>
+                        <a href="/lifespace/events_for_user" class="dropdown-item">我的活動管理</a>
+                        <a href="/lifespace/orders" class="dropdown-item">我的訂單管理</a>
+                        <a href="/lifespace/favorite_space" class="dropdown-item">我的最愛</a>
+                        <a href="/lifespace/homepage" class="dropdown-item" onclick="logout()">登出</a>
+                        <a href="/lifespace/login" class="dropdown-item">登入</a>
                     </div>
                 </div>
-            </nav>
-        </div>
-        <!-- Header Navbar End -->
+            </div>
+        </nav>
+    </div>
+    <!-- Header Navbar End -->
+
 
 
     <main role="main">
@@ -71,12 +81,12 @@
                 <button id="loginBtn">送出</button>
             </div>
             <div class="others">
-                <a href="password.html">忘記密碼</a>
-                <a href="../register.html">註冊</a>
+                <a href="/lifespace/password">忘記密碼</a>
+                <a href="/lifespace/register">註冊</a>
                 <a href="/oauth2/authorization/google">Google 登入</a>
             </div>
             <div>
-                 <a href="./homepage.html">回首頁</a>
+                 <a href="/lifespace/homepage">回首頁</a>
             </div>
         </div>
     </main>
@@ -86,60 +96,84 @@
 
 
      <!-- Footer Start -->
-        <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-            <div class="container py-5">
-                <div class="row g-5 align-items-center">
-                    <div class="col-lg-4 col-md-4">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon p-2 me-2">
-                                <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
-                            </div>
-                            <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+    <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-4 col-md-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon p-2 me-2">
+                            <img class="img-fluid" src="/images/img.bootstrap/LifeSpace.png" alt="Icon"
+                                 style="width: 30px; height: 30px;">
                         </div>
-                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
+                        <img class="img-fluid" src="/images/img.bootstrap/LifeSpace2.png" alt="Icon"
+                             style="width: 200px; height: 60px;">
                     </div>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
+                    <a href="/admin/loginAdmin" class="nav-item nav-link">後台登入</a>
+                </div>
 
-                    <div class="col-lg-8 col-md-8 ">
-                        <div class="slogan-container p-4 rounded" style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
-                            <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">空間與活動的完美結合</h4>
-                            <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
-                        </div>
+                <div class="col-lg-8 col-md-8 ">
+                    <div class="slogan-container p-4 rounded"
+                         style="background-color: rgba(255, 255, 255, 0.85); border-left: 4px solid #6c757d;">
+                        <h4 class="text-primary mb-3" style="font-style: italic; font-weight: 500;">
+                            空間與活動的完美結合</h4>
+                        <p class="fs-5 text-dark">選擇你的專屬場域，打造難忘回憶。</p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Footer End -->
+    </div>
+    <!-- Footer End -->
 
-    <script>
-        document.querySelector("#loginBtn").addEventListener("click", function () {
-            const email = document.querySelector(".account").value;
-            const password = document.querySelector(".password").value;
+   <script>
 
-            fetch("/member/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email, password }),
-                credentials: "include"  //一定要加這句才會把session放在瀏覽器的coockie內
+    //-------------------header上可顯示會員的頭貼跟名字--------------
+    document.addEventListener("DOMContentLoaded", function () {
+        const avatarImg = document.getElementById("navAvatar");
+        const nameSpan = document.getElementById("navMemberName");
+
+
+        fetch("/member/account", {
+            method: "GET",
+            credentials: "include"
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("尚未登入");
+                return res.json();
             })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error("登入失敗！");
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    alert("登入成功，歡迎 " + data.memberName);
+            .then(member => {
+                const avatarImg = document.getElementById("navAvatar");
+                if (member && member.memberId) {
+                    // 會員登入成功，替換成會員頭貼
+                    avatarImg.src = `/member/image/${member.memberId}`;
+                    nameSpan.innerText = `${member.memberName}`;
+                }
+            })
+            .catch(err => {
+                avatarImg.src = `/images/default.jpg`;
+                nameSpan.innerText = "會員資料";
+            });
+    });
 
-                    window.location.href = "/lifespace/homepage";
+    //----------------登出-------------------------------------
+    function logout() {
+        fetch("/member/logout", {
+            method: "POST",
+            credentials: "include"
+        })
+            .then(response => {
+                if (response.ok) {
+                    windows.location.href = "/lifespace/homepage"; //登出後回首頁
+                } else {
+                    alert("登出失敗");
+                }
+            })
+            .catch(error => {
+                console.error("登出錯誤:" + error);
+            });
+    }
 
-                })
-                .catch(err => {
-                    alert("登入失敗，請檢查帳號或密碼");
-                });
-        });
-    </script>
+</script>
 
 
 

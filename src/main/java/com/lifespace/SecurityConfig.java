@@ -48,7 +48,7 @@ public class SecurityConfig  {
          .requestMatchers(                 
         		 "/lifespace/myAccount",
                  "/lifespace/events_for_user",
-                 "/lifespace/frontend_orders",
+                 "/lifespace/orders",
                  "/lifespace/favorite_space"
           ).authenticated()   
          
@@ -65,11 +65,7 @@ public class SecurityConfig  {
                  "/back-end/backend_index"
           ).authenticated()  
          
-         
-         
-         
-         
-         
+     
          .anyRequest().permitAll();  // 其他頁面開放進入
          
 
