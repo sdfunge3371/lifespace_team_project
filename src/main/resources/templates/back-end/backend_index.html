@@ -330,13 +330,13 @@
   
   //----------------登出-------------------------------------
   function logout() {
-      fetch("http://localhost:8080/admin/logout", {
+      fetch("/admin/logout", {
           method: "POST",
           credentials: "include"
       })
           .then(response => {
               if (response.ok) {
-                  windows.location.href = "/loginAdmin.html"; //登出後回首頁
+                  windows.location.href = "/lifespace/homepage"; //登出後回首頁
               } else {
                   alert("登出失敗");
               }
