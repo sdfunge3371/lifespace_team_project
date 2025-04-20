@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/lifespace")
-public class PageController {
+public class FrontendPageController {
 
     //前台
     @GetMapping("/orders")
@@ -20,19 +20,20 @@ public class PageController {
     }
 
     @GetMapping("/login")
-    public String toAdd_branch(){
+    public String toLogin(){
         return "/front-end/login";
     }
-//
-//    @GetMapping("/add_remtal")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
+
+
+    @GetMapping("/faq")
+    public String toFaq(){
+        return "/front-end/frontend_faq";
+    }
+
+    @GetMapping("/news")
+    public String toNews(){
+        return "/front-end/frontend_news";
+    }
 //
 //    @GetMapping("/")
 //    public String toHomePage(){
