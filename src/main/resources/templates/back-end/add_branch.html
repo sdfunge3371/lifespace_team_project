@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>編輯分點</title>
+    <title>新增分點</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="/css/sidebar.css" rel="stylesheet">
     <link href="/css/branch.css" rel="stylesheet">
     <link href="/css/branch_form.css" rel="stylesheet">
-    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <!-- 側邊欄 -->
@@ -64,7 +63,7 @@
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="productSubmenu">
-                    <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
+                    <li><a href="/templates/back-end/listSpaces.html" class="submenu-item">空間管理</a></li>
                     <li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
                     <li><a href="/branch.html" class="submenu-item">分點</a></li>
                 </ul>
@@ -79,7 +78,7 @@
                 <ul class="collapse submenu" id="commentSubmenu">
                     <li><a href="/commentsBackend.html" class="submenu-item">活動留言板</a></li>
                     <li><a href="/commentReportBackend.html" class="submenu-item">檢舉留言</a></li>
-                    <li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
+                    <li><a href="/templates/back-end/space_comment.html" class="submenu-item">空間評論</a></li>
                 </ul>
             </li>
 
@@ -103,13 +102,12 @@
         <div class="card">
             <!-- 標題 -->
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">編輯分點</h2>
+                <h2 class="mb-0">新增分點</h2>
             </div>
 
             <!-- 表單 -->
             <div class="card-body">
-                <form id="editBranchForm">
-                    <input type="hidden" id="branchId" name="branchId">
+                <form id="addBranchForm">
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="branchName" class="form-label">分點名稱</label>
@@ -153,8 +151,8 @@
                         <div class="col-md-6">
                             <label class="form-label">公共設備</label>
                             <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-primary btn-sm" id="editPublicEquipBtn">
-                                    <i class="fas fa-plus-circle me-1"></i>編輯公共設備
+                                <button type="button" class="btn btn-primary btn-sm" id="addPublicEquipBtn">
+                                    <i class="fas fa-plus-circle me-1"></i>新增公共設備
                                 </button>
                                 <div class="public-equipment-container">
                                     <!-- 這裡將動態添加公共設備標籤 -->
@@ -173,12 +171,12 @@
         </div>
     </div>
 
-    <!-- 編輯公共設備彈窗 -->
+    <!-- 新增公共設備彈窗 -->
     <div class="modal fade" id="publicEquipModal" tabindex="-1" aria-labelledby="publicEquipModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="publicEquipModalLabel">編輯公共設備</h5>
+                    <h5 class="modal-title" id="publicEquipModalLabel">新增公共設備</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -190,22 +188,22 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-                    <button type="button" class="btn btn-primary" id="editEquipConfirmBtn">完成</button>
+                    <button type="button" class="btn btn-primary" id="addEquipConfirmBtn">完成</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- jQuery -->
-
+    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
 
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
 
     <!-- Sidebar JS -->
     <script src="/js/sidebar2.js"></script>
-
-    <!-- Edit Branch JS -->
-    <script src="/js/edit_branch.js"></script>
+    
+    <!-- Add Branch JS -->
+    <script src="/js/add_branch.js"></script>
 </body>
 </html>

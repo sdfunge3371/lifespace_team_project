@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>adminadd</title>
+    <title>新增會員</title>
     <style>
         /* 置中整個畫面 */
         body {
@@ -27,7 +27,6 @@
             background: white;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            padding-bottom: 30px;
         }
         h2 {
             text-align: center;
@@ -89,23 +88,26 @@
             <table id="table-1">
                 <tr>
                     <td>
-                        <h2>管理員資料新增</h2>
+                        <h2>會員資料新增</h2>
                         <h4>
-                            <a href="../admin.html">回首頁</a>
+                            <a href="member.html">回首頁</a>
                         </h4>
                     </td>
                 </tr>
             </table>
 
-            <div>
-                <label>管理員姓名:</label><br>
-                <input type="text" id="adminName"><br>
+         <form id="memberForm" onsubmit="event.preventDefault(); submitForm();" enctype="multipart/form-data">
+                <label>會員姓名:</label><br>
+                <input type="text" id="memberName"><br>
                 <span id="errName" class="err-msg"></span><br>
 
                 <label>郵件:</label><br>
                 <input type="email" id="email"><br>
                 <span id="errEmail" class="err-msg"></span><br>
-
+              
+                <label>電話:</label><br>
+                <input type="text" id="phone"><br>
+                <span id="errPhone" class="err-msg"></span><br>
               
                 <label>帳號狀態:</label>
                 <select id="accountStatus">
@@ -118,49 +120,23 @@
                 <input type="password" id="password"><br>
                 <span id="errPwd" class="err-msg"></span><br>
               
+                <label>生日:</label><br>
+                <input type="date" id="birthday"><br>
+                <span id="errBirthday" class="err-msg"></span><br>
+
+                <label>會員大頭貼:</label><br>
+                <input type="file" id="memberImage" accept="image/*" onchange="previewImage(event)">
+                <button type="button" id="cancelBtn" onclick="cancelImage()" style="display: none;">取消照片</button><br>
+                <img id="preview" style="display: none; width: 100px; height: 100px;" /><br>
+              
                 <button type="button" onclick="submitForm()">送出新增</button>
+            </form>
 
-
-            </div>
 
         </div>
 
 
-        <script>
-        function submitForm() {
-            const formData = new FormData();
-            formData.append("adminName", document.getElementById("adminName").value);
-            formData.append("email", document.getElementById("email").value);
-            formData.append("accountStatus", document.getElementById("accountStatus").value);
-            formData.append("password", document.getElementById("password").value);
-        	
-        	//傳送資料到後端
-        	//因為這裡是回傳文字而已，所以是response.text();，其他小地方也要改
-            fetch("/admin", {
-              method: "POST",
-              body: formData
-            })
-            .then(response => {
-              if (!response.ok) {
-        		return response.text().then(err => { throw new Error(err); });
-        	  }
-              return response.text();
-            })
-            .then(msg => {
-              alert(msg);
-              // 可選擇跳回主頁或清空表單
-              window.location.href = "./admin.html";
-            })
-            .catch(err => {
-              alert("錯誤：" + err.message);
-            });
-          }
-
-        
-        
-        
-        
-        </script>
+        <script src="../js/memberadd.js"></script>
 
     </body>
 

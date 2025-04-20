@@ -14,17 +14,16 @@ const orderId = params.get("orderId");
                 if (typeof window["lineIt"] !== "undefined" && lineIt.loadButton) {
                     lineIt.loadButton();
                 }
+
+                // 設定 "揪團去" 按鈕的連結，帶入 orderId
+                const eventButton = document.querySelector(".btn-primary");
+                if (eventButton) {
+                    eventButton.onclick = function () {
+                        location.href = `/lifespace/event_create?orderId=${orderId}`;
+                    };
+                }
+
             } else {
-
-				// 設定 "揪團去" 按鈕的連結，帶入 orderId
-				   const eventButton = document.querySelector(".btn-primary");
-				   if (eventButton) {
-				       eventButton.onclick = function () {
-				           location.href = `/event_create.html?orderId=${orderId}`;
-				       };
-				   }
-
-				 } else {
                 // 顯示付款失敗畫面
                 window.location.href = "/payment_fail.html";
             }

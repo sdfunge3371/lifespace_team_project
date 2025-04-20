@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <title>編輯活動</title>
+    <!-- <meta content="width=device-width, initial-scale=1.0" name="viewport"> -->
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>活動總覽</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
           rel="stylesheet">
-
+        
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css">
@@ -36,33 +40,32 @@
     <!-- Template Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
     
-    <!-- 瀏覽活動 -->
-   	<link rel="stylesheet" href="/css/event_overview.css">
+    <!-- 活動詳情 -->
+   	<!--<link rel="stylesheet" href="css/event_overview.css"> -->
 
-
+   	
 </head>
 
 <body>
-     
-     <div class="container-xxl bg-white p-0">
-
- <!-- Spinner Start -->
+    <div class="container-xxl bg-white p-0">
+        <!-- Spinner Start -->
         <div id="spinner"
-             class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
         <!-- Spinner End -->
-        
-        <!-- Header Navbar Start -->
+
+
+       <!-- Header Navbar Start -->
         <div class="container-fluid nav-bar bg-transparent">
             <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
                 <a href="/lifespace/homepage" class="navbar-brand d-flex align-items-center text-center">
                     <div class="icon p-2 me-2">
-                        <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                        <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
                     </div>
-                    <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                    <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
                 </a>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -92,84 +95,101 @@
         </div>
         <!-- Header Navbar End -->
 
-    <div class="container my-4">
-        <h2 class="section-title">活動搜尋</h2>
-        <div class="card p-4">
-            <div class="row g-3">
-                <div class="col-md-6 col-lg-3">
-                    <label for="search" class="form-label">搜尋</label>
-                    <input type="text" id="search" class="form-control" placeholder="關鍵字">
+
+        <!-- 活動建立區塊 -->
+        <form id="eventForm">
+            <div class="container my-4">
+                <h3 class="section-title">建立活動</h3>
+                <div class="card p-4">
+
+                    <!-- 活動類型 & 人數 -->
+                    <div class="row g-3 mb-3">
+                        <div class="col">
+                            <label for="eventCategory">活動類型:</label>
+                            <select class="form-select" id="eventCategory">
+                              <!-- fetch類別API -->
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="maximumOfParticipants">人數上限:</label>
+                            <input type="number" class="form-control mb-3" id="maximumOfParticipants"
+                                name="maximumOfParticipants" min="2" required>
+                        </div>
+                        <div class="col">
+                        	<label for="orderId">訂單編號:</label>
+							<input type="text" id="orderId" class="form-control mb-3" name="orderId" readonly>
+ 						</div>
+                    </div>
+
+                    <!-- 時間選擇 -->
+                    <!-- <div class="row g-3 mb-3">
+                <div class="col">
+                    <input type="date" class="form-control">
                 </div>
-                <div class="col-md-6 col-lg-2">
-                    <label for="start-time" class="form-label">開始時間</label>
-                    <input type="datetime-local" id="eventStartTime" class="form-control mb-3" name="eventStartTime">
-                	<small class="text-muted">此時間之後開始的活動</small>
+                <div class="col">
+                    <input type="time" class="form-control">
                 </div>
-                <div class="col-md-6 col-lg-2">
-                    <label for="end-time" class="form-label">結束時間</label>
-                    <input type="datetime-local" id="eventEndTime" class="form-control mb-3" name="eventEndTime">
-                    <small class="text-muted">此時間之前結束的活動</small>
+                <div class="col">
+                    <input type="time" class="form-control">
                 </div>
-                <div class="col-md-6 col-lg-2">
-                    <label for="location" class="form-label">地點</label>
-                    <select id="location" class="form-select">
-                       <!-- <option value="">地點</option>
-                        <option value="taipei">台北</option>
-                        <option value="taichung">台中</option>  -->
-                    </select>
+            </div> -->
+
+                    <!-- 標題 & 說明 -->
+                    <label class="form-label">活動名稱 (必填，最多30字)</label>
+                    <input type="text" id="eventName" class="form-control mb-3" placeholder="輸入活動名稱">
+
+                    <label for="eventStartTime">活動開始時間:</label>
+                    <div id="orderTimeHint" class="text-info mb-2" style="font-weight: 500;"></div>
+                    <input type="datetime-local" id="eventStartTime" class="form-control mb-3" name="eventStartTime"
+                        required>
+
+                    <label for="eventEndTime">活動結束時間:</label>
+                    <div id="orderTimeHint" class="text-info mb-2" style="font-weight: 500;"></div>
+                    <input type="datetime-local" id="eventEndTime" class="form-control mb-3" name="eventEndTime"
+                        required>
+
+                    <label class="form-label">注意事項 (0/100)</label>
+                    <input type="text" id="eventBriefing" class="form-control mb-3" placeholder="輸入注意事項">
+
+                    <label class="form-label">主辦者的話 (0/100)</label>
+                    <input type="text" id="hostSpeaking" class="form-control mb-3" placeholder="輸入主辦者的話">
+
+                    <label class="form-label">活動說明 (0/250)</label>
+                    <textarea id="remarks" class="form-control mb-3" rows="3" placeholder="輸入活動說明"></textarea>
+
+                    <!-- 上傳圖片 -->
+                    <label for="photos">活動照片 (可多選，最多3張):</label>
+                    <input type="file" id="photos" name="photos" multiple accept=".webp,image/*">
+                    <!-- 添加計數器顯示 -->
+                    <div id="photo-counter">已選擇 0/3 張圖片</div>
+
+                    <!-- 添加預覽區域 -->
+                    <div id="photo-preview"></div>
+
+                    <!-- 提交按鈕 -->
+                    <button type="button" class="btn btn-primary w-100" onclick="addEvent()">建立揪團活動</button>
+                    <!-- <a href="event-success.html" class="btn btn-primary w-100">建立揪團活動</a> -->
                 </div>
-                <div class="col-md-6 col-lg-2">
-    <label for="category" class="form-label">活動類別</label>
-    <select id="category" class="form-select">
-    	<!-- fetch 活動類別API  -->
-    </select>
-</div>
-                <div class="col-md-12 mt-3 d-flex justify-content-center">
-    				<div class="btn-group" style="width: 100%; max-width: 600px;">
-        				<button class="btn btn-primary w-50" id="search-btn">尋找</button>
-        				<button class="btn btn-secondary w-50" id="clear-btn">清除條件</button>
-    				</div>
-				</div>
             </div>
-        </div>
-    </div>
+        </form>
+
+        <!-- Content End -->
 
 
-    <!--  標籤輪播 -->
-	<div class="tag-wrapper">
-    	<button class="tag-btn left-tag-btn">&lt;</button>
-    	<div class="tag-container">
-        <!-- fetch類別API -->
-    	</div>
-    	<button class="tag-btn right-tag-btn">&gt;</button>
-	</div>
 
 
-    <!-- 熱門推薦 -->
-    <div class="container my-5">
-    <div class="slide-outer">
-        <h2>熱門推薦</h2>
-        <div class="events-container" id="events-container">
-            <!-- 活動卡片 -->
-        </div>
-        <!-- 分頁控制 -->
-        <div class="pagination-container" id="pagination-container">
-            <!-- 分頁按鈕 -->
-        </div>
-    </div>
-</div>
 
 
-     <!-- Footer Start -->
+        <!-- Footer Start -->
         <div class="container-fluid bg-light text-black-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
             <div class="container py-5">
                 <div class="row g-5 align-items-center">
                     <div class="col-lg-4 col-md-4">
                         <div class="d-flex align-items-center mb-4">
                             <div class="icon p-2 me-2">
-                                <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
+                                <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace.png" alt="Icon" style="width: 30px; height: 30px;">
                             </div>
-                            <img class="img-fluid" src="images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
+                            <img class="img-fluid" src="../../static/images/img.bootstrap/LifeSpace2.png" alt="Icon" style="width: 200px; height: 60px;">
                         </div>
                         <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
                     </div>
@@ -184,26 +204,28 @@
             </div>
         </div>
         <!-- Footer End -->
-        
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
-    <!-- <script src="./js/event_home.js"></script> -->
-
-
+    <!-- Template Javascript -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
  	<script src="/js/wow.min.js"></script>
     <script src="/js/easing.min.js"></script>
     <script src="/js/waypoints.min.js"></script>
     <script src="/js/owl.carousel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nouislider@15.6.1/dist/nouislider.min.js"></script>
-    <script src="/js/event_overview.js"></script>
+    
+    <!--<script src="js/event_overview.js"></script> -->
     
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
+    <script src="/js/event_create.js"></script>
     
-</body>
 
+</body>
 
 </html>

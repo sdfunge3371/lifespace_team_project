@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>分點管理</title>
+    <title>編輯租借品項</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="/css/sidebar.css" rel="stylesheet">
-    <link href="/css/branch.css" rel="stylesheet">
-    <link href="/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="/css/rental_item.css" rel="stylesheet">
 </head>
 <body>
     <!-- 側邊欄 -->
@@ -63,7 +62,7 @@
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="productSubmenu">
-                    <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
+                    <li><a href="/templates/back-end/listSpaces.html" class="submenu-item">空間管理</a></li>
                     <li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
                     <li><a href="/branch.html" class="submenu-item">分點</a></li>
                 </ul>
@@ -78,19 +77,18 @@
                 <ul class="collapse submenu" id="commentSubmenu">
                     <li><a href="/commentsBackend.html" class="submenu-item">活動留言板</a></li>
                     <li><a href="/commentReportBackend.html" class="submenu-item">檢舉留言</a></li>
-                    <li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
+                    <li><a href="/templates/back-end/space_comment.html" class="submenu-item">空間評論</a></li>
                 </ul>
             </li>
 
             <!-- 常見問題管理 -->
             <li class="nav-item">
                 <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
-                    <i class="fas fa-headset"></i> 客服管理
+                    <i class="fas fa-headset"></i> 常見問題管理
                     <i class="fas fa-chevron-down ms-auto"></i>
                 </a>
                 <ul class="collapse submenu" id="faqSubmenu">
                     <li><a href="/backend_faq.html" class="submenu-item">常見問題</a></li>
-                    <li><a href="" class="submenu-item">聊天室管理</a></li>
                 </ul>
             </li>
         </ul>
@@ -103,72 +101,63 @@
         <div class="card">
             <!-- 標題 -->
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">分點管理</h2>
+                <h2 class="mb-0">編輯租借品項</h2>
             </div>
 
-            <!-- 表格 -->
+            <!-- 表單 -->
             <div class="card-body">
-                <!-- 搜尋區域 -->
-                <div class="search-area mb-4">
-                    <div class="row">
+                <form id="editRentalItemForm">
+                    <input type="hidden" id="rentalItemId" name="rentalItemId">
+                    <input type="hidden" id="originalTotalQuantity" name="originalTotalQuantity">
+                    <input type="hidden" id="originalAvailableQuantity" name="originalAvailableQuantity">
+                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="searchTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="selectedSearchType">依分點編號搜尋</span>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="searchTypeDropdown">
-                                    <li><a class="dropdown-item search-type" href="#" data-type="branchId">依分點編號搜尋</a></li>
-                                    <li><a class="dropdown-item search-type" href="#" data-type="branchName">依分點名稱搜尋</a></li>
-                                </ul>
-                            </div>
+                            <label for="rentalItemName" class="form-label">租借品項名稱</label>
+                            <input type="text" class="form-control" id="rentalItemName" name="rentalItemName" maxlength="10" required>
+                            <small class="text-muted">最多10個字</small>
                         </div>
+                    </div>
+                    <div class="row mb-3">
                         <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="searchInput" placeholder="請輸入搜尋內容">
-                                <button class="btn btn-primary" id="searchBtn">搜尋</button>
+                            <label for="rentalItemPrice" class="form-label">租借品項價格</label>
+                            <input type="number" class="form-control" id="rentalItemPrice" name="rentalItemPrice" min="0" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="totalQuantity" class="form-label">商品總數</label>
+                            <input type="number" class="form-control" id="totalQuantity" name="totalQuantity" min="0" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="branchId" class="form-label">分點編號</label>
+                            <select class="form-select" id="branchId" name="branchId" required>
+                                <option value="" selected disabled>請選擇分點</option>
+                                <!-- 動態加載分點選項 -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label d-block">租借品項狀態</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rentalItemStatus" id="status0" value="0">
+                                <label class="form-check-label" for="status0">下架</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rentalItemStatus" id="status1" value="1">
+                                <label class="form-check-label" for="status1">上架</label>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- 篩選區域 -->
-                <div class="filter-area d-flex mb-4">
-                    <button class="btn btn-outline-secondary me-2" id="allBranchesBtn">所有分點</button>
-                    <button class="btn btn-outline-secondary me-2" id="activeBranchesBtn">上架分點</button>
-                    <button class="btn btn-outline-secondary" id="inactiveBranchesBtn">下架分點</button>
-                    
-                    <button class="btn btn-success ms-auto" id="addBranchBtn">新增分點</button>
-                </div>
-
-                <!-- 表格內容 -->
-                <div class="table-responsive">
-                    <table id="branchTable" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>分點編號</th>
-                                <th>分點名稱</th>
-                                <th>分點地址</th>
-                                <th>地址緯度</th>
-                                <th>地址經度</th>
-                                <th>分點狀態</th>
-                                <th>建檔時間</th>
-                                <th>公共設備名稱</th>
-                                <th>操作</th>
-                                <th>上下架</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 動態生成表格內容 -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- 分頁區域 -->
-                <div class="pagination-area d-flex justify-content-center align-items-center mt-4">
-                    <button class="btn btn-outline-secondary me-2" id="prevPageBtn">上一頁</button>
-                    <span id="currentPage" class="mx-2">1</span>
-                    <button class="btn btn-outline-secondary ms-2" id="nextPageBtn">下一頁</button>
-                </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 d-flex gap-2">
+                            <a href="/lifespace/rental_item" class="btn btn-secondary">取消</a>
+                            <button type="submit" class="btn btn-primary">完成</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -179,14 +168,10 @@
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
 
-    <!-- DataTables -->
-    <script src="/vendors/dataTables/dataTables.min.js"></script>
-    <script src="/vendors/dataTables/dataTables.bootstrap5.min.js"></script>
-
     <!-- Sidebar JS -->
     <script src="/js/sidebar2.js"></script>
 
-    <!-- Branch JS -->
-    <script src="/js/branch.js"></script>
+    <!-- Edit Rental Item JS -->
+    <script src="/js/edit_rental_item.js"></script>
 </body>
 </html>
