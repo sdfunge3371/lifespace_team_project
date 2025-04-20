@@ -1,11 +1,12 @@
 // ======== Configuration ========
-// 絕對路徑 (fetch)
-const APP_CONTEXT_PATH = "http://localhost:8080";
-const ADD_SPACE_URL = `${APP_CONTEXT_PATH}/spaces`;
-const SOFT_DELETE_SPACE_USAGES_URL_BASE = `${APP_CONTEXT_PATH}/space-usages/id`; // /space-usages/id/{usageId}/soft-delete
 
-// 相對路徑 (async)
-const GET_ALL_BRANCHES_URL = "branch/getAll";
+// const APP_CONTEXT_PATH = "http://localhost:8080";
+// const ADD_SPACE_URL = `${APP_CONTEXT_PATH}/spaces`;
+// const SOFT_DELETE_SPACE_USAGES_URL_BASE = `${APP_CONTEXT_PATH}/space-usages/id`;
+
+const ADD_SPACE_URL = `/spaces`;
+const SOFT_DELETE_SPACE_USAGES_URL_BASE = `/space-usages/id`;
+const GET_ALL_BRANCHES_URL = "/branch/getAll";
 const GET_ALL_SPACES_USAGES_URL = "/space-usages";
 
 const form = document.getElementById('spaceForm');
@@ -322,7 +323,8 @@ submitButton.addEventListener('click', function () {    // 點擊「完成」按
         })
         .then(data => {
             form.reset(); // 務必要清空清空表單
-            window.location.href = 'listSpaces.html';
+            // window.location.href = 'listSpaces.html';
+            window.location.href = '/listSpaces';
         })
         .catch(errorOrErrors => {
             console.error('提交時發生錯誤:', errorOrErrors);
@@ -580,7 +582,8 @@ document.addEventListener('DOMContentLoaded', function () {
         error: function (xhr) {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
-                window.location.href = "/loginAdmin.html";
+                // window.location.href = "/loginAdmin.html";
+                window.location.href = "/loginAdmin";
             } else {
                 console.error("無法取得會員資料", xhr);
             }

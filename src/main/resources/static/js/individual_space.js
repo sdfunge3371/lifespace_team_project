@@ -1279,7 +1279,8 @@ document.querySelector(".pay-button").addEventListener("click", () => {
             .catch(err => {
                 console.error(err.message);
                 alert("預訂前請先登入");
-                window.location.href = "/login.html";
+                // window.location.href = "/login.html";
+                window.location.href = "/login";
         });
 
     // showReservation();  // 啟動攔截器後，把這行刪掉
@@ -1556,7 +1557,8 @@ function sendOrder(memberId) {
             sessionStorage.setItem("currentOrderId", data.orderId);
 
             // 直接跳轉 loading 畫面
-            window.location.href = "/payment_loading.html";
+            // window.location.href = "/payment_loading.html";
+            window.location.href = "/payment_loading";
         //     alert("預訂成功");
         //     console.log("預定成功", data);
         //

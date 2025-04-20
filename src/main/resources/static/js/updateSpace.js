@@ -1,12 +1,17 @@
 // ======== Configuration ========
 // 絕對路徑 (fetch)
-const APP_CONTEXT_PATH = "http://localhost:8080";
-const UPDATE_SPACE_URL_BASE = `${APP_CONTEXT_PATH}/spaces`;
-const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 透過單一空間的資料，輸入進表單的每一個輸入欄中
-const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/branch/getAll`;
-const GET_ALL_SPACES_USAGES_URL = `${APP_CONTEXT_PATH}/space-usages`;
-const SOFT_DELETE_SPACE_USAGES_URL_BASE = `${APP_CONTEXT_PATH}/space-usages/id`;
+// const APP_CONTEXT_PATH = "http://localhost:8080";
+// const UPDATE_SPACE_URL_BASE = `${APP_CONTEXT_PATH}/spaces`;
+// const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 透過單一空間的資料，輸入進表單的每一個輸入欄中
+// const GET_ALL_BRANCHES_URL = `${APP_CONTEXT_PATH}/branch/getAll`;
+// const GET_ALL_SPACES_USAGES_URL = `${APP_CONTEXT_PATH}/space-usages`;
+// const SOFT_DELETE_SPACE_USAGES_URL_BASE = `${APP_CONTEXT_PATH}/space-usages/id`;
 
+const UPDATE_SPACE_URL_BASE = `/spaces`;
+const GET_SPACE_BY_ID_URL_BASE = `/spaces/id`;   // 透過單一空間的資料，輸入進表單的每一個輸入欄中
+const GET_ALL_BRANCHES_URL = `/branch/getAll`;
+const GET_ALL_SPACES_USAGES_URL = `/space-usages`;
+const SOFT_DELETE_SPACE_USAGES_URL_BASE = `/space-usages/id`;
 
 
 // ======== DOM 物件 ========
@@ -442,6 +447,7 @@ submitButton.addEventListener('click', function () {    // 點擊「完成」按
         .then(data => {
             form.reset(); // 務必要清空清空表單
             window.location.href = 'listSpaces.html';
+            window.location.href = '/listSpaces';
         })
         .catch(errorOrErrors => {
             console.error('提交時發生錯誤:', errorOrErrors);
@@ -717,7 +723,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         error: function (xhr) {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
-                window.location.href = "/loginAdmin.html";
+                // window.location.href = "/loginAdmin.html";
+                window.location.href = "/loginAdmin";
             } else {
                 console.error("無法取得會員資料", xhr);
             }

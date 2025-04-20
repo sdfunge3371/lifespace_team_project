@@ -159,7 +159,7 @@ public class OrdersService {
             aio.setItemName("空間租借費用");
             aio.setCustomField1(order.getOrderId()); // 傳 OR043
             aio.setClientBackURL("http://localhost:8080/payment_success.html?orderId=" + order.getOrderId());
-            aio.setReturnURL(" https://93f0-1-164-231-100.ngrok-free.app/orders/ecpay/return");
+            aio.setReturnURL("https://f376-118-150-46-194.ngrok-free.app/orders/ecpay/return");
 //            aio.setClientBackURL("http://localhost:8080/payment_success.html");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");

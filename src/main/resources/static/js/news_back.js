@@ -27,7 +27,7 @@ $.ajax({
 	error: function(xhr) {
 		if (xhr.status === 401) {
 			alert("尚未登入，請先登入");
-			window.location.href = "/loginAdmin.html";
+			window.location.href = "/lifespace/loginAdmin";
 		} else {
 			console.error("無法取得會員資料", xhr);
 		}
@@ -76,7 +76,7 @@ function reflashNews(newsList) {
         <td>${statusText}</td>
         <td>${imgHtml}</td>
         <td>
-          <a href="backend_updatenews.html?newsId=${news.newsId}" class="btn btn-primary btn-sm">修改</a>
+          <a href="/lifespace/backend_updatenews?newsId=${news.newsId}" class="btn btn-primary btn-sm">修改</a>
           <button onclick="confirmDeprecated('${news.newsId}')" class="btn btn-danger btn-sm">下架</button>
         </td>
       </tr>

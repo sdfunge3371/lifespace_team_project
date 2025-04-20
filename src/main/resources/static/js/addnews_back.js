@@ -46,7 +46,7 @@ $(document).ready(function() {
 		error: function(xhr) {
 			if (xhr.status === 401) {
 				alert("尚未登入，請先登入");
-				window.location.href = "/loginAdmin.html";
+				window.location.href = "/lifespace/loginAdmin";
 			} else {
 				console.error("無法取得會員資料", xhr);
 			}
@@ -130,7 +130,7 @@ $('#addNewsForm').on('submit', function(e) {
 	    contentType: false,
 	    success: function(res) {
 	        alert('新增成功'); // 彈出提示框
-	          window.location.href = "/backend_news.html";
+	          window.location.href = "/lifespace/backend_news";
 	    },
 	    error: function(xhr) {
 	        const errors = xhr.responseJSON;
@@ -152,6 +152,6 @@ $('#newsTitle, #newsContent, #newsCategoryId, #newsStartDate, #newsEndDate, #new
 
 // 取消回首頁
 $('#cancelBtn').on('click', function() {
-	window.location.href = '/backend_news.html';
+	window.location.href = '/lifespace/backend_news';
 });
 });
