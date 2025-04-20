@@ -37,7 +37,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         String referer = request.getHeader("Referer");
 
         if (referer != null && referer.contains("loginAdmin")) {
-            response.sendRedirect("/lifespace/backend_index");
+            response.sendRedirect("/admin/backend_index");
         } else {
             response.sendRedirect("/lifespace/homepage");
         }
