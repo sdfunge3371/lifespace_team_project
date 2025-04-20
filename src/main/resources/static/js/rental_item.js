@@ -16,7 +16,7 @@ $(document).ready(function() {
 	            error: function (xhr) {
 	                if (xhr.status === 401) {
 	                    alert("尚未登入，請先登入");
-	                    window.location.href = "/lifespace/loginAdmin";
+	                    window.location.href = "/admin/loginAdmin";
 	                } else {
 	                    console.error("無法取得會員資料", xhr);
 	                }
@@ -81,7 +81,7 @@ $(document).ready(function() {
 
     // 新增租借品項按鈕事件
     $('#addRentalItemBtn').on('click', function() {
-        window.location.href = '/lifespace/add_rental_item';
+        window.location.href = '/admin/add_rental_item';
     });
 
     // 上下頁切換
@@ -221,7 +221,7 @@ $(document).ready(function() {
         // 綁定編輯按鈕事件
         $('.edit-btn').on('click', function() {
             const rentalItemId = $(this).data('id');
-            window.location.href = `/lifespace/edit_rental_item?id=${rentalItemId}`;
+            window.location.href = `/admin/edit_rental_item?id=${rentalItemId}`;
         });
 
         // 綁定狀態切換按鈕事件

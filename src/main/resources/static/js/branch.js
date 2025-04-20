@@ -16,7 +16,7 @@ $(document).ready(function() {
 	            error: function (xhr) {
 	                if (xhr.status === 401) {
 	                    alert("尚未登入，請先登入");
-	                    window.location.href = "/lifespace/loginAdmin";
+	                    window.location.href = "/admin/loginAdmin";
 	                } else {
 	                    console.error("無法取得會員資料", xhr);
 	                }
@@ -81,7 +81,7 @@ $(document).ready(function() {
 
     // 新增分點按鈕事件
     $('#addBranchBtn').on('click', function() {
-        window.location.href = '/lifespace/add_branch';
+        window.location.href = '/admin/add_branch';
     });
 
     // 上下頁切換
@@ -231,7 +231,7 @@ $(document).ready(function() {
         // 綁定編輯按鈕事件
         $('.edit-btn').on('click', function() {
             const branchId = $(this).data('id');
-            window.location.href = `/lifespace/edit_branch?id=${branchId}`;
+            window.location.href = `/admin/edit_branch?id=${branchId}`;
         });
 
         // 綁定狀態切換按鈕事件
