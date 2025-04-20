@@ -1,9 +1,14 @@
 // === Configuration ===
-const APP_CONTEXT_PATH = "http://localhost:8080";
-const GET_ALL_SPACES_URL = `${APP_CONTEXT_PATH}/spaces`;   // 需照抄Controller中@XXXMapping的連結
-const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 後面加空間編號(S001, S002, etc.)
-const GET_SPACE_BY_NAME_URL_BASE = `${APP_CONTEXT_PATH}/spaces/name`;   // 後面加空間名稱參數
-const TOGGLE_SPACE_STATUS_URL = `${APP_CONTEXT_PATH}/spaces/status`;  // e.g. /spaces/status/S001)
+// const APP_CONTEXT_PATH = "http://localhost:8080";
+// const GET_ALL_SPACES_URL = `${APP_CONTEXT_PATH}/spaces`;   // 需照抄Controller中@XXXMapping的連結
+// const GET_SPACE_BY_ID_URL_BASE = `${APP_CONTEXT_PATH}/spaces/id`;   // 後面加空間編號(S001, S002, etc.)
+// const GET_SPACE_BY_NAME_URL_BASE = `${APP_CONTEXT_PATH}/spaces/name`;   // 後面加空間名稱參數
+// const TOGGLE_SPACE_STATUS_URL = `${APP_CONTEXT_PATH}/spaces/status`;  // e.g. /spaces/status/S001)
+
+const GET_ALL_SPACES_URL = `/spaces`;   // 需照抄Controller中@XXXMapping的連結
+const GET_SPACE_BY_ID_URL_BASE = `/spaces/id`;   // 後面加空間編號(S001, S002, etc.)
+const GET_SPACE_BY_NAME_URL_BASE = `/spaces/name`;   // 後面加空間名稱參數
+const TOGGLE_SPACE_STATUS_URL = `/spaces/status`;  // e.g. /spaces/status/S001)
 
 // === DOM Elements ===
 const tableBody = document.getElementById('tableBody');
@@ -436,7 +441,8 @@ searchForm.addEventListener('submit', function (e) {
 
 // 點擊「新增資料」按鈕時...
 document.getElementById('addSpaceBtn').addEventListener('click', function () {
-    window.location.href = 'addSpace.html'; // 前端路由跳轉
+    // window.location.href = 'addSpace.html'; // 前端路由跳轉
+    window.location.href = '/addSpace'; // 前端路由跳轉
 });
 
 // 點擊「顯示全部」按鈕時...
@@ -472,7 +478,8 @@ tableBody.addEventListener('click', function (e) {
         const button = target.closest('.edit-space-btn');       // 找到你剛剛按的「修改」按鈕
         const spaceId = button.getAttribute('data-space-id');   // 有在data-space-id綁定空間編號，以利於在修改表單中顯示目前的資料狀況
 
-        const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
+        // const targetUrl = `updateSpace.html?spaceId=${spaceId}`;
+        const targetUrl = `/updateSpace?spaceId=${spaceId}`;
         window.location.href = targetUrl;
     }
 
@@ -543,6 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
         error: function (xhr) {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
+                // window.location.href = "/loginAdmin.html";
                 window.location.href = "/loginAdmin.html";
             } else {
                 console.error("無法取得會員資料", xhr);

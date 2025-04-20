@@ -245,7 +245,8 @@ function renderSpaces(spacesToRender) {
 
         // 點擊卡片後，跳轉到個別空間頁面
         spaceCard.addEventListener('click', () => {
-            window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
+            // window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
+            window.location.href = `/individual_space?spaceId=${space.spaceId}`;
         });
     });
     checkLoginAndToggleHearts();
@@ -889,10 +890,14 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
     }
 
     if (date) {
-        if (keyword) targetSearching += ", ";
+    if (keyword) targetSearching += ", ";
         targetSearching += `可預訂時間為 ${date} `;
     }
 
+    if (startTime !== "選擇開始時間" && !date) {
+        alert("請選擇日期");
+        return;
+    }
     if (!startTime || startTime === "選擇開始時間") {
         startTime = "08:00";
     } else {

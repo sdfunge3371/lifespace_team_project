@@ -53,7 +53,7 @@
 		   <!-- Header Navbar Start -->
     <div class="container-fluid nav-bar bg-transparent">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-0 px-4">
-            <a href="homepage.html" class="navbar-brand d-flex align-items-center text-center">
+            <a href="/" class="navbar-brand d-flex align-items-center text-center">
                 <div class="icon p-2 me-2">
                     <img class="img-fluid" src="images/img.bootstrap/LifeSpace.png" alt="Icon"
                          style="width: 30px; height: 30px;">
@@ -66,10 +66,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
-                    <a href="spaceoverview.html" class="nav-item nav-link">瀏覽空間</a>
-                    <a href="event_overview.html" class="nav-item nav-link">參與活動</a>
-                    <a href="frontend_news.html" class="nav-item nav-link">最新消息</a>
-                    <a href="frontend_faq.html" class="nav-item nav-link">常見問題</a>
+                    <a href="/spaceoverview" class="nav-item nav-link">瀏覽空間</a>
+                    <a href="/event_overview" class="nav-item nav-link">參與活動</a>
+                    <a href="/frontend_news" class="nav-item nav-link">最新消息</a>
+                    <a href="/frontend_faq" class="nav-item nav-link">常見問題</a>
                 </div>
                 <!-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex"> -->
                 <div class="nav-item dropdown">
@@ -82,12 +82,12 @@
 
 
                     <div class="dropdown-menu rounded-0 m-0">
-                        <a href="myAccount.html" class="dropdown-item">我的帳號</a>
-                        <a href="events_for_user.html" class="dropdown-item">我的活動管理</a>
-                        <a href="frontend_orders.html" class="dropdown-item">我的訂單管理</a>
-                        <a href="favorite_space.html" class="dropdown-item">我的最愛</a>
-                        <a href="homepage.html" class="dropdown-item" onclick="logout()">登出</a>
-                        <a href="login.html" class="dropdown-item">登入</a>
+                        <a href="/myAccount" class="dropdown-item">我的帳號</a>
+                        <a href="/events_for_user" class="dropdown-item">我的活動管理</a>
+                        <a href="/frontend_orders" class="dropdown-item">我的訂單管理</a>
+                        <a href="/favorite_space" class="dropdown-item">我的最愛</a>
+                        <a href="/homepage" class="dropdown-item" onclick="logout()">登出</a>
+                        <a href="/login" class="dropdown-item">登入</a>
                     </div>
                 </div>
             </div>
@@ -200,7 +200,7 @@
       xhrFields: { withCredentials: true },
       success: function () {
 //         alert("✅ 已登出！");
-        window.location.href = '/homepage.html';
+        window.location.href = '/lifespace';
       },
       error: function () {
         alert("❌ 登出失敗，請稍後再試");
