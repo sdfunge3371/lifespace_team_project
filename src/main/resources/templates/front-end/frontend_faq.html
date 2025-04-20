@@ -172,6 +172,7 @@
                              style="width: 200px; height: 60px;">
                     </div>
                     <p class="mb-2"><i class="fa fa-envelope me-3"></i>lifespace105@gmail.com</p>
+                    <a href="/admin/loginAdmin" class="nav-item nav-link">後台登入</a>
                 </div>
 
                 <div class="col-lg-8 col-md-8 ">
@@ -238,7 +239,7 @@
       xhrFields: { withCredentials: true },
       success: function () {
 //         alert("✅ 已登出！");
-        window.location.href = '/lifespace';
+        window.location.href = '/lifespace/homepage';
       },
       error: function () {
         alert("❌ 登出失敗，請稍後再試");
