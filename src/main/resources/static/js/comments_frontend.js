@@ -301,7 +301,7 @@ $(document).ready(function () {
         })
         .catch(err => {
             alert("尚未登入或未參加此活動！");
-            window.location.href = "/login.html";
+            window.location.href = "/login";
         });
 
     // 點擊空白處時，同時關閉 ⋯ 選單 和 編輯模式
