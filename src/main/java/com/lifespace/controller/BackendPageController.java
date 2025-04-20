@@ -22,7 +22,7 @@ public class BackendPageController {
     public String toAddSpace(){
         return "/back-end/addSpace";
     }
-    @GetMapping("/")
+    @GetMapping("/admin")
     public String toAdmin(){
         return "/back-end/admin";
     }
