@@ -104,47 +104,5 @@ public class FrontendPageController {
         return "/front-end/spaceoverview";
     }
 
-//
-//    //後台
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
-//    @GetMapping("/")
-//    public String toHomePage(){
-//        return "/front-end/homepage";
-//    }
-//
 }
 

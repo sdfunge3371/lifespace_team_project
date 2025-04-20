@@ -157,16 +157,15 @@ public class OrdersService {
             aio.setTotalAmount(order.getAccountsPayable().toString());
             aio.setTradeDesc("LifeSpace 空間租借");
             aio.setItemName("空間租借費用");
-            aio.setCustomField1(order.getOrderId()); // 傳 OR043
-            aio.setClientBackURL("http://localhost:8080/payment_success.html?orderId=" + order.getOrderId());
-            aio.setReturnURL("https://f376-118-150-46-194.ngrok-free.app/orders/ecpay/return");
-//            aio.setClientBackURL("http://localhost:8080/payment_success.html");
+            aio.setCustomField1(order.getOrderId());
+            aio.setClientBackURL("http://localhost:8080/lifespace/orders/payment_success?orderId=" + order.getOrderId());
+            aio.setReturnURL("https://93f0-1-164-231-100.ngrok-free.app/ecpay/return");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
 
 
             String form = all.aioCheckOut(aio, null);
-            return ResponseEntity.ok(form);
+            return ResponseEntity.ok().body(form);
 
         } catch (Exception e) {
             e.printStackTrace();
