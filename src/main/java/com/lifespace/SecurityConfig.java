@@ -62,7 +62,7 @@ public class SecurityConfig  {
                  "/admin/branch",
                  "/admin/rental_item",
                  "/admin/listSpaces",
-                 "/back-end/backend_index"
+                 "/admin/backend_index"
           ).authenticated()  
          
      
