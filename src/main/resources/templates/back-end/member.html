@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>會員管理系統</title>
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+	rel="stylesheet">
+<!-- DataTables CSS -->
+<link
+	href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"
+	rel="stylesheet">
+<link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+<link href="../../static/css/style.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="../../static/css/sidebar.css" rel="stylesheet">
+<link href="../css/member.css" rel="stylesheet">
+<style>
+.main-content {
+	margin-left: 240px; /* 假設你的 sidebar 寬度是 240px */
+	padding: 20px;
+	box-sizing: border-box;
+	background-color: #f8f9fa;
+	min-height: 100vh; /* 確保內容撐滿整個畫面高度 */
+}
+</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- 手機版漢堡按鈕 測試用-->
+			<button class="btn btn-primary d-md-none m-2" type="button"
+				data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+				<i class="fas fa-bars"></i>
+			</button>
+			<!-- 側邊欄 -->
+			<div class="col-lg-2 sidebar collapse d-lg-block" id="sidebarMenu">
+				<div class="sidebar-header">
+					<a href="/templates/back-end/backend_index.html"> <img
+							src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo"
+							class="sidebar-logo">
+					</a>
+					<h2 class="sidebar-title">後台中心</h2>
+				</div>
+				<ul class="nav flex-column mt-3">
+					<!-- 消息管理 -->
+					<li class="nav-item"><a href="#newsSubmenu"
+						data-bs-toggle="collapse" class="nav-link"> <i
+							class="fas fa-home"></i> 消息管理 <i
+							class="fas fa-chevron-down ms-auto"></i>
+					</a>
+						<ul class="collapse submenu" id="newsSubmenu">
+							<li><a href="/templates/back-end/backend_news.html" class="submenu-item">最新消息</a></li>
+						</ul></li>
+
+					<!-- 帳號管理 -->
+					<li class="nav-item"><a href="#accountSubmenu"
+						data-bs-toggle="collapse" class="nav-link"> <i
+							class="fas fa-user"></i> 帳號管理 <i
+							class="fas fa-chevron-down ms-auto"></i>
+					</a>
+						<ul class="collapse submenu" id="accountSubmenu">
+							<li><a href="/templates/back-end/member.html" class="submenu-item">會員帳號</a></li>
+							<li><a href="/templates/back-end/admin.html" class="submenu-item">管理員帳號</a></li>
+						</ul></li>
+
+					<!-- 空間訂單管理 -->
+					<li class="nav-item"><a href="#ordersSubmenu"
+						data-bs-toggle="collapse" class="nav-link"> <i
+							class="fas fa-map-marker-alt"></i> 訂單管理 <i
+							class="fas fa-chevron-down ms-auto"></i>
+					</a>
+						<ul class="collapse submenu" id="ordersSubmenu">
+							<li><a href="/templates/back-end/ordersWithSidebar.html" class="submenu-item">訂單</a></li>
+						</ul></li>
+
+					<!-- 商品管理 -->
+					<li class="nav-item"><a href="#productSubmenu"
+						data-bs-toggle="collapse" class="nav-link"> <i
+							class="fas fa-box"></i> 商品管理 <i
+							class="fas fa-chevron-down ms-auto"></i>
+					</a>
+						<ul class="collapse submenu" id="productSubmenu">
+							<li><a href="/templates/back-end/listSpaces.html" class="submenu-item">空間管理</a></li>
+							<li><a href="#" class="submenu-item">租借品項</a></li>
+							<li><a href="#" class="submenu-item">分點</a></li>
+						</ul></li>
+
+					<!-- 活動留言評論管理 -->
+					<li class="nav-item"><a href="#commentSubmenu"
+						data-bs-toggle="collapse" class="nav-link"> <i
+							class="fas fa-star"></i> 留言評論管理 <i
+							class="fas fa-chevron-down ms-auto"></i>
+					</a>
+						<ul class="collapse submenu" id="commentSubmenu">
+							<li><a href="/commentsBackend.html" class="submenu-item">活動留言板</a></li>
+							<li><a href="/commentReportBackend.html"
+								class="submenu-item">檢舉留言</a></li>
+							<li><a href="/templates/back-end/space_comment.html" class="submenu-item">空間評論</a></li>
+						</ul></li>
+
+					<!-- 常見問題管理 -->
+					<li class="nav-item"><a href="#faqSubmenu"
+						data-bs-toggle="collapse" class="nav-link"> <i
+							class="fas fa-headset"></i> 常見問題管理 <i
+							class="fas fa-chevron-down ms-auto"></i>
+					</a>
+						<ul class="collapse submenu" id="faqSubmenu">
+							<li><a href="/templates/back-end/backend_faq.html" class="submenu-item">常見問題</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- 側邊欄 -->
+
+	<!-- 自己的表格內容 ------------------------------------------------------->
+	<div class="main-content">
+		<h2>會員管理系統</h2>
+		<div class="add-member">
+			<button onclick="location.href='memberadd.html'">新增會員</button>
+		</div>
+
+		<!---- 搜尋  --->
+		<button id="toggleSearchBtn">🔍 搜尋</button>
+		<div class="search-container" id="searchContainer"
+			style="display: none;">
+
+			<!-- 第一行：會員流水號、姓名 -->
+			<div class="search-row">
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="memberId">會員編號</label> <span
+							onclick="document.getElementById('memberId').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" name="memberId" id="memberId" placeholder="M001" />
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="memberName">姓名</label> <span
+							onclick="document.getElementById('memberName').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" name="memberName" id="memberName"
+						placeholder="輸入姓名" />
+				</div>
+			</div>
+
+			<!-- 第二行：電話、信箱名稱 -->
+			<div class="search-row">
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="phone">電話</label> <span
+							onclick="document.getElementById('phone').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" name="phone" id="phone" placeholder="手機號碼" />
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="email">信箱名稱</label> <span
+							onclick="document.getElementById('email').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="text" id="email" name="email" placeholder="請輸入名稱"
+						onblur="appendGmail()" />
+				</div>
+			</div>
+
+			<!-- 第三行：狀態、註冊日期、生日 -->
+			<div class="search-row">
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="accountStatus">帳號狀態：</label> <span
+							onclick="document.getElementById('accountStatus').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<select name="accountStatus" id="accountStatus">
+						<option value="">請選擇</option>
+						<option value="0">0</option>
+						<option value="1">1</option>
+					</select>
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="registrationTime">註冊日期：</label> <span
+							onclick="document.getElementById('registrationTime').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="date" name="registrationTime" id="registrationTime" />
+
+				</div>
+				<div class="search-group">
+					<div class="search-group-title">
+						<label for="birthday">生日：</label> <span
+							onclick="document.getElementById('birthday').value=''"
+							style="cursor: pointer">❌</span>
+					</div>
+					<input type="date" name="birthday" id="birthday" />
+				</div>
+			</div>
+
+			<div class="btn">
+				<!-- 搜尋按鈕 -->
+				<div class="search-btn">
+					<button type="button" id="searchBtn">查尋</button>
+				</div>
+				<!-- 回首頁 -->
+				<div class="search-btn">
+					<a href="../member.html">
+						<button type="button" id="resetBtn">重整</button>
+					</a>
+				</div>
+			</div>
+
+
+		</div>
+
+		<!--------------------------------- 會員資料表 ----------------------------->
+		<table id="memberTable">
+			<thead>
+				<tr>
+					<th>會員流水號</th>
+					<th>姓名</th>
+					<th>信箱</th>
+					<th>電話</th>
+					<th>帳號狀態</th>
+					<th>生日</th>
+					<th>註冊時間</th>
+					<th>照片</th>
+					<th>修改</th>
+				</tr>
+			</thead>
+			<!-- 原本查詢表單下面加上 -->
+			<tbody id="resultArea" class="search-result"></tbody>
+			<tbody id="memberBody"></tbody>
+		</table>
+
+	</div>
+
+	<!-- jQuery & DataTables -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="js/backmain.js"></script>
+	
+	<!-- member JS -->
+	<script src="../js/member.js"></script>
+
+	<!-- sidebar2 JS -->
+	<script src="/js/sidebar2.js"></script>
+
+
+</body>
+
+</html>

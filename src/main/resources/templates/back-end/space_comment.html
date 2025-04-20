@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空間評論查詢</title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/sidebar.css" rel="stylesheet">
+	<link href="/css/space_comment.css" rel="stylesheet">
+	
+    <style>
+    </style>
+</head>
+
+<body>
+     <!-- 側邊欄 -->
+    <div class="col-lg-2 sidebar">
+        <div class="sidebar-header">
+            <a href="/templates/back-end/backend_index.html">
+                <img src="/images/img.bootstrap/LifeSpace3.png" alt="LifeSpace Logo" class="sidebar-logo">
+            </a>
+            <h2 class="sidebar-title">後台中心</h2>
+        </div>
+        <ul class="nav flex-column mt-3">
+            <!-- 消息管理 -->
+            <li class="nav-item">
+                <a href="#newsSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-home"></i> 消息管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="newsSubmenu">
+                    <li><a href="/templates/back-end/backend_news.html" class="submenu-item">最新消息</a></li>
+                </ul>
+            </li>
+
+            <!-- 帳號管理 -->
+            <li class="nav-item">
+                <a href="#accountSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-user"></i> 帳號管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="accountSubmenu">
+                    <li><a href="/templates/back-end/member.html" class="submenu-item">會員帳號</a></li>
+                    <li><a href="/templates/back-end/admin.html" class="submenu-item">管理員帳號</a></li>
+                </ul>
+            </li>
+
+            <!-- 空間訂單管理 -->
+            <li class="nav-item">
+                <a href="#ordersSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-map-marker-alt"></i> 訂單管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="ordersSubmenu">
+                    <li><a href="/templates/back-end/ordersWithSidebar.html" class="submenu-item">訂單</a></li>
+                </ul>
+            </li>
+
+            <!-- 商品管理 -->
+            <li class="nav-item">
+                <a href="#productSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-box"></i> 商品管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="productSubmenu">
+                    <li><a href="/listSpaces.html" class="submenu-item">空間管理</a></li>
+                    <li><a href="/rental_item.html" class="submenu-item">租借品項</a></li>
+                    <li><a href="/branch.html" class="submenu-item">分點</a></li>
+                </ul>
+            </li>
+
+            <!-- 活動留言評論管理 -->
+            <li class="nav-item">
+                <a href="#commentSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-star"></i> 留言評論管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="commentSubmenu">
+                    <li><a href="/commentsBackend.html" class="submenu-item">活動留言板</a></li>
+                    <li><a href="/commentReportBackend.html" class="submenu-item">檢舉留言</a></li>
+                    <li><a href="/space_comment.html" class="submenu-item">空間評論</a></li>
+                </ul>
+            </li>
+
+            <!-- 常見問題管理 -->
+            <li class="nav-item">
+                <a href="#faqSubmenu" data-bs-toggle="collapse" class="nav-link">
+                    <i class="fas fa-headset"></i> 常見問題管理
+                    <i class="fas fa-chevron-down ms-auto"></i>
+                </a>
+                <ul class="collapse submenu" id="faqSubmenu">
+                    <li><a href="/templates/back-end/backend_faq.html" class="submenu-item">常見問題</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 側邊欄結束 -->
+
+    <!-- 主要內容區 -->
+    <div class="main-content">
+        <div class="container">
+            <section class="search-panel">
+                <h1>空間評論查詢系統</h1>
+                <h2>搜尋條件</h2>
+                <div class="form-group">
+                    <div class="form-control">
+                        <label for="spaceId">空間ID</label>
+                        <input type="text" id="spaceId" placeholder="請輸入空間ID">
+                    </div>
+
+                    <div class="form-control">
+                        <label for="spaceName">空間名稱</label>
+                        <input type="text" id="spaceName" placeholder="請輸入空間名稱">
+                    </div>
+
+                    <div class="form-control">
+                        
+                    		<label for="location" class="form-label">分點</label>
+                    		<select id="location" class="form-select">
+                       			<!-- <option value="">分點</option>-->
+                    		</select>
+                		
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button id="searchBtn">搜尋</button>
+                    <button id="resetBtn" class="reset">重置</button>
+                </div>
+            </section>
+
+            <section class="result-panel">
+                <h2>評論列表</h2>
+                <div id="resultsContainer">
+                    <div class="loading">正在載入資料，請稍候...</div>
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+            </section>
+        </div>
+    </div>
+
+    <div id="photoModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <!-- jQuery -->
+    <script src="/vendors/jquery/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="/vendors/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- 側邊欄JS -->
+    <script src="/js/sidebar2.js"></script>
+
+    <script src="/js/space_comment.js"></script>
+    
+</body>
+
+</html>

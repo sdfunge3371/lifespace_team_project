@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>adminadd</title>
+    <style>
+        /* 置中整個畫面 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: rgb(216, 233, 216);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 會員表單容器 */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 40%;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding-bottom: 30px;
+        }
+        h2 {
+            text-align: center;
+        }
+        h5 {
+            display: inline;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        .input{ 
+            /* 沒有吃到 */
+            width: 30%;
+            border: 1px solid red;
+        }
+        p {
+            display: inline;
+            color: red;
+        }
+
+        /* 按鈕樣式 */
+        button {
+            background-color: #61aa64;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* 輸入框樣式 */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 錯誤訊息 */
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+        <div class="container">
+            <table id="table-1">
+                <tr>
+                    <td>
+                        <h2>管理員資料新增</h2>
+                        <h4>
+                            <a href="../admin.html">回首頁</a>
+                        </h4>
+                    </td>
+                </tr>
+            </table>
+
+            <div>
+                <label>管理員姓名:</label><br>
+                <input type="text" id="adminName"><br>
+                <span id="errName" class="err-msg"></span><br>
+
+                <label>郵件:</label><br>
+                <input type="email" id="email"><br>
+                <span id="errEmail" class="err-msg"></span><br>
+
+              
+                <label>帳號狀態:</label>
+                <select id="accountStatus">
+                    <option value="1">啟用</option>
+                    <option value="0">停用</option>
+                </select><br>
+                <span id="errStatus" class="err-msg"></span><br>
+              
+                <label>密碼:</label><br>
+                <input type="password" id="password"><br>
+                <span id="errPwd" class="err-msg"></span><br>
+              
+                <button type="button" onclick="submitForm()">送出新增</button>
+
+
+            </div>
+
+        </div>
+
+
+        <script>
+        function submitForm() {
+            const formData = new FormData();
+            formData.append("adminName", document.getElementById("adminName").value);
+            formData.append("email", document.getElementById("email").value);
+            formData.append("accountStatus", document.getElementById("accountStatus").value);
+            formData.append("password", document.getElementById("password").value);
+        	
+        	//傳送資料到後端
+        	//因為這裡是回傳文字而已，所以是response.text();，其他小地方也要改
+            fetch("/admin", {
+              method: "POST",
+              body: formData
+            })
+            .then(response => {
+              if (!response.ok) {
+        		return response.text().then(err => { throw new Error(err); });
+        	  }
+              return response.text();
+            })
+            .then(msg => {
+              alert(msg);
+              // 可選擇跳回主頁或清空表單
+              window.location.href = "admin.html";
+            })
+            .catch(err => {
+              alert("錯誤：" + err.message);
+            });
+          }
+
+        
+        
+        
+        
+        </script>
+
+    </body>
+
+</html>
