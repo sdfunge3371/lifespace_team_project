@@ -318,24 +318,50 @@ public class OrdersService {
     }
 
 
+    //初始化空間評論圖片資料夾
+    @PostConstruct
+    public void initCommentImageFolder() {
+        String rootPath = System.getProperty("user.dir");
+        File commentImageDir = new File(rootPath, "uploads/space-comment-images");
+        if (!commentImageDir.exists()) commentImageDir.mkdirs();
+        System.out.println("空間評論圖片資料夾初始化完成於: " + commentImageDir.getAbsolutePath());
+    }
+    
+    // 呼叫入口
     private String savePhoto(MultipartFile photo) throws Exception {
-	    String fileName = photo.getOriginalFilename();
-	    String uploadDir = "D://tiba_project//space_comment_images"; // 替換為您的實際儲存目錄
-
-	    // 確保目錄存在
-	    File dir = new File(uploadDir);
-	    if (!dir.exists()) {
-	        if (!dir.mkdirs()) {
-	            throw new IOException("無法建立目錄: " + uploadDir);
-	        }
-	    }
-
-	    String filePath = uploadDir + "/" + fileName;
-	    photo.transferTo(new File(filePath));
-	    return "/space-comment-images/" + fileName; // 返回可訪問的 URL
-	}
+        return savePhoto(photo, "space-comment-images");
+    }
 
 
+    	// 儲存到 /uploads/space-comment-images/
+    private String savePhoto(MultipartFile photo, String subFolder) throws Exception {
+        String originalFileName = photo.getOriginalFilename();
+        if (originalFileName == null || originalFileName.isEmpty()) {
+            throw new IOException("檔案名稱為空");
+        }
+
+        String baseName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+
+        String rootPath = System.getProperty("user.dir");
+        File uploadDir = new File(rootPath, "uploads" + File.separator + subFolder);
+
+        if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+            throw new IOException("無法建立目錄: " + uploadDir.getAbsolutePath());
+        }
+
+        String fileName = baseName + extension;
+        File file = new File(uploadDir, fileName);
+        int counter = 1;
+        while (file.exists()) {
+            fileName = baseName + "(" + counter + ")" + extension;
+            file = new File(uploadDir, fileName);
+            counter++;
+        }
+
+        photo.transferTo(file);
+        return "/" + subFolder + "/" + fileName;
+    }
 
 
 
