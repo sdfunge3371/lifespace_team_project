@@ -1280,7 +1280,7 @@ document.querySelector(".pay-button").addEventListener("click", () => {
                 console.error(err.message);
                 alert("預訂前請先登入");
                 // window.location.href = "/login.html";
-                window.location.href = "/login";
+                window.location.href = "/lifespace/login";
         });
 
     // showReservation();  // 啟動攔截器後，把這行刪掉
@@ -1558,7 +1558,7 @@ function sendOrder(memberId) {
 
             // 直接跳轉 loading 畫面
             // window.location.href = "/payment_loading.html";
-            window.location.href = "/payment_loading";
+            window.location.href = "/lifespace/payment_loading";
         //     alert("預訂成功");
         //     console.log("預定成功", data);
         //

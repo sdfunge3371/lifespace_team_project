@@ -246,7 +246,7 @@ function renderSpaces(spacesToRender) {
         // 點擊卡片後，跳轉到個別空間頁面
         spaceCard.addEventListener('click', () => {
             // window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
-            window.location.href = `/individual_space?spaceId=${space.spaceId}`;
+            window.location.href = `/lifespace/individual_space?spaceId=${space.spaceId}`;
         });
     });
     checkLoginAndToggleHearts();
