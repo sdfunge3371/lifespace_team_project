@@ -229,7 +229,7 @@
                 })
                 .then(data => {
                     alert("新增成功！會員編號：" + data.memberId);
-                    window.location.href = "login.html"; // 註冊成功後導回登入頁
+                    window.location.href = "/lifespace/login"; // 註冊成功後導回登入頁
                 })
                 .catch(err => {
                     alert("註冊失敗：" + err.message);
