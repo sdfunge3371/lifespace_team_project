@@ -54,14 +54,16 @@ public class SecurityConfig  {
          
        //擋掉後台需要登入才能進入的路徑
          .requestMatchers(                 
-        		 "/admin/backend_news",
+        		 "/admin/news",
                  "/admin/member",
                  "/admin/admin",
-                 "/admin/backend_faq",
+                 "/admin/faq",
                  "/admin/space_comment",
                  "/admin/branch",
                  "/admin/rental_item",
                  "/admin/listSpaces",
+                 "/admin/orders",
+                 "/admin/chatroom_management",
                  "/admin/backend_index"
           ).authenticated()  
          
