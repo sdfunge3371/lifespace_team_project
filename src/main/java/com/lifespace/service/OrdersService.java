@@ -158,7 +158,7 @@ public class OrdersService {
             aio.setTradeDesc("LifeSpace 空間租借");
             aio.setItemName("空間租借費用");
             aio.setCustomField1(order.getOrderId());
-            aio.setClientBackURL("http://localhost:8080/lifespace/orders/payment_success?orderId=" + order.getOrderId());
+            aio.setClientBackURL("http://localhost:8080/lifespace/payment_success?orderId=" + order.getOrderId());
             aio.setReturnURL("https://93f0-1-164-231-100.ngrok-free.app/ecpay/return");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");

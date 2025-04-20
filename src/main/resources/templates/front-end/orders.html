@@ -107,7 +107,7 @@
     <div id="space-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -116,7 +116,7 @@
     <div id="history-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -125,7 +125,7 @@
     <div id="cancel-orders" class="tab-content" style="min-height: 300px;">
         <div class="empty-state d-none text-center">
             <p>尚無訂單</p>
-            <a href="/lifespace/spaceoverview" class="btn btn-outline-primary mt-2">
+            <a href="spaceoverview.html" class="btn btn-outline-primary mt-2">
                 開始空間瀏覽
             </a>
         </div>
@@ -264,7 +264,7 @@
                         <div class="order-container">
                             <div class="order-img position-relative">
                                 <img src="${orders.spaceCoverPhotoURL}" alt="空間圖片" class="img-fluid" onerror= "this.src='images/img.bootstrap/house-placeholder.jpg'">
-                                <a href="/lifespace/individual_space?spaceId=${orders.spaceId}"
+                                <a href="/individual_space.html?spaceId=${orders.spaceId}"
                                    class="btn btn-sm btn-light text-dark border view-space-btn">
                                     查看空間
                                 </a>
@@ -295,10 +295,7 @@
                                         ${orders.eventDTO ? `
                                             <a class="action-button message-button" href="/lifespace/comments_frontend?eventId=${orders.eventDTO.eventId}">留言板</a>
                                         ` : `
-                                            <button class="action-button group-button"
-                                            	data-order-id="${orders.orderId}"
-                                                data-order-start="${orders.orderStart}"
-                                                data-order-end="${orders.orderEnd}">揪團去</button>
+                                            <button class="action-button group-button">揪團去</button>
                                         `}
                                         <button class="action-button cancel" data-order-id="${orders.orderId}">取消訂單</button>
                                     ` : orders.orderStatus == 2 ? `
@@ -403,7 +400,7 @@
                     error: function (xhr) {
                     if (xhr.status === 401) {
                         alert("請先登入");
-                        location.href = "/lifespace/login";
+                        location.href = "/login.html";
                     } else {
                         alert("載入失敗，請稍後再試");
                 }
@@ -703,14 +700,8 @@
                      const $orderContainer = $(this).closest(".order-container");
                      const orderId = $orderContainer.find("p:contains('訂單編號')").text().split("：")[1].trim();
 
-                     const orderStartStr = $(this).data("order-start");
-                     const orderEndStr = $(this).data("order-end");
-
-                     const orderStart = encodeURIComponent(new Date(orderStartStr).toISOString());
-                     const orderEnd = encodeURIComponent(new Date(orderEndStr).toISOString());
-                     
-                   	window.location.href = `/lifespace/event_create?orderId=${orderId}&orderStart=${orderStart}&orderEnd=${orderEnd}`;
-             
+                   	window.location.href = `event_create.html?orderId=${orderId}`;
+                  
                  })               
          });
 
