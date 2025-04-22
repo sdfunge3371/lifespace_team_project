@@ -24,6 +24,8 @@ import com.lifespace.dto.FaqGaEventDTO;
 import com.lifespace.entity.Faq;
 import com.lifespace.repository.FaqRepository;
 
+import jakarta.annotation.PreDestroy;
+
 //查詢點擊事件報表，從Google Analytics（GA4）API撈出faq_click點擊事件的熱門次數排行
 @Service
 public class GAReportingService {
@@ -40,6 +42,14 @@ public class GAReportingService {
 		this.analyticsData = initializeGaClient(keyPath);
 	}
 
+	@PreDestroy
+//	將ManagedChannel(與GA server的連線物件)自動關閉釋放資源
+	public void closeClient() {
+		if (analyticsData != null) {
+			analyticsData.close(); // 關閉 gRPC 連線，避免記憶體洩漏
+			System.out.println("GA client 已正常關閉");
+		}
+	}
 	// 初始化Google Analytics的Client(金鑰檔案路徑，連接到GA伺服器，讓Java程式可以去要報表資料)
 	private BetaAnalyticsDataClient initializeGaClient(String keyPath) throws Exception {
 		InputStream serviceAccountStream;
