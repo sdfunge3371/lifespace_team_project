@@ -48,7 +48,7 @@ public class AdminController {
     
     
   //-------------------------管理員登入-----------------------------
-    @PostMapping("/admin/login")
+    @PostMapping("/backend/login")
     public ResponseEntity<?> login(
     		@RequestBody Map<String,String> loginRequest, 
     		HttpServletRequest request,
