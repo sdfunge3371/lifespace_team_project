@@ -48,7 +48,7 @@
             const email = document.querySelector(".account").value;
             const password = document.querySelector(".password").value;
 
-            fetch("/admin/login", {
+            fetch("/backend/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -67,14 +67,11 @@
                     window.location.href = "/admin/backend_index";
                 })
                 .catch(err => {
+                    console.error(err);
                     alert("登入失敗，請檢查帳號或密碼");
                 });
         });
     </script>
-
-
-
-
 
 </body>
 
