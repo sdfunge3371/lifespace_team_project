@@ -70,6 +70,8 @@ public class LineWebHookHandler {
                             dto.getAccountsPayable(),
                             dto.getOrderStart().toLocalDateTime().format(formatter),
                             dto.getOrderEnd().toLocalDateTime().format(formatter));
+
+                    sb.append(msg);
                 }
 
                 sendTextToUser(replyToken, sb.toString());

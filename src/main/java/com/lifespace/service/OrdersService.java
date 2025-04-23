@@ -55,6 +55,7 @@ public class OrdersService {
 
     @Autowired
     private MessagingApiClient messagingApiClient;
+
     @Autowired
     private LinePushMessageService linePushMessageService;
 
