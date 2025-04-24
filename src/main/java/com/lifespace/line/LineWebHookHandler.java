@@ -1,5 +1,6 @@
 package com.lifespace.line;
 
+import com.lifespace.constant.LineBindResult;
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.entity.News;
 import com.lifespace.repository.NewsRepository;
@@ -30,6 +31,9 @@ public class LineWebHookHandler {
 
     @Autowired
     private MessagingApiClient messagingApiClient;
+
+    @Autowired
+    private LinePushMessageService linePushMessageService;
 
     @EventMapping
     public void handleTextMessage(MessageEvent messageEvent){
@@ -64,12 +68,15 @@ public class LineWebHookHandler {
                             訂單時間：
                             %s ～ %s
                             ------------------
-                            """.formatted(
+                            """
+                            .formatted(
                            dto.getOrderId(),
                             dto.getSpaceLocation(),
                             dto.getAccountsPayable(),
                             dto.getOrderStart().toLocalDateTime().format(formatter),
                             dto.getOrderEnd().toLocalDateTime().format(formatter));
+
+                    sb.append(msg);
                 }
 
                 sendTextToUser(replyToken, sb.toString());
@@ -82,19 +89,8 @@ public class LineWebHookHandler {
             String[] parts = sendText.split("\\s+");
             String name = parts[0];
             String phone = parts[1];
-            Boolean success = ordersSvc.bindLineUserIdAndPushOrders(userId, name, phone);
-            if(success){
-                sendTextToUser(replyToken, """
-                                                請輸入『查詢訂單』
-                                                即可查詢最近的三筆空間預約資訊""");
-            }else {
-                sendTextToUser(replyToken, """
-                        帳號已綁定或是格式輸入錯誤!
-                        請輸入正確的會員姓名及手機號碼
-                        格式：大大吳 0987654321
-                        """
-                );
-            }
+            LineBindResult result = ordersSvc.bindLineUserIdAndPushOrders(userId, name, phone);
+            sendTextToUser(replyToken, result.getBindLineIdMessage());
 
         }else if (sendText.contains("最新消息")){
             sendLastestNews(replyToken, userId);

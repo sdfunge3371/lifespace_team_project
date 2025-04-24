@@ -1,6 +1,7 @@
 package com.lifespace.service;
 
 
+import com.lifespace.constant.LineBindResult;
 import com.lifespace.dto.OrdersDTO;
 import com.lifespace.dto.RentalItemDetailsDTO;
 import com.lifespace.dto.SpaceCommentRequest;
@@ -10,12 +11,9 @@ import com.lifespace.entity.*;
 import com.lifespace.line.LinePushMessageService;
 import com.lifespace.repository.*;
 
-import com.linecorp.bot.messaging.model.TextMessage;
 import com.linecorp.bot.messaging.client.MessagingApiClient;
-import com.linecorp.bot.messaging.model.PushMessageRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,6 +53,7 @@ public class OrdersService {
 
     @Autowired
     private MessagingApiClient messagingApiClient;
+
     @Autowired
     private LinePushMessageService linePushMessageService;
 
@@ -164,7 +163,7 @@ public class OrdersService {
             aio.setItemName("空間租借費用");
             aio.setCustomField1(order.getOrderId());
             aio.setClientBackURL("http://localhost:8080/lifespace/payment_success?orderId=" + order.getOrderId());
-            aio.setReturnURL("  https://98b3-2001-b011-3809-9ab7-4806-e517-5d5c-d4c.ngrok-free.app/orders/ecpay/return");
+            aio.setReturnURL("https://ba6b-124-218-199-62.ngrok-free.app/orders/ecpay/return");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
 
@@ -208,8 +207,10 @@ public class OrdersService {
 //                String orderId = tradeNo.substring(0, 5);
                 String orderId = ecpayParams.get("CustomField1");
                 if ("1".equals(rtnCode)) {
-                    paidOrders(orderId);
+                    Orders order = paidOrders(orderId);
+                    OrdersDTO dto = OrdersMapper.toOrdersDTO(order);
                     System.out.println("更新訂單狀態為已付款：" + orderId);
+                    linePushMessageService.autoPushCreateOrderMsg(dto);
                 } else {
                     System.out.println("付款失敗，不更新訂單：" + orderId);
                 }
@@ -228,13 +229,15 @@ public class OrdersService {
 
     //更改綠界付款完成後的訂單狀態
     @Transactional
-    public void paidOrders(String orderId) {
+    public Orders paidOrders(String orderId) {
         Orders orders = ordersRepository.findById(orderId).orElse(null);
         if(orders != null && orders.getOrderStatus() != 1) {
             orders.setOrderStatus(1);
             orders.setPaymentDatetime(Timestamp.valueOf(LocalDateTime.now()));
             ordersRepository.save(orders);
         }
+
+        return orders;
     }
 
     public  List<OrdersDTO> getOrdersByLineUserId(String lineUserId) {
@@ -244,23 +247,23 @@ public class OrdersService {
                      .collect(Collectors.toList());
     }
 
-    public boolean bindLineUserIdAndPushOrders(String lineUserId, String memberName, String phone) {
+    public LineBindResult bindLineUserIdAndPushOrders(String lineUserId, String memberName, String phone) {
 
         //是否綁定過
         boolean exists = ordersRepository.existsByLineUserId(lineUserId);
         if (exists) {
-            return false;
+            return LineBindResult.ALREADY_BIND;
         }
 
         Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
         if (member == null) {
-            return false;
+            return LineBindResult.MEMBER_NOT_FOUND;
         }
 
         //取出三筆最靠近開始時間及狀態是已付款的訂單
         List<Orders> orders = ordersRepository.findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(member.getMemberId(), 1);
         if (orders == null) {
-            return false;
+            return LineBindResult.NO_ORDERS_BIND;
         }
 
         //取出未綁定lineUserId的訂單筆數收集成List,將這些訂單綁定lineUserId
@@ -270,20 +273,26 @@ public class OrdersService {
                 .collect(Collectors.toList());
 
         if (orderIds.isEmpty()) {
-            return false;
+            return LineBindResult.NO_ORDERS_BIND;
         }
 
         int lineUserIdUpdated = ordersRepository.bulkInsertLineUserIdIfNull(lineUserId, orderIds);
 
         if(lineUserIdUpdated > 0){
-            return true;
+            return LineBindResult.SUCCESS;
         }else {
-            return false;
+            return LineBindResult.NO_ORDERS_BIND;
         }
     }
 
-    
-  //訂單完成後，新增空間評論
+        private String getLineUserIdFromPastOrders(OrdersDTO dto) {
+            List<String> results = ordersRepository.findTop1LineUserIdByMemberId(dto.getMemberId());
+            return results.isEmpty() ? null : results.get(0);
+        }
+
+
+
+    //訂單完成後，新增空間評論
     public void addSpaceComments(SpaceCommentRequest commentRequest,
     		List<MultipartFile> photos) {
     	
@@ -402,7 +411,7 @@ public class OrdersService {
         order.setMemberId(ordersDTO.getMemberId());
         order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
         order.setOrderStatus(0);
-        order.setLineUserId(ordersDTO.getLineUserId());
+        order.setLineUserId(getLineUserIdFromPastOrders(ordersDTO));
 
         // 建立Branch與Member的關聯，讓Mapper取得
         Branch branch = new Branch();

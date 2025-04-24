@@ -50,6 +50,9 @@ public interface OrdersRepository extends JpaRepository<Orders, String> {
     @Query("SELECT o.orderStatus FROM Orders o WHERE o.orderId = :orderId ")
     Integer findOrderStatusByOrderId(@Param("orderId")  String orderId);
 
+    @Query("SELECT o.lineUserId FROM Orders o WHERE o.member.memberId = :memberId AND o.lineUserId IS NOT NULL ORDER BY o.orderStart DESC")
+    List<String> findTop1LineUserIdByMemberId(String memberId);
+
     //用舉辦人id以及活動id查詢訂單，作為舉辦者取消活動用
     Optional<Orders> findByEventEventIdAndMemberMemberId(String eventId, String memberId);
 
