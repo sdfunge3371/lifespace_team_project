@@ -51,10 +51,7 @@ public class LineWebHookHandler {
         if (sendText.contains("查詢訂單") ){
             List<OrdersDTO> orders = ordersSvc.getOrdersByLineUserId(userId);
             if(orders.isEmpty()){
-                sendTextToUser(replyToken, """
-                                            沒有預訂中的訂單喔！ 
-                                            趕緊點擊官網預約吧～
-                                            http://localhost:8080/lifespace""");
+                sendTextToUser(replyToken, LineBindResult.NO_PAID_ORDERS.getBindLineIdMessage());
             }else {
                 StringBuilder sb = new StringBuilder("最近已預訂的訂單：\n");
 
@@ -89,13 +86,18 @@ public class LineWebHookHandler {
             String[] parts = sendText.split("\\s+");
             String name = parts[0];
             String phone = parts[1];
-            LineBindResult result = ordersSvc.bindLineUserIdAndPushOrders(userId, name, phone);
-            sendTextToUser(replyToken, result.getBindLineIdMessage());
 
-        }else if (sendText.contains("最新消息")){
+            LineBindResult result = ordersSvc.bindLineUserIdAndPushOrders(userId, name, phone);
+
+            sendTextToUser(replyToken, result.getBindLineIdMessage());//回傳Service裡的Boolean錯誤驗證
+
+        //有手機但格式錯誤
+        }else if (sendText.contains("09")) {
+            sendTextToUser(replyToken, LineBindResult.INVALID_ERROR.getBindLineIdMessage());
+
+        }else if (sendText.contains("最新消息")) {
             sendLastestNews(replyToken, userId);
         }
-
     }
 
     private void sendTextToUser(String replyToken, String text){
@@ -115,10 +117,10 @@ public class LineWebHookHandler {
                 %s
                 %s
                 """.formatted(
-                        lastestNews.getNewsStartDate().toLocalDateTime().format(formatter),
+                lastestNews.getNewsStartDate().toLocalDateTime().format(formatter),
                 lastestNews.getNewsEndDate().toLocalDateTime().format(formatter),
                 lastestNews.getNewsTitle(),
-                 lastestNews.getNewsContent()
+                lastestNews.getNewsContent()
         );
 
         sendTextToUser(replyToken, newsMsg);
