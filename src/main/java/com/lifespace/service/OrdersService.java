@@ -144,7 +144,7 @@ public class OrdersService {
         }
 
         try {
-            //確認可以讀到綠界的EcpayPayment.xml
+            //確認可以讀到綠界的Payment_conf.xml
             URL fileURL = getClass().getClassLoader().getResource("payment_conf.xml");
             if (fileURL != null) {
                 System.out.println("有讀到payment_conf.xml：" + fileURL);
@@ -163,7 +163,7 @@ public class OrdersService {
             aio.setItemName("空間租借費用");
             aio.setCustomField1(order.getOrderId());
             aio.setClientBackURL("http://localhost:8080/lifespace/payment_success?orderId=" + order.getOrderId());
-            aio.setReturnURL("https://ba6b-124-218-199-62.ngrok-free.app/orders/ecpay/return");
+            aio.setReturnURL("https://3aea-2001-b011-3809-d086-358d-cb83-d5af-4ac3.ngrok-free.app/orders/ecpay/return");
             aio.setIgnorePayment("WebATM#ATM#CVS#BARCODE");
             aio.setNeedExtraPaidInfo("N");
 
@@ -240,6 +240,7 @@ public class OrdersService {
         return orders;
     }
 
+    //給綁定會員查詢三筆已付款訂單用
     public  List<OrdersDTO> getOrdersByLineUserId(String lineUserId) {
         List<Orders> orders = ordersRepository.findTop3ByLineUserIdAndOrderStatusOrderByOrderStartDesc(lineUserId, 1);
         return orders.stream()
@@ -255,27 +256,28 @@ public class OrdersService {
             return LineBindResult.ALREADY_BIND;
         }
 
+        //查詢會員資料是否正確
         Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
         if (member == null) {
             return LineBindResult.MEMBER_NOT_FOUND;
         }
 
-        //取出三筆最靠近開始時間及狀態是已付款的訂單
-        List<Orders> orders = ordersRepository.findTop3ByMemberIdAndOrderStatusOrderByOrderStartDesc(member.getMemberId(), 1);
-        if (orders == null) {
+        //查詢所有該會員未綁定的訂單
+        List<Orders> orders = ordersRepository.findByMemberId(member.getMemberId());
+        if (orders.isEmpty()) {
             return LineBindResult.NO_ORDERS_BIND;
         }
 
-        //取出未綁定lineUserId的訂單筆數收集成List,將這些訂單綁定lineUserId
+        //將未綁定lineUserId的訂單筆數收集成List(進行下面補綁動作)
         List<String> orderIds = orders.stream()
-                .filter(order -> order.getLineUserId() == null)
-                .map(Orders::getOrderId)
-                .collect(Collectors.toList());
+                .filter(order -> order.getLineUserId() == null) //取未綁定lineUserId的訂單
+                .map(Orders::getOrderId) //拿到這些訂單的orderId
+                .collect(Collectors.toList()); //轉成List
 
         if (orderIds.isEmpty()) {
-            return LineBindResult.NO_ORDERS_BIND;
+            return LineBindResult.ALREADY_BIND;
         }
-
+        //補綁定
         int lineUserIdUpdated = ordersRepository.bulkInsertLineUserIdIfNull(lineUserId, orderIds);
 
         if(lineUserIdUpdated > 0){
@@ -285,11 +287,12 @@ public class OrdersService {
         }
     }
 
-        private String getLineUserIdFromPastOrders(OrdersDTO dto) {
-            List<String> results = ordersRepository.findTop1LineUserIdByMemberId(dto.getMemberId());
-            return results.isEmpty() ? null : results.get(0);
-        }
+    //找出歷史訂單有無lineUserId,取一筆的LineUserId來更新新訂單就好
+    private String getLineUserIdFromPastOrders(OrdersDTO dto) {
+        List<String> results = ordersRepository.findTopLineUserIdByMemberId(dto.getMemberId());
+        return results.isEmpty() ? null : results.get(0);
 
+    }
 
 
     //訂單完成後，新增空間評論
@@ -411,7 +414,11 @@ public class OrdersService {
         order.setMemberId(ordersDTO.getMemberId());
         order.setPaymentDatetime(ordersDTO.getPaymentDatetime());
         order.setOrderStatus(0);
-        order.setLineUserId(getLineUserIdFromPastOrders(ordersDTO));
+
+        String lineUserId = getLineUserIdFromPastOrders(ordersDTO);
+        if (lineUserId != null) {
+            order.setLineUserId(lineUserId);
+        }
 
         // 建立Branch與Member的關聯，讓Mapper取得
         Branch branch = new Branch();

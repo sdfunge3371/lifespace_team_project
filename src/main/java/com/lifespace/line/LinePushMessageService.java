@@ -42,12 +42,13 @@ public class LinePushMessageService {
         );
 
         TextMessage msg = new TextMessage(cancelMsg);
-        //參數(使用者LINEID/自動推播的文字/提示音/合併推播(default),若是要自動推播童事件獨立兩則以上(空值或null)
+        //參數(使用者LINEID/自動推播的文字/提示音/合併推播(default),若是要自動推播同事件獨立兩則以上(可空值或null)
         PushMessageRequest pushCancelMsg = new PushMessageRequest(ordersDTO.getLineUserId(), List.of(msg),false, List.of("default"));
 
         //自動推播需要一個隨機的UUID做為第一個參數,防止重複推播(給編號的意思)
         // (和回覆使用者指令一樣,只是使用者傳送過來的文字是用replyToken,不需要自己寫一個隨機數)
         UUID lineRetryKey = UUID.randomUUID();
+        //lineRetryKey = pushCancelMsg裝的LineUserId
         messagingApiClient.pushMessage(lineRetryKey,pushCancelMsg);
     }
 
