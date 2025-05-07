@@ -122,7 +122,7 @@ public class EventController {
 	        }
     }
     
-    @PutMapping("/addMemToEvent")
+    @PostMapping("/addMemToEvent")
     public ResponseEntity<String> addToEvent(@RequestParam(required = true) String eventId, HttpSession session )
     		 throws Exception {
     	

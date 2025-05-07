@@ -205,7 +205,7 @@ $(document).ready(function () {
 		if (confirm("確定要參加這個活動嗎？")){
         // 發送 API 請求
         	fetch(`/lifespace/event/addMemToEvent?eventId=${eventId}`, {
-            	method: 'PUT',
+            	method: 'POST',
             	credentials: 'include' // 確保請求包含 cookies
         	})
         .then(response => {
