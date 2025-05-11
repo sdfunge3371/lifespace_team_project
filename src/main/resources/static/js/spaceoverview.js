@@ -88,22 +88,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    fetchFavoriteSpaces();
-    fetchSpaceUsages();
     fetchSpaces();
+    fetchSpaceUsages();
+    fetchFavoriteSpaces();
+
     setupEventListeners();
 
     // 取得目前位置
     setTimeout(getUserLocation, 500);
 });
 
-// 開始抓後端的資料
+// =========== 開始抓後端的資料 ===========
+
+// ---------- 抓取「空間」資料 ----------
 let branches = [];  // 用來存所有分店的資訊（地圖彈窗會用到）
 function fetchSpaces() {
     fetch('/spaces')
         .then(response => response.json())
         .then(data => {
-            spaces = data.map(space => ({
+             spaces = data.map(space => ({
                 spaceId: space.spaceId,
                 name: space.spaceName,
                 branchId: space.branchId,
@@ -124,11 +127,9 @@ function fetchSpaces() {
             // 提取分店資訊
             branches = extractBranchInfo(spaces);
 
-            console.log("抓後端時呼叫");
-
             // 如果已經獲取到用戶位置，則更新距離
             if (userLocation) {
-                updateSpacesDistance();
+                updateSpacesDistance();  // 這個方法裡面最後一行也有RenderSpace
             } else {
                 renderSpaces(spaces);
             }
@@ -194,13 +195,6 @@ function renderSpaces(spacesToRender) {
         `;
         spacesContainer.appendChild(spaceCard);
 
-        // 地圖放大
-        spaceCard.addEventListener('click', () => {
-            if (showMapCheckbox.checked && space.branchId) {
-                highlightBranchMarker(space.branchId);
-            }
-        });
-
         // 加入/移除最愛
         spaceCard.querySelector('.favorite-btn').addEventListener('click', (event) => {
             event.stopPropagation();
@@ -221,8 +215,8 @@ function renderSpaces(spacesToRender) {
                     button.classList.add("active");
                     showToast(`已將「${space.name}」加入最愛`);
                 }).catch(error => {
-                    alert("加入最愛失敗");
-                    console.log("加入最愛失敗：", error);
+                        alert("加入最愛失敗");
+                        console.log("加入最愛失敗：", error);
                     }
                 )
             } else {
@@ -245,13 +239,16 @@ function renderSpaces(spacesToRender) {
 
         // 點擊卡片後，跳轉到個別空間頁面
         spaceCard.addEventListener('click', () => {
-            // window.location.href = `individual_space.html?spaceId=${space.spaceId}`;
+            // window.location.href = `individual_space.html?spaceIㄝd=${space.spaceId}`;
             window.location.href = `/lifespace/individual_space?spaceId=${space.spaceId}`;
         });
     });
+
+    // 抓取使用者的最愛清單
     checkLoginAndToggleHearts();
 }
 
+// 取得第一張照片，用來放進space card裡面的
 function getFirstPhoto(photo) {
     if (photo.length === 0) {
         return "default.jpg";
@@ -259,6 +256,7 @@ function getFirstPhoto(photo) {
     return "data:image/jpeg;base64," + photo[0];
 }
 
+// ---------- 抓取「空間用途」資料 ----------
 function fetchSpaceUsages() {
     fetch("/space-usages")
         .then(response => response.json())
@@ -268,6 +266,7 @@ function fetchSpaceUsages() {
         })
 }
 
+// 「空間用途」用來渲染在篩選清單的checkboxes
 function renderUsages(usages) {
     const usageOptions = document.querySelector(".usage-options");
     usageOptions.innerHTML = '';
@@ -295,28 +294,18 @@ function renderUsages(usages) {
         // 把 label 加到 usageOptions 容器裡
         usageOptions.appendChild(label);
     })
-}
 
-let favoriteSpaceIds = [];
-
-function checkLoginAndToggleHearts() {
-    fetch("/member/profile", {
-        method: "GET",
-        credentials: "include"
-    })
-        .then(res => {
-            if (res.status === 401) {
-                // 尚未登入，隱藏所有愛心按鈕
-                document.querySelectorAll('.favorite-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                });
-            }
-        })
-        .catch(err => {
-            console.error("檢查登入失敗", err);
+    // 用途篩選
+    document.querySelectorAll('input[name="usage"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            filters.usage = Array.from(document.querySelectorAll('input[name="usage"]:checked')).map(input => input.value);
+            // applyFilters();
         });
+    });
 }
 
+// ---------- 抓取「最愛空間清單」資料 ----------
+let favoriteSpaceIds = [];
 function fetchFavoriteSpaces() {
     fetch("/favorite-space", {
         method: "GET",
@@ -331,6 +320,27 @@ function fetchFavoriteSpaces() {
         .catch(error => console.error("載入最愛失敗", error));
 }
 
+// 從renderSpace那邊呼叫過來的 (必須要先渲染卡片後才能呼叫此方法)
+function checkLoginAndToggleHearts() {
+    fetch("/member/profile", {
+        method: "GET",
+        credentials: "include"
+    })
+        .then(res => {
+            if (res.status === 401) {
+                // 若尚未登入，隱藏所有愛心按鈕
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            }
+        })
+        .catch(err => {
+            console.error("檢查登入失敗", err);
+        });
+}
+
+
+
 // ============= 地圖相關 =============
 let userLocation = null;
 let locationRequestInProgress = false;
@@ -342,14 +352,14 @@ const LOCATION_CACHE_EXPIRY = 30 * 60 * 1000; // 30分鐘，單位為毫秒
 
 // ======= 取得定位 =======
 
-// 抓快取中的地點
+// 抓快取中的位置
 function getCachedLocation() {
     const cachedLocationData = localStorage.getItem(LOCATION_CACHE_KEY);
     if (!cachedLocationData) return null;
 
     try {
         const { location, timestamp } = JSON.parse(cachedLocationData);
-        // 檢查緩存是否過期
+        // 檢查cache是否過期
         if (Date.now() - timestamp < LOCATION_CACHE_EXPIRY) {
             return location;
         }
@@ -357,11 +367,12 @@ function getCachedLocation() {
         console.warn('無法解析位置數據:', error);
     }
 
-    // 緩存過期或無效，清除它
+    // cache過期或無效，清除它
     localStorage.removeItem(LOCATION_CACHE_KEY);
     return null;
 }
 
+// 將位置數據存入快取
 function cacheLocation(location) {
     const locationData = {
         location: location,
@@ -380,6 +391,8 @@ function getUserLocation() {
 
     // 首先嘗試使用cache內存過的位置
     const cachedLocation = getCachedLocation();
+
+    // 如果cache有之前存過的位置
     if (cachedLocation) {
         userLocation = cachedLocation;
         updateSpacesDistance();
@@ -406,7 +419,7 @@ function getUserLocation() {
                     lng: position.coords.longitude
                 };
 
-                // 緩存位置數據
+                // 將位置數據存入快取
                 cacheLocation(userLocation);
 
                 // 更新距離和地圖
@@ -435,19 +448,22 @@ function getUserLocation() {
     } else {
         console.warn("瀏覽器不支援地理定位");
         locationRequestInProgress = false;
-        console.log("getUserLocation時呼叫");
         renderSpaces(spaces);
     }
 }
 
+// 取得定位後，將地圖的中心設在使用者定位之位置
 function updateMapIfInitialized() {
     if (map && userLocation) {
         map.setCenter(userLocation);
     }
 }
 
+// 更新相對距離
 function updateSpacesDistance() {
     if (!userLocation) return;
+
+    // 對每個空間資料重新計算距離
     spaces.forEach(space => {
         try {
             if (isValidCoordinates(space.coordinates)) {
@@ -468,11 +484,11 @@ function updateSpacesDistance() {
     });
 
     // 更新完距離後重新渲染空間列表
-    console.log("updateSpacesDistance時呼叫");
     renderSpaces(spaces);
     // applyFilters();
 }
 
+// 利用Haversine公式求出大園距離
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // 地球半徑（公尺）
     const a1 = lat1 * Math.PI / 180;
@@ -491,6 +507,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 // ======= 初始化地圖 =======
 
+// 在html檔中的head script中，發出Google Maps API請求後同時執行
 function initMap() {
     if (map)
         return;
@@ -523,7 +540,6 @@ function initMap() {
         alert("無法載入地圖，請稍後再試。");
     }
 }
-window.initMap = initMap;
 
 // 取得分點位置資訊
 function extractBranchInfo(spacesData) {
@@ -538,7 +554,7 @@ function extractBranchInfo(spacesData) {
             return;
         }
 
-        const branchId = space.branchId || `loc_${space.coordinates[0]}_${space.coordinates[1]}`;
+        const branchId = space.branchId;
         const branchName = space.branchName;
         const branchAddr = space.branchAddr || space.location;
 
@@ -622,7 +638,6 @@ function updateMapMarkers(branchesList) {
             <div style="min-width: 150px;">
                 <h4 style="margin: 5px 0;">${branch.name || '未命名分店'}</h4>
                 <p style="margin: 5px 0;">${branch.address || '未命名分店'}</p>
-<!--                <p style="margin: 5px 0;">包含 ${spacesCount} 個空間</p>-->
                 <button id="filter-branch-btn" 
                     style="background-color: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-top: 5px;">
                     查看此分店空間
@@ -670,6 +685,14 @@ function updateMapMarkers(branchesList) {
     });
 }
 
+// 經緯度檢查
+function isValidCoordinates(coords) {
+    return Array.isArray(coords) &&
+        coords.length === 2 &&
+        !isNaN(parseFloat(coords[0])) && isFinite(coords[0]) && Math.abs(coords[0]) <= 90 &&
+        !isNaN(parseFloat(coords[1])) && isFinite(coords[1]) && Math.abs(coords[1]) <= 180;
+}
+
 // 根據branchId篩選空間
 function filterSpacesByBranch(branchId, branchSpaces) {
     // 篩選出該分店的空間
@@ -695,64 +718,7 @@ function filterSpacesByBranch(branchId, branchSpaces) {
     });
 
     // 顯示篩選結果
-    console.log("filterSpacesByBranch時呼叫");
     renderSpaces(filteredSpaces);
-}
-
-function highlightBranchMarker(branchId) {
-    if (!map) return;
-
-    const data = markersData.find(d => d.branchId === branchId);
-    if (data && data.markerElement) {
-        const position = data.markerElement.position;
-        if(position) {
-            map.setCenter(position);
-            map.setZoom(15);
-
-            // 確保一次只能開一個彈窗
-            if (activeInfoWindow) {
-                activeInfoWindow.close();
-            }
-            data.infoWindow.open({ map: map, anchor: data.markerElement });
-            activeInfoWindow = data.infoWindow;
-
-            // 添加按鈕點擊事件
-            setTimeout(() => {
-                const filterBtn = document.getElementById('filter-branch-btn');
-                if (filterBtn) {
-                    filterBtn.addEventListener('click', () => {
-                        // 篩選出該分店的空間
-                        filterSpacesByBranch(branchId, data.spaces);
-                        // 關閉資訊視窗
-                        data.infoWindow.close();
-                    });
-                }
-            }, 100);
-        } else {
-            console.warn(`Could not get position for marker with branchId: ${branchId}`);
-        }
-    } else {
-        console.warn(`Marker data not found for branchId: ${branchId}`);
-    }
-}
-
-// 經緯度檢查
-function isValidCoordinates(coords) {
-    return Array.isArray(coords) &&
-        coords.length === 2 &&
-        !isNaN(parseFloat(coords[0])) && isFinite(coords[0]) && Math.abs(coords[0]) <= 90 &&
-        !isNaN(parseFloat(coords[1])) && isFinite(coords[1]) && Math.abs(coords[1]) <= 180;
-}
-
-// 點擊座標時，該空間card會有光暈
-function highlightCard(spaceId) {
-    document.querySelectorAll('.space-card').forEach(card => card.style.boxShadow = 'none');
-    const card = document.querySelector(`.space-card[data-id="${spaceId}"]`);
-    if (card) {
-        card.style.boxShadow = '0 0 10px #4CAF50';
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    activeCardId = spaceId;
 }
 
 // ============= Event Listeners集中設定 =============
@@ -768,7 +734,7 @@ function setupEventListeners() {
     });
 
     // ======= 篩選條件相關 =======
-    // 篩選條件
+    // 篩選條件Panel開關
     filterButton.addEventListener('click', () => {
         filterPanel.classList.toggle('hidden');
     });
@@ -810,15 +776,7 @@ function setupEventListeners() {
         });
     });
 
-    // 用途篩選
-    document.querySelectorAll('input[name="usage"]').forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            filters.usage = Array.from(document.querySelectorAll('input[name="usage"]:checked')).map(input => input.value);
-            // applyFilters();
-        });
-    });
-
-    // 依上述條件搜尋
+    // 依上述條件篩選
     document.getElementById('apply-filter-btn').addEventListener('click', () => {
         applyFilters();
     });
@@ -890,7 +848,7 @@ document.querySelector(".search-button").addEventListener("click", function(e) {
     }
 
     if (date) {
-    if (keyword) targetSearching += ", ";
+        if (keyword) targetSearching += ", ";
         targetSearching += `可預訂時間為 ${date} `;
     }
 

@@ -87,10 +87,32 @@ public class GlobalExceptionHandler {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(errorBody);
 	}
+
     @ExceptionHandler(ResourceNotFoundException.class)   // 404 (使用自訂例外)
     public ResponseEntity<Map<String, String>> handleNotFound(ResourceNotFoundException ex) {
 		Map<String, String> errorBody = new HashMap<>();
 		errorBody.put("message", ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody);
     }
+
+	@ExceptionHandler(DuplicatedSpaceNameException.class)
+	public ResponseEntity<Map<String, String>> handleDuplicatedSpaceName(DuplicatedSpaceNameException ex) {
+		Map<String, String> errorBody = new HashMap<>();
+		errorBody.put("message", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody);
+	}
+
+	@ExceptionHandler(PhotoIOException.class)
+	public ResponseEntity<Map<String, String>> handleSpacePhotoIO(PhotoIOException ex) {
+		Map<String, String> errorBody = new HashMap<>();
+		errorBody.put("message", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
+	}
+
+	@ExceptionHandler(SpaceIllegalArgumentException.class)
+	public ResponseEntity<Map<String, String>> handleSpaceArguments(SpaceIllegalArgumentException ex) {
+		Map<String, String> errorBody = new HashMap<>();
+		errorBody.put("message", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
+	}
 }

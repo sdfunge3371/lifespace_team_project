@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lifespace.SessionUtils;
+import com.lifespace.dto.SpaceResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,7 +45,8 @@ import jakarta.validation.constraints.Min;
 // 直接回傳 JSON，前端可以用 AJAX 調用
 @RestController
 public class SpaceController {
-	
+
+	// ======= 空間相關 =======
 	@Autowired
 	private SpaceService spaceService;
 
@@ -51,9 +54,6 @@ public class SpaceController {
 	@GetMapping("/spaces")
 	public ResponseEntity<List<Space>> getAllSpaces() {
 		List<Space> allSpaces = spaceService.getAllSpaces();
-		if (allSpaces.isEmpty()) {    // 如果沒有資料時
-		    return ResponseEntity.noContent().build();
-		}
 		return ResponseEntity.ok(allSpaces);
 	}
 
@@ -61,10 +61,6 @@ public class SpaceController {
 	@GetMapping("/spaces/id/{spaceId}")
 	public ResponseEntity<Space> getSpaceById(@PathVariable	String spaceId) {
 		Space space = spaceService.getSpaceById(spaceId);
-
-		if (space == null) {   // 若這個spaceId沒有資料
-			throw new ResourceNotFoundException("找不到 ID 為「 " + spaceId + " 」的空間");   // ResourceNotFoundException為我自己定義的Exception
-		}
 		return ResponseEntity.ok(space);
 	}
 
@@ -72,11 +68,6 @@ public class SpaceController {
 	@GetMapping("/spaces/name")
 	public ResponseEntity<List<Space>> getSpacesByNameContainingIgnoreCase(@RequestParam String keyword) {  // 用@RequestParam以讓Postman處理空白字元
 		List<Space> spaces = spaceService.getSpacesByNameContainingIgnoreCase(keyword);
-
-		if (spaces.isEmpty()) {
-			throw new ResourceNotFoundException("找不到包含「" + keyword + "」的空間");
-		}
-
 		return ResponseEntity.ok(spaces);
 
 	}
@@ -96,24 +87,9 @@ public class SpaceController {
 	@PostMapping("/spaces")  // 需使用multipart/form-data + JSON + 檔案格式提交
 	public ResponseEntity<?> addSpace(@RequestPart("data") @Valid SpaceRequest space,
 									  @RequestPart(value = "photos", required = false) List<MultipartFile> photos) {
-	    try {
-	        Space created = spaceService.addSpace(space, photos);
-	        URI location = URI.create("/spaces/id/" + created.getSpaceId());
-	        return ResponseEntity.created(location).body(created); // 201 Created
-	    } catch (DataIntegrityViolationException e) {
-	        // 回傳 409 Conflict，並可加入錯誤訊息
-			Map<String, String> errorBody = new HashMap<>();
-			errorBody.put("message", "此空間名稱已經被使用過");
-			return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(errorBody);  // .contentType(MediaType.APPLICATION_JSON):確保該回傳型別不論為何，都是指定為application/json，
-	    } catch (IOException e) {
-			Map<String, String> errorBody = new HashMap<>();
-			errorBody.put("message", "空間照片新增失敗：" + e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorBody);
-		} catch (IllegalArgumentException e) {
-			Map<String, String> errorBody = new HashMap<>();
-			errorBody.put("message", e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).body(errorBody);
-		}
+		Space created = spaceService.addSpace(space, photos);
+		URI location = URI.create("/spaces/id/" + created.getSpaceId());
+		return ResponseEntity.created(location).body(created); // 201 Created
 	}
 
 	// 修改空間
@@ -121,25 +97,14 @@ public class SpaceController {
 	public ResponseEntity<?> updateSpace(@PathVariable String spaceId,
 										 @RequestPart("data") @Valid SpaceRequest space,
 										 @RequestPart(value = "photos", required = false) List<MultipartFile> files,	// 記錄更新後的照片有哪些
-										 @RequestPart(value = "keptPhotoIds", required = false) String keptPhotoIdsJson) 	// 記錄更新前現有的照片有哪些(透過存ID: [1, 2, 4, 6, ...])
+										 @RequestPart(value = "keptPhotoIds", required = false) String keptPhotoIdsJson) throws JsonProcessingException
 		{
-		try {
-			List<Integer> keptPhotoIds = new ObjectMapper().readValue(keptPhotoIdsJson, new TypeReference<>() {});
+			List<Integer> keptPhotoIds = new ObjectMapper().readValue(keptPhotoIdsJson, new TypeReference<>() {});	// 記錄更新前現有的照片有哪些(透過存ID: [1, 2, 4, 6, ...])
 			// ObjectMapper: 將JSON轉為Java Object
 			// readValue: 將JSON解析為指定的Java型別
 			// TypeReference: 根據你宣告的型別改成精確的型別: List<Integer> (原本是List<Object>)
 			Space updated = spaceService.updateSpace(spaceId, space, files != null ? files : List.of(), keptPhotoIds);
-	        return ResponseEntity.ok(updated);
-		} catch (DataIntegrityViolationException e) {
-			// 回傳 409 Conflict，並可加入錯誤訊息
-			Map<String, String> errorBody = new HashMap<>();
-			errorBody.put("message", "此空間名稱已經被使用過");
-			return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(errorBody);
-		} catch (IOException e) {
-			Map<String, String> errorBody = new HashMap<>();
-			errorBody.put("message", "空間照片新增失敗：" + e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_JSON).body(errorBody);
-		}
+			return ResponseEntity.ok(updated);
 	}
 
 	// 上、下架更新狀態（透過上、下架進行篩選）
@@ -149,7 +114,10 @@ public class SpaceController {
 		return ResponseEntity.ok(spaceUpdated);
 	}
 
-	// 檢查是否有登入會員，才可開始預訂
+
+	// ======= 其他表格相關 =======
+
+	// (從micky程式碼複製過來的)檢查是否有登入會員，才可開始預訂
 	@GetMapping("/spaces/member/current")
 	public ResponseEntity<?> getCurrentMember(HttpSession session) {
 		String memberId = SessionUtils.getLoginMemberId(session); // 統一從工具類拿
@@ -163,24 +131,6 @@ public class SpaceController {
 		return ResponseEntity.ok(res);
 	}
 
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

@@ -311,9 +311,11 @@ submitButton.addEventListener('click', function () {    // 點擊「完成」按
         .then(response => {
             if (!response.ok) {
                 return response.json().then(errorData => {  // 回傳JSON
+                    console.log(errorData);
                     const backendErrors = errorData.errors || errorData.message || `伺服器錯誤: ${response.status}`;    // 依序先抓JSON中的errors, message，如果都沒有，就代表是500
                     throw backendErrors;    // 拋出例外給外層的catch
                 }).catch((backendErrors) => {
+                    console.log(backendErrors);
                     // 回傳的JSON格式有誤，拋出例外給外層的catch
                     displayErrors(backendErrors);
                     throw [`伺服器發生錯誤: ${response.status} ${response.statusText}`];
@@ -323,7 +325,6 @@ submitButton.addEventListener('click', function () {    // 點擊「完成」按
         })
         .then(data => {
             form.reset(); // 務必要清空清空表單
-            // window.location.href = 'listSpaces.html';
             window.location.href = '/admin/listSpaces';
         })
         .catch(errorOrErrors => {
@@ -582,7 +583,6 @@ document.addEventListener('DOMContentLoaded', function () {
         error: function (xhr) {
             if (xhr.status === 401) {
                 alert("尚未登入，請先登入");
-                // window.location.href = "/loginAdmin.html";
                 window.location.href = "/admin/loginAdmin";
             } else {
                 console.error("無法取得會員資料", xhr);
