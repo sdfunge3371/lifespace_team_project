@@ -19,7 +19,7 @@ function showToast(message) {
     const toast = document.createElement("div");
     toast.className = 'toast';
     toast.textContent = message;
-
+    
     toastContainer.appendChild(toast);
 
     setTimeout(() => {
@@ -1554,7 +1554,7 @@ function sendOrder(memberId) {
         headers: {
             'Content-Type': 'application/json'
         },
-        credentials: "include",  // ← 很重要
+        credentials: "include",  // 很重要
         body: JSON.stringify(ordersDTO)
     })
         .then(res => {
@@ -1572,26 +1572,6 @@ function sendOrder(memberId) {
             sessionStorage.setItem("currentOrderId", data.orderId);
 
             // 直接跳轉 loading 畫面
-            // window.location.href = "/payment_loading.html";
             window.location.href = "/lifespace/payment_loading";
-        //     alert("預訂成功");
-        //     console.log("預定成功", data);
-        //
-        //     fetch(`orders/ecpay-checkout/${data.orderId}`,{
-        //         method: "POST",
-        //     }).then(res => res.text())
-        //       .then(formHTML => {
-        //           // 自動submmit加到畫面上的綠界form表單(用div包起來再加進畫面)
-        //           const tempDiv = document.createElement('div');
-        //           tempDiv.innerHTML = formHTML;
-        //           document.body.appendChild(tempDiv);
-        //           tempDiv.querySelector('form').submit();
-        //       })
-        //     // window.location.href = "/orders.html";   // 或改成付款成功頁面
-        //     window.location.href = "/homepage.html";   // 或改成付款成功頁面
-        // })
-        // .catch(error => {
-        //     alert("預訂失敗");
-        //     console.error(error.message);
         });
 }

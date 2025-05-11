@@ -118,7 +118,7 @@ $(document).ready(function () {
 									</div>
 								</div>
 							`;
-                            spacesContainer.appendChild(spaceCard);
+                            spaceContainer.appendChild(spaceCard);
 
                             spaceCard.addEventListener('click', () => {
                                 window.location.href = `/lifespace/individual_space?spaceId=${space.spaceId}`;
@@ -126,7 +126,6 @@ $(document).ready(function () {
                         })
                     })
                     .catch(error => {
-                        console.log("bug");
                         console.log(error);
                     })
 
